@@ -1,0 +1,8 @@
+For Factions:
+
+0 - atk
+1 - sp atk
+2 - spd
+3 - def
+4 - sp def
+5 - hp 
