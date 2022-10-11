@@ -1,25 +1,52 @@
-const { factionTypes, staticItems, templates, baseAbilities } = require("./data.json");
+const { stat } = require("fs");
+const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions } = require("./data.json");
+
+function weightedRandom(choices){
+    let entries = []
+
+    let current = 0;
+
+    for(choice of choices){
+        entries.push({
+            lowBound:current,
+            highBound:current + choice.chance,
+            obj:choice.obj
+        })
+        current += choice.chance
+    }
+
+    let num = Math.floor(Math.random() * current)
+
+    let selected;
+    for(entry of entries){
+        if(num >= entry.lowBound && num < entry.highBound){
+            selected = entry.obj
+            break;
+        }
+    }
+    return selected
+}
 
 function calculateEffectCost(e){
     let Eval = 0;
-    switch(e.target){
-        case "0":
+    switch(parseInt(e.target)){
+        case 0:
             Eval = 1;
             break;
 
-         case "1":
+         case 1:
             Eval = 1.5;
             break;
 
-        case "2":
+        case 2:
             Eval = -1.5;
             break;
 
-        case "3":
+        case 3:
             Eval = -2;
             break;
 
-        case "4":
+        case 4:
             Eval = -3;
             break;
     }
@@ -103,24 +130,29 @@ function calculateAbilityCost(ability){
 }
 
 function msToTime(s) {
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-  
-    let final = ""
-    if(hrs > 0)
-        final += hrs + 'h '
+    if(s > 0){ 
+        var ms = s % 1000;
+        s = (s - ms) / 1000;
+        var secs = s % 60;
+        s = (s - secs) / 60;
+        var mins = s % 60;
+        var hrs = (s - mins) / 60;
+    
+        let final = ""
+        if(hrs > 0)
+            final += hrs + 'h '
 
-    if(mins > 0)
-        final += mins + 'm '
+        if(mins > 0)
+            final += mins + 'm '
 
-    if(secs > 0)
-        final += secs + 's'
-        
-    return final;
+        if(secs > 0)
+            final += secs + 's'
+            
+        return final;
+    } else {
+        return "a few moments"
+    }
+    
 }
 
 function clone(obj){
@@ -129,10 +161,29 @@ function clone(obj){
 
 function levelPlayer(player){
     player.level++;
-    player.skillpoints += 6;
-    player.exp = 0
+    player.statpoints += 6;
+    player.abilitypoints += 6;
+    player.exp -= player.expCap
     player.expCap = player.level * 100
     return player
+}
+
+function levelTown(town){
+    let foodCheck = town.resources.food[0] >= town.resources.food[1]
+    let woodCheck = town.resources.wood[0] >= town.resources.wood[1]   
+    let mineralsCheck = town.resources.minerals[0] >= town.resources.minerals[1]
+    let resourceCheck = foodCheck && woodCheck && mineralsCheck
+    if(resourceCheck && town.dungeonClear && town.points >= town.level * 10){
+        town.resources.food[0] -= town.resources.food[1]
+        town.resources.wood[0] -= town.resources.wood[1]
+        town.resources.minerals[0] -= town.resources.minerals[1]
+        town.resources.food[1] *= 2
+        town.resources.wood[1] *= 2
+        town.resources.minerals[1] *= 2
+        town.level++
+        town.dungeonClear = false
+    }
+    return town
 }
 
 function generateRNGEquipment(dropData,SP){
@@ -155,27 +206,32 @@ function generateRNGEquipment(dropData,SP){
 
     while(val > 0 || conVal < 0){
         let attributeArray = []
+        let current = null;
         if(val > 6){
-            attributeArray = attributeArray.concat(["perk_","perk_"])
-        } 
-        if(rngSet.lockStatTypes){
-            switch(equipmentData.type){
-                case "weapon":
-                    attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd"])
-                    break;
-
-                case "gear":
-                    attributeArray = attributeArray.concat(["stat_def","stat_spdef","stat_hp"])
-                    break;
+            if(Math.random() < 0.6){
+                attributeArray = attributeArray.concat(["perk_","perk_"])
+                current = ["perk"]
             }
-        } else {
-            attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd","stat_def","stat_spdef","stat_hp"])
+        } 
+        if(current == null){
+            if(rngSet.lockStatTypes){
+                switch(equipmentData.type){
+                    case "weapon":
+                        attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd"])
+                        break;
+
+                    case "gear":
+                        attributeArray = attributeArray.concat(["stat_def","stat_spdef","stat_hp"])
+                        break;
+                }
+            } else {
+                attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd","stat_def","stat_spdef","stat_hp"])
+            }
+            attributeArray = arrayShuffle(attributeArray)
+            current = attributeArray[0].split("_")
         }
-        attributeArray = arrayShuffle(attributeArray)
+
     
-
-        let current = attributeArray[0].split("_")
-
         
         switch(current[0]){
             case "stat":
@@ -199,7 +255,7 @@ function generateRNGEquipment(dropData,SP){
             case "perk":
                 let index = Math.floor(Math.random() * 6)
                 if(equipmentData.typePerks[index] < 5){
-                    val -= 4
+                    val -= 6
                     equipmentData.typePerks[index]++
                 }
                 break;
@@ -207,6 +263,19 @@ function generateRNGEquipment(dropData,SP){
     }
     return equipmentData
 }   
+
+function stringShuffle(string) {
+    var a = string.split(""),
+        n = a.length;
+
+    for(var i = n - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a.join("");
+}
 
 function arrayShuffle(array){
     let currentIndex = array.length,  randomIndex;
@@ -550,15 +619,14 @@ function generateRNGAbility(abilityData,abilityBase){
     }
 
     if(newAbility.action_type == "stats"){
-        for(i in newAbility.effects){
+        for(let i = 0; i < newAbility.effects.length; i ++){
             if(newAbility.effects[i].value == 0){
                 newAbility.effects.splice(i,1)
+                i--
             }
         }
         newAbility.statChangeCount = newAbility.effects.length
     }
-    //console.log(createAbilityDescription(newAbility),calculateAbilityCost(newAbility))
-    
     return newAbility
 }
 
@@ -720,7 +788,36 @@ function createAbilityDescription(ability){
     return desc + "";
 }
 
+function clarifyFighterNames(fighters){
+    for(i in fighters){
+        fighters[i].staticData.name = fighters[i].staticData.name.split(fighters[i].dupeTag)[0]
+        delete fighters[i].dupeTag;
+    }
+    for(i in fighters){
+        let dupeIndexes = []
+        let f = fighters[i]
+        for(x in fighters){
+            let f2 = fighters[x]
+            if(x != i && f2.staticData.name == f.staticData.name){
+                dupeIndexes.push(x)
+            }
+        }
+        dupeIndexes.push(i)
+        if(dupeIndexes.length > 1){
+            let count = 1
+            for(d of dupeIndexes){
+                fighters[d].dupeTag = " #" + count
+                fighters[d].staticData.name += " #" + count
+                count++
+            }
+        }
+    }
+}
+
 module.exports = {
+    levelTown(town){
+        return levelTown(town)
+    },
     msToTime(s){
         return msToTime(s)
     },
@@ -785,14 +882,23 @@ module.exports = {
                 weaponsLooted:0,
                 gearLooted:0,
                 raresDefeated:0,
+                enemyDamageTaken:0,
                 attackDamageDone:0,
                 baseDamageBlocked:0,
                 counterDamageDone:0,
-                recoilDamageTaken:0
+                recoilDamageTaken:0,
+                unitsDefeated:0,
+                criticalsLanded:0,
+                completeBlocks:0,
+                timesStatsLowered:0,
+                timesStatsRaised:0,
+                timesFirstAttack:0,
+                timesAbilityRepeat:0
             },
             choosenAbility:-1,
             target:-1,
             repeats:0,
+            hasActed:false,
             lastAction:"",
             guardData:"none"
         }
@@ -832,29 +938,7 @@ module.exports = {
         return fighterData
     },
     weightedRandom(choices){
-        let entries = []
-
-        let current = 0;
-
-        for(choice of choices){
-            entries.push({
-                lowBound:current,
-                highBound:current + choice.chance,
-                obj:choice.obj
-            })
-            current += choice.chance
-        }
-
-        let num = Math.floor(Math.random() * current)
-
-        let selected;
-        for(entry of entries){
-            if(num >= entry.lowBound && num < entry.highBound){
-                selected = entry.obj
-                break;
-            }
-        }
-        return selected
+        return weightedRandom(choices)
     },
     arrayShuffle(array) {
         return arrayShuffle(array)
@@ -863,45 +947,48 @@ module.exports = {
         return clone(obj)
     },
     runEnemyCombatAI(fighters){
+        clarifyFighterNames(fighters)
         for(var i = 0; i < fighters.length;i++){
             let fighter = fighters[i]
             if(fighter.staticData.cpu && fighter.alive){
-                if(fighter.staticData.abilities.length > 0){
-                    let selectAbility = true
-                    while(selectAbility){
-                        let nextAction;
-                        fighter.choosenAbility = (Math.floor(Math.random() * fighter.staticData.abilities.length)).toString()
-                        let abilityData = fighter.staticData.abilities[fighter.choosenAbility]
-                        switch(abilityData.action_type){
-                            case "attack":
-                                if(fighters.length == 2){
-                                    fighter.target = [1,0][fighter.index]
-                                } else {
-                                    if(fighter.team != null){
-                                        let targetI = Math.floor(Math.random() * fighters.length)
-                                        while(targetI == fighter.index || fighters[targetI].team == fighter.team || fighters[targetI].alive == false){
-                                            targetI = Math.floor(Math.random() * fighters.length)
-                                        }
-                                        fighter.target = targetI
+                if(fighter.staticData.abilities){
+                    if(fighter.staticData.abilities.length > 0){
+                        let selectAbility = true
+                        while(selectAbility){
+                            let nextAction;
+                            fighter.choosenAbility = (Math.floor(Math.random() * fighter.staticData.abilities.length)).toString()
+                            let abilityData = fighter.staticData.abilities[fighter.choosenAbility]
+                            switch(abilityData.action_type){
+                                case "attack":
+                                    if(fighters.length == 2){
+                                        fighter.target = [1,0][fighter.index]
                                     } else {
-                                        let targetI = Math.floor(Math.random() * fighters.length)
-                                        while(targetI == fighter.index || fighters[targetI].alive == false){
-                                            targetI = Math.floor(Math.random() * fighters.length)
+                                        if(fighter.team != null){
+                                            let targetI = Math.floor(Math.random() * fighters.length)
+                                            while(targetI == fighter.index || fighters[targetI].team == fighter.team || fighters[targetI].alive == false){
+                                                targetI = Math.floor(Math.random() * fighters.length)
+                                            }
+                                            fighter.target = targetI
+                                        } else {
+                                            let targetI = Math.floor(Math.random() * fighters.length)
+                                            while(targetI == fighter.index || fighters[targetI].alive == false){
+                                                targetI = Math.floor(Math.random() * fighters.length)
+                                            }
+                                            fighter.target = targetI
                                         }
-                                        fighter.target = targetI
                                     }
-                                }
-                                nextAction = fighter.index + "_" + abilityData.name + "_" + fighters[fighter.target]
-                                break;
+                                    nextAction = fighter.index + "_" + abilityData.name + "_" + fighters[fighter.target]
+                                    break;
 
-                            case "guard":
-                                nextAction = fighter.index + "_" + abilityData.action_type
-                                break;
-                        }
-                        if(nextAction == fighter.lastAction && fighter.staticData.intelligence){
-                            selectAbility = fighter.staticData.intelligence.reuse < Math.random()
-                        } else {
-                            selectAbility = false
+                                case "guard":
+                                    nextAction = fighter.index + "_" + abilityData.action_type
+                                    break;
+                            }
+                            if(nextAction == fighter.lastAction && fighter.staticData.intelligence){
+                                selectAbility = fighter.staticData.intelligence.reuse < Math.random()
+                            } else {
+                                selectAbility = false
+                            }
                         }
                     }
                 }
@@ -918,41 +1005,64 @@ module.exports = {
         switch(item.type){
             case "weapon":
                 data += "Type: " + ["Melee","Ranged","Spell-Casting","Rune"][item.weaponStyle] +"\n\n"
-                for(stat in item.stats){
-                    let val = item.stats[stat]
-                    if(stat == "hp"){
+                for(s in item.stats){
+                    let val = item.stats[s]
+                    if(s == "hp"){
                         val *= 2
                     }
                     if(val > 0){
                         zeroStats = false
-                        data += "+" + val + " " + stat + "\n"
+                        data += "+" + val + " " + s + "\n"
                     } else if (val < 0){
                         zeroStats = false
-                        data += val + " " + stat + "\n"
+                        data += val + " " + s + "\n"
+                    }
+                }
+                data += "\n"
+                let noWeaponPerks = true
+                for(p in item.typePerks){
+                    let val = item.typePerks[p]
+                    if(val > 0){
+                        noWeaponPerks = false;
+                        data += "\n> " + equipmentPerkDescriptions.weapon[p][0].replace("X",equipmentPerkDescriptions.weapon[p][1] * val) + "\n"
                     }
                 }
                 if(zeroStats){
                     data += "---No Stat Changes---\n"
+                }
+                if(noWeaponPerks){
+                    data += "---No Weapon Perks---\n"
                 }
                 break;
 
             case "gear":
                 data += "Type: Gear\n\n"
-                for(stat in item.stats){
-                    let val = item.stats[stat]
-                    if(stat == "hp"){
+                for(s in item.stats){
+                    let val = item.stats[s]
+                    if(s == "hp"){
                         val *= 2
                     }
                     if(val > 0){
                         zeroStats = false
-                        data += "+" + val + " " + stat + "\n"
+                        data += "+" + val + " " + s + "\n"
                     } else if (val < 0){
                         zeroStats = false
-                        data += val + " " + stat + "\n"
+                        data += val + " " + s + "\n"
+                    }
+                }
+                let nogearPerks = true
+                for(p in item.typePerks){
+                    let val = item.typePerks[p]
+                    if(val > 0){
+                        nogearPerks = false;
+                        data += "\n> " + equipmentPerkDescriptions.gear[p][0].replace("X",equipmentPerkDescriptions.gear[p][1] * val) + "\n"
                     }
                 }
                 if(zeroStats){
                     data += "---No Stat Changes---\n"
+                }
+                if(nogearPerks){
+                    data += "---No Gear Perks---\n"
                 }
                 break;
 
@@ -995,10 +1105,14 @@ module.exports = {
     },
     simulateCPUAbilityAssign(unit,innateAbilities,allowance){
         let abilityDict = {}
+        let highestCost = 0;
         for(ability of baseAbilities){
             if(ability.wildUse){
                 if(!abilityDict[ability.allowanceCost]){
                     abilityDict[ability.allowanceCost] = []
+                }
+                if(ability.allowanceCost > highestCost){
+                    highestCost = ability.allowanceCost
                 }
                 abilityDict[ability.allowanceCost].push(ability)
             }
@@ -1010,9 +1124,9 @@ module.exports = {
             }
         }
         
+        
 
-
-        while(allowance > 0 && unit.abilities < 6){
+        while(allowance > 0 && unit.abilities.length < 6){
             let lastType; 
             if(unit.abilities.length > 0){
                 lastType = unit.abilities[unit.abilities.length - 1].action_type
@@ -1020,7 +1134,7 @@ module.exports = {
                 unit.abilities = []
                 lastType = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
             }
-            let desiredSpend = Math.ceil(Math.random() * allowance)
+            let desiredSpend = Math.ceil(Math.random() * highestCost)
             if(abilityDict[desiredSpend]){
                 let catalouge = clone(abilityDict[desiredSpend])
                 let chosen;
@@ -1041,31 +1155,36 @@ module.exports = {
         let stats = arrayShuffle(["hp","atk","def","spatk","spdef","spd"])
         let statTotal = 0
         let pointsMax = points
+        while(points > 0){
+            for(var i = 0; i < stats.length; i++){
+                let toSpend = Math.ceil(Math.random() * points) 
+                while(toSpend > Math.ceil(pointsMax * 0.25)){
+                    toSpend = Math.ceil(Math.random() * points) 
+                }
+                if(unitScalar){
+                    toSpend = Math.ceil(toSpend * unitScalar[stats[i]])
+                }
+                if(stats[i] == "hp"){
+                    unit.stats[stats[i]] += toSpend * 2
+                } else {
+                    unit.stats[stats[i]] += toSpend
+                }
+                unit.stats[stats[i]] = Math.floor(unit.stats[stats[i]])
+                points -= toSpend
+            }
+        }   
         for(var i = 0; i < stats.length; i++){
-            let toSpend = Math.ceil(Math.random() * points) 
-            while(toSpend > Math.ceil(pointsMax * 0.25)){
-                toSpend = Math.ceil(Math.random() * points) 
-            }
             if(stats[i] == "hp"){
-                unit.stats[stats[i]] += toSpend * 2
+                statTotal += (unit.stats[stats[i]] - 20)/2
             } else {
-                unit.stats[stats[i]] += toSpend
-            }
-            points -= toSpend
-            if(unitScalar){
-                unit.stats[stats[i]] = Math.ceil(unit.stats[stats[i]] * unitScalar[stats[i]])
-            }
-            if(stats[i] == "hp"){
-                statTotal += (unit.stats[stats[i]] - 9)/2
-            } else {
-                statTotal += unit.stats[stats[i]] - 4
+                statTotal += unit.stats[stats[i]] - 10
             }
         }
         if(unit.level == 0){
             if(Math.ceil(statTotal/6) < 1){
                 unit.level = 1
             } else {
-                unit.level = Math.ceil(statTotal/6)
+                unit.level = Math.floor(statTotal/6)
             }
         }
         return unit
@@ -1106,15 +1225,22 @@ module.exports = {
                 break;
 
             case "resource":
-                player[drop.resource] += drop.amount;
                 messages.push(player.name + " recieved " + drop.amount + " " + drop.resourceName + "!")
                 switch(drop.resource){
                     case "exp":
+                        player.exp += drop.amount;
                         player.totalExp += drop.amount
-                        if(player.exp >= player.expCap){
+                        let prevLevel = player.level
+                        while(player.exp >= player.expCap){
                             player = levelPlayer(player)
+                        }
+                        if(player.level > prevLevel){
                             messages.push(player.name + " is now level " + player.level + "!")
                         }
+                        break;
+
+                    default:
+                        player[drop.resource] += drop.amount
                         break;
                 }
                 break;
@@ -1127,5 +1253,95 @@ module.exports = {
     },
     generateRNGAbility(abilityData,abilityBase){
         return generateRNGAbility(abilityData,abilityBase)
+    },
+    runExpeditionStep(data,wasActive,town,player){
+        data.status.lastCheckIn++
+        let index = data.status.lastCheckIn
+        data.status.checkIns[index] = wasActive
+        if(index == 2){
+            let val = 1
+            for(x of data.status.checkIns){
+                if(x){
+                    val++
+                }
+            }
+            val = Math.ceil(Math.random() * val)
+            let messageList = regionExpeditionNote[town.regions[Math.floor(Math.random() * 2)]][data.status.type]
+            let message = messageList[Math.floor(Math.random() * messageList.length)]
+            switch(data.status.type){
+                //resource bundle
+                case 0:
+                    let resource = ["wood","food","minerals"][Math.floor(Math.random() * 3)]
+                    let amount = val * 2
+                    data.townResources[resource] += amount
+                    break;
+                
+                //gold
+                case 1:
+                    player.gold += 5 * val
+                    break;
+
+                //exp
+                case 2:
+                    let stat = ["hp","atk","spatk","spdef","def","spd"][Math.floor(Math.random() * 6)]
+                    player.stats[stat] += val
+                    break; 
+
+                //equipment
+                case 3:
+                    let newData = {
+                        ref:{
+                            type: "rngEquipment",
+                            rngEquipment: {
+                                scaling: false,
+                                value:1,
+                                conValue:0,
+                                lockStatTypes: true,
+                                baseVal: 20 * val,
+                                types: ["weapon","gear"]
+                            }
+                        }
+                    }
+                    let item = generateRNGEquipment(newData)
+                    player = givePlayerItem(item,player)
+                    break;
+                
+                //abilitypoints
+                case 4:
+                    player.abilitypoints += val
+                    break;
+            }
+
+            data.status = {
+                lastCheckIn: -1,
+                checkIns:[-1,-1,-1],
+                type: weightedRandom([
+                    {
+                        chance:50,
+                        obj:0
+                    },
+                    {
+                        chance:15,
+                        obj:1
+                    },
+                    {
+                        chance:15,
+                        obj:2
+                    },
+                    {
+                        chance:10,
+                        obj:3
+                    },
+                    {
+                        chance:10,
+                        obj:4
+                    }
+                ])
+            }
+            return [message,player];
+        }
+    },
+    generateDungeon(data){
+
     }
 }

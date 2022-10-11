@@ -6,25 +6,28 @@ for(creature of inData.creatures){
     {
       chance:38,
       obj:{
-        ref:{
-            staticItemID:0
-        }
+        type:"resource",
+        resource:"gold",
+        resourceName: "gold",
+        amount: 5
       }
     },
     {
       chance:18,
       obj:{
-        ref:{
-            staticItemID:1
-        }
+        type:"resource",
+        resource:"gold",
+        resourceName: "gold",
+        amount: 10
       }
     },
     {
       chance:8,
       obj:{
-        ref:{
-            staticItemID:2
-        }
+        type:"resource",
+        resource:"gold",
+        resourceName: "gold",
+        amount: 15
       }
     },
     {

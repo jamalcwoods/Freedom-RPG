@@ -15,15 +15,15 @@ module.exports = {
         let session = componentConfig.session
         if(session.type == "stats" && session.session_data.editingStat != "none"){
             let editingStat = session.session_data.editingStat
-            let skillpointsNeeded;
+            let statpointsNeeded;
             if(statIncreaseRatios[session.session_data.faction][editingStat] > 0){
-                skillpointsNeeded = 1
+                statpointsNeeded = 1
             } else {
-                skillpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][editingStat]
+                statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][editingStat]
             }
             if(session.session_data.stats[editingStat] > session.session_data.prevStats[editingStat]){
                 session.session_data.stats[editingStat] -= statIncreaseRatios[session.session_data.faction][editingStat]
-                session.session_data.skillpoints += skillpointsNeeded
+                session.session_data.statpoints += statpointsNeeded
                 interaction.update({
                     content: populateStatEditWindow(session),
                     components: populateStatEditButtons(session)

@@ -1,6 +1,7 @@
 // const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { createAbilityDescription } = require('../tools.js');
+const { statChangeStages } = require("../data.json")
 
 
 module.exports = {
@@ -44,11 +45,11 @@ module.exports = {
             "Current Fighter Stats",
             "```diff\nLives: " + playerData.staticData.lives +
             "\nHP: " + playerData.liveData.stats.hp + "/" + playerData.liveData.maxhp +
-            "\nATK: " + Math.floor(playerData.liveData.stats.atk * playerData.liveData.statChanges.atk) +
-            "\nSPATK: " + Math.floor(playerData.liveData.stats.spatk * playerData.liveData.statChanges.spatk) +
-            "\nDEF: " + Math.floor(playerData.liveData.stats.def * playerData.liveData.statChanges.def) +
-            "\nSPDEF: " + Math.floor(playerData.liveData.stats.spdef * playerData.liveData.statChanges.spdef) +
-            "\nSPD: " + Math.floor(playerData.liveData.stats.spd * playerData.liveData.statChanges.spd) + "```"
+            "\nATK: " + Math.floor(playerData.liveData.stats.atk * statChangeStages[playerData.liveData.statChanges.atk]) +
+            "\nSPATK: " + Math.floor(playerData.liveData.stats.spatk * statChangeStages[playerData.liveData.statChanges.spatk]) +
+            "\nDEF: " + Math.floor(playerData.liveData.stats.def * statChangeStages[playerData.liveData.statChanges.def]) +
+            "\nSPDEF: " + Math.floor(playerData.liveData.stats.spdef * statChangeStages[playerData.liveData.statChanges.spdef]) +
+            "\nSPD: " + Math.floor(playerData.liveData.stats.spd * statChangeStages[playerData.liveData.statChanges.spd]) + "```"
         ,true)
 
         interaction.reply({

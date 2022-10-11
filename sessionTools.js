@@ -1,9 +1,7 @@
 const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, facilityData  } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
-const {clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost } = require("./tools.js");
-const fight = require("./commands/fight");
+const { clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const { stat } = require("fs");
-const { data } = require("./commands/fight");
 
 function eventComparator(e,data){
     let match = true
@@ -71,6 +69,21 @@ function triggerCombatEvent(data,session){
                     }
                 }
                 break;
+
+            //Repeating Turn Trigger
+            case 3:
+                for(e of session.session_data.options.events){
+                    if(e.type == data.type){
+                        if(session.session_data.turn % e.data.count == 0){
+                            activateCombatTriggers(e.result,session)
+                        } else if(e.data.min <= session.session_data.turn && e.data.max >= session.session_data.turn){
+                            activateCombatTriggers(e.result,session)    
+                        } else if (e.data.all){
+                            activateCombatTriggers(e.result,session) 
+                        }
+                    }
+                }
+                break;
         }
     }
 }
@@ -82,10 +95,22 @@ function activateCombatTriggers(triggerName,session){
                 let triggerData = session.session_data.options.triggers[t]
                 switch(triggerData.actionType){
                     case 0:
-                        let newUnit = weightedRandom(triggerData.data.units)
-                        let fighterData = prepCombatFighter(newUnit.unit,session.session_data.fighters.length)
-                        if(newUnit.alliance){
-                            fighterData.team = newUnit.alliance
+                        let unitData = weightedRandom(triggerData.data.units)
+                        let newUnit = clone(unitData.unit)
+                        if(!unitData.scaling){
+                            newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance)
+                            newUnit = simulateCPUSPAssign(newUnit,unitData.skillpoints)
+                        } else {
+                            switch(unitData.scaling){
+                                case "dungeon":
+                                    newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance * (session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8))
+                                    newUnit = simulateCPUSPAssign(newUnit,Math.ceil((session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8) * 60),unitData.scalar)
+                                    break;
+                            }
+                        }
+                        let fighterData = prepCombatFighter(newUnit,session.session_data.fighters.length)
+                        if(unitData.alliance){
+                            fighterData.team = unitData.alliance
                         }
                         session.session_data.battlelog.alerts.push(fighterData.staticData.name + " has entered combat!")
                         session.session_data.fighters.push(fighterData)
@@ -175,38 +200,40 @@ function getAbilityOrder(fighters){
     ]
 
     for(fighter of fighters){
-        if(fighter.alive && fighter.choosenAbility != -2 && fighter.staticData.abilities.length > 0){
-            let choosenData = fighter.staticData.abilities[fighter.choosenAbility]
-            let targets = []
-            switch(choosenData.action_type){
-                case "attack":
-                    switch(choosenData.targetType){
-                        case 1:
-                            targets = [fighter.target]
-                            break;
-                        
-                        case 2:
-                            for(f in fighters){
-                                if(fighters[f].team != fighter.team){
-                                    targets.push(f)
+        if(fighter.staticData.abilities){
+            if(fighter.alive && fighter.choosenAbility != -2 && fighter.staticData.abilities.length > 0){
+                let choosenData = fighter.staticData.abilities[fighter.choosenAbility]
+                let targets = []
+                switch(choosenData.action_type){
+                    case "attack":
+                        switch(parseInt(choosenData.targetType)){
+                            case 1:
+                                targets = [fighter.target]
+                                break;
+                            
+                            case 2:
+                                for(f in fighters){
+                                    if(fighters[f].team != fighter.team){
+                                        targets.push(f)
+                                    }
                                 }
-                            }
-                            break;
-                        case 3:
-                            for(f in fighters){
-                                if(fighters[f].index != fighter.index){
-                                    targets.push(f)
+                                break;
+                            case 3:
+                                for(f in fighters){
+                                    if(fighters[f].index != fighter.index){
+                                        targets.push(f)
+                                    }
                                 }
-                            }
-                            break;
-                    }
-                    break;
+                                break;
+                        }
+                        break;
+                }
+                abilityOrder[choosenData.speed].push({
+                    index:fighter.index,
+                    ability:choosenData,
+                    targets:targets
+                })
             }
-            abilityOrder[choosenData.speed].push({
-                index:fighter.index,
-                ability:choosenData,
-                targets:targets
-            })
         }
     }
 
@@ -239,6 +266,7 @@ function processMobRewards(mob,session){
                     amount: expReward
                 }, fighter.staticData)
                 fighter.staticData = result[0]
+
                 if(result[1].length > 0){
                     for(msg of result[1]){
                         session.session_data.battlelog.rewards.push(msg)
@@ -344,26 +372,35 @@ module.exports = {
     },
     populateStatEditWindow (session){
         let displayText = "```diff\n"
-        displayText += "Skillpoints to spend: " + session.session_data.skillpoints + "\n\n"
-        for(stat in session.session_data.stats){
-            if(session.session_data.stats[stat] < session.session_data.prevStats[stat]){
+        displayText += "Statpoints to spend: " + session.session_data.statpoints + "\n\n"
+        for(statname in session.session_data.stats){
+            if(session.session_data.stats[statname] < session.session_data.prevStats[statname]){
                 displayText += "-"
-            }else if(session.session_data.stats[stat] > session.session_data.prevStats[stat]){
+            }else if(session.session_data.stats[statname] > session.session_data.prevStats[statname]){
                 displayText += "+"
             } 
-            displayText += stat + ": " + session.session_data.stats[stat] 
-            let skillpointsNeeded;
-            if(statIncreaseRatios[session.session_data.faction][stat] > 0){
-                skillpointsNeeded = 1
-            } else {
-                skillpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][stat]
-            }
-            if(stat == session.session_data.editingStat){
-                displayText += " (-/+) " + statIncreaseRatios[session.session_data.faction][stat] + ": Refunds/Costs " + skillpointsNeeded 
-                if(skillpointsNeeded > 1){
-                    displayText += + " skillpoints"
+            displayText += statname + ": " + session.session_data.stats[statname] 
+            let statpointsNeeded;
+            if(session.session_data.faction != -1){
+                if(statIncreaseRatios[session.session_data.faction][statname] > 0){
+                    statpointsNeeded = 1
                 } else {
-                    displayText += " skillpoint"
+                    statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][statname]
+                }
+            } else {
+                statpointsNeeded = 0
+            }
+            if(statname == session.session_data.editingStat){
+                if(session.session_data.faction != -1){
+                    displayText += " (-/+) " + statIncreaseRatios[session.session_data.faction][statname] + ": Refunds/Costs " + statpointsNeeded 
+                } else {
+                    displayText += " (-/+) 1: Refunds/Costs " + statpointsNeeded 
+                }
+                
+                if(statpointsNeeded > 1){
+                    displayText += + " statpoints"
+                } else {
+                    displayText += " statpoint"
                 }
                 
             }
@@ -375,11 +412,11 @@ module.exports = {
     populateStatEditButtons(session){
         let selectionLabels = []
 
-        for(stat in session.session_data.stats){
+        for(statname in session.session_data.stats){
             selectionLabels.push({
-                label: stat,
-                description: "Select this to edit your character's " + stat + " stat",
-                value: stat,
+                label: statname,
+                description: "Select this to edit your character's " + statname + " stat",
+                value: statname,
             })
         }
 
@@ -398,14 +435,14 @@ module.exports = {
             if(session.session_data.prevStats[session.session_data.editingStat] < session.session_data.stats[session.session_data.editingStat]){
                 canDecrease = false;
             }
-            let skillpointsNeeded;
+            let statpointsNeeded;
             let stat = session.session_data.editingStat
             if(statIncreaseRatios[session.session_data.faction][stat] > 0){
-                skillpointsNeeded = 1
+                statpointsNeeded = 1
             } else {
-                skillpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][stat]
+                statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][stat]
             }
-            if(session.session_data.skillpoints >= skillpointsNeeded){
+            if(session.session_data.statpoints >= statpointsNeeded){
                 canIncrease = false;
             }
         }
@@ -527,6 +564,7 @@ module.exports = {
                 }
                 
             }
+
             if(fightData.fighters.length < 3){
                 title += ": " + fightData.fighters[0].staticData.name + " vs " + fightData.fighters[1].staticData.name
             } else {
@@ -552,8 +590,8 @@ module.exports = {
                 let teamDict = ["🟢","🔴​","🟠​","🟡","​🔵","🟣"]
                 let character = ""
                 
-                let defVal = fighter.liveData.stats.def * fighter.liveData.statChanges.def
-                let spdefVal = fighter.liveData.stats.spdef * fighter.liveData.statChanges.spdef
+                let defVal = fighter.liveData.stats.def * statChangeStages[fighter.liveData.statChanges.def]
+                let spdefVal = fighter.liveData.stats.spdef * statChangeStages[fighter.liveData.statChanges.spdef]
                 if(defVal > spdefVal * 1.25){
                     character = "🟫"
                 } else if(spdefVal > +defVal * 1.25){
@@ -599,7 +637,7 @@ module.exports = {
                     } else {
                         fighterDesc += "\n**Fled from battle**"
                     }
-                } else if (fighter.staticData.abilities.length < 1){
+                } else if (!fighter.staticData.abilities || fighter.staticData.abilities.length < 1){
                     fighterDesc += "\n*Cannot Act*"
                 } else {
                     fighterDesc += "\n*Choosing next action...*"
@@ -700,22 +738,41 @@ module.exports = {
         for(var i = 0; i < fighters.length;i++){
             let fighter = session.session_data.fighters[i]
             if(fighter.alive){
-                if(fighter.choosenAbility == -1 && fighter.staticData.abilities.length > 0){
-                    simTurn = false
-                    break;
+                if(fighter.staticData.abilities){
+                    if(fighter.choosenAbility == -1 && fighter.staticData.abilities.length > 0){
+                        simTurn = false
+                        break;
+                    }
                 }
             }
         }
         if(simTurn){
+            let first = true
             let schedule = getAbilityOrder(fighters).reverse()
             for(timePeriod of schedule){
                 for(action of timePeriod){
                     let actionCode;
+                    let weaponPassives;
+                    let gearPassives;
+                    if(session.session_data.fighters[action.index].staticData.inventory){
+                        let gear = session.session_data.fighters[action.index].staticData.inventory[session.session_data.fighters[action.index].staticData.gear]
+                        let weapon = session.session_data.fighters[action.index].staticData.inventory[session.session_data.fighters[action.index].staticData.weapon]
+                        if(gear){
+                            gearPassives = gear.typePerks
+                        }
+                        if(weapon){
+                            weaponPassives = weapon.typePerks
+                        }
+                    }                   
                     switch(action.ability.action_type){
+                        
                         case "attack":
                             let attacker = session.session_data.fighters[action.index]
+                            if(first){
+                                attacker.records.timesFirstAttack++
+                                first = false
+                            }
                             if(attacker.alive){
-
                                 if(action.targets.length > 1){
                                     actionCode = attacker.index + "_" + action.ability.name + "_" + action.ability.targetType
                                 } else {
@@ -747,7 +804,6 @@ module.exports = {
                                         let attackNum = action.ability.numHits
 
                                         while(attackNum > 0){
-
                                             let attackBase = action.ability.damage_val
                                             
                                             let accCheck = Math.floor(Math.random() * 100) 
@@ -765,7 +821,7 @@ module.exports = {
                                                     repeatPenal = 0
                                                 }
                                             }
-
+                                           
                                             let hitConfirm = accCheck < (action.ability.accuracy - repeatPenal)
                                             if(hitConfirm){
                                                 switch(action.ability.damage_type){
@@ -800,7 +856,7 @@ module.exports = {
                                                         if(attackBase <= 0){
                                                             attackBase = 0
                                                             attackNum = 0
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " was able to block attack!")
+                                                            session.session_data.battlelog.combat.push(target.staticData.name + " was able to block the attack!")
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " was able to block some of the damage!")
                                                         }
@@ -813,6 +869,7 @@ module.exports = {
                                                             attackNum = 0
                                                             notice = target.staticData.name + " blocked the attack"
                                                             target.records.timesBlocked++
+                                                            target.records.completeBlocks++
                                                         } else {
                                                             notice = target.staticData.name + " blocked some of the damage"
                                                             target.records.timesBlocked++
@@ -826,35 +883,39 @@ module.exports = {
                                                                 guard.counter_val
                                                             ))
                                                             
-                                                            session.session_data.battlelog.combat.push(notice + " and followed up with a counter attack!")
-            
-                                                            attacker.records.timesHit++
-                                                            attacker.liveData.stats.hp -= counterDamage;
-                                                            target.records.counterDamageDone += counterDamage
-                                                            session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
-                                                            if(attacker.liveData.stats.hp <= 0){
-                                                                attacker.staticData.lives -= 1
-                                                                if(attacker.staticData.lives <= 0){
-                                                                    attackNum = 0
-                                                                    attacker.liveData.stats.hp = 0
-                                                                    attacker.alive = false
-                                                                    attacker.attacker = -1
-                                                                    attacker.choosenAbility = -2
-                                                                    session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
-                                                                    attacker.staticData.lives = 3
-                                                                    if(attacker.staticData.cpu){
-                                                                        processMobRewards(attacker,session)
+                                                            if(counterDamage > 0){
+                                                                session.session_data.battlelog.combat.push(notice + " and followed up with a counter attack!")
+                
+                                                                attacker.records.timesHit++
+                                                                attacker.liveData.stats.hp -= counterDamage;
+                                                                attacker.records.enemyDamageTaken += counterDamage;
+                                                                target.records.counterDamageDone += counterDamage
+                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
+                                                                if(attacker.liveData.stats.hp <= 0){
+                                                                    attacker.staticData.lives -= 1
+                                                                    if(attacker.staticData.lives <= 0){
+                                                                        attackNum = 0
+                                                                        attacker.liveData.stats.hp = 0
+                                                                        attacker.alive = false
+                                                                        target.records.unitsDefeated++
+                                                                        attacker.attacker = -1
+                                                                        attacker.choosenAbility = -2
+                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
+                                                                        attacker.staticData.lives = 3
+                                                                        if(attacker.staticData.cpu){
+                                                                            processMobRewards(attacker,session)
+                                                                        }
+                                                                        triggerCombatEvent({
+                                                                            type:1,
+                                                                            data:attacker
+                                                                        },session)
+                                                                        if(attacker.staticData.rareVar){
+                                                                            target.records.raresDefeated++
+                                                                        }
+                                                                    } else {
+                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
+                                                                        attacker.liveData.stats.hp = attacker.staticData.stats.hp
                                                                     }
-                                                                    triggerCombatEvent({
-                                                                        type:1,
-                                                                        data:attacker
-                                                                    },session)
-                                                                    if(attacker.staticData.rareVar){
-                                                                        target.records.raresDefeated++
-                                                                    }
-                                                                } else {
-                                                                    session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                                    attacker.liveData.stats.hp = attacker.staticData.stats.hp
                                                                 }
                                                             }
                                                         } else {
@@ -864,12 +925,23 @@ module.exports = {
                                                 }
 
                                                 if(attacker.alive){
-                                                    let totalDamage = calculateAttackDamage(
-                                                        attacker.staticData.level,
-                                                        attacker.liveData.stats[action.ability.damage_type] * statChangeStages[attacker.liveData.statChanges[action.ability.damage_type]],
-                                                        target.liveData.stats[action.ability.damage_type == "atk" ? "def" : "spdef"] * statChangeStages[target.liveData.statChanges[action.ability.damage_type == "atk" ? "def" : "spdef"]],
-                                                        attackBase
-                                                    )
+                                                    let crit = Math.floor(Math.random() * 100) < action.ability.critical ? 2 : 1
+                                                    let totalDamage;
+                                                    if(crit && weaponPassives[0] > 0){
+                                                        totalDamage = calculateAttackDamage(
+                                                            attacker.staticData.level,
+                                                            attacker.liveData.stats[action.ability.damage_type] * statChangeStages[attacker.liveData.statChanges[action.ability.damage_type]],
+                                                            ((100 - (weaponPassives[0] * 5))/100) * (target.liveData.stats[action.ability.damage_type == "atk" ? "def" : "spdef"] * statChangeStages[target.liveData.statChanges[action.ability.damage_type == "atk" ? "def" : "spdef"]]),
+                                                            attackBase
+                                                        )
+                                                    } else {
+                                                        totalDamage = calculateAttackDamage(
+                                                            attacker.staticData.level,
+                                                            attacker.liveData.stats[action.ability.damage_type] * statChangeStages[attacker.liveData.statChanges[action.ability.damage_type]],
+                                                            target.liveData.stats[action.ability.damage_type == "atk" ? "def" : "spdef"] * statChangeStages[target.liveData.statChanges[action.ability.damage_type == "atk" ? "def" : "spdef"]],
+                                                            attackBase
+                                                        )
+                                                    }
 
                                                     let effectiveness = 1; 
                                                     let sameType = parseInt(attacker.staticData.faction) == parseInt(action.ability.faction) ? 1.25 : 1
@@ -888,17 +960,19 @@ module.exports = {
                                                         }
                                                     }
                                                     
-                                                    let crit = Math.floor(Math.random() * 100) < action.ability.critical ? 2 : 1
-                                                    if(crit == 2){
-                                                        session.session_data.battlelog.combat.push("A critical hit!")
-                                                    }
+                                                    
 
                                                     let finalDamage = Math.ceil(totalDamage * effectiveness * sameType * crit)
                                                     if(finalDamage > 0){
+                                                        if(crit == 2){
+                                                            attacker.records.criticalsLanded++
+                                                            session.session_data.battlelog.combat.push("A critical hit!")
+                                                        }
                                                         session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
                                                         target.liveData.stats.hp -= finalDamage;
                                                         target.records.timesHit++;
                                                         attacker.records.attackDamageDone += finalDamage
+                                                        target.records.enemyDamageTaken += finalDamage
                                                         triggerCombatEvent({
                                                             type:2,
                                                             data:target
@@ -910,6 +984,7 @@ module.exports = {
                                                             attackNum = 0
                                                             target.liveData.stats.hp = 0
                                                             target.alive = false
+                                                            attacker.records.unitsDefeated++
                                                             target.target = -1
                                                             target.choosenAbility = -2
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " was defeated!")
@@ -964,7 +1039,11 @@ module.exports = {
                                                 attackNum -= 1
                                             } else {
                                                 if(repeatPenal > 0){
-                                                    session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
+                                                    if((action.ability.accuracy - repeatPenal) <= 0){
+                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " has become too predictable so " + target.staticData.name + " was able to avoid their attack!")
+                                                    } else {
+                                                        session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
+                                                    }
                                                 } else {
                                                     session.session_data.battlelog.combat.push(attacker.staticData.name + " was unable to land their attack!")
                                                 }
@@ -986,6 +1065,7 @@ module.exports = {
                                     let repeatPenal = 1;
                                     if(defender.lastAction == actionCode){
                                         defender.repeats++
+                                        defender.records.timesAbilityRepeat++
                                         repeatPenal = Math.pow(2,defender.repeats)
                                     } else {
                                         defender.repeats = 0
@@ -1055,6 +1135,15 @@ module.exports = {
                                 }   
                                 for(t of targets){
                                     let target = session.session_data.fighters[t]
+                                    if(effect.value > 0){
+                                        if(user.team == target.team){
+                                            user.records.timesStatsRaised++
+                                        }
+                                    } else {
+                                        if(user.team != target.team){
+                                            user.records.timesStatsLowered++
+                                        }
+                                    }
                                     target.liveData.statChanges[effect.stat] += effect.value
                                     let msg;
                                     if(target.liveData.statChanges[effect.stat] > 4){
@@ -1085,6 +1174,9 @@ module.exports = {
             }
             triggerCombatEvent({
                 type:0
+            },session)
+            triggerCombatEvent({
+                type:3
             },session)
             session.session_data.turn++
             checkActiveCombatants(session)
@@ -1145,13 +1237,6 @@ module.exports = {
                     components:[row1]
                 }
 
-            case "combat":
-                return {
-                    content:" ",
-                    embeds:[embed],
-                    components:[row1]
-                }
-
             case "end":
                 return {
                     content:" ",
@@ -1161,6 +1246,278 @@ module.exports = {
         }
 
             
+    },
+    populateDungeonEvent(session,interaction,callback){
+        const embed = new MessageEmbed()
+        .setColor("#7289da")
+        .setTitle(session.session_data.player.name + "'s Dungeon Adventure - " + session.session_data.town.name + " (Level " + session.session_data.dungeonRank + ")")
+
+
+        if(session.session_data.eventResult.proll){
+            let result = session.session_data.eventResult;
+            let resultText = "Roll Requirement: " + result.eroll[0] + " (Max: " + result.eroll[1] + ")" +
+            "\nPlayer Roll: " + result.proll[0] + " (Max: " + result.proll[1] + ")"
+            if(result.proll[0] >= result.eroll[0]){
+                resultText += "\n\n" + session.session_data.player.name + " is able to progress through the dungeon"
+            } else {
+                resultText += "\n\n" + session.session_data.player.name + " was not able to progress through the dungeon"
+            }
+            resultText += "\n(Danger level is now " + session.session_data.dangerValue + ")"
+            embed.addField("Event Result",resultText)
+        } else if (session.session_data.eventResult.skip){
+            embed.addField("Event Result",session.session_data.eventResult.skip)
+        }
+
+        switch(session.session_data.event.type){
+            case "choice":
+
+                embed.addField(
+                    session.session_data.event.title,
+                    session.session_data.event.prompt
+                )
+
+                let selectionLabels = []
+
+                for(option of session.session_data.event.options){
+                    selectionLabels.push({
+                        label: option.name,
+                        description: option.description,
+                        value: JSON.stringify(option.value)
+                    })
+                }
+                
+                selectionLabels.push({
+                    label:"Leave Dungeon",
+                    description: "End your dungeon adventure",
+                    value: JSON.stringify({
+                        type:"end"
+                    })
+                })
+
+                if(!session.session_data.event.noSkip){
+                    selectionLabels.push({
+                        label:"Skip Encounter",
+                        description: "Raise your danger level and skip this event",
+                        value: JSON.stringify({
+                            type:"skip"
+                        })
+                    })
+                }
+
+                const choices = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('dungeonChoice_' + session.session_id)
+                        .setPlaceholder("What will you do?")
+                        .addOptions(selectionLabels),
+                );
+
+                interaction.update({
+                    content:" ",
+                    embeds:[embed],
+                    components:[choices]
+                })
+                break;
+                
+                break;
+            case "complete":
+
+                let rewardsText = ""
+
+                delete session.session_data.player.dungeon
+
+                let rankKey =
+                {
+                    "C-":8,
+                    "C":7,
+                    "C+":6,
+                    "B-":5,
+                    "B":4,
+                    "B+":4,
+                    "A-":2,
+                    "A":1,
+                    "A+":0
+                }
+                let ranks = [
+                    "A+",
+                    "A",
+                    "A-",
+                    "B+",
+                    "B",
+                    "B-",
+                    "C+",
+                    "C",
+                    "C-"
+                ]
+                
+                let now = new Date();
+                let speedRank,survivalRank,skillRank
+
+                let totalTime = (now.getTime() - session.session_data.dungeonStart)/1000
+                if(totalTime <= 90){
+                    speedRank = ranks[0]
+                } else {
+                    let i = 1
+                    while(totalTime > 90 + i * 30){
+                        i++
+                        if(i == 8){
+                            break;
+                        }
+                    }
+                    speedRank = ranks[i]
+                }
+
+                survivalRank = 3 * (session.session_data.rankStats.startLives - session.session_data.rankStats.currentLives)
+                survivalRank += 3 - Math.floor(3 * (session.session_data.rankStats.currentHP/session.session_data.rankStats.startHP))
+                survivalRank = ranks[survivalRank]
+                
+                if(session.session_data.rankStats.failedChecks == 0 && session.session_data.rankStats.skips == 0){
+                    skillRank = ranks[0]
+                } else {
+                    if(session.session_data.rankStats.failedChecks + session.session_data.rankStats.skips * 3 <= 8){
+                        skillRank = ranks[session.session_data.rankStats.failedChecks + session.session_data.rankStats.skips * 3]
+                    } else {
+                        skillRank = ranks[8]
+                    }
+                }
+
+                if(!session.session_data.player.dungeonClears){
+                    session.session_data.player.dungeonClears = {}
+                } 
+                if(!session.session_data.player.dungeonClears[session.session_data.dungeonRank]){
+                    session.session_data.player.dungeonClears[session.session_data.dungeonRank] = [1,speedRank,survivalRank,skillRank]
+                } else {
+                    session.session_data.player.dungeonClears[session.session_data.dungeonRank][0]++
+
+                    if(rankKey[speedRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][1]]){
+                        session.session_data.player.dungeonClears[session.session_data.dungeonRank][1] = speedRank
+                    }
+
+                    if(rankKey[survivalRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][1]]){
+                        session.session_data.player.dungeonClears[session.session_data.dungeonRank][2] = survivalRank
+                    }
+
+                    if(rankKey[skillRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][1]]){
+                        session.session_data.player.dungeonClears[session.session_data.dungeonRank][3] = skillRank
+                    }
+                }
+
+                let rankingText = ""
+                rankingText += "Clear Time (" + speedRank + "):\n" + msToTime(totalTime * 1000)
+                rankingText += "\n\nClear Survival (" + survivalRank + "):\nHealth: " + Math.floor((session.session_data.rankStats.currentHP/session.session_data.rankStats.startHP) * 100) + "%\nLives: " + session.session_data.rankStats.startLives + "/" + session.session_data.rankStats.currentLives
+                rankingText += "\n\nClear Skill (" + skillRank + "):\nFails: " + session.session_data.rankStats.failedChecks + "\nSkips: " + session.session_data.rankStats.skips
+                
+                embed.addField(
+                    "Dungeon Adventure Results!",
+                    rankingText
+                )
+
+
+                let newData = {
+                    ref:{
+                        type: "rngEquipment",
+                        rngEquipment: {
+                            scaling: false,
+                            value:1.25,
+                            conValue:0.25,
+                            lockStatTypes: true,
+                            baseVal: 30 * session.session_data.dungeonRank,
+                            types: ["weapon","gear"]
+                        }
+                    }
+                }
+
+                let player = session.session_data.player
+
+                let item = generateRNGEquipment(newData)
+                player = givePlayerItem(item,player)
+                rewardsText += player.name + " received equipment: " + item.name
+
+                let result = parseReward({
+                    type:"resource",
+                    resource:"abilitypoints",
+                    resourceName: "ability points",
+                    amount: session.session_data.dungeonRank * 5
+                }, player)
+                player = result[0]
+
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        rewardsText += "\n" + msg
+                    }
+                }
+
+                let expAmount = Math.floor((player.expCap *0.5) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                if(expAmount < 500){
+                    expAmount = 500
+                }
+
+                result = parseReward({
+                    type:"resource",
+                    resource:"exp",
+                    resourceName: "experience",
+                    amount: expAmount,
+                }, player)
+                player = result[0]
+
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        rewardsText += "\n" + msg
+                    }
+                }
+
+                let goldAmount = Math.ceil((10 * session.session_data.dungeonRank) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                result = parseReward({
+                    type:"resource",
+                    resource:"gold",
+                    resourceName: "gold",
+                    amount: goldAmount,
+                }, player)
+                player = result[0]
+
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        rewardsText += "\n" + msg
+                    }
+                }
+
+
+                embed.addField(
+                    "Dungeon Rewards!",
+                    rewardsText
+                )
+
+                let updates = [
+                    {
+                        id:session.user_ids[0],
+                        path:"",
+                        value:session.session_data.player
+                    }
+                ]
+
+                let townUpdates = []
+
+                if(session.session_data.town.level == session.session_data.dungeonRank){
+                    townUpdates.push({
+                        id:session.session_data.town.id,
+                        path:"dungeonClear",
+                        value:true
+                    })
+                }
+
+                interaction.update({
+                    content:" ",
+                    embeds:[embed],
+                    components:[]
+                })
+
+                callback({
+                    updatePlayer:updates,
+                    updateTown:townUpdates,
+                    removeSession:session
+                })
+                break;
+        }
     },
     populateCombatToQuestTransition(session){
         const row1 = new MessageActionRow()
@@ -1207,8 +1564,8 @@ module.exports = {
 
         let ability = session.session_data.ability
         let displayText = "```diff\n"
-        displayText += "Skillpoints to spend: " + session.session_data.skillpoints + "\n"
-        displayText += "Current Skillpoint cost: " + calculateAbilityCost(session.session_data.ability) + "\n\n"
+        displayText += "Abilitypoints to spend: " + session.session_data.abilitypoints + "\n"
+        displayText += "Current Abilitypoint cost: " + calculateAbilityCost(session.session_data.ability) + "\n\n"
         displayText += ability.name + ":\n\n"
         displayText += createAbilityDescription(ability)
         displayText += "\n\nCurrently Editing: " + session.session_data.editingAttribute
@@ -1319,7 +1676,7 @@ module.exports = {
                     break;
     
                 case "recoil":
-                    description = "This value changes the percentage of damage the user will take based on dmaage done"
+                    description = "This value changes the percentage of damage the user will take based on damage done"
                     break;
 
                 case "statChangeCount":
@@ -1381,7 +1738,7 @@ module.exports = {
                 .setCustomId('addAbility_' + session.session_id)
                 .setLabel('Add Ability')
                 .setStyle('PRIMARY')
-                .setDisabled(calculateAbilityCost(session.session_data.ability) > session.session_data.skillpoints && false),
+                .setDisabled(calculateAbilityCost(session.session_data.ability) > session.session_data.abilitypoints && false),
         
                 new MessageButton()
                 .setCustomId('cancel_' + session.session_id)
@@ -1705,16 +2062,27 @@ module.exports = {
         
         return [row1,row2]
     },
-    populateReturnFromCombat(session){
-        const row1 = new MessageActionRow()
-        .addComponents(
-                new MessageButton()
-                .setCustomId('exitCombat_' + session.session_data.options.returnSession)
-                .setLabel('Exit Combat Session')
-                .setStyle('PRIMARY')
-        )
-
-        return [row1]
+    populateReturnFromCombat(session,getRankingStats){
+        if(getRankingStats){
+            let row1 = new MessageActionRow()
+            .addComponents(
+                    new MessageButton()
+                    .setCustomId('exitCombat_' + session.session_data.options.returnSession + "_" + session.session_data.fighters[0].liveData.stats.hp + "|" + session.session_data.fighters[0].staticData.lives)
+                    .setLabel('Exit Combat Session')
+                    .setStyle('PRIMARY')
+            )
+            return [row1]
+        } else {
+            let row1 = new MessageActionRow()
+            .addComponents(
+                    new MessageButton()
+                    .setCustomId('exitCombat_' + session.session_data.options.returnSession)
+                    .setLabel('Exit Combat Session')
+                    .setStyle('PRIMARY')
+            )
+            return [row1]
+        }
+        
     },
     populateTownVisitWindow(session){
         const embed = new MessageEmbed()
@@ -1725,6 +2093,18 @@ module.exports = {
             
             case null:
                 embed.addField("Choose a Destination","Where in the town would you like to visit?")
+                break;
+
+            case "hall":
+                let hallMessage = "";
+                if(session.session_data.town.hallOwner.id == "hallNPC"){
+                    hallMessage += "```diff\nYou arrive at the town's battle hall where a large statue of a guardian stands infront of the entrance. As you approach, it's intimidating helemet veers it's gaze upon you and it's eyes come to life\n\n'If you wish to become the owner of this hall, you must first defeat me in combat' a voice echoes from the looming statue```"
+                    embed.addField("Battle Hall - King of the Hill:",hallMessage)
+                } else {
+                    hallMessage += "```diff\nYou arrive at the town's battle hall where the entrance is unblocked. As you walk in to the empty arena you notice a figure in the center. They turn to face you, waiting for you to engage them in combat```"
+                    hallMessage += "\n" + session.session_data.town.hallOwner.name.slice(9,session.session_data.town.hallOwner.name.length) + " has had ownership of this battle hall for " + msToTime(now.getTime() - session.session_data.town.hallStart)
+                    embed.addField("Battle Hall - King of the Hill:",hallMessage)
+                }
                 break;
 
             case "training":
@@ -1738,10 +2118,10 @@ module.exports = {
                         trainingMessage += "\n" + session.session_data.temp.resultMessage + "\n"
                     }
                     trainingMessage += "\nYour gold: " + session.session_data.player.gold
-                    embed.addField("Training Hall - Tutorial and Challenges:",trainingMessage)
+                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
                 } else {
                     let trainingMessage = "```diff\nA cheerful person greets you as you walk into to the training hall\n\n'Welcome traveler! Here you can prepare for battle with combat lessons or learn new/upgraded abilities from a combat master! What would you like to do today?'```\nNote: For tutorial lessons, your abilities and stats will be temporarily modified"
-                    embed.addField("Training Hall - Tutorial and Challenges:",trainingMessage)
+                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
                 }
                 break;
 
@@ -1822,33 +2202,52 @@ module.exports = {
                 break;
             
             case "jobs":
-                let jobs = [
-                    "Adventurer - Passively generate exp and reputation for towns of the servers you talk in",
-                    "Miner - Passively generate substantial exp and minerals for towns of the servers you talk in",
-                    "Lumberjack - Passively generate substantial exp and wood for towns of the servers you talk in",
-                    "Farmer - Passively generate substantial exp and food for towns of the servers you talk in"
-                ]
-                let nextBuild = ""
-                if(session.session_data.town.facilities[session.session_data.town.facilityQueue]){
-                    nextBuild = "\n\nNext Upgrade:\n Level up - " + facilityData[session.session_data.town.facilityQueue].name;
-                } else {
-                    nextBuild = "\n\nNext Facility To Build:\n" + facilityData[session.session_data.town.facilityQueue].name + ": " + facilityData[session.session_data.town.facilityQueue].description
+                let town = session.session_data.town
+                let jobs = {
+                    exp:"Adventurer - Passively generate exp and some resources for towns of the servers you talk in",
+                    0:"Miner - Passively generate minerals for towns of the servers you talk in",
+                    1:"Lumberjack - Passively generate wood for towns of the servers you talk in",
+                    2:"Farmer - Passively generate food for towns of the servers you talk in"
                 }
-                embed.addField("Meeting Hall - Town Resources:",
-                    "🪵(Wood): " + session.session_data.town.resources.wood[0] + "/" + session.session_data.town.resources.wood[1] +
-                    "\n🥩(Food): " + session.session_data.town.resources.food[0] + "/" + session.session_data.town.resources.food[1] +
-                    "\n💎(Minerals): " + session.session_data.town.resources.minerals[0] + "/" + session.session_data.town.resources.minerals[1]+
+                let foodCheck = town.resources.food[0] >= town.resources.food[1]
+                let woodCheck = town.resources.wood[0] >= town.resources.wood[1]   
+                let mineralsCheck = town.resources.minerals[0] >= town.resources.minerals[1]
+                let resourceCheck = foodCheck && woodCheck && mineralsCheck
+
+                let nextBuild = "\n\n**Progress To Town Level Up (Level " + (town.level + 1) + ")**"
+                nextBuild += "\nCurrent Level Dungeon Cleared (Level " + town.level + "): " + (town.dungeonCleared ? "✅ Complete" : "❌ Incomplete")
+                nextBuild += "\nResources Maxed: " + (resourceCheck ? "✅ Complete" : "❌ Incomplete") 
+                nextBuild += "\nPoint Threshold Reached (" + town.points + "/" + town.level * 10 + "): " + (town.points >= town.level * 10 ? "✅ Complete" : "❌ Incomplete") 
+
+                if(town.facilities && town.facilities[town.facilityQueue]){
+                    nextBuild += "\n\nNext Upgrade:\n Level up - " + facilityData[town.facilityQueue].name;
+                } else {
+                    nextBuild += "\n\nNext Facility To Build:\n" + facilityData[town.facilityQueue].name + ": " + facilityData[town.facilityQueue].description
+                }
+                embed.addField("Meeting Hall - Town Status:",
+                    "🪵(Wood): " + town.resources.wood[0] + "/" + town.resources.wood[1] +
+                    "\n🥩(Food): " + town.resources.food[0] + "/" + town.resources.food[1] +
+                    "\n💎(Minerals): " + town.resources.minerals[0] + "/" + town.resources.minerals[1]+
+                    "\n\nTown Points: " + town.points +
                     "\n\nYour current job: " + jobs[session.session_data.player.job] + nextBuild
                 )
                 break;
             case "defense":
+                let now = new Date();
                 let raidData = session.session_data.town.raid
                 let missions = raidPresets.missions
                 let rankIndexer = ["Simple","Normal","Challenging"]
+                let pointIndexer = [1,2,3]
                 let report = "Current Raid Leader: " + raidData.leader.name + "\n\n"
+                if(raidData.bossDefeats){
+                    report += "Raiders defeated - New raid in " + msToTime(session.session_data.town.lastRaid - now.getTime())
+                } else {
+                    report += "**Complete the Retaliation Mission in " + msToTime(session.session_data.town.lastRaid - now.getTime()) + " or this town will lose " + session.session_data.town.level * 7 + " town points!**"
+                }
+                report +="\n\n"
                 let missionsComplete = true;
                 for(var i = 0;i < 3; i++){
-                    report += "**" + rankIndexer[i] + " Missions:**\n"
+                    report += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
                     for(mission of raidData.missions[i]){
                         report += missions[i][mission.type]
                         if(mission.completers){
@@ -1857,9 +2256,9 @@ module.exports = {
                                 count += mission.completers[player].times
                             }
                             if(count > 0){
-                                report += " - ✅Completed " + count + " times"
+                                report += " - ✅ Completed " + count + " times"
                             } else {
-                                report += " - ❌Incomplete"
+                                report += " - ❌ Incomplete"
                                 missionsComplete = false
                             }
                             if(mission.completers[session.session_data.player.id]){
@@ -1869,7 +2268,7 @@ module.exports = {
                                 report += "\n"
                             }
                         } else {
-                            report += " - ❌Incomplete"
+                            report += " - ❌ Incomplete"
                             missionsComplete = false
                         }
                         report += "\n"
@@ -1877,22 +2276,22 @@ module.exports = {
                     report += "\n"
                 }
                 if(missionsComplete){
-                    report += "**Retaliation Mission Avaliable - Confront Raid Leader**"
+                    report += "**Retaliation Mission Avaliable (5 town points) - Confront Raid Leader**"
                     if(raidData.bossDefeats){
                         let count = 0
                         for(player in raidData.bossDefeats){
                             count += raidData.bossDefeats[player].times
                         }
                         if(count > 0){
-                            report += " - ✅Completed " + count + " times"
+                            report += " - ✅ Completed " + count + " times"
                         } else {
-                            report += " - ❌Incomplete"
+                            report += " - ❌ Incomplete"
                         }   
                     } else {
-                        report += " - ❌Incomplete"
+                        report += " - ❌ Incomplete"
                     }
                 } else {
-                    report += "**Retaliation Mission Unavaliable** - *All other missions must be completed at least once to unlock*"
+                    report += "**Retaliation Mission Unavaliable (5 town points)** - *All other missions must be completed at least once to unlock*"
                 }
                 embed.addField("Militia Headquarters - Raid Defense Effort:",report)
                 break;
@@ -1911,12 +2310,14 @@ module.exports = {
             })
         }
 
-        for(location of session.session_data.town.facilities){
-            selectionLabels.push({
-                label: location.name,
-                description: location.description,
-                value: location.value,
-            })
+        if(session.session_data.town.facilities){
+            for(location of session.session_data.town.facilities){
+                selectionLabels.push({
+                    label: location.name,
+                    description: location.description,
+                    value: location.value,
+                })
+            }
         }
 
         selectionLabels.push({
@@ -1936,6 +2337,29 @@ module.exports = {
         switch(session.session_data.location){
             case null:
                 return [travel]
+
+            case "hall":;
+                let hallChoice
+                if(session.session_data.town.hallOwner.id == "hallNPC"){
+                    hallChoice = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                        .setCustomId('hallAttempt_' + session.session_id)
+                        .setLabel("Fight to Claim the Battle Hall")
+                        .setStyle('PRIMARY')
+                    )
+                    return [hallChoice,travel]
+                } else {
+                    hallChoice = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                        .setCustomId('hallAttempt_' + session.session_id)
+                        .setLabel("Claim Battle Hall From " + session.session_data.town.hallOwner.name)
+                        .setStyle('PRIMARY') 
+                    )
+                    return [hallChoice,travel]
+                }
+                break;
 
             case "training":
                 if(session.session_data.temp && session.session_data.temp.viewingAbilities){
@@ -2060,24 +2484,24 @@ module.exports = {
             case "jobs":
                 let jobLabels = [
                     {
-                        label: "Adeventurer",
-                        description: "Passively generate exp and reputation for towns of the servers you talk in",
-                        value: "0",
+                        label: "Adventurer",
+                        description: "Passively generate exp as you use discord",
+                        value: "exp",
                     },
                     {
                         label: "Miner",
-                        description: "Passively generate substantial exp and minerals for towns of the servers you talk in",
-                        value: "1",
+                        description: "Passively generate minerals for towns of the servers you talk in",
+                        value: "0",
                     },
                     {
                         label: "Lumberjack",
-                        description: "Passively generate substantial exp and wood for towns of the servers you talk in",
-                        value: "2",
+                        description: "Passively generate wood for towns of the servers you talk in",
+                        value: "1",
                     },
                     {
                         label: "Farmer",
-                        description: "Passively generate substantial exp and food for towns of the servers you talk in",
-                        value: "3",
+                        description: "Passively generate food for towns of the servers you talk in",
+                        value: "2",
                     }
                 ]
 
@@ -2328,5 +2752,90 @@ module.exports = {
             }
             return [embed]
         }
+    },
+    populateConformationWindow(session){
+        const embed = new MessageEmbed()
+        let message;
+        switch(session.type){
+            case "startExpedition":
+                embed.setColor("#7289da")
+                embed.setTitle(session.session_data.player.name + "'s Expedition - Town of " + session.session_data.town.name)
+                message = "You are preparing to embark on an expedition from the town of " + session.session_data.town.name
+                + "\n\n- You cannot use commands while on an expedition"
+                + "\n- You will receive direct messages about the expedition"
+                + "\n- Even when not active in Discord, events will still occur"
+                + "\n- Nothing negative can happen to you while on an expedition"
+                + "\n- To end an expedition, do any command in the server where you started it"
+                + "\n\nAre you sure you would like to set out on an expedition?"
+                embed.addField("Expedition Conformation",message)
+                return [embed]
+            
+            case "startDungeon":
+                embed.setColor("#7289da")
+                embed.setTitle(session.session_data.player.name + "'s Dungeon Adventure - Town of " + session.session_data.town.name)
+                message = "You are preparing to embark on a dungeon adventure in the town of " + session.session_data.town.name
+                + "\n\n- Dungeons consist of multiple combat instances and stat check scenarios"
+                + "\n- You will not auto heal between combat instances"
+                + "\n- Running out of lives will end your dungeon adventure"
+                + "\n- You may end your adventure during any stat check scenario"
+                + "\n- Passive benefits from messaging are disabled while on a dungeon adventure"
+                + "\n\nAre you sure you would like to set out on a dungeon adventure?"
+                embed.addField("Dungeon Conformation",message)
+                return [embed]
+        }
+    },
+    populateConformationControls(session){
+        let actions = new MessageActionRow()
+        switch(session.type){
+            case "startExpedition":
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('triggerExpedition_' + session.session_id + "_0")
+                    .setLabel('Start Expedition')
+                    .setStyle('SUCCESS')
+                )
+        
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('triggerExpedition_' + session.session_id + "_1")
+                    .setLabel('Cancel Expedition')
+                    .setStyle('DANGER')
+                )
+                return [actions]
+            
+            case "endExpedition":
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('endExpedition_X_0')
+                    .setLabel('Continue Expedition')
+                    .setStyle('SUCCESS')
+                )
+        
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('endExpedition_X_1')
+                    .setLabel('End Expedition')
+                    .setStyle('DANGER')
+                )
+                return [actions]
+
+            case "startDungeon":
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('triggerDungeon_' + session.session_id + "_0")
+                    .setLabel('Start Dungeon Adventure')
+                    .setStyle('SUCCESS')
+                )
+        
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('triggerDungeon_' + session.session_id + "_1")
+                    .setLabel('Cancel Dungeon Adventure')
+                    .setStyle('DANGER')
+                )
+                return [actions]
+            
+        }
+        
     }
 }

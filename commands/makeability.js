@@ -26,7 +26,7 @@ module.exports = {
                     abilities:playerData.abilities,
                     ability:data.templates.attack,
                     faction:playerData.faction,
-                    skillpoints:playerData.skillpoints,
+                    abilitypoints:playerData.abilitypoints,
                     level:playerData.level,
                     permissions:playerData.abilityPermissions,
                     editingAttribute:"action_type"

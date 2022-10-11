@@ -15,8 +15,8 @@ module.exports = {
         let updates = [
             {
                 id:session.user_ids[0],
-                path:"skillpoints",
-                value:session.session_data.skillpoints
+                path:"statpoints",
+                value:session.session_data.statpoints
             },
             {
                 id:session.user_ids[0],

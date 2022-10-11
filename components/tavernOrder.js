@@ -42,8 +42,6 @@ module.exports = {
                 session.session_data.player.gold -= parseInt(interaction.values[0].split("_")[2])
             }
 
-            console.log(session.session_data.player)
-
             interaction.update({
                 content: " ",
                 embeds: populateTownVisitWindow(session),

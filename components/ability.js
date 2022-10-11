@@ -5,8 +5,9 @@
 const fight = require("../commands/fight.js")
 const { populateCombatWindow, processCombatSession, populateCombatToQuestTransition, populateCombatControls, populateReturnFromCombat} = require("../sessionTools.js")
 const { getTownDBData } = require("../firebaseTools.js")
-const { raidPresets } = require("../data.json")
+const { raidPresets, challengeDict } = require("../data.json")
 const { data } = require("../commands/fight.js")
+const { parseReward } = require("../tools.js")
 module.exports = {
     config:{
         getSession:true
@@ -87,213 +88,312 @@ module.exports = {
                         for(var i = 0; i < session.session_data.fighters.length; i++){
                             let fighter = session.session_data.fighters[i]
                             if(session.user_ids.includes(fighter.staticData.id)){
-                                if(session.server_id == fighter.staticData.raidGuard && fighter.staticData.raidGuard.includes(session.server_id.toString())){
-                                    if(town){
-                                        if(town.raid){
-                                            let missions = town.raid.missions
-                                            for(x in missions){
-                                                let tier = missions[x]
-                                                for(m of tier){
-                                                    if(!m.completers){
-                                                        m.completers = {}
-                                                    }
-                                                    switch(x){
-                                                        case "0":
-                                                            switch(m.type){
-                                                                case 0:
-                                                                    if(fighter.records.attacks > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.attacks,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
+                                console.log(fighter.records)
+                                // Update actual player data here
 
-                                                                case 1:
-                                                                    if(fighter.records.spattacks > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.spattacks,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-                                                                    
-                                                                case 2:
-                                                                    if(fighter.records.guards > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.guards,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-
-                                                                case 3:
-                                                                    if(fighter.records.spguards > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.spguards,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-
-                                                                case 4:
-                                                                    if(fighter.records.statChanges > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.statChanges,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-                                                            }
-                                                            break;
-
-                                                        case "1":
-                                                            switch(m.type){
-                                                                case 0:
-                                                                    if(fighter.records.weaponsLooted > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.weaponsLooted,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.weaponsLooted
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-
-                                                                case 1:
-                                                                    if(fighter.records.gearLooted > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.gearLooted,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.gearLooted
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-                                                                    
-                                                                case 2:
-                                                                    if(fighter.records.raresDefeated > 0){
-                                                                        if(!m.completers[fighter.staticData.id]){
-                                                                            m.completers[fighter.staticData.id] = {
-                                                                                times:0,
-                                                                                progression:[fighter.records.raresDefeated,raidPresets.missionGoalValues[x][m.type]]
-                                                                            }
-                                                                        } else {
-                                                                            m.completers[fighter.staticData.id].progression[0] += fighter.records.raresDefeated
-                                                                        }
-                                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                            m.completers[fighter.staticData.id].times++
-                                                                            fighter.staticData.gold += raidPresets.goldRewards[x]
-                                                                        }
-                                                                    }
-                                                                    break;
-                                                            }
-                                                            break;
-                                                    }
+                                if(town){
+                                    if(town.raid){
+                                        let missions = town.raid.missions
+                                        for(x in missions){
+                                            let tier = missions[x]
+                                            for(m of tier){
+                                                if(!m.completers){
+                                                    m.completers = {}
                                                 }
-                                            }
-                                            if(session.session_data.options.raidMission){
-                                                switch(session.session_data.options.raidMission.missionLevel){
-                                                    case 0:
-                                                        if(session.user_ids.includes(session.session_data.winners[0])){
-                                                            let m = town.raid.missions[2][0]
-                                                            if(!m.completers[fighter.staticData.id]){
-                                                                m.completers[fighter.staticData.id] = {
-                                                                    times:0,
-                                                                    progression:[1,raidPresets.missionGoalValues[2][session.session_data.options.raidMission.type]]
+                                                switch(x){
+                                                    case "0":
+                                                        switch(m.type){
+                                                            case 0:
+                                                                if(fighter.records.attacks > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.attacks,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points++
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
                                                                 }
-                                                            } else {
-                                                                m.completers[fighter.staticData.id].progression[0] += 1
-                                                            }
-                                                            while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
-                                                                m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
-                                                                m.completers[fighter.staticData.id].times++
-                                                                fighter.staticData.gold += raidPresets.goldRewards[2]
-                                                            }
+                                                                break;
+
+                                                            case 1:
+                                                                if(fighter.records.spattacks > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.spattacks,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.spattacks
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points++
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
+                                                                
+                                                            case 2:
+                                                                if(fighter.records.guards > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.guards,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.guards
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points++
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
+
+                                                            case 3:
+                                                                if(fighter.records.spguards > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.spguards,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.spguards
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points++
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
+
+                                                            case 4:
+                                                                if(fighter.records.statChanges > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.statChanges,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.statChanges
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points++
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
                                                         }
                                                         break;
 
-                                                    case 1:
-                                                        if(session.user_ids.includes(session.session_data.winners[0])){
-                                                            let m = town.raid.bossDefeats
-                                                            if(!m[fighter.staticData.id]){
-                                                                m[fighter.staticData.id] = {
-                                                                    times:0
+                                                    case "1":
+                                                        switch(m.type){
+                                                            case 0:
+                                                                if(fighter.records.weaponsLooted > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.weaponsLooted,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.weaponsLooted
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points += 2
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
                                                                 }
-                                                            } else {
-                                                                m[fighter.staticData.id].times += 1
-                                                            }
-                                                            fighter.staticData.gold += raidPresets.goldRewards[3]
+                                                                break;
+
+                                                            case 1:
+                                                                if(fighter.records.gearLooted > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.gearLooted,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.gearLooted
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points += 2
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
+                                                                
+                                                            case 2:
+                                                                if(fighter.records.raresDefeated > 0){
+                                                                    if(!m.completers[fighter.staticData.id]){
+                                                                        m.completers[fighter.staticData.id] = {
+                                                                            times:0,
+                                                                            progression:[fighter.records.raresDefeated,raidPresets.missionGoalValues[x][m.type]]
+                                                                        }
+                                                                    } else {
+                                                                        m.completers[fighter.staticData.id].progression[0] += fighter.records.raresDefeated
+                                                                    }
+                                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                        m.completers[fighter.staticData.id].times++
+                                                                        town.points += 2
+                                                                        fighter.staticData.gold += raidPresets.goldRewards[x]
+                                                                    }
+                                                                }
+                                                                break;
                                                         }
                                                         break;
                                                 }
-                                                
                                             }
-                                            break;
+                                        }
+                                        if(session.session_data.options.raidMission){
+                                            switch(session.session_data.options.raidMission.missionLevel){
+                                                case 0:
+                                                    if(session.user_ids.includes(session.session_data.winners[0])){
+                                                        let m = town.raid.missions[2][0]
+                                                        if(!m.completers){
+                                                            m.completers = {}
+                                                        }
+                                                        if(!m.completers[fighter.staticData.id]){
+                                                            m.completers[fighter.staticData.id] = {
+                                                                times:0,
+                                                                progression:[1,raidPresets.missionGoalValues[2][session.session_data.options.raidMission.type]]
+                                                            }
+                                                        } else {
+                                                            m.completers[fighter.staticData.id].progression[0] += 1
+                                                        }
+                                                        while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                            m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                            m.completers[fighter.staticData.id].times++
+                                                            town.points += 3
+                                                            fighter.staticData.gold += raidPresets.goldRewards[2]
+                                                        }
+                                                    }
+                                                    break;
+
+                                                case 1:
+                                                    if(session.user_ids.includes(session.session_data.winners[0])){
+                                                        let m = town.raid.bossDefeats
+                                                        if(!m){
+                                                            m = {}
+                                                        }
+                                                        if(!m[fighter.staticData.id]){
+                                                            m[fighter.staticData.id] = {
+                                                                times:1
+                                                            }
+                                                        } else {
+                                                            m[fighter.staticData.id].times += 1
+                                                        }
+                                                        town.points += 5
+                                                        fighter.staticData.gold += raidPresets.goldRewards[3]
+                                                    }
+                                                    break;
+                                            }
+                                            
+                                        }
+                                        break;
+                                    }
+                                }  
+                                
+                                let challengesCompleted = 0;
+                                let totalGoldReward = 0;
+                                if(fighter.staticData.challenges){
+                                    for(var i = 0; i < fighter.staticData.challenges.length;i++){
+                                        let c = fighter.staticData.challenges[i]
+                                        let progressVal = 0;
+                                        switch(c.type){
+                                            case 0:
+                                                progressVal = fighter.records.unitsDefeated
+                                                break;
+
+                                            case 1:
+                                                progressVal = fighter.records.enemyDamageTaken
+                                                break;
+
+                                            case 2:
+                                                progressVal = fighter.records.baseDamageBlocked
+                                                break;
+
+                                            case 3:
+                                                progressVal = fighter.records.attackDamageDone
+                                                break;
+
+                                            case 4:
+                                                progressVal = fighter.records.timesFirstAttack
+                                                break;
+
+                                            case 5:
+                                                progressVal = fighter.records.criticalsLanded
+                                                break;
+
+                                            case 6:
+                                                progressVal = fighter.records.counterDamageDone
+                                                break;
+
+                                            case 7:
+                                                progressVal = fighter.records.completeBlocks
+                                                break;
+
+                                            case 8:
+                                                progressVal = fighter.records.timesStatsRaised
+                                                break;
+
+                                            case 9:
+                                                progressVal = fighter.records.timesStatsLowered
+                                                break;
+
+                                            case 10:
+                                                progressVal = fighter.records.timesAbilityRepeat
+                                                break;
+                                        }
+
+                                        if(progressVal > 0){
+                                            c.progress += progressVal
+                                            if(c.goal <= c.progress){
+                                                challengesCompleted++
+                                                totalGoldReward += c.rank * 5   
+                                                session.session_data.battlelog.rewards.push(challengeDict[c.type].name + " - Rank " + c.rank + ": Complete!")
+                                                fighter.staticData.challenges.splice(i)
+                                                i--
+                                            } else {
+                                                session.session_data.battlelog.alerts.push("Challenge Progress: " + challengeDict[c.type].name + ": " + c.progress + "/" + c.goal)
+                                            }
+                                        }
+                                    }
+
+                                    if(totalGoldReward > 0){ 
+                                        let result = parseReward({
+                                            type:"resource",
+                                            resource:"gold",
+                                            resourceName: "gold",
+                                            amount: totalGoldReward * challengesCompleted
+                                        }, fighter.staticData)
+                                        fighter.staticData = result[0]
+                                        if(result[1].length > 0){
+                                            for(msg of result[1]){
+                                                session.session_data.battlelog.rewards.push(msg)
+                                            }
                                         }
                                     }
                                 }
-                                
+
                                 updates.push({
                                     id:fighter.staticData.id,
                                     path:"",
@@ -301,18 +401,50 @@ module.exports = {
                                 })
                             }
                         }
+                        let now = new Date()
                         let townUpdates = []
+
+                        if(session.session_data.options.combatRewards){
+                            let rewards = session.session_data.options.combatRewards
+                            if(rewards.overwriteHallOwner){
+                                if(session.user_ids.includes(session.session_data.winners[0])){
+                                    let newOwner = rewards.overwriteHallOwner
+                                    newOwner.id = "playerClone"
+                                    newOwner.name = "Shadow of " + newOwner.name
+                                    townUpdates.push({
+                                        id:session.server_id,
+                                        path:"hallOwner",
+                                        value:newOwner
+                                    })
+                                    
+                                    townUpdates.push({
+                                        id:session.server_id,
+                                        path:"hallStart",
+                                        value:now.getTime()
+                                    })  
+                                }
+                            }    
+                        }
+                        
                         if(town.raid){
                             townUpdates.push({
                                 id:session.server_id,
                                 path:"raid",
                                 value:town.raid
                             })
+
+                            townUpdates.push({
+                                id:session.server_id,
+                                path:"points",
+                                value:town.points
+                            })
                         }
+
                         interaction.update({
                             embeds:populateCombatWindow(session),
                             components:[]
                         })
+
                         callback({
                             removeSession:session,
                             updatePlayer:updates,
@@ -324,7 +456,7 @@ module.exports = {
                 if(session.session_data.options.returnSession){
                     interaction.update({
                         embeds:populateCombatWindow(session),
-                        components:populateReturnFromCombat(session)
+                        components:populateReturnFromCombat(session,session.session_data.options.getRankingStats)
                     })
 
                     callback({

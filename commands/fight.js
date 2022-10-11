@@ -135,23 +135,25 @@ module.exports = {
                         race:"0",
                         combatStyle:"0",
                         exp:0,
-                        skillpoints:0,
+                        abilitypoints:0,
+                        statpoints:0,
                         lives:1,
                         abilities:[],
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":9 + (-4 + Math.random() * 7),
-                            "atk":4 + (-2 + Math.random() * 5),
-                            "def":4 + (-2 + Math.random() * 5),
-                            "spatk":4 + (-2 + Math.random() * 5),
-                            "spdef":4 + (-2 + Math.random() * 5),
-                            "spd":4 + (-2 + Math.random() * 5)
+                            "hp":10 + (-3 + Math.random() * 5),
+                            "atk":5 + (-2 + Math.random() * 3),
+                            "def":5 + (-2 + Math.random() * 3),
+                            "spatk":5 + (-2 + Math.random() * 3),
+                            "spdef":5 + (-2 + Math.random() * 3),
+                            "spd":5 + (-2 + Math.random() * 3)
                         }
                     }
                     let statPoints = ((playerData.level - 1) * 6) * statLevel
                     enemy = simulateCPUSPAssign(enemy,statPoints,mob)
                     enemy = simulateCPUAbilityAssign(enemy,mob.innateAbilities,allowance)
+
                     
 
                     if(mob.droptable){
@@ -159,7 +161,7 @@ module.exports = {
                     }
                     enemies[e] = enemy
                 }
-
+                
                 fighters = [playerData]
                 for(var i = 0; i < enemies.length; i++){
                     fighters.push(enemies[i])

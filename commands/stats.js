@@ -19,7 +19,7 @@ module.exports = {
             user_ids:[playerData.id],
             session_data:{
                 faction:playerData.faction,
-                skillpoints:playerData.skillpoints,
+                statpoints:playerData.statpoints,
                 level:playerData.level,
                 stats:clone(playerData.stats),
                 prevStats:playerData.stats,

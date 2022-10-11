@@ -123,13 +123,1303 @@
       "value": "5"
     }
   ],
-  "statChangeStages":[
+  "statChangeStages": [
     0.25,
     0.5,
     1,
     2,
     4
   ],
+  "dungeonEvents": {
+    "combat": [
+      {
+        "mobs": [
+          [
+            {
+              "name": "Dungeon Dweller",
+              "id": "dweller",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 1,
+              "atk": 1,
+              "def": 1,
+              "spatk": 1,
+              "spdef": 1,
+              "spd": 1
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Reckless Goblin",
+              "id": "goblin1",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.8,
+              "atk": 0.8,
+              "def": 0.8,
+              "spatk": 0.8,
+              "spdef": 0.8,
+              "spd": 0.5
+            }
+          ],
+          [
+            {
+              "name": "Reckless Goblin",
+              "id": "goblin2",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.8,
+              "atk": 0.8,
+              "def": 0.8,
+              "spatk": 0.8,
+              "spdef": 0.8,
+              "spd": 0.8
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Crypt Summoner",
+              "id": "summoner",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 0.6,
+              "def": 0.6,
+              "spatk": 0.6,
+              "spdef": 0.6,
+              "spd": 0.6
+            }
+          ],
+          [
+            {
+              "name": "Summoned Wraith",
+              "id": "summoned",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 0.8,
+              "def": 0.6,
+              "spatk": 0.8,
+              "spdef": 0.6,
+              "spd": 0.6
+            }
+          ]
+        ],
+        "events": [
+          {
+            "type": 3,
+            "data": {
+              "count": 2
+            },
+            "result": "spawnWraith"
+          }
+        ],
+        "triggers": {
+          "spawnWraith": {
+            "actionType": 0,
+            "data": {
+              "units": [
+                {
+                  "chance": 100,
+                  "obj": {
+                    "unit": {
+                      "name": "Summoned Wraith",
+                      "id": "summoned",
+                      "cpu": true,
+                      "faction": "-1",
+                      "lives": 1,
+                      "abilities": [],
+                      "level": 0,
+                      "stats": {
+                        "hp": 20,
+                        "atk": 10,
+                        "def": 10,
+                        "spatk": 10,
+                        "spdef": 10,
+                        "spd": 10
+                      }
+                    },
+                    "alliance": 1,
+                    "allowance": 3,
+                    "scaling": "dungeon",
+                    "scalar":{
+                      "hp": 0.6,
+                      "atk": 0.8,
+                      "def": 0.6,
+                      "spatk": 0.8,
+                      "spdef": 0.6,
+                      "spd": 0.6
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Pesky Spirit",
+              "id": "spirit1",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 0.6,
+              "def": 0.6,
+              "spatk": 0.6,
+              "spdef": 0.6,
+              "spd": 0.6
+            }
+          ],
+          [
+            {
+              "name": "Pesky Spirit",
+              "id": "spirit2",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 0.6,
+              "def": 0.6,
+              "spatk": 0.6,
+              "spdef": 0.6,
+              "spd": 0.6
+            }
+          ],
+          [
+            {
+              "name": "Pesky Spirit",
+              "id": "spirit3",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 0.6,
+              "def": 0.6,
+              "spatk": 0.6,
+              "spdef": 0.6,
+              "spd": 0.6
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Dungeon Ravenger",
+              "id": "ravenger",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.6,
+              "atk": 1.2,
+              "def": 0.6,
+              "spatk": 1.2,
+              "spdef": 0.6,
+              "spd": 1
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Dungeon Golem",
+              "id": "golem",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.5,
+              "atk": 0.6,
+              "def": 1.2,
+              "spatk": 0.6,
+              "spdef": 1.2,
+              "spd": 0.6
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Crypt Mage",
+              "id": "mage",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 1,
+              "atk": 0.6,
+              "def": 0.6,
+              "spatk": 1.4,
+              "spdef": 0.6,
+              "spd": 0.8
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Crypt Rouge",
+              "id": "rouge",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 1,
+              "atk": 1.4,
+              "def": 0.6,
+              "spatk": 0.6,
+              "spdef": 0.6,
+              "spd": 1
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Wandering Ogre",
+              "id": "ogre",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 1.4,
+              "atk": 0.8,
+              "def": 0.8,
+              "spatk": 0.8,
+              "spdef": 0.8,
+              "spd": 0.8
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Undead Knight",
+              "id": "knight",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.5,
+              "atk": 0.8,
+              "def": 1.4,
+              "spatk": 0.6,
+              "spdef": 1.2,
+              "spd": 0.8
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Crypt Sentry",
+              "id": "sentry",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.8
+            },
+            {
+              "hp": 0.5,
+              "atk": 0.6,
+              "def": 1.2,
+              "spatk": 0.8,
+              "spdef": 1.4,
+              "spd": 0.8
+            }
+          ]
+        ],
+        "events": [],
+        "triggers": {}
+      },
+      {
+        "mobs": [
+          [
+            {
+              "name": "Crypt Dragon",
+              "id": "dragon",
+              "cpu": true,
+              "faction": "-1",
+              "lives": 1,
+              "abilities": [],
+              "level": 0,
+              "stats": {
+                "hp": 20,
+                "atk": 10,
+                "def": 10,
+                "spatk": 10,
+                "spdef": 10,
+                "spd": 10
+              }
+            },
+            [],
+            3,
+            {
+              "reuse": 0.4
+            },
+            {
+              "hp": 1.4,
+              "atk": 1.2,
+              "def": 1.4,
+              "spatk": 1.2,
+              "spdef": 1.4,
+              "spd": 1.2
+            }
+          ]
+        ],
+        "events": [
+          {
+            "type": 0,
+            "data": {
+              "count": 5
+            },
+            "result": "win_0"
+          }
+        ],
+        "triggers": {}
+      }
+    ],
+    "choice": [
+      {
+        "type": "choice",
+        "title": "Cluttered Cavern",
+        "prompt": "You enter a cavern-like hallway with large rock formations blocking the path to the other side",
+        "options": [
+          {
+            "name": "Break through the obstructing rocks",
+            "description": "Use your strength to break through the rock formations and clear a path",
+            "value": "atk|2"
+          },
+          {
+            "name": "Swiftly navigate to the exit",
+            "description": "Use your agility to make your way through the rocks towards the end of the hall",
+            "value": "spd|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Rune Door",
+        "prompt": "You find a door with a magical aura around it that seems to originating from a rune in the center",
+        "options": [
+          {
+            "name": "Negate the power of the rune",
+            "description": "Use your knowledge of supernatural forces to negate the rune's power",
+            "value": "spdef|2"
+          },
+          {
+            "name": "Break through the door",
+            "description": "Use your strength to attempt to break down the door",
+            "value": "atk|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Foggy Cavern",
+        "prompt": "You find yourself in a ominously dark room",
+        "options": [
+          {
+            "name": "Dispel the darkness",
+            "description": "Use your supernatural abilities to eradicate the source of the darkness",
+            "value": "spatk|2"
+          },
+          {
+            "name": "Navigate with caution",
+            "description": "Use your supernatural knowledge to pass through the darkness",
+            "value": "spdef|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Piston Door",
+        "prompt": "A mechanical piston door blocks your path. It's seems to be running on some form of energy, but if the force of the pistons was resisted the entire mechanism may break.",
+        "options": [
+          {
+            "name": "Resist piston force",
+            "description": "Use your resilience to stop the force of the piston, causing the door to malfunction",
+            "value": "def|2"
+          },
+          {
+            "name": "Attack the power source",
+            "description": "Use a supernatural attack to damage the power source of the pistons",
+            "value": "spatk|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Steep Climbing Wall",
+        "prompt": "You come across a steep wall. It will be tough to climb to the top, but a quick burst of speed may allow you to scale it",
+        "options": [
+          {
+            "name": "Sprint to the top",
+            "description": "Use your agility to scale the wall quickly",
+            "value": "spd|2"
+          },
+          {
+            "name": "Climb upwards",
+            "description": "Use your resilience to climb to the top of the wall",
+            "value": "def|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Bomb Trap",
+        "prompt": "You enter a small room. A section of the ceiling slides open and some kind of pulsating explosive falls down to the floor. You don't have much time to act.",
+        "options": [
+          {
+            "name": "Launch the explosive away with a physical attack",
+            "description": "Use your strength to knock the explosive away from yourself",
+            "value": "atk|1"
+          },
+          {
+            "name": "Launch the explosive away with a supernatural attack",
+            "description": "Use a supernatural attack to send the explosive away from yourself",
+            "value": "spatk|1"
+          },
+          {
+            "name": "Run out the room",
+            "description": "Use your agility make it out the room before the object explodes",
+            "value": "spd|3"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Trigger Panel",
+        "prompt": "You walk into a dark room. As you take a step inward you feel a pressure plate under your foot go downwards and hear the sound of something approaching you at a high speed",
+        "options": [
+          {
+            "name": "Prepare for impact",
+            "description": "Use your resilience to hold your ground and prepare for impact with the incoming object",
+            "value": "def|1"
+          },
+          {
+            "name": "Shield yourself from impact",
+            "description": "Use a supernatural force to protect yourself from the incoming object",
+            "value": "spdef|1"
+          },
+          {
+            "name": "Evade the object",
+            "description": "Use your agility to get out of the way of the incoming object",
+            "value": "spd|3"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Pressure Plate Door",
+        "prompt": "You enter a room where a door can be opened if something is placed on a specific pressure plate. There are some large boulders in the room.",
+        "options": [
+          {
+            "name": "Move boulders onto the pressure plate",
+            "description": "Use your strength to move the boulders onto the pressure plate",
+            "value": "atk|1"
+          },
+          {
+            "name": "Rush through the door",
+            "description": "Use your agility to trigger the pressure plate yourself and then run through the door while its open",
+            "value": "spd|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Water Cannon",
+        "prompt": "You walk into a room where large volumes of water are frequently, but not constantly, launched across the room.",
+        "options": [
+          {
+            "name": "Evade the water blasts",
+            "description": "Use your agility to sprint through the room",
+            "value": "spd|1"
+          },
+          {
+            "name": "March towards the exit",
+            "description": "Use your resilience to march towards the room exist without being knocked over by the water",
+            "value": "def|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Electrified Floor",
+        "prompt": "You enter a room where the entire floor seems to be electrified. In the center of the room lays a magical artifact that seems to be providing the electricity",
+        "options": [
+          {
+            "name": "Resist the electricity",
+            "description": "Use your resilience to resist the electrical currents as you make your way out the room",
+            "value": "def|1"
+          },
+          {
+            "name": "Disable the rune",
+            "description": "Use a supernatural force to disable the rune",
+            "value": "spatk|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Floating Platforms",
+        "prompt": "You enter a large room where a rapidly rotating rune floats in the center. You attempt to make your way towards and exit, but the rune begins to gather energy, as if preparing to fire off an attack",
+        "options": [
+          {
+            "name": "Disable the rune",
+            "description": "Use a supernatural attack to disable the rune",
+            "value": "spatk|1"
+          },
+          {
+            "name": "Protect yourself",
+            "description": "Use your knowledge of supernatural forces to shield yourself from the rune's attacks",
+            "value": "spdef|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Rune Sealed Wall",
+        "prompt": "You come across a makeshift barrier that seems to be toughened by some sort of hardening magic",
+        "options": [
+          {
+            "name": "Smash through the barrier",
+            "description": "Use your strength to preform a heavy hitting attack and break the wall",
+            "value": "atk|2"
+          },
+          {
+            "name": "Negate magical barrier",
+            "description": "Use your knowledge of supernatural forces to disable the magic",
+            "value": "spdef|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Falling Boulders",
+        "prompt": "You enter a room and step on a pressure plate. You hear rumbling sound from above you and see large boulders plummeting towards you. You won't have time to avoid them",
+        "options": [
+          {
+            "name": "Break the boulders as they fall",
+            "description": "Use your strength to smash the boulders into pieces",
+            "value": "atk|2"
+          },
+          {
+            "name": "Brace for impact",
+            "description": "Use your resilience to prepare your self for the impact with the boulders",
+            "value": "def|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Flamethrower Room",
+        "prompt": "You enter a room where columns of magical flames are being spewed out holes in the walls in a sequential order. You will need to get through them to progress.",
+        "options": [
+          {
+            "name": "Navigate swiftly through the flames",
+            "description": "Use your agility to make a run for it through the flames",
+            "value": "spd|1"
+          },
+          {
+            "name": "Resist the flames",
+            "description": "Use a supernatural force to protect yourself from the magical flames as you make your way through",
+            "value": "spdef|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Rotating Panel Door",
+        "prompt": "You come across a large door made up of panels that seem to be rotating due to a magical force",
+        "options": [
+          {
+            "name": "Smash the panels",
+            "description": "Use your strength to smash your way through the panels",
+            "value": "atk|1"
+          },
+          {
+            "name": "Disable the panels",
+            "description": "Use a supernatural attack to disable the panels and pass through",
+            "value": "spatk|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Bat Cavern",
+        "prompt": "You enter a room of darkness and step into a small puddle. The sound of your step echoes through the cavern as you begin to hear the screeches of bats flying towards you",
+        "options": [
+          {
+            "name": "Protect yourself",
+            "description": "Use your resilience to protect yourself from the flurry of bats coming your way",
+            "value": "def|2"
+          },
+          {
+            "name": "Repel the bats",
+            "description": "Use a supernatural attack keep the bats from attacking you",
+            "value": "spatk|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Magical Totems",
+        "prompt": "You come across a room where multiple large totems a positioned in the center. Upon entering the room the totems light up and begin hurling magical energy at you.",
+        "options": [
+          {
+            "name": "Evade and escape",
+            "description": "Use your agility to evade the incoming magical attacks and excape",
+            "value": "spd|2"
+          },
+          {
+            "name": "Counter attack",
+            "description": "Use supernatural attacks to counter the magic energy being shot at you",
+            "value": "spatk|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Pellet Launchers",
+        "prompt": "You come across a room where small pellets are being launched at high speed all over the room. There are too many of them for you to dodge them all.",
+        "options": [
+          {
+            "name": "Retaliate and move",
+            "description": "Use your strength to break the pellets as they fly towards you",
+            "value": "atk|1"
+          },
+          {
+            "name": "Resist the pellets",
+            "description": "Use your resilience to resist the pellets as you make your way through",
+            "value": "def|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Fireball Rune",
+        "prompt": "You enter a clearing where large fireballs are orbiting a rune in the center",
+        "options": [
+          {
+            "name": "Attack the rune",
+            "description": "Use a supernatural attack to break the rune",
+            "value": "spatk|1"
+          },
+          {
+            "name": "Disable the rune",
+            "description": "Use your knowledge of supernatural forces to disable the rune",
+            "value": "spdef|2"
+          },
+          {
+            "name": "Resist the fire",
+            "description": "Use your resilience to resist the fire as you make your way through the room",
+            "value": "def|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Spike shooter",
+        "prompt": "You find a clearing where a magical contraption is spewing out spike balls at a rapid rate.",
+        "options": [
+          {
+            "name": "Deflect the spike balls",
+            "description": "Use your resilience to deflect any spike balls that come your way",
+            "value": "def|1"
+          },
+          {
+            "name": "Attack the machine",
+            "description": "Use your strength to destroy the machine",
+            "value": "atk|2"
+          },
+          {
+            "name": "Disable the machine",
+            "description": "Use your knowledge of supernatural forces to disable the machine",
+            "value": "spdef|2"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Cursed Totem",
+        "prompt": "You enter a room and immediately begin to feel weak as if something is draining the life out of you. You catch a glimpse of a totem in the center that seems to be the source of the weakening aura",
+        "options": [
+          {
+            "name": "Attack the totem",
+            "description": "Use your strength to destroy the totem",
+            "value": "atk|2"
+          },
+          {
+            "name": "Attack the machine",
+            "description": "Use a supernatural attack to destroy the totem",
+            "value": "spatk|2"
+          },
+          {
+            "name": "Protect yourself",
+            "description": "Use your knowledge of supernatural forces protect yourself from the totem's effect",
+            "value": "spdef|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Spike Net",
+        "prompt": "You step on a pressure plate and a section of the wall slides away. Soon after a spiked net is shot towards you from the opening.",
+        "options": [
+          {
+            "name": "Break the net",
+            "description": "Use your strength to break through the net before it traps you.",
+            "value": "atk|2"
+          },
+          {
+            "name": "Resist the net",
+            "description": "Use your resilience to endure the net's spikes and remove it afterwards",
+            "value": "def|2"
+          },
+          {
+            "name": "Avoid the net",
+            "description": "Use your agility to prevent the net from hitting you",
+            "value": "spd|1"
+          }
+        ]
+      },
+      {
+        "type": "choice",
+        "title": "Laser Runes",
+        "prompt": "You enter a room where beams of energy are being shot between the walls by levitating runes.",
+        "options": [
+          {
+            "name": "Attack the runes",
+            "description": "Use a supernatural attack to destroy the laser emitting runes.",
+            "value": "spatk|2"
+          },
+          {
+            "name": "Disable the runes",
+            "description": "Use your knowledge of supernatural forces to disable the rune's magic",
+            "value": "spdef|2"
+          },
+          {
+            "name": "Navigate through the room",
+            "description": "Use your agility to avoid the lasers as you make your way through the room",
+            "value": "spd|1"
+          }
+        ]
+      }
+    ]
+  },
+  "regionExpeditionNote": {
+    "Swamp": [
+      [
+        "resource swamp 1",
+        "resource swamp 2"
+      ],
+      [
+        "gold swamp 1",
+        "gold swamp 2"
+      ],
+      [
+        "equipment swamp 1",
+        "equipment swamp 2"
+      ],
+      [
+        "statIncrease swamp 1",
+        "statIncrease swamp 2"
+      ],
+      [
+        "abilitypoi swamp 1",
+        "abilitypoi swamp 2"
+      ]
+    ],
+    "Tundra": [
+      [
+        "resource tundra 1",
+        "resource tundra 2"
+      ],
+      [
+        "gold tundra 1",
+        "gold tundra 2"
+      ],
+      [
+        "equipment tundra 1",
+        "equipment tundra 2"
+      ],
+      [
+        "statIncrease tundra 1",
+        "statIncrease tundra 2"
+      ],
+      [
+        "abilitypoi tundra 1",
+        "abilitypoi tundra 2"
+      ]
+    ],
+    "Desert": [
+      [
+        "resource desert 1",
+        "resource desert 2"
+      ],
+      [
+        "gold desert 1",
+        "gold desert 2"
+      ],
+      [
+        "equipment desert 1",
+        "equipment desert 2"
+      ],
+      [
+        "statIncrease desert 1",
+        "statIncrease desert 2"
+      ],
+      [
+        "abilitypoi desert 1",
+        "abilitypoi desert 2"
+      ]
+    ],
+    "Islands": [
+      [
+        "resource islands 1",
+        "resource islands 2"
+      ],
+      [
+        "gold islands 1",
+        "gold islands 2"
+      ],
+      [
+        "equipment islands 1",
+        "equipment islands 2"
+      ],
+      [
+        "statIncrease islands 1",
+        "statIncrease islands 2"
+      ],
+      [
+        "abilitypoi islands 1",
+        "abilitypoi islands 2"
+      ]
+    ],
+    "Mountains": [
+      [
+        "resource mountains 1",
+        "resource mountains 2"
+      ],
+      [
+        "gold mountains 1",
+        "gold mountains 2"
+      ],
+      [
+        "equipment mountains 1",
+        "equipment mountains 2"
+      ],
+      [
+        "statIncrease mountains 1",
+        "statIncrease mountains 2"
+      ],
+      [
+        "abilitypoi mountains 1",
+        "abilitypoi mountains 2"
+      ]
+    ],
+    "Forest": [
+      [
+        "resource forest 1",
+        "resource forest 2"
+      ],
+      [
+        "gold forest 1",
+        "gold forest 2"
+      ],
+      [
+        "equipment forest 1",
+        "equipment forest 2"
+      ],
+      [
+        "statIncrease forest 1",
+        "statIncrease forest 2"
+      ],
+      [
+        "abilitypoi forest 1",
+        "abilitypoi forest 2"
+      ]
+    ]
+  },
+  "regions": [
+    "Swamp",
+    "Tundra",
+    "Desert",
+    "Islands",
+    "Mountains",
+    "Forest"
+  ],
+  "challengeDict":[
+    {
+      "name":"Take out the trash",
+      "description":"Defeat X enemies in combat",
+      "baseGoal":5
+    },
+    {
+      "name":"No pain, no gain",
+      "description":"Receive X damage from enemies in combat",
+      "baseGoal":50
+    },
+    {
+      "name":"Talk to the hand",
+      "description":"Block X base damage in combat",
+      "baseGoal":80
+    },
+    {
+      "name":"Applying pressure",
+      "description":"Deal X damage with attacks in combat",
+      "baseGoal":100
+    },
+    {
+      "name":"Early bird",
+      "description":"Be the first to attack during a turn X times",
+      "baseGoal":5
+    },
+    {
+      "name":"Bullseye",
+      "description":"Land a critical hit X times",
+      "baseGoal":3
+    },
+    {
+      "name":"Now it's my turn",
+      "description":"Deal X damage with counter attacks in combat",
+      "baseGoal":50
+    },
+    {
+      "name":"We don't do that here",
+      "description":"Entirely block an enemy's attack X times",
+      "baseGoal":3
+    },
+    {
+      "name":"Raising the bar",
+      "description":"Increase an ally or your own stat in combat X times",
+      "baseGoal":3
+    },
+    {
+      "name":"Sabotaged",
+      "description":"Lower an enemy's stat in combat X times",
+      "baseGoal":3
+    },
+    {
+      "name":"Do over!",
+      "description":"Successfully use an attack on the same target twice in a row in combat X times",
+      "baseGoal":3
+    }
+  ],
+  "equipmentPerkDescriptions":{
+    "weapon":[
+      ["Critical hits ignore X% of targets defense stat",5,"Battering Blows"],
+      ["An ability used on a target before they have done an action increases base damage by X",4,"Sucker Strike"],
+      ["X% chance to increase a random stat by one stage when hitting an unguarded target",5,"Combat Confidence"],
+      ["X% chance to lower the offensive stats of enemies on the first turn",15,"Daunting Display"],
+      ["Repeating an attack on the same target increases the attack’s critical chance by X%",10,"Precise Pursuit"], 
+      ["If the target’s active defensive stat is their largest defensive stat, deal X% more total damage",5,"Titan Toppler"]
+    ],
+    "gear":[
+      ["Counter attacks have a X% chance to critically hit",10,"Calculated Counter"], 
+      ["If an attack’s base damage is less than your guard’s power, heal X% of the difference",25,"Rumbler's Respite"],
+      ["After successfully using a guard, your next guard has +X% chance of succeeding",5,"Greedy Guard"],
+      ["X% chance to lower the defensive stats of enemies on the first turn",15,"Supreme Stature"],
+      ["Guards gain X% more effectiveness when used against non-matching attacks",7,"Formidable Flexibility"],
+      ["X% chance to increase a random stat by one stage when blocking an attack",5,"Motivating Marcher"] 
+    ]
+  },
   "templates": {
     "attack": {
       "critical": 0,
@@ -172,12 +1462,36 @@
       "id": "",
       "faction": -1,
       "race": "",
-      "gold":0,
+      "gold": 0,
       "combatStyle": "",
       "exp": 0,
       "expCap": 100,
-      "skillpoints": 0,
-      "abilities": [],
+      "statpoints": 0,
+      "abilitypoints": 0,
+      "abilities": [
+        {
+          "critical": 0,
+          "damage_type": "atk",
+          "damage_val": 20,
+          "name": "Basic Attack",
+          "speed": 1,
+          "faction": -1,
+          "action_type": "attack",
+          "numHits": 1,
+          "recoil": 0,
+          "targetType": "1",
+          "accuracy": 100
+        },{
+          "action_type": "guard",
+          "name": "Basic Guard",
+          "guard_val": 30,
+          "guard_type": "def",
+          "success_level": 100,
+          "counter_val": 0,
+          "counter_type": "def",
+          "speed": 3
+        }
+      ],
       "level": 1,
       "totalExp": 0,
       "lives": 3,
@@ -189,12 +1503,26 @@
         "spdef": 10,
         "spd": 10
       },
-      "boosters":[{
-        "expire":0,
-        "type":"none",
-        "value":0
-      }],
-      "job": "0",
+      "presenceTimer":0,
+      "dailyTimer":0,
+      "dailyCount":0,
+      "challengeTimer":0,
+      "challenges":[
+        {
+          "type":0,
+          "rank":1,
+          "progress":0,
+          "goal":5
+        }
+      ],
+      "boosters": [
+        {
+          "expire": 0,
+          "type": "none",
+          "value": 0
+        }
+      ],
+      "job": "exp",
       "inventory": [],
       "weapon": null,
       "gear": null,
@@ -210,25 +1538,21 @@
       "innateFacilities": [
         {
           "description": "Location to purchase lives and boosts",
-          "level": 1,
           "name": "Tavern",
           "value": "tavern"
         },
         {
           "description": "Location to learn mechanics or new/upgrade abilities",
-          "level": 1,
           "name": "Training Hall",
           "value": "training"
         },
         {
-          "description": "Location to assign jobs",
-          "level": 1,
+          "description": "Location to assign jobs and view town upgrade progress",
           "name": "Meeting Hall",
           "value": "jobs"
         },
         {
           "description": "Location to fight against raiding forces",
-          "level": 1,
           "name": "Militia Headquarters",
           "value": "defense"
         }
@@ -245,14 +1569,17 @@
         "minerals": [
           0,
           10
-        ],
-        "reputation": 0
+        ]
       },
-      "marketRestock":0,
-      "trainingRestock":0,
+      "id":0,
+      "marketRestock": 0,
+      "trainingRestock": 0,
+      "hallReset": 0,
+      "hallStart": 0,
       "level": 1,
-      "integrity": 100,
-      "facilityQueue": 0
+      "points": 0,
+      "facilityQueue": 0,
+      "dungeonClear": false
     },
     "emptyEquipmentData": {
       "stats": {
@@ -275,42 +1602,43 @@
         0
       ]
     },
-    "emptyFighterData":{
+    "emptyFighterData": {
       "object": false,
       "rareVar": false,
-      "name":  "",
+      "name": "",
       "id": "",
-      "cpu":true,
-      "intelligence":{
-        "reuse":0.5
+      "cpu": true,
+      "intelligence": {
+        "reuse": 0.5
       },
-      "faction":"-1",
-      "race":"0",
-      "combatStyle":"0",
-      "exp":0,
-      "skillpoints":0,
-      "lives":1,
-      "abilities":[],
-      "level":0,
-      "totalExp":0,
-      "stats":{
-          "hp":10,
-          "atk":5,
-          "def":5,
-          "spatk":5,
-          "spdef":5,
-          "spd":5
+      "faction": "-1",
+      "race": "0",
+      "combatStyle": "0",
+      "exp": 0,
+      "statpoints": 0,
+      "abilitypoints": 0,
+      "lives": 1,
+      "abilities": [],
+      "level": 0,
+      "totalExp": 0,
+      "stats": {
+        "hp": 10,
+        "atk": 5,
+        "def": 5,
+        "spatk": 5,
+        "spdef": 5,
+        "spd": 5
       }
-  }
+    }
   },
   "raidPresets": {
     "missions": [
       [
-        "Succesfully Use 8 Physical Attacks In Combat",
-        "Succesfully Use 8 Special Attacks In Combat",
-        "Succesfully Use 8 Physical Guards In Combat",
-        "Succesfully Use 8 Special Guards In Combat",
-        "Succesfully Use 8 Stat Changes In Combat"
+        "Successfully Use 8 Physical Attacks In Combat",
+        "Successfully Use 8 Special Attacks In Combat",
+        "Successfully Use 8 Physical Guards In Combat",
+        "Successfully Use 8 Special Guards In Combat",
+        "Successfully Use 8 Stat Changes In Combat"
       ],
       [
         "Loot 2 Weapons From Enemies In The Wild",
@@ -345,7 +1673,7 @@
         1
       ]
     ],
-    "goldRewards":[
+    "goldRewards": [
       5,
       15,
       30,
@@ -357,14 +1685,12 @@
       "description": "Facility to buy gear and weapons",
       "name": "Market",
       "value": "market",
-      "level": 1,
       "index": "0"
     },
     {
       "description": "Facility to compete in 'King of the Hill' mini-game",
       "name": "Battle Hall",
       "value": "hall",
-      "level": 1,
       "index": "1"
     }
   ],
@@ -576,30 +1902,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -609,16 +1935,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -627,16 +1949,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -661,30 +1979,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -694,16 +2012,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -712,16 +2026,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -746,30 +2056,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -779,16 +2089,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -797,16 +2103,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -831,30 +2133,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -864,16 +2166,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -882,16 +2180,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -916,30 +2210,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -949,16 +2243,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -967,16 +2257,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1001,30 +2287,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1034,16 +2320,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1052,16 +2334,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1086,30 +2364,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1119,16 +2397,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1137,16 +2411,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1171,30 +2441,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1204,16 +2474,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1222,16 +2488,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1256,30 +2518,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1289,16 +2551,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1307,16 +2565,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1341,30 +2595,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1374,16 +2628,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1392,16 +2642,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1426,30 +2672,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1459,16 +2705,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1477,16 +2719,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1511,30 +2749,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1544,16 +2782,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1562,16 +2796,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1596,30 +2826,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1629,16 +2859,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1647,16 +2873,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1681,30 +2903,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1714,16 +2936,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1732,16 +2950,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1766,30 +2980,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1799,16 +3013,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1817,16 +3027,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1851,30 +3057,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1884,16 +3090,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1902,16 +3104,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -1936,30 +3134,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -1969,16 +3167,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -1987,16 +3181,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2021,30 +3211,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2054,16 +3244,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2072,16 +3258,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2106,30 +3288,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2139,16 +3321,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2157,16 +3335,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2191,30 +3365,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2224,16 +3398,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2242,16 +3412,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2276,30 +3442,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2309,16 +3475,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2327,16 +3489,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2361,30 +3519,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2394,16 +3552,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2412,16 +3566,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2446,30 +3596,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2479,16 +3629,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2497,16 +3643,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2531,30 +3673,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2564,16 +3706,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2582,16 +3720,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2616,30 +3750,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2649,16 +3783,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2667,16 +3797,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2701,30 +3827,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2734,16 +3860,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2752,16 +3874,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2786,30 +3904,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2819,16 +3937,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2837,16 +3951,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2871,30 +3981,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2904,16 +4014,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -2922,16 +4028,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -2956,30 +4058,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -2989,16 +4091,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3007,16 +4105,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3041,30 +4135,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3074,16 +4168,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3092,16 +4182,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3126,30 +4212,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3159,16 +4245,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3177,16 +4259,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3211,30 +4289,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3244,16 +4322,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3262,16 +4336,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3296,30 +4366,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3329,16 +4399,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3347,16 +4413,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3381,30 +4443,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3414,16 +4476,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3432,16 +4490,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3466,30 +4520,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3499,16 +4553,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3517,16 +4567,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3551,30 +4597,30 @@
       ],
       "droptable": [
         {
-          "chance": 34,
+          "chance": 38,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 0
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 5
           }
         },
         {
           "chance": 18,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 1
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 10
           }
         },
         {
           "chance": 8,
           "obj": {
-            "ref": {
-              "type": "staticItemID",
-              "staticItemID": 2
-            }
+            "type": "resource",
+            "resource": "gold",
+            "resourceName": "gold",
+            "amount": 15
           }
         },
         {
@@ -3584,16 +4630,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3602,16 +4644,12 @@
           }
         },
         {
-          "chance": 10,
+          "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.5,
-                "lockStatTypes": true,
-                "baseVal": null,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]

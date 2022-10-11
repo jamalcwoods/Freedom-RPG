@@ -2,18 +2,6 @@ const { populateCombatData, populateCombatWindow, populateCombatControls } = req
 const { getPlayerDBData,} = require("../firebaseTools")
 const { simulateCPUSPAssign, simulateCPUAbilityAssign, clone, runEnemyCombatAI} = require("../tools.js")
 
-function loadPlayerData(players,loadedData,callback){
-    if(players[0]){
-        getPlayerDBData(players[0],function(player){
-            loadedData.push(player)
-            players.splice(0,1)
-            loadPlayerData(players,loadedData,callback)
-        })
-    } else {
-        callback(loadedData)
-    }
-}
-
 module.exports = {
     config:{
         getSession:true
@@ -42,19 +30,29 @@ module.exports = {
                         race:"0",
                         combatStyle:"0",
                         exp:0,
-                        skillpoints:0,
+                        abilitypoints:0,
+                        statpoints:0,
                         lives:1,
                         abilities:[],
-                        level:1,
+                        level:session.session_data.town.level * 10,
                         totalExp:0,
                         stats:{
-                            "hp":150,
+                            "hp":50,
                             "atk":0,
-                            "def":10,
+                            "def":50,
                             "spatk":0,
-                            "spdef":10,
+                            "spdef":50,
                             "spd":0
                         }
+                    }
+
+                    let wallScalar = {
+                        "atk": 0,
+                        "spatk": 0,
+                        "spd": 0,
+                        "def": 0,
+                        "spdef": 0,
+                        "hp": 1,
                     }
         
                     let enemy = {
@@ -65,30 +63,29 @@ module.exports = {
                         race:"0",
                         combatStyle:"0",
                         exp:0,
-                        skillpoints:0,
+                        abilitypoints:0,
+                        statpoints:0,
                         lives:1,
                         abilities:[],
-                        level:12,
+                        level:0,
                         totalExp:0,
                         stats:{
-                            "hp":22,
-                            "atk":11,
-                            "def":11,
-                            "spatk":11,
-                            "spdef":11,
-                            "spd":11
+                            "hp":15,
+                            "atk":7,
+                            "def":7,
+                            "spatk":7,
+                            "spdef":7,
+                            "spd":7
                         }
                     }
         
-                    enemy = simulateCPUAbilityAssign(enemy,[],5)
-                    additionalLevels = 3 + Math.floor(Math.random() * 5)
-                    enemy.level += additionalLevels
+                    enemy = clone(simulateCPUAbilityAssign(enemy,[],5))
         
                     fighters = [
                         session.session_data.player,
-                        wallUnit,
-                        simulateCPUSPAssign(clone(enemy),additionalLevels * 6),
-                        simulateCPUSPAssign(clone(enemy),additionalLevels * 6)
+                        simulateCPUSPAssign(wallUnit,session.session_data.town.level * 60,wallScalar),
+                        simulateCPUSPAssign(clone(enemy),session.session_data.town.level * 60),
+                        simulateCPUSPAssign(clone(enemy),session.session_data.town.level * 60)
                     ]
         
                     newSession = {
@@ -137,8 +134,10 @@ module.exports = {
                                             {
                                                 chance:100,
                                                 obj:{
-                                                    unit:simulateCPUSPAssign(clone(enemy),additionalLevels),
-                                                    alliance:1
+                                                    unit:clone(enemy),
+                                                    alliance:1,
+                                                    skillpoints:session.session_data.town.level * 60,
+                                                    allowance:5
                                                 }
                                             }
                                         ]
@@ -159,23 +158,34 @@ module.exports = {
                             race:"0",
                             combatStyle:"0",
                             exp:0,
-                            skillpoints:0,
+                            abilitypoints:0,
+                            statpoints:0,
                             lives:1,
                             abilities:[],
-                            level:50,
+                            level:0,
                             totalExp:0,
                             stats:{
-                                "hp":200,
-                                "atk":30,
+                                "hp":100,
+                                "atk":100,
                                 "def":100,
-                                "spatk":30,
+                                "spatk":100,
                                 "spdef":100,
-                                "spd":50
+                                "spd":100
                             }
                         }
-            
+                        
+                        let scalar = {
+                            "atk": 0.5,
+                            "spatk": 0.5,
+                            "spd": 0.7,
+                            "def": 1,
+                            "spdef": 1,
+                            "hp": 2,
+                        }
+
                         largeEnemy = simulateCPUAbilityAssign(largeEnemy,[],8)
-            
+                        largeEnemy = simulateCPUSPAssign(largeEnemy,session.session_data.town.level * 60,scalar)
+                        
                         fighters = [
                             session.session_data.player,
                             clone(largeEnemy)
@@ -222,19 +232,29 @@ module.exports = {
                             race:"0",
                             combatStyle:"0",
                             exp:0,
-                            skillpoints:0,
+                            abilitypoints:0,
+                            statpoints:0,
                             lives:1,
                             abilities:[],
-                            level:20,
+                            level:session.session_data.town.level * 10,
                             totalExp:0,
                             stats:{
-                                "hp":75,
+                                "hp":100,
                                 "atk":0,
-                                "def":40,
+                                "def":50,
                                 "spatk":0,
-                                "spdef":40,
+                                "spdef":50,
                                 "spd":1
                             }
+                        }
+
+                        let beaconScalar = {
+                            "atk": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "def": 0,
+                            "spdef": 0,
+                            "hp": 1,
                         }
         
                         let rallyEnemy = {
@@ -245,10 +265,11 @@ module.exports = {
                             race:"0",
                             combatStyle:"0",
                             exp:0,
-                            skillpoints:0,
+                            abilitypoints:0,
+                            statpoints:0,
                             lives:1,
                             abilities:[],
-                            level:20,
+                            level:0,
                             totalExp:0,
                             stats:{
                                 "hp":10,
@@ -264,9 +285,9 @@ module.exports = {
             
                         fighters = [
                             session.session_data.player,
-                            simulateCPUSPAssign(clone(rallyEnemy),19 * 6),
-                            clone(rallyPoint),
-                            simulateCPUSPAssign(clone(rallyEnemy),19 * 6)
+                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 60),
+                            simulateCPUSPAssign(clone(rallyPoint),session.session_data.town.level * 60,beaconScalar),
+                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 60)
                         ]
             
         
@@ -335,10 +356,7 @@ module.exports = {
                                 },
                                 result:"win_0"
                             },
-                        ],
-                        combatRewards:{
-                            raidBossClear:true
-                        }
+                        ]
                     })
                 }
                 
@@ -346,7 +364,6 @@ module.exports = {
         }
         
         runEnemyCombatAI(newSession.session_data.fighters)
-
         interaction.update({
             content:" ",
             components:populateCombatControls(newSession),

@@ -1,14 +1,17 @@
 const { initializeApp} = require('firebase/app');
 const { getDatabase, ref, set, get, child } = require('firebase/database')
-const { firebase } = require("./credentials.json");
+const { firebase } = require("./private/credentials.json");
 
 const app = initializeApp(firebase);
 const db = getDatabase()
 
 
 module.exports = {
-    updatePlayerDBData(id,path,data){
+    updatePlayerDBData(id,path,data,callback){
         set(ref(db, 'players/' + id + "/" + path), data);
+        if(callback){
+            callback()
+        }
     },
     getPlayerDBData(user,callback){
         get(ref(db, `players/` + user.id)).then((snapshot) => {
@@ -33,7 +36,11 @@ module.exports = {
     updateAllTownDBData(towns){
         set(ref(db, 'towns/'), towns);
     },
-    updateTownDBData(townID,path,data){
-        set(ref(db, 'towns/' + townID + "/" + path), data);
+    updateTownDBData(townID,path,data,callback){
+        set(ref(db, 'towns/' + townID + "/" + path), data).then( () =>{
+            if(callback){
+                callback()
+            }
+        })
     }
 }

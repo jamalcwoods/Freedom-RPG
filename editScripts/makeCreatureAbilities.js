@@ -893,7 +893,9 @@ let Attacks = [
     "wildUse": 1
   }
 ]
+let Statuses = [
 
+]
 
 for(ability of Attacks){
   let newAbility = {
@@ -922,7 +924,7 @@ for(ability of Attacks){
 }
 
 for(ability of Blocks){
-  newAbility = {
+  let newAbility = {
       "action_type":"guard",
       "name":ability.name,
       "guard_val":ability.guard_val,
@@ -942,6 +944,12 @@ for(ability of Blocks){
     newAbility.id = inData.baseAbilities.length
   }
   inData.baseAbilities[newAbility.id] = newAbility
+}
+
+for(ability of Statuses){
+  let newAbility = {
+    
+  }
 }
 
 
