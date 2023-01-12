@@ -7,7 +7,7 @@ const data = require("../data.json")
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('fight')
-		.setDescription('Start Combat ')
+		.setDescription('Start Combat')
         .addStringOption(option =>
             option.setName('type')
                 .setDescription('Type of Fight')
@@ -24,19 +24,19 @@ module.exports = {
             case "wild":
                 let encounterType = weightedRandom([
                     {
-                        chance:15,
+                        chance:20,
                         obj:0
                     },
                     {
-                        chance:50,
+                        chance:65,
                         obj:1
                     },
                     {
-                        chance:25,
+                        chance:10,
                         obj:2
                     },
                     {
-                        chance:10,
+                        chance:5,
                         obj:3
                     },
                 ])
@@ -47,7 +47,7 @@ module.exports = {
                         enemies = [
                             {
                                 allowance:5,
-                                statLevel:1.5,
+                                statLevel:1.25,
                                 intelligence:{
                                     reuse:0.75
                                 }
@@ -60,7 +60,7 @@ module.exports = {
                                 allowance:6,
                                 statLevel:1,
                                 intelligence:{
-                                    reuse:0.4
+                                    reuse:0.5
                                 }
                             }
                         ]
@@ -69,14 +69,14 @@ module.exports = {
                         enemies = [
                             {
                                 allowance:5,
-                                statLevel:0.55,
+                                statLevel:0.45,
                                 intelligence:{
                                     reuse:0.6
                                 }
                             },
                             {
                                 allowance:5,
-                                statLevel:0.55,
+                                statLevel:0.45,
                                 intelligence:{
                                     reuse:0.6
                                 }
@@ -87,7 +87,7 @@ module.exports = {
                         enemies = [
                             {
                                 allowance:5,
-                                statLevel:0.15,
+                                statLevel:0.25,
                                 intelligence:{
                                     reuse:0.8
                                 }
@@ -109,6 +109,8 @@ module.exports = {
                         ]
                         break;
                 }
+
+                
 
                 for(e in enemies){
                     let enemyScalar = 1
@@ -142,15 +144,16 @@ module.exports = {
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":10 + (-3 + Math.random() * 5),
-                            "atk":5 + (-2 + Math.random() * 3),
-                            "def":5 + (-2 + Math.random() * 3),
-                            "spatk":5 + (-2 + Math.random() * 3),
-                            "spdef":5 + (-2 + Math.random() * 3),
-                            "spd":5 + (-2 + Math.random() * 3)
+                            "hp":10,
+                            "atk":5,
+                            "def":5,
+                            "spatk":5,
+                            "spdef":5,
+                            "spd":5
                         }
                     }
-                    let statPoints = ((playerData.level - 1) * 6) * statLevel
+                    let statPoints = ((playerData.level) * 6) * statLevel
+                    console.log("stat level: " + statLevel)
                     enemy = simulateCPUSPAssign(enemy,statPoints,mob)
                     enemy = simulateCPUAbilityAssign(enemy,mob.innateAbilities,allowance)
 

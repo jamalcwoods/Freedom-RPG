@@ -30,8 +30,7 @@ module.exports = {
         interaction.reply({
                 content: populateStatEditWindow(newSession),
                 components: populateStatEditButtons(newSession),
-                embeds: [],
-                ephemeral: true,
+                embeds: []
         })
         callback({
             addSession:newSession

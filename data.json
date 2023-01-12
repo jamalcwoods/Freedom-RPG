@@ -67,6 +67,180 @@
       "name": "Mythical"
     }
   ],
+  "nameBank":{
+    "equipment":{
+      "weapon":{
+        "titles":[
+          ["Sword","Hammer","Axe"],
+          ["Bow","Crossbow","Launcher"],
+          ["Staff","Scepter","Wand"],
+          ["Aura","Essence","Energy"]
+        ],
+        "perkTags":[
+          ["Battering"],
+          ["Ambushing"],
+          ["Prospering"],
+          ["Terrifying"],
+          ["Raiding"],
+          ["Inspiring"]
+        ]
+      },
+      "gear":{
+        "titles":["Uniform","Armor","Outfit","Clothing"],
+        "perkTags":[
+          ["Exploiting"],
+          ["Belittling"],
+          ["Preserving"],
+          ["Looming"],
+          ["Adapting"],
+          ["Emboldening"]
+        ]
+      },
+      "statTags":{
+        "atk":["Firm","Brutal","Merciless","Grim","Sharp","Barbed"],
+        "def":["Sturdy","Stable","Protector's","Hefty","Reinforced","Fortified"],
+        "spatk":["Rune-fused","Cursed","Enchanted","Chaotic","Radiant","Resplendent"],
+        "spdef":["Rune-guarded","Sacred","Guardian's","Divine"],
+        "spd":["Lightweight","Hasty","Energized","Hectic","Loose"],
+        "hp":["Aegis","Hulking","Noble","Formidable","Secure"]
+      },
+      "statNegTags":{
+        "atk":["Flimsy","Dull"],
+        "def":["Worn","Shabby"],
+        "spatk":["Suppressed","Diluted"],
+        "spdef":["Malleable","Frail"],
+        "spd":["Heavy","Cumbersome"],
+        "hp":["Risky","Delicate"]
+      },
+      "statsubTags":{
+        "atk":["Combat"],
+        "def":["Protection"],
+        "spatk":["Spell"],
+        "spdef":["Guard"],
+        "spd":["Swift"],
+        "hp":["Brave"]
+      }
+    },
+    "ability":{
+      "attack":{
+        "title":{
+          "atk":{
+            "10":["Jab"],
+            "20":["Strike"],
+            "40":["Assault"],
+            "60":["Endeavor"],
+            "80":["Collision"],
+            "100":["Impact"]
+          },
+          "spatk":{
+            "10":["Spark"],
+            "20":["Burst"],
+            "40":["Blast"],
+            "60":["Surge"],
+            "80":["Flare"],
+            "100":["Eruption"]
+          }
+        },
+        "critical":{
+          "base":0,
+          "scalarWeights":[1,2,3,4],
+          "scalar":[10,25,50,75],
+          "10":["Seeking"],
+          "25":["Precise"],
+          "50":["Honed"],
+          "75":["Hunter"]
+        },
+        "recoil":{
+          "base":0,
+          "scalarWeights":[1,2,3,4],
+          "scalar":[10,25,50,75],
+          "10":["Careless"],
+          "25":["Reckless"],
+          "50":["Fearless"],
+          "75":["Desperate"]
+        },
+        "accuracy":{
+          "base":100,
+          "scalarWeights":[2,1,2,3],
+          "scalar":[10,80,110,130],
+          "10":["Aimless"],
+          "80":["Wild"],
+          "110":["Focused"],
+          "130":["Flawless"]
+        },
+        "speed":{
+          "base":1,
+          "scalar":[0,2,4],
+          "scalarWeights":[2,1,3],
+          "0":["Slacking","Lagging"],
+          "2":["Quick","Hasty"],
+          "4":["Blinding"]
+        }
+      },
+      "guard":{
+        "title":{
+          "def":{
+            "10":["Reflex"],
+            "20":["Guard"],
+            "40":["Defense"],
+            "60":["Barrier"],
+            "80":["Protection"],
+            "100":["Fortification"]
+          },
+          "spdef":{
+            "10":["Sense"],
+            "20":["Focus"],
+            "40":["Perception"],
+            "60":["Meditation"],
+            "80":["Concentration"],
+            "100":["Spirit"]
+          }
+        },
+        "counter_val":{
+          "base":0,
+          "scalarWeights":[0,1,2],
+          "scalar":[10,30,60],
+          "10":["Retaliating"],
+          "50":["Advancing"],
+          "80":["Vengeful"]
+        },
+        "success_level":{
+          "base":100,
+          "scalarWeights":[3,2,1,2],
+          "scalar":[25,50,200,400],
+          "25":["Burdening"],
+          "50":["Rushed"],
+          "200":["Effortless"],
+          "400":["Instinct"]
+        }
+      },
+      "stats":{
+        "target":{
+          "0":["Stance"],
+          "1":["Cheer"],
+          "2":["Signal"],
+          "3":["Outburst"],
+          "4":["Roar"]
+        },
+        "stat":{
+          "pos":{
+            "atk":["Encouraging"],
+            "spatk":["Stimulating"],
+            "def":["Toughening"],
+            "spdef":["Safeguarding"],
+            "spd":["Enabling"]
+          },
+          "neg":{
+            "atk":["Weakening"],
+            "spatk":["Disrupting"],
+            "def":["Exposing"],
+            "spdef":["Irritating"],
+            "spd":["Debilitating"]
+          }
+        }
+      }
+    }
+  },
   "combatStyleIndex": [
     {
       "id": 0,
@@ -85,6 +259,81 @@
       "name": "Energy Manipulation"
     }
   ],
+  "abilityWeights":{
+    "weapon":{
+      "0":{
+        "attack":{
+          "critical":-0.1
+        },
+        "guard":{
+          "guard_val":0.1
+        }
+      },
+      "1":{
+        "attack":{
+          "speed":-0.1
+        },
+        "guard":{
+          "counter_val":0.1
+        },
+        "stats":{
+          "speed":-0.1
+        }
+      },
+      "2":{
+        "attack":{
+          "damage_val":-0.1,
+          "accuracy":0.1
+        }
+      },
+      "3":{
+        "guard":{
+          "success_level":-0.5
+        },
+        "stats":{
+          "effectStrength":0.25
+        }
+      }
+    },
+    "race":{
+      "0":{
+        "attack":{
+          "accuracy":0.1
+        },
+        "guard":{
+          "success_level":0.5
+        }
+      },
+      "1":{
+        "guard":{
+          "counter_val":-0.1
+        },
+        "attack":{
+          "critical":0.1
+        }
+      },
+      "2":{
+        "attack":{
+          "speed":0.1
+        },
+        "guard":{
+          "guard_val":-0.1  
+        },
+        "stats":{
+          "speed":0.1
+        }
+      },
+      "3":{
+        "attack":{
+          "damage_val":-0.1,
+          "accuracy":0.1
+        },
+        "stats":{
+          "effectStrength":0.25
+        }
+      }
+    }
+  },
   "factionTypes": [
     {
       "name": "Hand of Assailment",
@@ -124,11 +373,23 @@
     }
   ],
   "statChangeStages": [
-    0.25,
+    0.2,
+    0.3,
+    0.4,
     0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
     1,
+    1.5,
     2,
-    4
+    2.5,
+    3,
+    3.5,
+    4,
+    4.5,
+    5
   ],
   "dungeonEvents": {
     "combat": [
@@ -144,12 +405,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -182,12 +443,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -214,12 +475,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -252,12 +513,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -284,12 +545,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -333,12 +594,12 @@
                       "abilities": [],
                       "level": 0,
                       "stats": {
-                        "hp": 20,
-                        "atk": 10,
-                        "def": 10,
-                        "spatk": 10,
-                        "spdef": 10,
-                        "spd": 10
+                        "hp": 10,
+                        "atk": 5,
+                        "def": 5,
+                        "spatk": 5,
+                        "spdef": 5,
+                        "spd": 5
                       }
                     },
                     "alliance": 1,
@@ -371,12 +632,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -403,12 +664,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -435,12 +696,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -473,12 +734,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -511,12 +772,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -549,12 +810,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -587,12 +848,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -625,12 +886,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -663,12 +924,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -701,12 +962,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -739,12 +1000,12 @@
               "abilities": [],
               "level": 0,
               "stats": {
-                "hp": 20,
-                "atk": 10,
-                "def": 10,
-                "spatk": 10,
-                "spdef": 10,
-                "spd": 10
+                "hp": 10,
+                "atk": 5,
+                "def": 5,
+                "spatk": 5,
+                "spdef": 5,
+                "spd": 5
               }
             },
             [],
@@ -1206,46 +1467,44 @@
   "regionExpeditionNote": {
     "Swamp": [
       [
-        "resource swamp 1",
-        "resource swamp 2"
+        "Traveling through the swamp you stumble upon an abandoned cargo crate. Someone must've have dropped it while fleeing from a threat. No sense letting it's contents go to waste",
+        "You discover the opening to a cave and venture inside. Inside, you find an abandoned campfire and some supplies."
       ],
       [
-        "gold swamp 1",
-        "gold swamp 2"
+        "The sploshing of mud under you is suddenly interrupted as you here a jingle of coins under your feet. You lift your boot to discover a small bag of coins lodged deep in the mud.",
+        "You find a statue in the middle of a clearing with a small pool of water around it. You spot a few gold coins in the fountain so you decide to snag them for yourself as you continue along your way."
       ],
       [
-        "equipment swamp 1",
-        "equipment swamp 2"
+        "You've been taking it easy as you stroll through the jungle, but you suddenly get and uneasy feeling that you are being followed. You decide to pick up the pace of your adventure",
+        "You come across a steep hill in the direction you were already heading in. Rather than finding an easier path you make your way up it , pausing to take in the view and catch your breath at the top"
       ],
       [
-        "statIncrease swamp 1",
-        "statIncrease swamp 2"
+        "Suddenly, you Stumble on an unseen object and plummet face first into the mud. As you lift yourself back up you realize that you tripped over some kind of container buried in mud. Wonder what's inside?",
+        "You come across a small stone structure in a clearing. It's pyramid shaped and in the center lies a podium with something in the center."
       ],
       [
-        "abilitypoi swamp 1",
-        "abilitypoi swamp 2"
+        "You notice a glowing light from within a cave. You enter the cave to find a floating bundle of energy, its glow reflecting on the cave walls. You approach it and feel a burst of energy course through your body as it dissolves around you."
       ]
     ],
     "Tundra": [
       [
-        "resource tundra 1",
-        "resource tundra 2"
+        "You find some tracks in the snow of some sort of wagon. You follow them till you come across the wagon itself, abandoned and crashed into a tree with a barrel of supplies left behind.",
+        "You notice a smoke signal in the distance so you make your way towards it. Upon reaching the source you find a seemingly abandoned campsite with some supplies left behind."
       ],
       [
-        "gold tundra 1",
-        "gold tundra 2"
+        "You take shelter in the opening of a cave and see that a part of the cave wall has caved in. Digging deeper you are able to uncover some rare gems that can be sold for gold.",
+        "Treading through the tundra landscape you notice something slightly buried under a thin layer of snow. You uncover it to find a dazzling gemstone. Might be able to sell this for gold."
       ],
       [
-        "equipment tundra 1",
-        "equipment tundra 2"
+        "The blizzard winds begin to pick up and you hurry to find any kind of shelter to bear the storm. You eventually find a cave and are able to protect yourself from the elements. Exhausted from your efforts, you decide to rest.",
+        "The sound of rumbling can be heard in the distance. You look behind you to see an avalanche tumbling down a mountain side in your direction. You make a run for it and are able to get out of it's way."
       ],
       [
-        "statIncrease tundra 1",
-        "statIncrease tundra 2"
+        "Treading through the tundra landscape you notice something slightly buried under a thin layer of snow. You uncover it to find a knapsack with some equipment inside. Whoever lost this must not need it now, else it wouldn't be here",
+        "You see a small wooden shack in a clearing. You make your way to it and find that there is a table with some equipment left on top of it. No one seems to have been here recently so you decide to take it for yourself"
       ],
       [
-        "abilitypoi tundra 1",
-        "abilitypoi tundra 2"
+        "You notice a glowing light is a frozen lake, close to the surface. Carefully, you make your way to the light source in the lake and watch as it bursts up from the ice and floats towards you. You approach it and feel a burst of energy course through your body as it dissolves around you."
       ]
     ],
     "Desert": [
@@ -1405,7 +1664,7 @@
   "equipmentPerkDescriptions":{
     "weapon":[
       ["Critical hits ignore X% of targets defense stat",5,"Battering Blows"],
-      ["An ability used on a target before they have done an action increases base damage by X",4,"Sucker Strike"],
+      ["An attack used on a target before they have done an action increases base damage by X",4,"Sucker Strike"],
       ["X% chance to increase a random stat by one stage when hitting an unguarded target",5,"Combat Confidence"],
       ["X% chance to lower the offensive stats of enemies on the first turn",15,"Daunting Display"],
       ["Repeating an attack on the same target increases the attack’s critical chance by X%",10,"Precise Pursuit"], 
@@ -1413,11 +1672,11 @@
     ],
     "gear":[
       ["Counter attacks have a X% chance to critically hit",10,"Calculated Counter"], 
-      ["If an attack’s base damage is less than your guard’s power, heal X% of the difference",25,"Rumbler's Respite"],
+      ["If an attack’s base damage is less than your guard’s power, heal X% of the difference",20,"Rumbler's Respite"],
       ["After successfully using a guard, your next guard has +X% chance of succeeding",5,"Greedy Guard"],
       ["X% chance to lower the defensive stats of enemies on the first turn",15,"Supreme Stature"],
-      ["Guards gain X% more effectiveness when used against non-matching attacks",7,"Formidable Flexibility"],
-      ["X% chance to increase a random stat by one stage when blocking an attack",5,"Motivating Marcher"] 
+      ["Guards gain X% more effectiveness when blocking non-matching attacks",7,"Formidable Flexibility"],
+      ["X% chance to increase a random stat by one stage when completely blocking an attack",5,"Motivating Marcher"] 
     ]
   },
   "templates": {
@@ -1473,7 +1732,7 @@
           "critical": 0,
           "damage_type": "atk",
           "damage_val": 20,
-          "name": "Basic Attack",
+          "name": "Starter Attack",
           "speed": 1,
           "faction": -1,
           "action_type": "attack",
@@ -1483,13 +1742,30 @@
           "accuracy": 100
         },{
           "action_type": "guard",
-          "name": "Basic Guard",
+          "name": "Starter Guard",
           "guard_val": 30,
           "guard_type": "def",
           "success_level": 100,
           "counter_val": 0,
           "counter_type": "def",
           "speed": 3
+        },{
+          "action_type": "stats",
+          "name": "Starter Buff",
+          "statChangeCount": 2,
+          "effects": [
+            {
+              "target": "0",
+              "stat": "atk",
+              "value": 1
+            },
+            {
+              "target": "0",
+              "stat": "spatk",
+              "value": 1
+            }
+          ],
+          "speed": 1
         }
       ],
       "level": 1,
@@ -1534,29 +1810,6 @@
     "emptyTownData": {
       "name": "",
       "lastRaid": 0,
-      "facilities": [],
-      "innateFacilities": [
-        {
-          "description": "Location to purchase lives and boosts",
-          "name": "Tavern",
-          "value": "tavern"
-        },
-        {
-          "description": "Location to learn mechanics or new/upgrade abilities",
-          "name": "Training Hall",
-          "value": "training"
-        },
-        {
-          "description": "Location to assign jobs and view town upgrade progress",
-          "name": "Meeting Hall",
-          "value": "jobs"
-        },
-        {
-          "description": "Location to fight against raiding forces",
-          "name": "Militia Headquarters",
-          "value": "defense"
-        }
-      ],
       "resources": {
         "food": [
           0,
@@ -1578,7 +1831,6 @@
       "hallStart": 0,
       "level": 1,
       "points": 0,
-      "facilityQueue": 0,
       "dungeonClear": false
     },
     "emptyEquipmentData": {
@@ -1631,6 +1883,46 @@
       }
     }
   },
+  "innateFacilities": [
+    {
+      "description": "Facility to purchase lives and boosts",
+      "name": "Tavern",
+      "value": "tavern"
+    },
+    {
+      "description": "Facility to learn mechanics or new/upgrade abilities",
+      "name": "Training Hall",
+      "value": "training"
+    },
+    {
+      "description": "Facility to assign jobs and view town upgrade progress",
+      "name": "Meeting Hall",
+      "value": "jobs"
+    },
+    {
+      "description": "Facility to fight against raiding forces",
+      "name": "Militia Hall",
+      "value": "defense"
+    },
+    {
+      "description": "Facility to buy gear and weapons",
+      "name": "Market",
+      "value": "market"
+    },
+    {
+      "description": "Facility to embark on dungeon raids and expeditions",
+      "name": "Adventurer's Hall",
+      "value": "adventure"
+    }
+  ],
+  "acquiredFacilities": [
+    {
+      "description": "Facility to compete in 'King of the Hill' mini-game",
+      "name": "Battle Hall",
+      "value": "hall",
+      "minLevel": 5
+    }
+  ],
   "raidPresets": {
     "missions": [
       [
@@ -1680,20 +1972,6 @@
       50
     ]
   },
-  "facilityData": [
-    {
-      "description": "Facility to buy gear and weapons",
-      "name": "Market",
-      "value": "market",
-      "index": "0"
-    },
-    {
-      "description": "Facility to compete in 'King of the Hill' mini-game",
-      "name": "Battle Hall",
-      "value": "hall",
-      "index": "1"
-    }
-  ],
   "factionMatchups": {
     "0": {
       "0": 0.5,

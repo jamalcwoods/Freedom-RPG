@@ -1,4 +1,4 @@
-const { populateTownVisitControls, populateTownVisitWindow }= require("../sessionTools.js");
+const { populateTownVisitControls, populateTownVisitWindow,populateLobbyControls, populateLobbyWindow }= require("../sessionTools.js");
 const { execute } = require ("./dungeonChoice.js")
 module.exports = {
     config:{
@@ -24,6 +24,14 @@ module.exports = {
                 componentConfig.session.session_data.rankStats.currentLives = parseInt(componentConfig.args[1])
                 componentConfig.session.session_data.rankStats.currentHP = parseInt(componentConfig.args[0])
                 execute(interaction,componentConfig,callback)
+                break;
+
+            case "lobby":
+                interaction.update({
+                    content: populateLobbyWindow(session),
+                    components: populateLobbyControls(session),
+                    embeds:[]
+                })
                 break;
 
         }

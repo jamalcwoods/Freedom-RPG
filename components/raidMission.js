@@ -70,12 +70,12 @@ module.exports = {
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":15,
-                            "atk":7,
-                            "def":7,
-                            "spatk":7,
-                            "spdef":7,
-                            "spd":7
+                            "hp":10,
+                            "atk":5,
+                            "def":5,
+                            "spatk":5,
+                            "spdef":5,
+                            "spd":5
                         }
                     }
         

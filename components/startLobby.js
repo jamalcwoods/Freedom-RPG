@@ -1,5 +1,6 @@
 const { populateCombatData, populateCombatWindow, populateCombatControls } = require("../sessionTools.js")
 const { getPlayerDBData } = require("../firebaseTools")
+const { clone } = require("../tools")
 
 function loadPlayerData(players,loadedData,callback){
     if(players[0]){
@@ -25,14 +26,16 @@ module.exports = {
         if(interaction.user.id == session.session_data.owner){
             switch(session.session_data.lobbyType){
                 case "FFA":
-                    loadPlayerData(session.session_data.players,[],function(fighters){
+                    let lobbyPlayers = clone(session.session_data.players)
+                    loadPlayerData(lobbyPlayers,[],function(fighters){
                         let newSession = {
                             type:"combat",
                             session_id: Math.floor(Math.random() * 100000),
                             user_ids:session.user_ids,
                             session_data:populateCombatData(fighters,{
                                 fightType:"pvp",
-                                lobby:session.session_id
+                                lobby:session.session_id,
+                                returnSession:session.session_id
                             })
                         }
                         interaction.update({

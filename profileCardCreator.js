@@ -1,6 +1,7 @@
 const { createCanvas, loadImage } = require('canvas')
 const canvas = createCanvas(1440, 720)
 const ctx = canvas.getContext('2d')
+const data = {raceIndex, combatStyleIndex} = require('./data.json')
 
 let images = {}
 
@@ -34,19 +35,16 @@ function drawAbilityBox(ability,x,y){
         ctx.font = '30px Impact'
         ctx.textAlign = "left"
         ctx.fillText(ability.name,x + 5,y+30)
+        let speedText;
         switch(ability.action_type){
             case "attack":
                 ctx.textAlign = "left"
 
-                ctx.drawImage(images.icon, x + 40, y + 69,32,32);
-                ctx.fillText("Damage: " + ability.damage_val,x + 75,y + 97)
+                ctx.drawImage(images[ability.damage_type], x + 40, y + 49,32,32);
+                ctx.fillText("Damage: " + ability.damage_val,x + 75,y + 77)
                 
                 ctx.textAlign = "center"
-                ctx.font = '24px Impact'
-                ctx.drawImage(images.attack_accuracy, x + 35, y + 115,24,24);
-                ctx.fillText(ability.accuracy + "%",x +45,y + 165)
-                
-                let speedText = ""
+                speedText = ""
                 switch(ability.speed ){
                     case 0:
                         speedText = "Slow"
@@ -61,27 +59,103 @@ function drawAbilityBox(ability,x,y){
                         speedText = "Fast"
                         break;
                 }
-                ctx.drawImage(images.attack_speed, x + 115, y + 115,24,24);
-                ctx.fillText(speedText,x + 125,y + 165)
+
+                ctx.font = '18px Impact'
+
+                ctx.drawImage(images.attack_accuracy, x + 37, y + 132,18,18);
+                ctx.fillText(ability.accuracy + "%",x +47,y + 167)
+
+                ctx.drawImage(images.attack_recoil, x + 77, y + 87,18,18);
+                ctx.fillText(ability.recoil,x +87,y + 123)
                 
-                ctx.drawImage(images.attack_critical, x + 195, y + 115,24,24);
-                ctx.fillText(ability.critical + "%",x + 205,y + 165)
+                ctx.drawImage(images.attack_speed, x + 117, y + 132,18,18);
+                ctx.fillText(speedText,x + 127,y + 167)
+
+                ctx.drawImage(images.attack_numHits, x + 157, y + 87,18,18);
+                ctx.fillText(ability.numHits,x + 167,y + 123)
                 
-                ctx.drawImage(images.icon, x + 212, y + 3,32,32);
+                ctx.drawImage(images.attack_critical, x + 197, y + 132,18,18);
+                ctx.fillText(ability.critical + "%",x + 207,y + 167)
+                
+                // Faction Icon - Disabled for now 
+                //ctx.drawImage(images.icon, x + 212, y + 3,32,32);
                 break;
                 
             case "guard":
                 ctx.textAlign = "left"
-                ctx.drawImage(images.icon, x + 40, y + 69,32,32);
+                ctx.drawImage(images[ability.guard_type], x + 40, y + 69,32,32);
                 ctx.fillText("Guard: " + ability.guard_val,x + 75,y + 97)
                 
                 ctx.textAlign = "center"
                 ctx.font = '24px Impact'
-                ctx.drawImage(images.guard_counter, x + 35, y + 115,24,24);
+                ctx.drawImage(images["guard_counter_" + ability.counter_type], x + 26, y + 106,32,32);
                 ctx.fillText(ability.counter_val,x +45,y + 165)
                 
-                ctx.drawImage(images.guard_success, x + 195, y + 115,24,24);
+                ctx.drawImage(images.guard_success, x + 186, y + 106,32,32);
                 ctx.fillText(ability.success_level,x + 205,y + 165)
+                break;
+
+            case "stats":
+
+                ctx.textAlign = "center"
+
+                speedText = ""
+                switch(ability.speed ){
+                    case 0:
+                        speedText = "Slow"
+                        break;
+                    case 1:
+                        speedText = "Normal"
+                        break;
+                    case 2:
+                        speedText = "Quick"
+                        break;
+                    case 3:
+                        speedText = "Fast"
+                        break;
+                }
+
+                ctx.font = '18px Impact'
+                ctx.drawImage(images.attack_speed, x + 192, y,32,32);
+                ctx.fillText(speedText,x + 207, y + 40)
+
+                ctx.textAlign = "left"
+
+                let coords = []
+                let targetImgSize;
+                switch(ability.effects.length){
+                    case 1:
+                        coords = [[x + 93, y + (175/2)]]
+                        targetImgSize = 64
+                        break;
+
+                    case 2:
+                        coords = [
+                            [x + 53, y + (175/2)],
+                            [x + 157, y + (175/2)]
+                        ]
+                        targetImgSize = 48
+                        break;
+
+                    case 3:
+                        coords = [
+                            [x + 30, y + (175/2)],
+                            [x + 117, y + (175/2)],
+                            [x + 197, y + (175/2)]
+                        ]
+                        targetImgSize = 36
+                        break;
+                }
+                ctx.font = targetImgSize/2 + 'px Impact'
+                for(let i = 0; i < ability.effects.length;i++){
+                    ctx.drawImage(images["stats_target_" + ability.effects[i].target], coords[i][0], coords[i][1],targetImgSize,targetImgSize);
+                    if(ability.effects[i].value > 0){
+                        ctx.drawImage(images.stats_increase, coords[i][0] - targetImgSize/4, coords[i][1] - targetImgSize/2,targetImgSize/2,targetImgSize/2);
+                    } else {
+                        ctx.drawImage(images.stats_decrease, coords[i][0] - targetImgSize/4, coords[i][1] - targetImgSize/2,targetImgSize/2,targetImgSize/2);
+                    }
+                    ctx.fillText(Math.abs(ability.effects[i].value) + " " + ability.effects[i].stat.toUpperCase(),coords[i][0] + targetImgSize/4, coords[i][1])
+                }
                 
                 break;
         }
@@ -93,28 +167,10 @@ function drawAbilityBox(ability,x,y){
 }
 
 function makeCard(player,avatar,callback){
-    var attack = {
-        "critical" : 0,
-        "damage_type" : "atk",
-        "damage_val" : 10,
-        "name" : "test attack",
-        "speed" : 1,
-        "faction" : -1,
-        "action_type":"attack",
-        "accuracy":100
-    }
-
-    var guard = {
-            "action_type":"guard",
-            "name":"test guard",
-            "guard_val":40,
-            "success_level":0,
-            "counter_val":0,
-            "counter_type":"def",
-            "speed":3
-        }
-
     let imagePromises = [
+        loadImage("./icons/default.png").then(img =>{
+            return img
+        }),
         loadImage("./icons/dmgIcon_atk.png").then(img =>{
             return img
         }),
@@ -136,7 +192,16 @@ function makeCard(player,avatar,callback){
         loadImage("./icons/attack_speed.png").then(img =>{
             return img
         }),
-        loadImage("./icons/guard_counter.png").then(img =>{
+        loadImage("./icons/attack_numHits.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/attack_recoil.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/guard_counter_def.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/guard_counter_spdef.png").then(img =>{
             return img
         }),
         loadImage("./icons/guard_success.png").then(img =>{
@@ -168,33 +233,70 @@ function makeCard(player,avatar,callback){
         }),
         loadImage("./icons/weapon_3.png").then(img =>{
             return img
+        }),
+        loadImage("./icons/stats_target_0.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_target_1.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_target_2.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_target_3.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_target_4.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_increase.png").then(img =>{
+            return img
+        }),
+        loadImage("./icons/stats_decrease.png").then(img =>{
+            return img
         })
     ]
-    for(var i = 0; i < 6;i++){
-        imagePromises.push(
-            loadImage("./icons/typeIcon_" + i + ".png").then(img =>{
-                return img
-            })
-        )
-    }
+    // for(var i = 0; i < 6;i++){
+    //     imagePromises.push(
+    //         loadImage("./icons/typeIcon_" + i + ".png").then(img =>{
+    //             return img
+    //         })
+    //     )
+    // }
     
     Promise.all(imagePromises).then((values) =>{
         images.icon = values[0]
-        images.atk = values[0]
-        images.spatk = values[1]
-        images.guardatk = values[2]
-        images.guardspatk = values[3]
-        images.attack_accuracy = values[4]
-        images.attack_critical = values[5]
-        images.attack_speed = values[6]
-        images.guard_counter = values[7]
-        images.guard_success= values[8]
-        images.avatar = values[9]
-
-
+        images.atk = values[1]
+        images.spatk = values[2]
+        images.def = values[3]
+        images.spdef = values[4]
+        images.attack_accuracy = values[5]
+        images.attack_critical = values[6]
+        images.attack_speed = values[7]
+        images.attack_numHits = values[8]
+        images.attack_recoil = values[9]
+        images.guard_counter_def = values[10]
+        images.guard_counter_spdef = values[11]
+        images.guard_success= values[12]
+        images.avatar = values[13]
+        images.race0 = values[14]
+        images.race1 = values[15]
+        images.race2 = values[16]
+        images.race3 = values[17]
+        images.weapon0 = values[18]
+        images.weapon1 = values[19]
+        images.weapon2 = values[20]
+        images.weapon3 = values[21]
+        images.stats_target_0 = values[22]
+        images.stats_target_1 = values[23]
+        images.stats_target_2 = values[24]
+        images.stats_target_3 = values[25]
+        images.stats_target_4 = values[26]
+        images.stats_increase = values[27]
+        images.stats_decrease = values[28]
+        
 
         ctx.fillStyle = "#23272A"
-        ctx.fillRect(0,0,1440,720)
 
         ctx.fillStyle = "#000000"
 
@@ -239,12 +341,42 @@ function makeCard(player,avatar,callback){
         ctx.textAlign = "center"
         
         
+        if(player.inventory){
+            if(player.gear){
+                let fGear = player.inventory[player.gear]
+                for(s in fGear.stats){
+                    if(s == "hp"){
+                        player.stats[s] += fGear.stats[s] * 2
+                    } else {
+                        player.stats[s] += fGear.stats[s] 
+                    }
+                    if(player.stats[s] < 1){
+                        player.stats[s] = 1
+                    }
+                }
+            }
+            if(player.weapon){
+                let fWeapon = player.inventory[player.weapon]
+                for(s in fWeapon.stats){
+                    if(s == "hp"){
+                        player.stats[s] += fWeapon.stats[s] * 2
+                    } else {
+                        player.stats[s] += fWeapon.stats[s] 
+                    }
+                    if(player.stats[s] < 1){
+                        player.stats[s] = 1
+                    }
+                }
+            }
+        }
+
         ctx.fillText("HP",650,455)
         ctx.fillText("ATK",525,500)
         ctx.fillText("SP ATK",525,600)
         ctx.fillText("DEF",775,500)
         ctx.fillText("SP DEF",775,600)
         ctx.fillText("SPD",650,650)
+        ctx.fillText("LEVEL",650,550)
         
         
         ctx.font = '28px Impact'
@@ -260,26 +392,74 @@ function makeCard(player,avatar,callback){
         ctx.fillText(player.stats.spdef,775,640)
         ctx.fillStyle = "#91E1DE"
         ctx.fillText(player.stats.spd,650,690)
-        
         ctx.fillStyle = "#000000"
+        ctx.fillText(player.level,650,590)
         
         ctx.font = '30px Impact'
         ctx.textAlign = "center"
-        ctx.fillText("Level",1200,475)
-        ctx.fillText("Skillpoints",1100,570)
-        ctx.fillText("Experience",1300,570)
-        ctx.fillText("Lives",1200,650)
+        ctx.fillText("Ability Points",1100,475)
+        ctx.fillText("Skill Points",1300,475)
+        ctx.fillText("Experience: " + player.exp + "/" + player.expCap,1200,570)
+        ctx.fillText("Lives",1100,650)
+        ctx.fillText("Gold",1300,650)
         
         ctx.font = '28px Impact'
-        ctx.fillText(player.level,1200,515)
-        ctx.fillText(player.skillpoints,1100,610)
-        ctx.fillText(player.exp,1300,610)
-        ctx.fillText(player.lives,1200,690)
+        ctx.fillText(player.abilitypoints,1100,515)
+        ctx.fillText(player.statpoints,1300,515)
+        ctx.fillText(player.lives,1100,690)
+        ctx.fillText(player.gold,1300,690)
         
-        ctx.font = '48px Impact'
+        
         ctx.drawImage(images.avatar, 136, 100,128,128);
-        ctx.drawImage(images.icon, 168, 375,64,64);
-        ctx.fillText(player.name,200,300)
+        if(player.name.length > 10){
+            ctx.font = 48/(player.name.length/10) + 'px Impact'
+        } else {
+            ctx.font = '48px Impact'
+        }
+        
+        ctx.fillText(player.name,200,280)
+
+        ctx.font = '32px Impact'
+        ctx.fillText("Wearing:",200,340)
+        ctx.fillText("Wielding:",200,410)
+
+        ctx.font = '18px Impact'
+        if(player.gear && player.gear >= 0){
+            ctx.fillText(player.inventory[player.gear].name,200,370)
+        } else {
+            ctx.fillText("Basic Gear",200,370)
+        }
+
+        if(player.weapon && player.weapon >= 0){
+            ctx.fillText(player.inventory[player.weapon].name,200,440)
+        } else {
+            ctx.fillText("Basic Weapon",200,440)
+        }
+
+        let raceText = ""
+        for(r of raceIndex){
+            if(r.id == player.race){
+                raceText = r.name
+                break;
+            }
+        }
+        let weaponText = ""
+        for(r of combatStyleIndex){
+            if(r.id == player.combatStyle){
+                weaponText = r.name
+                break;
+            }
+        }
+        ctx.font = '20px Impact'
+        ctx.fillText(raceText,160, 490)
+        ctx.drawImage(images["race" + player.race], 128, 495,64,64);
+        ctx.fillText(weaponText,240, 490)
+        ctx.drawImage(images["weapon" + player.combatStyle], 208, 495,64,64);
+        if(player.faction != -1){
+            ctx.drawImage(images.icon, 168, 345,64,64);
+        }
+        
+        
 
         const fs = require('fs')
         let path = __dirname + '/' + player.id + '.png'

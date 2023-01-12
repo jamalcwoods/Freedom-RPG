@@ -13,6 +13,7 @@ module.exports = {
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         session.session_data.location = interaction.values[0]
+        delete session.session_data.temp
         if(session.type == "townVisit"){
             if(interaction.values[0] != "end"){
                 interaction.update({
@@ -35,7 +36,7 @@ module.exports = {
                     }
                 ]
 
-                interaction.update(populateCloseInteractionMessage("Town Visit Finished"))
+                interaction.update(populateCloseInteractionMessage("Town Visit Finished",true))
 
                 callback({
                     removeSession:session,

@@ -4,19 +4,19 @@ const { populateConformationControls, populateConformationWindow } = require("..
 
 module.exports = {
 
-	data: new SlashCommandBuilder()
-		.setName('expedition')
-		.setDescription('Send your character on an idle expedition'),
-    config:{
-        getPlayerData:true,
-        getGuildTown:true
+	config:{
+        getSession:true
     },
-	async execute(interaction,componentConfig,callback) {
-        let playerData = componentConfig.playerData
-        let townData = componentConfig.townData
+    data:{
+        name:"promptDungeon"
+    },
+	execute(interaction,componentConfig,callback) {
+        let session = componentConfig.session
+        let playerData = session.session_data.player
+        let townData = session.session_data.town
 
         let newSession = {
-            type:"startExpedition",
+            type:"startDungeon",
             session_id: Math.floor(Math.random() * 100000),
             user_ids:[playerData.id],
             session_data:{
@@ -25,14 +25,14 @@ module.exports = {
             }
         }
         
-        interaction.reply({
+        interaction.update({
             content: " ",
             embeds: populateConformationWindow(newSession),
-            components: populateConformationControls(newSession),
-            ephemeral: true
+            components: populateConformationControls(newSession)
         })
 
         callback({
+            removeSession:session,
             addSession:newSession
         })
 	},

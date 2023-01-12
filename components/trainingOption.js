@@ -1,6 +1,6 @@
 
-const {populateTownVisitControls, populateTownVisitWindow } = require("../sessionTools.js")
-
+const {populateTownVisitControls, populateTownVisitWindow, populateCombatData, populateCombatWindow, populateCombatControls } = require("../sessionTools.js")
+const {clone, runEnemyCombatAI} = require("../tools.js")
 module.exports = {
     config:{
         getSession:true

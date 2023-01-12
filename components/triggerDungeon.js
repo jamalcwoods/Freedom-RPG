@@ -34,7 +34,7 @@ module.exports = {
                         combats:[]
                     },
                     dungeonStart:now.getTime(),
-                    dungeonRank:1,
+                    dungeonRank:parseInt(interaction.values[0]),
                     eventResult:{},
                     eventNum:0,
                     rankStats:{

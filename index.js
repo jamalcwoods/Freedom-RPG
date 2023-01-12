@@ -37,6 +37,9 @@ function updateSession(newSession){
         let session = sessions[i]
         if(session.session_id == newSession.session_id && newSession.type == session.type){
             sessions[i] = newSession
+            for(p of newSession.user_ids){
+                updatePlayerDBData(p,"session",newSession.session_id)
+            }
             break;
         }
     }
@@ -78,14 +81,13 @@ function getSessionByID(id){
             return session
         }
     }
+    return null
 }
 
 
 function processResult(result){
     
-    if(result.updateSession){
-        updateSession(result.updateSession)
-    }
+    
     if(result.removeSession){
         removeSession(result.removeSession)
     }
@@ -99,6 +101,10 @@ function processResult(result){
         }
     }
 
+    if(result.updateSession){
+        updateSession(result.updateSession)
+    }
+
     if(result.updateTown){
         for(batch of result.updateTown){
             updateTownDBData(batch.id,batch.path,batch.value)
@@ -106,7 +112,7 @@ function processResult(result){
     }
 }
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async interaction => {  
     onPlayerPresence(interaction.user, async function(){
         switch(interaction.type){
             case "MESSAGE_COMPONENT":
@@ -203,7 +209,7 @@ client.on('interactionCreate', async interaction => {
                                                         content: 'Your character is currently on an expedition. Would you like to end your expedition?', 
                                                         components: populateConformationControls({type: "endExpedition"}),
                                                         ephemeral: true 
-                                                   });
+                                                    });
                                                 } else {
                                                     commandConfig.townData = town
                                                     commandConfig.playerData = data
@@ -219,9 +225,9 @@ client.on('interactionCreate', async interaction => {
                                         } else {
                                             if(data.expedition){
                                                 interaction.reply({
-                                                     content: 'Your character is currently on an expedition. Would you like to end your expedition?', 
-                                                     components: populateConformationControls({type: "endExpedition"}),
-                                                     ephemeral: true 
+                                                        content: 'Your character is currently on an expedition. Would you like to end your expedition?', 
+                                                        components: populateConformationControls({type: "endExpedition"}),
+                                                        ephemeral: true 
                                                 });
                                             } else {
                                                 commandConfig.playerData = data
@@ -250,11 +256,12 @@ client.on('interactionCreate', async interaction => {
                 }
                 break;  
         }
+        fs.writeFile("sessions.json", JSON.stringify(sessions, null, 4),function(){})
     },{
         guildId:interaction.guildId,
         channelId:interaction.channelId,
         author:interaction.user
-    })
+    }) 
 });
 
 let messageLog = {}
@@ -299,6 +306,9 @@ function onPlayerPresence(user,callback,message){
 
 function playerPresenceCheck(message,user,town,callback){
     getPlayerDBData(user,function(result){
+        if(result.session && getSessionByID(result.session) == null){
+            delete result.session
+        }
         let now = new Date();
         if(result && !result.session && !result.dungeon && !result.expedition){
             let player = result
@@ -403,7 +413,10 @@ function playerPresenceCheck(message,user,town,callback){
             }
 
             if(player.presenceTimer <= now.getTime()){
+    
                 player.presenceTimer = now.getTime() + 1000
+                let resourcesAdded = 0
+                let resourceMap = ["minerals","wood","food"]
                 if(player.job == "exp"){
                     let levelUp = player.exp + 25 >= player.expCap
                     let result = parseReward({
@@ -426,21 +439,34 @@ function playerPresenceCheck(message,user,town,callback){
                             channel.send({embeds:[embed]})
                         })
                     }
-                    
-                    let resourceMap = ["minerals","wood","food"]
                     let index = Math.floor(Math.random() * resourceMap.length)
-                    town.resources[resourceMap[index]][0] += 1
-                    if(town.resources[resourceMap[index]][0] > town.resources[resourceMap[index]][1]){
+                    if(town.resources[resourceMap[index]][0] + 1 < town.resources[resourceMap[index]][1]){
+                        town.resources[resourceMap[index]][0] += 1
+                        resourcesAdded = 1
+                    } else {
+                        resourcesAdded = town.resources[resourceMap[index]][1] - town.resources[resourceMap[index]][0]
                         town.resources[resourceMap[index]][0] = town.resources[resourceMap[index]][1] 
                     }
                     needToUpdatePlayer = true
                     needToUpdateTown = true
                 } else {
-                    town.resources[resourceMap[player.job]][0] += 3
-                    if(town.resources[resourceMap[player.job]][0] > town.resources[resourceMap[player.job]][1]){
+                    if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
+                        town.resources[resourceMap[player.job]][0] += 3
+                        resourcesAdded = 3
+                    } else {
+                        resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
                         town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
                     }
+                    needToUpdatePlayer = true
                     needToUpdateTown = true
+                }
+                if(!town.contributors){
+                    town.contributors = {}
+                }
+                if(!town.contributors[player.id]){
+                    town.contributors[player.id] = resourcesAdded
+                } else {
+                    town.contributors[player.id] += resourcesAdded
                 }
                 town = levelTown(town)
             }
@@ -474,6 +500,7 @@ function playerPresenceCheck(message,user,town,callback){
     })
 }
 
+
 setInterval(() => {
     getPlayerDBData({id:""},function(players){
         getTownDBData("",function(towns){
@@ -501,6 +528,12 @@ setInterval(() => {
 
                 //Update Raid
                 if(townData.lastRaid < now.getTime()){
+                    if(!townData.bossDefeats){
+                        townData.points -= townData.level * 7
+                        if(townData.points < 0){
+                            townData.points = 0
+                        }
+                    }
                     townData.lastRaid = now.getTime() + 86400000
                     let missionAmount = [2,2,1]
                     let missionDepth = [5,3,3]
@@ -533,10 +566,9 @@ setInterval(() => {
                                 "scaling": false,
                                 "value":1,
                                 "conValue": 0,
-                                "lockStatTypes": true,
+                                "lockStatTypes": false,
                                 "baseVal": 100,
                                 "types": [
-                                    "weapon",
                                     "gear"
                                 ]
                             }
@@ -584,37 +616,25 @@ setInterval(() => {
                 //Restock Market
                 if(townData.marketRestock < now.getTime()){
                     townData.marketRestock = now.getTime() + 86400000
-                    let hasMarket = false;
-                    if(townData.facilities){
-                        for(f of townData.facilities){
-                            if(f.value == "market"){
-                                hasMarket = true
-                                break;
-                            }
-                        }
-                        if(hasMarket){
-                            townData.listings = []
-                            for(var i = 0; i < 4;i++){
-                                let val = 0.5 + (Math.random() * 2)
-                                let newData = {
-                                    ref:{
-                                        type: "rngEquipment",
-                                        rngEquipment: {
-                                            scaling: false,
-                                            value:1,
-                                            conValue:0,
-                                            lockStatTypes: true,
-                                            baseVal: 20,
-                                            types: i % 2 == 0 ? ["weapon"] : ["gear"]
-                                        }
-                                    }
+                    townData.listings = []
+                    for(var i = 0; i < 4;i++){
+                        let val = 0.5 + (Math.random() * 2)
+                        let newData = {
+                            ref:{
+                                type: "rngEquipment",
+                                rngEquipment: {
+                                    scaling: false,
+                                    value:1,
+                                    conValue:0,
+                                    lockStatTypes: true,
+                                    baseVal: 20,
+                                    types: i % 2 == 0 ? ["weapon"] : ["gear"]
                                 }
-                                newData.ref.rngEquipment.baseVal = Math.ceil(val * newData.ref.rngEquipment.baseVal)
-                                let item = generateRNGEquipment(newData)
-                                townData.listings.push([item,Math.ceil(val * 30)])
                             }
-                            console.log(townData.listings)
                         }
+                        newData.ref.rngEquipment.baseVal = Math.ceil(val * newData.ref.rngEquipment.baseVal)
+                        let item = generateRNGEquipment(newData)
+                        townData.listings.push([item,Math.ceil(val * 30)])
                     }
                 }
 
@@ -682,7 +702,12 @@ setInterval(() => {
                             client.guilds.fetch(town).then(guild =>{
                                 guild.members.fetch(stepResult[1].id).then(member =>{ 
                                     member.createDM().then(dm =>{
-                                        dm.send(stepResult[0])
+                                        const embed = new MessageEmbed()
+                                        .setColor('#00ff00')
+                                        .setTitle("Expedition Event")
+
+                                        embed.addField("---",stepResult[0])
+                                        dm.send({embeds:[embed]})
                                     })
                                 })
                             })
@@ -718,6 +743,7 @@ setInterval(() => {
             messageLog = {}
         })
     })      
-}, 300000);
+}, 3000);
+//}, 300000);
 
 client.login(token);

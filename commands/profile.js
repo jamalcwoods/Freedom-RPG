@@ -19,8 +19,7 @@ module.exports = {
                         files: [path],
                         content: " ",
                         components: [],
-                        embeds: [],
-                        ephemeral: true,
+                        embeds: []
                 })
                 callback({})
         })

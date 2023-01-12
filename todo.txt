@@ -1,0 +1,12 @@
+X Equipment Name Generation
+X Correct Tavern Booster Display
+- Ability Name Generation
+X Counter Attack Damage Check
+X PVP Check
+X Per town resource contribution tracker
+V Expedition story text
+? Dungeon Rewards
+X Profile Card Rework
+X Ability Creation Weights
+X Dungeon and Expedition facility
+X Facility Acquisition Rework

@@ -1,6 +1,6 @@
 const { populateCloseInteractionMessage } = require("../sessionTools.js")
 const { calculateAbilityCost } = require("../sessionTools.js")
-
+const { abilityWeights } = require("../data.json")
 module.exports = {
     config:{
         getSession:true
@@ -11,7 +11,11 @@ module.exports = {
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         if(session.type == "makeAbility"){
-            session.session_data.abilitypoints -= calculateAbilityCost(session)
+            session.session_data.abilitypoints -= calculateAbilityCost(
+                session.session_data.ability,
+                abilityWeights.weapon[session.session_data.weapon],
+                abilityWeights.race[session.session_data.race]
+            ) 
             session.session_data.abilities.push(session.session_data.ability)
 
             let updates = [

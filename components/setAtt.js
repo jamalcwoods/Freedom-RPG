@@ -31,6 +31,7 @@ module.exports = {
             } else {
                 switch(session.session_data.editingAttribute){
                     case "action_type":
+                        let tempName = session.session_data.ability.name
                         switch(args[0]){
                             case "guard":
                                 session.session_data.ability = data.templates.guard
@@ -44,6 +45,7 @@ module.exports = {
                                 session.session_data.ability = data.templates.stats
                                 break;
                         }
+                        session.session_data.ability.name = tempName
                         break;
                     
                     default:

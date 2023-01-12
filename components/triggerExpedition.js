@@ -53,7 +53,7 @@ module.exports = {
                 }
             ]
 
-            interaction.update(populateCloseInteractionMessage(response))
+            interaction.update(populateCloseInteractionMessage(response,true))
         
             callback({
                 updateTown:townUpdates, 
@@ -63,7 +63,7 @@ module.exports = {
 
         } else {
             response = "Expedition cancelled"
-            interaction.update(populateCloseInteractionMessage(response))
+            interaction.update(populateCloseInteractionMessage(response,true))
 
             callback({
                 removeSession:session

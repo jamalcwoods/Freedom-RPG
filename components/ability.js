@@ -53,6 +53,15 @@ module.exports = {
                 }
             }
         }
+        // for(var i = 0;i < session.session_data.fighters.length;i++){
+        //     let fighter = session.session_data.fighters[i]
+        //     if(!fighter.alive){
+        //         session.session_data.fighters.splice(i,1)
+        //     }
+        // }
+        // for(var i = 0;i < session.session_data.fighters.length;i++){
+        //     session.session_data.fighters[i].index = i
+        // }
         if(session.session_data.completed){
             if(session.session_data.options.progressiveCombat != false){
                 if(session.session_data.options.quest){
@@ -64,33 +73,28 @@ module.exports = {
                         updateSession:session
                     })
                 } else if(session.session_data.options.lobby){
-                    let updates = []
-                    for(var i = 0; i < session.session_data.fighters.length; i++){
-                        let fighter = session.session_data.fighters[i]
-                        if(session.user_ids.includes(fighter.staticData.id)){
-                            updates.push({
-                                id:fighter.staticData.id,
-                                path:"",
-                                value:fighter.staticData
-                            })
-                        }
+                    switch(session.type){
+                        case "combat":
+                                switch(session.session_data.options.fightType){
+                                    case "pvp":
+                                        interaction.update({
+                                            embeds:populateCombatWindow(session),
+                                            components:populateReturnFromCombat(session)
+                                        })
+                                        callback({
+                                            removeSession:session
+                                        })
+                                        break;
+                                }
+                            break;
                     }
-                    interaction.update({
-                        embeds:populateCombatWindow(session),
-                        components:populateReturnFromCombat(session)
-                    })
-                    callback({
-                        updateSession:session
-                    })
                 } else {
                     getTownDBData(session.server_id,function(town){
                         let updates = []
                         for(var i = 0; i < session.session_data.fighters.length; i++){
                             let fighter = session.session_data.fighters[i]
                             if(session.user_ids.includes(fighter.staticData.id)){
-                                console.log(fighter.records)
                                 // Update actual player data here
-
                                 if(town){
                                     if(town.raid){
                                         let missions = town.raid.missions
@@ -308,15 +312,14 @@ module.exports = {
                                             }
                                             
                                         }
-                                        break;
                                     }
                                 }  
-                                
                                 let challengesCompleted = 0;
                                 let totalGoldReward = 0;
                                 if(fighter.staticData.challenges){
                                     for(var i = 0; i < fighter.staticData.challenges.length;i++){
                                         let c = fighter.staticData.challenges[i]
+                                        console.log(c)
                                         let progressVal = 0;
                                         switch(c.type){
                                             case 0:
@@ -459,6 +462,7 @@ module.exports = {
                         components:populateReturnFromCombat(session,session.session_data.options.getRankingStats)
                     })
 
+                    
                     callback({
                         removeSession:session
                     })
