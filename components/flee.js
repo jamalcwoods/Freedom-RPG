@@ -1,4 +1,4 @@
-const { processCombatSession, populateCombatControls,populateCombatWindow, handlePlayerFlee, populateCombatToQuestTransition, populateReturnToLobbyTransition} = require("../sessionTools.js")
+const { processCombatSession, populateCombatControls,populateCombatWindow, handlePlayerFlee, populateCombatToQuestTransition, populateReturnFromCombat} = require("../sessionTools.js")
 const data = require("../data.json")
 const { processTurnEnd } = require("../tools")
 
@@ -67,6 +67,17 @@ module.exports = {
                     })
                     callback({
                         updateSession:session
+                    })
+                } else if(session.session_data.options.returnSession){
+                    session.session_data.fighters[0].staticData.lives = 0 
+                    interaction.update({
+                        embeds:populateCombatWindow(session),
+                        components:populateReturnFromCombat(session,session.session_data.options.getRankingStats)
+                    })
+
+                    
+                    callback({
+                        removeSession:session
                     })
                 } else {
                     let updates = []

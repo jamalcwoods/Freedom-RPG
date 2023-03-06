@@ -9,7 +9,6 @@ module.exports = {
     },
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
-
         switch(session.type){
             case "townVisit":
                 interaction.update({

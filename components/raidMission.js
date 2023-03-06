@@ -56,7 +56,7 @@ module.exports = {
                     }
         
                     let enemy = {
-                        name:"Raiding Creature",
+                        name:"Servant of " + session.session_data.town.raid.leader.name,
                         id:Math.floor(Math.random() * 1000),
                         cpu:true,
                         faction:"-1",
@@ -151,7 +151,7 @@ module.exports = {
                     case 1:
             
                         let largeEnemy = {
-                            name:"Large Enemy",
+                            name:session.session_data.town.raid.leader.name + "'s Goliath",
                             id:"large",
                             cpu:true,
                             faction:"-1",
@@ -224,7 +224,7 @@ module.exports = {
                     
                     case 2:
                         let rallyPoint = {
-                            name:"Enemy Beacon",
+                            name:session.session_data.town.raid.leader.name + "'s Beacon",
                             object: true,
                             id:"beacon",
                             cpu:true,
@@ -258,7 +258,7 @@ module.exports = {
                         }
         
                         let rallyEnemy = {
-                            name:"Raiding Creature",
+                            name:"Servant of " + session.session_data.town.raid.leader.name,
                             id:"large",
                             cpu:true,
                             faction:"-1",

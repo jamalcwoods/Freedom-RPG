@@ -86,11 +86,10 @@ function getSessionByID(id){
 
 
 function processResult(result){
-    
-    
     if(result.removeSession){
         removeSession(result.removeSession)
     }
+
     if(result.addSession){
         addSession(result.addSession)
     }
@@ -413,7 +412,6 @@ function playerPresenceCheck(message,user,town,callback){
             }
 
             if(player.presenceTimer <= now.getTime()){
-    
                 player.presenceTimer = now.getTime() + 1000
                 let resourcesAdded = 0
                 let resourceMap = ["minerals","wood","food"]
@@ -575,7 +573,7 @@ setInterval(() => {
                         }
                     })
                     let boss = {
-                        name:"Raid Boss",
+                        name:data.raidBossNames[Math.floor(Math.random()*data.raidBossNames.length)],
                         id:"raidBoss",
                         cpu:true,
                         faction:"-1",
@@ -604,12 +602,39 @@ setInterval(() => {
                     boss = simulateCPUSPAssign(clone(boss),townData.level * 60)
                     townData.raid = {
                         leader:{
-                            name:"Raid Boss",
+                            name:boss.name,
                             unit:boss,
                             equipment:bossEquipment
                         },
                         missions:missions,
                         completion:0
+                    }
+                }
+
+                //Restock Tasks
+                if(townData.taskRestock < now.getTime()){
+                    townData.taskRestock = now.getTime() + 86400000
+                    townData.taskList = []
+                    while(townData.taskList.length < 3){
+                        let newTask = data.townTasks[Math.floor(Math.random() * data.townTasks.length)]
+                        // let repeat = false;
+                        // for(task of townData.taskList){
+                        //     if(task.id == newTask.id){
+                        //         repeat = true
+                        //         break;
+                        //     }
+                        // }
+                        // while(repeat){
+                        //     repeat = false
+                        //     newTask = data.townTasks[Math.floor(Math.random() * data.townTasks.length)]
+                        //     for(task of townData.taskList){
+                        //         if(task.id == newTask.id){
+                        //             repeat = true
+                        //             break;
+                        //         }
+                        //     }
+                        // }
+                        townData.taskList.push(newTask)
                     }
                 }
 
@@ -743,7 +768,7 @@ setInterval(() => {
             messageLog = {}
         })
     })      
-}, 3000);
+}, 5000);
 //}, 300000);
 
 client.login(token);

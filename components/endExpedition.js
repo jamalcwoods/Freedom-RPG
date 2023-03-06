@@ -26,9 +26,19 @@ module.exports = {
         getTownDBData(townID,function(town){
             for(var i = 0; i < town.expeditions.length;i++){
                 if(town.expeditions[i].playerID == player.id){
+                    if(!town.contributors){
+                        town.contributors = {}
+                    }
                     for(resource in town.expeditions[i].townResources){
                         town.resources[resource][0] += town.expeditions[i].townResources[resource]
+                        if(!town.contributors[player.id]){
+                            town.contributors[player.id] = town.expeditions[i].townResources[resource]
+                        } else {
+                            town.contributors[player.id] += town.expeditions[i].townResources[resource]
+                        }
                     }
+                    
+                    
                     town.expeditions.splice(i,1)
                 }
             }

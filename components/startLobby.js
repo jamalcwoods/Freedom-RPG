@@ -24,31 +24,35 @@ module.exports = {
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         if(interaction.user.id == session.session_data.owner){
-            switch(session.session_data.lobbyType){
-                case "FFA":
-                    let lobbyPlayers = clone(session.session_data.players)
-                    loadPlayerData(lobbyPlayers,[],function(fighters){
-                        let newSession = {
-                            type:"combat",
-                            session_id: Math.floor(Math.random() * 100000),
-                            user_ids:session.user_ids,
-                            session_data:populateCombatData(fighters,{
-                                fightType:"pvp",
-                                lobby:session.session_id,
-                                returnSession:session.session_id
+            if(session.session_data.players.length > 1){
+                switch(session.session_data.lobbyType){
+                    case "FFA":
+                            let lobbyPlayers = clone(session.session_data.players)
+                            loadPlayerData(lobbyPlayers,[],function(fighters){
+                                let newSession = {
+                                    type:"combat",
+                                    session_id: Math.floor(Math.random() * 100000),
+                                    user_ids:session.user_ids,
+                                    session_data:populateCombatData(fighters,{
+                                        fightType:"pvp",
+                                        lobby:session.session_id,
+                                        returnSession:session.session_id
+                                    })
+                                }
+                                interaction.update({
+                                    content:" ",
+                                    components:populateCombatControls(newSession),
+                                    embeds:populateCombatWindow(newSession)
+                                })
+                                callback({
+                                    updateSession:session,
+                                    addSession:newSession
+                                })
                             })
-                        }
-                        interaction.update({
-                            content:" ",
-                            components:populateCombatControls(newSession),
-                            embeds:populateCombatWindow(newSession)
-                        })
-                        callback({
-                            updateSession:session,
-                            addSession:newSession
-                        })
-                    })
-                    break;
+                            break;
+                }
+            } else {
+                interaction.reply({ content: "Need more than 1 player to start a lobby", ephemeral: true });
             }
         } else {
             interaction.reply({ content: "Only the lobby owner may start a lobby", ephemeral: true });

@@ -30,7 +30,7 @@ module.exports = {
 
             callback({
                 updatePlayer:updates,
-                removeSession:newSession
+                removeSession:session
             })
         } else {
             let choiceVal;
@@ -77,7 +77,7 @@ module.exports = {
                         let eventRank = session.session_data.dungeonRank + session.session_data.dangerValue/8
                         let eventReq = choiceVal.split("|")
                         let playerRoll = Math.floor(session.session_data.player.stats[eventReq[0]] * 0.25 + (Math.random() * session.session_data.player.stats[eventReq[0]] * 0.75))
-                        let eventRoll = 10 + Math.ceil(Math.random() * (parseInt(eventReq[1]) * 0.1666) * (10 * eventRank))
+                        let eventRoll = 5 + Math.ceil(Math.random() * (parseInt(eventReq[1]) * 0.1666) * (10 * eventRank))
                         pass = playerRoll >= eventRoll
                         if(!pass){
                             session.session_data.dangerValue++
@@ -163,7 +163,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:alliances,
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,

@@ -359,7 +359,6 @@ function generateAbilityName(ability){
                 }
             }
             let list;
-            console.log(primeEffect)
             if(primeEffect.value > 0){
                 list = nameBank.ability.stats.stat.pos[primeEffect.stat]
             } else {

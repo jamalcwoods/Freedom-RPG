@@ -67,175 +67,468 @@
       "name": "Mythical"
     }
   ],
-  "nameBank":{
-    "equipment":{
-      "weapon":{
-        "titles":[
-          ["Sword","Hammer","Axe"],
-          ["Bow","Crossbow","Launcher"],
-          ["Staff","Scepter","Wand"],
-          ["Aura","Essence","Energy"]
+  "nameBank": {
+    "equipment": {
+      "weapon": {
+        "titles": [
+          [
+            "Sword",
+            "Hammer",
+            "Axe"
+          ],
+          [
+            "Bow",
+            "Crossbow",
+            "Launcher"
+          ],
+          [
+            "Staff",
+            "Scepter",
+            "Wand"
+          ],
+          [
+            "Aura",
+            "Essence",
+            "Energy"
+          ]
         ],
-        "perkTags":[
-          ["Battering"],
-          ["Ambushing"],
-          ["Prospering"],
-          ["Terrifying"],
-          ["Raiding"],
-          ["Inspiring"]
+        "perkTags": [
+          [
+            "Battering"
+          ],
+          [
+            "Ambushing"
+          ],
+          [
+            "Prospering"
+          ],
+          [
+            "Terrifying"
+          ],
+          [
+            "Raiding"
+          ],
+          [
+            "Inspiring"
+          ]
         ]
       },
-      "gear":{
-        "titles":["Uniform","Armor","Outfit","Clothing"],
-        "perkTags":[
-          ["Exploiting"],
-          ["Belittling"],
-          ["Preserving"],
-          ["Looming"],
-          ["Adapting"],
-          ["Emboldening"]
+      "gear": {
+        "titles": [
+          "Uniform",
+          "Armor",
+          "Outfit",
+          "Clothing"
+        ],
+        "perkTags": [
+          [
+            "Exploiting"
+          ],
+          [
+            "Belittling"
+          ],
+          [
+            "Preserving"
+          ],
+          [
+            "Looming"
+          ],
+          [
+            "Adapting"
+          ],
+          [
+            "Emboldening"
+          ]
         ]
       },
-      "statTags":{
-        "atk":["Firm","Brutal","Merciless","Grim","Sharp","Barbed"],
-        "def":["Sturdy","Stable","Protector's","Hefty","Reinforced","Fortified"],
-        "spatk":["Rune-fused","Cursed","Enchanted","Chaotic","Radiant","Resplendent"],
-        "spdef":["Rune-guarded","Sacred","Guardian's","Divine"],
-        "spd":["Lightweight","Hasty","Energized","Hectic","Loose"],
-        "hp":["Aegis","Hulking","Noble","Formidable","Secure"]
+      "statTags": {
+        "atk": [
+          "Firm",
+          "Brutal",
+          "Merciless",
+          "Grim",
+          "Sharp",
+          "Barbed"
+        ],
+        "def": [
+          "Sturdy",
+          "Stable",
+          "Protector's",
+          "Hefty",
+          "Reinforced",
+          "Fortified"
+        ],
+        "spatk": [
+          "Rune-fused",
+          "Cursed",
+          "Enchanted",
+          "Chaotic",
+          "Radiant",
+          "Resplendent"
+        ],
+        "spdef": [
+          "Rune-guarded",
+          "Sacred",
+          "Guardian's",
+          "Divine"
+        ],
+        "spd": [
+          "Lightweight",
+          "Hasty",
+          "Energized",
+          "Hectic",
+          "Loose"
+        ],
+        "hp": [
+          "Aegis",
+          "Hulking",
+          "Noble",
+          "Formidable",
+          "Secure"
+        ]
       },
-      "statNegTags":{
-        "atk":["Flimsy","Dull"],
-        "def":["Worn","Shabby"],
-        "spatk":["Suppressed","Diluted"],
-        "spdef":["Malleable","Frail"],
-        "spd":["Heavy","Cumbersome"],
-        "hp":["Risky","Delicate"]
+      "statNegTags": {
+        "atk": [
+          "Flimsy",
+          "Dull"
+        ],
+        "def": [
+          "Worn",
+          "Shabby"
+        ],
+        "spatk": [
+          "Suppressed",
+          "Diluted"
+        ],
+        "spdef": [
+          "Malleable",
+          "Frail"
+        ],
+        "spd": [
+          "Heavy",
+          "Cumbersome"
+        ],
+        "hp": [
+          "Risky",
+          "Delicate"
+        ]
       },
-      "statsubTags":{
-        "atk":["Combat"],
-        "def":["Protection"],
-        "spatk":["Spell"],
-        "spdef":["Guard"],
-        "spd":["Swift"],
-        "hp":["Brave"]
+      "statsubTags": {
+        "atk": [
+          "Combat"
+        ],
+        "def": [
+          "Protection"
+        ],
+        "spatk": [
+          "Spell"
+        ],
+        "spdef": [
+          "Guard"
+        ],
+        "spd": [
+          "Swift"
+        ],
+        "hp": [
+          "Brave"
+        ]
       }
     },
-    "ability":{
-      "attack":{
-        "title":{
-          "atk":{
-            "10":["Jab"],
-            "20":["Strike"],
-            "40":["Assault"],
-            "60":["Endeavor"],
-            "80":["Collision"],
-            "100":["Impact"]
+    "ability": {
+      "attack": {
+        "title": {
+          "atk": {
+            "10": [
+              "Jab"
+            ],
+            "20": [
+              "Strike"
+            ],
+            "40": [
+              "Assault"
+            ],
+            "60": [
+              "Endeavor"
+            ],
+            "80": [
+              "Collision"
+            ],
+            "100": [
+              "Impact"
+            ]
           },
-          "spatk":{
-            "10":["Spark"],
-            "20":["Burst"],
-            "40":["Blast"],
-            "60":["Surge"],
-            "80":["Flare"],
-            "100":["Eruption"]
+          "spatk": {
+            "10": [
+              "Spark"
+            ],
+            "20": [
+              "Burst"
+            ],
+            "40": [
+              "Blast"
+            ],
+            "60": [
+              "Surge"
+            ],
+            "80": [
+              "Flare"
+            ],
+            "100": [
+              "Eruption"
+            ]
           }
         },
-        "critical":{
-          "base":0,
-          "scalarWeights":[1,2,3,4],
-          "scalar":[10,25,50,75],
-          "10":["Seeking"],
-          "25":["Precise"],
-          "50":["Honed"],
-          "75":["Hunter"]
+        "critical": {
+          "10": [
+            "Seeking"
+          ],
+          "25": [
+            "Precise"
+          ],
+          "50": [
+            "Honed"
+          ],
+          "75": [
+            "Hunter"
+          ],
+          "base": 0,
+          "scalarWeights": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "scalar": [
+            10,
+            25,
+            50,
+            75
+          ]
         },
-        "recoil":{
-          "base":0,
-          "scalarWeights":[1,2,3,4],
-          "scalar":[10,25,50,75],
-          "10":["Careless"],
-          "25":["Reckless"],
-          "50":["Fearless"],
-          "75":["Desperate"]
+        "recoil": {
+          "10": [
+            "Careless"
+          ],
+          "25": [
+            "Reckless"
+          ],
+          "50": [
+            "Fearless"
+          ],
+          "75": [
+            "Desperate"
+          ],
+          "base": 0,
+          "scalarWeights": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "scalar": [
+            10,
+            25,
+            50,
+            75
+          ]
         },
-        "accuracy":{
-          "base":100,
-          "scalarWeights":[2,1,2,3],
-          "scalar":[10,80,110,130],
-          "10":["Aimless"],
-          "80":["Wild"],
-          "110":["Focused"],
-          "130":["Flawless"]
+        "accuracy": {
+          "10": [
+            "Aimless"
+          ],
+          "80": [
+            "Wild"
+          ],
+          "110": [
+            "Focused"
+          ],
+          "130": [
+            "Flawless"
+          ],
+          "base": 100,
+          "scalarWeights": [
+            2,
+            1,
+            2,
+            3
+          ],
+          "scalar": [
+            10,
+            80,
+            110,
+            130
+          ]
         },
-        "speed":{
-          "base":1,
-          "scalar":[0,2,4],
-          "scalarWeights":[2,1,3],
-          "0":["Slacking","Lagging"],
-          "2":["Quick","Hasty"],
-          "4":["Blinding"]
+        "speed": {
+          "0": [
+            "Slacking",
+            "Lagging"
+          ],
+          "2": [
+            "Quick",
+            "Hasty"
+          ],
+          "4": [
+            "Blinding"
+          ],
+          "base": 1,
+          "scalar": [
+            0,
+            2,
+            4
+          ],
+          "scalarWeights": [
+            2,
+            1,
+            3
+          ]
         }
       },
-      "guard":{
-        "title":{
-          "def":{
-            "10":["Reflex"],
-            "20":["Guard"],
-            "40":["Defense"],
-            "60":["Barrier"],
-            "80":["Protection"],
-            "100":["Fortification"]
+      "guard": {
+        "title": {
+          "def": {
+            "10": [
+              "Reflex"
+            ],
+            "20": [
+              "Guard"
+            ],
+            "40": [
+              "Defense"
+            ],
+            "60": [
+              "Barrier"
+            ],
+            "80": [
+              "Protection"
+            ],
+            "100": [
+              "Fortification"
+            ]
           },
-          "spdef":{
-            "10":["Sense"],
-            "20":["Focus"],
-            "40":["Perception"],
-            "60":["Meditation"],
-            "80":["Concentration"],
-            "100":["Spirit"]
+          "spdef": {
+            "10": [
+              "Sense"
+            ],
+            "20": [
+              "Focus"
+            ],
+            "40": [
+              "Perception"
+            ],
+            "60": [
+              "Meditation"
+            ],
+            "80": [
+              "Concentration"
+            ],
+            "100": [
+              "Spirit"
+            ]
           }
         },
-        "counter_val":{
-          "base":0,
-          "scalarWeights":[0,1,2],
-          "scalar":[10,30,60],
-          "10":["Retaliating"],
-          "50":["Advancing"],
-          "80":["Vengeful"]
+        "counter_val": {
+          "10": [
+            "Retaliating"
+          ],
+          "50": [
+            "Advancing"
+          ],
+          "80": [
+            "Vengeful"
+          ],
+          "base": 0,
+          "scalarWeights": [
+            0,
+            1,
+            2
+          ],
+          "scalar": [
+            10,
+            30,
+            60
+          ]
         },
-        "success_level":{
-          "base":100,
-          "scalarWeights":[3,2,1,2],
-          "scalar":[25,50,200,400],
-          "25":["Burdening"],
-          "50":["Rushed"],
-          "200":["Effortless"],
-          "400":["Instinct"]
+        "success_level": {
+          "25": [
+            "Burdening"
+          ],
+          "50": [
+            "Rushed"
+          ],
+          "200": [
+            "Effortless"
+          ],
+          "400": [
+            "Instinct"
+          ],
+          "base": 100,
+          "scalarWeights": [
+            3,
+            2,
+            1,
+            2
+          ],
+          "scalar": [
+            25,
+            50,
+            200,
+            400
+          ]
         }
       },
-      "stats":{
-        "target":{
-          "0":["Stance"],
-          "1":["Cheer"],
-          "2":["Signal"],
-          "3":["Outburst"],
-          "4":["Roar"]
+      "stats": {
+        "target": {
+          "0": [
+            "Stance"
+          ],
+          "1": [
+            "Cheer"
+          ],
+          "2": [
+            "Signal"
+          ],
+          "3": [
+            "Outburst"
+          ],
+          "4": [
+            "Roar"
+          ]
         },
-        "stat":{
-          "pos":{
-            "atk":["Encouraging"],
-            "spatk":["Stimulating"],
-            "def":["Toughening"],
-            "spdef":["Safeguarding"],
-            "spd":["Enabling"]
+        "stat": {
+          "pos": {
+            "atk": [
+              "Encouraging"
+            ],
+            "spatk": [
+              "Stimulating"
+            ],
+            "def": [
+              "Toughening"
+            ],
+            "spdef": [
+              "Safeguarding"
+            ],
+            "spd": [
+              "Enabling"
+            ]
           },
-          "neg":{
-            "atk":["Weakening"],
-            "spatk":["Disrupting"],
-            "def":["Exposing"],
-            "spdef":["Irritating"],
-            "spd":["Debilitating"]
+          "neg": {
+            "atk": [
+              "Weakening"
+            ],
+            "spatk": [
+              "Disrupting"
+            ],
+            "def": [
+              "Exposing"
+            ],
+            "spdef": [
+              "Irritating"
+            ],
+            "spd": [
+              "Debilitating"
+            ]
           }
         }
       }
@@ -259,77 +552,77 @@
       "name": "Energy Manipulation"
     }
   ],
-  "abilityWeights":{
-    "weapon":{
-      "0":{
-        "attack":{
-          "critical":-0.1
+  "abilityWeights": {
+    "weapon": {
+      "0": {
+        "attack": {
+          "critical": -0.1
         },
-        "guard":{
-          "guard_val":0.1
+        "guard": {
+          "guard_val": 0.1
         }
       },
-      "1":{
-        "attack":{
-          "speed":-0.1
+      "1": {
+        "attack": {
+          "speed": -0.1
         },
-        "guard":{
-          "counter_val":0.1
+        "guard": {
+          "counter_val": 0.1
         },
-        "stats":{
-          "speed":-0.1
+        "stats": {
+          "speed": -0.1
         }
       },
-      "2":{
-        "attack":{
-          "damage_val":-0.1,
-          "accuracy":0.1
+      "2": {
+        "attack": {
+          "damage_val": -0.1,
+          "accuracy": 0.1
         }
       },
-      "3":{
-        "guard":{
-          "success_level":-0.5
+      "3": {
+        "guard": {
+          "success_level": -0.5
         },
-        "stats":{
-          "effectStrength":0.25
+        "stats": {
+          "effectStrength": 0.25
         }
       }
     },
-    "race":{
-      "0":{
-        "attack":{
-          "accuracy":0.1
+    "race": {
+      "0": {
+        "attack": {
+          "accuracy": 0.1
         },
-        "guard":{
-          "success_level":0.5
+        "guard": {
+          "success_level": 0.5
         }
       },
-      "1":{
-        "guard":{
-          "counter_val":-0.1
+      "1": {
+        "guard": {
+          "counter_val": -0.1
         },
-        "attack":{
-          "critical":0.1
+        "attack": {
+          "critical": 0.1
         }
       },
-      "2":{
-        "attack":{
-          "speed":0.1
+      "2": {
+        "attack": {
+          "speed": 0.1
         },
-        "guard":{
-          "guard_val":-0.1  
+        "guard": {
+          "guard_val": -0.1
         },
-        "stats":{
-          "speed":0.1
+        "stats": {
+          "speed": 0.1
         }
       },
-      "3":{
-        "attack":{
-          "damage_val":-0.1,
-          "accuracy":0.1
+      "3": {
+        "attack": {
+          "damage_val": -0.1,
+          "accuracy": 0.1
         },
-        "stats":{
-          "effectStrength":0.25
+        "stats": {
+          "effectStrength": 0.25
         }
       }
     }
@@ -605,7 +898,7 @@
                     "alliance": 1,
                     "allowance": 3,
                     "scaling": "dungeon",
-                    "scalar":{
+                    "scalar": {
                       "hp": 0.6,
                       "atk": 0.8,
                       "def": 0.6,
@@ -1471,7 +1764,7 @@
         "You discover the opening to a cave and venture inside. Inside, you find an abandoned campfire and some supplies."
       ],
       [
-        "The sploshing of mud under you is suddenly interrupted as you here a jingle of coins under your feet. You lift your boot to discover a small bag of coins lodged deep in the mud.",
+        "The sploshing of mud under you is suddenly interrupted as you here a jingle of coins. You look down to discover a small bag of coins lodged deep in the mud.",
         "You find a statue in the middle of a clearing with a small pool of water around it. You spot a few gold coins in the fountain so you decide to snag them for yourself as you continue along your way."
       ],
       [
@@ -1479,7 +1772,7 @@
         "You come across a steep hill in the direction you were already heading in. Rather than finding an easier path you make your way up it , pausing to take in the view and catch your breath at the top"
       ],
       [
-        "Suddenly, you Stumble on an unseen object and plummet face first into the mud. As you lift yourself back up you realize that you tripped over some kind of container buried in mud. Wonder what's inside?",
+        "Suddenly, you stumble on an unseen object and plummet face first into the mud. As you lift yourself back up you realize that you tripped over some kind of container buried in mud. Wonder what's inside?",
         "You come across a small stone structure in a clearing. It's pyramid shaped and in the center lies a podium with something in the center."
       ],
       [
@@ -1504,95 +1797,91 @@
         "You see a small wooden shack in a clearing. You make your way to it and find that there is a table with some equipment left on top of it. No one seems to have been here recently so you decide to take it for yourself"
       ],
       [
-        "You notice a glowing light is a frozen lake, close to the surface. Carefully, you make your way to the light source in the lake and watch as it bursts up from the ice and floats towards you. You approach it and feel a burst of energy course through your body as it dissolves around you."
+        "You notice a glowing light in a frozen lake, close to the surface. Carefully, you make your way to the light source in the lake and watch as it bursts up from the ice and floats towards you. You approach it and feel a burst of energy course through your body as it dissolves around you."
       ]
     ],
     "Desert": [
       [
-        "resource desert 1",
-        "resource desert 2"
+        "Walking through the vast desert you come across an odd lump of sand. You dig into and uncover and abandoned stash of resources.",
+        "A sandstorm forces you to take shelter in a cave where you come across a cache of abandoned resources."
       ],
       [
-        "gold desert 1",
-        "gold desert 2"
+        "A partially buried object in the sand catches your eye, you approach it to find that it is an ancient artifact. Might be able to sell this for gold",
+        "You come across a strange metal vessel, abandoned in the desert. Aboard it you don't find much other than some gold that has seemingly been left behind."
       ],
       [
-        "equipment desert 1",
-        "equipment desert 2"
+        "Before your eyes, a ferocious dust devil begins to form in front of you. You hurry to escape it's fury as it tosses sand into the air, blinding your vision. Luckily, you are eventually able to flee its wrath",
+        "You reach the top of a sand dune to find a hidden oasis below you. You make your way to it and take a moment to rest amongst a natural water spring."
       ],
       [
-        "statIncrease desert 1",
-        "statIncrease desert 2"
+        "As you journey through the desert you come across a jumbled assortment of armor pieces and weapons. Luckily, you are able to find something that is still intact",
+        "In the distance you are able to spot a lone campsite. You approach it to find an abandoned fire pit that's still warm."
       ],
       [
-        "abilitypoi desert 1",
-        "abilitypoi desert 2"
+        "As you rest near a fire during the night you hear a voice call out behind you. You turn around to find a glowing ball of light floating above the sand. It begins to get closer to you before dissipating around you"
       ]
     ],
     "Islands": [
       [
-        "resource islands 1",
-        "resource islands 2"
+        "Walking along side the beach you notice a barrel that has washed upon the shore. You open it to find some resources.",
+        "You come across a bundle of leaves that seem to be helping something blend into the surrounding environment."
       ],
       [
-        "gold islands 1",
-        "gold islands 2"
+        "The low tide reveals a chest that is partially covered in sand. You dig it out and find some gold coins left behind.",
+        "You decide to explore a cave alongside the coast and find a beautiful scale hidden within it's depths."
       ],
       [
-        "equipment islands 1",
-        "equipment islands 2"
+        "While walking along the coast, you notice that a storm is approaching. You quickly make your way inland and prep a makeshift shelter to wait out the storm.",
+        "The sun begins to set after a long day of exploring. You take a moment to watch it from the shore as you listen to the sounds of the ocean's breeze"
       ],
       [
-        "statIncrease islands 1",
-        "statIncrease islands 2"
+        "You come across a shipwreck around some jagged rocks on the coast. You board what's left of the ship and find a locked chest that seems to have been forgotten",
+        "Within the treeline you spot a tree house. You climb up to it to discover that it is mostly abandoned with a few things left behind"
       ],
       [
-        "abilitypoi islands 1",
-        "abilitypoi islands 2"
+        "As another wave crashes into the coast, peculiar looking object is revealed as the waves pull away from the shore. As you approach it, it shudders a bit before releasing a burst of light that dissipates quickly"
       ]
     ],
     "Mountains": [
       [
-        "resource mountains 1",
-        "resource mountains 2"
+        "Walking along the mountain path you find a small campsite that seems to have been abandoned. A few resources have been left behind",
+        "Reaching the summit of a small peak, you take in the sights for a moment before spotting a makeshift shelter below you. You go to investigate it and find some resources."
       ],
       [
-        "gold mountains 1",
-        "gold mountains 2"
+        "You decide to make your way through a cave in the cliff side and stumble upon some peculiar gems that shine through the caves darkness. You decide to pocket a few that have broke loose from the cave wall",
+        "You find the entrance to a mineshaft in the cliff side. An old mine cart is still on the tracks and you find some gold pieces left behind in it."
       ],
       [
-        "equipment mountains 1",
-        "equipment mountains 2"
+        "While trekking up the mountain side, strong winds begin to blow. You loose your balance and are sent tumble off a cliff, but manage to latch on to a rock jutting out from the side and climb your way back up.",
+        "As you reach the high point on the trail, you are able to get tremendous view of your surroundings. You rest for a moment and take in the sight of the land stretching out towards the horizon."
       ],
       [
-        "statIncrease mountains 1",
-        "statIncrease mountains 2"
+        "Along the slide of a steep cliff you find some abandoned hiking gear. You decide to inspect it further to see if there is anything you might be able to utilize",
+        "You come across a small body of water at the bottom of another steep incline. The water is shallow so you can see that there is something strange at the bottom of it"
       ],
       [
-        "abilitypoi mountains 1",
-        "abilitypoi mountains 2"
+        "You walk beside a strange engraving in the cliff side that calls to you for some reason. It suddenly begins to glow and a flash of light quickly bursts outwards from it, enveloping you in an familiar energy."
       ]
     ],
     "Forest": [
       [
-        "resource forest 1",
-        "resource forest 2"
+        "You come across a tree with a hallowed out opening covered in leaves. You remove the leaves and find some resources.",
+        "You come across a clearing where it seems multiple trees have sustained large amounts of damage from some kind of beast. You also find some resources scattered about"
       ],
       [
-        "gold forest 1",
-        "gold forest 2"
+        "You come across a river and spot something shiny near the surface, caught between a few rocks. You wiggle it out and inspect it to find that it is some type of jewelry, must be worth something",
+        "You find abandoned shelter that is covered in vegetation. Must've been here a while. Inside there seem to be some valuables left intact"
       ],
       [
-        "equipment forest 1",
-        "equipment forest 2"
+        "The trees of the forest seem to go on forever in all directions around you. You decide to climb to the roof of the forest to get better view of your surroundings and plan your next destination.",
+        "You decide to follow a small creek that cuts through the forest. It grows wider as it leads to a huge waterfall. You take a moment to enjoy the sights and listen to the falls."
       ],
       [
-        "statIncrease forest 1",
-        "statIncrease forest 2"
+        "You find a fire pit with a few logs and leaf piles close by. The fire pit seems to have not been used in a while. You decide to inspect the leaf piles for any supplies",
+        "Hidden amongst the trees you come across the opening to a shallow cave. You enter and find some leftover equipment."
       ],
       [
-        "abilitypoi forest 1",
-        "abilitypoi forest 2"
+        "As you walk through a clearing in the forest you hear a voice above you. You look up to see a bright bundle of light floating in the air. It descends to your eye level and slowly dissipates as it surrounds you."
       ]
     ]
   },
@@ -1604,79 +1893,127 @@
     "Mountains",
     "Forest"
   ],
-  "challengeDict":[
+  "challengeDict": [
     {
-      "name":"Take out the trash",
-      "description":"Defeat X enemies in combat",
-      "baseGoal":5
+      "name": "Take out the trash",
+      "description": "Defeat X enemies in combat",
+      "baseGoal": 5
     },
     {
-      "name":"No pain, no gain",
-      "description":"Receive X damage from enemies in combat",
-      "baseGoal":50
+      "name": "No pain, no gain",
+      "description": "Receive X damage from enemies in combat",
+      "baseGoal": 50
     },
     {
-      "name":"Talk to the hand",
-      "description":"Block X base damage in combat",
-      "baseGoal":80
+      "name": "Talk to the hand",
+      "description": "Block X base damage in combat",
+      "baseGoal": 80
     },
     {
-      "name":"Applying pressure",
-      "description":"Deal X damage with attacks in combat",
-      "baseGoal":100
+      "name": "Applying pressure",
+      "description": "Deal X damage with attacks in combat",
+      "baseGoal": 100
     },
     {
-      "name":"Early bird",
-      "description":"Be the first to attack during a turn X times",
-      "baseGoal":5
+      "name": "Early bird",
+      "description": "Be the first to attack during a turn X times",
+      "baseGoal": 5
     },
     {
-      "name":"Bullseye",
-      "description":"Land a critical hit X times",
-      "baseGoal":3
+      "name": "Bullseye",
+      "description": "Land a critical hit X times",
+      "baseGoal": 3
     },
     {
-      "name":"Now it's my turn",
-      "description":"Deal X damage with counter attacks in combat",
-      "baseGoal":50
+      "name": "Now it's my turn",
+      "description": "Deal X damage with counter attacks in combat",
+      "baseGoal": 50
     },
     {
-      "name":"We don't do that here",
-      "description":"Entirely block an enemy's attack X times",
-      "baseGoal":3
+      "name": "We don't do that here",
+      "description": "Entirely block an enemy's attack X times",
+      "baseGoal": 3
     },
     {
-      "name":"Raising the bar",
-      "description":"Increase an ally or your own stat in combat X times",
-      "baseGoal":3
+      "name": "Raising the bar",
+      "description": "Increase an ally or your own stat in combat X times",
+      "baseGoal": 3
     },
     {
-      "name":"Sabotaged",
-      "description":"Lower an enemy's stat in combat X times",
-      "baseGoal":3
+      "name": "Sabotaged",
+      "description": "Lower an enemy's stat in combat X times",
+      "baseGoal": 3
     },
     {
-      "name":"Do over!",
-      "description":"Successfully use an attack on the same target twice in a row in combat X times",
-      "baseGoal":3
+      "name": "Do over!",
+      "description": "Successfully use an attack on the same target twice in a row in combat X times",
+      "baseGoal": 3
     }
   ],
-  "equipmentPerkDescriptions":{
-    "weapon":[
-      ["Critical hits ignore X% of targets defense stat",5,"Battering Blows"],
-      ["An attack used on a target before they have done an action increases base damage by X",4,"Sucker Strike"],
-      ["X% chance to increase a random stat by one stage when hitting an unguarded target",5,"Combat Confidence"],
-      ["X% chance to lower the offensive stats of enemies on the first turn",15,"Daunting Display"],
-      ["Repeating an attack on the same target increases the attack’s critical chance by X%",10,"Precise Pursuit"], 
-      ["If the target’s active defensive stat is their largest defensive stat, deal X% more total damage",5,"Titan Toppler"]
+  "equipmentPerkDescriptions": {
+    "weapon": [
+      [
+        "Critical hits ignore X% of targets defense stat",
+        5,
+        "Battering Blows"
+      ],
+      [
+        "An attack used on a target before they have done an action increases base damage by X",
+        4,
+        "Sucker Strike"
+      ],
+      [
+        "X% chance to increase a random stat by one stage when hitting an unguarded target",
+        5,
+        "Combat Confidence"
+      ],
+      [
+        "X% chance to lower the offensive stats of enemies on the first turn",
+        15,
+        "Daunting Display"
+      ],
+      [
+        "Repeating an attack on the same target increases the attack’s critical chance by X%",
+        10,
+        "Precise Pursuit"
+      ],
+      [
+        "If the target’s active defensive stat is their largest defensive stat, deal X% more total damage",
+        5,
+        "Titan Toppler"
+      ]
     ],
-    "gear":[
-      ["Counter attacks have a X% chance to critically hit",10,"Calculated Counter"], 
-      ["If an attack’s base damage is less than your guard’s power, heal X% of the difference",20,"Rumbler's Respite"],
-      ["After successfully using a guard, your next guard has +X% chance of succeeding",5,"Greedy Guard"],
-      ["X% chance to lower the defensive stats of enemies on the first turn",15,"Supreme Stature"],
-      ["Guards gain X% more effectiveness when blocking non-matching attacks",7,"Formidable Flexibility"],
-      ["X% chance to increase a random stat by one stage when completely blocking an attack",5,"Motivating Marcher"] 
+    "gear": [
+      [
+        "Counter attacks have a X% chance to critically hit",
+        10,
+        "Calculated Counter"
+      ],
+      [
+        "If an attack’s base damage is less than your guard’s power, heal X% of the difference",
+        20,
+        "Rumbler's Respite"
+      ],
+      [
+        "After successfully using a guard, your next guard has +X% chance of succeeding",
+        5,
+        "Greedy Guard"
+      ],
+      [
+        "X% chance to lower the defensive stats of enemies on the first turn",
+        15,
+        "Supreme Stature"
+      ],
+      [
+        "Guards gain X% more effectiveness when blocking non-matching attacks",
+        7,
+        "Formidable Flexibility"
+      ],
+      [
+        "X% chance to increase a random stat by one stage when completely blocking an attack",
+        5,
+        "Motivating Marcher"
+      ]
     ]
   },
   "templates": {
@@ -1740,7 +2077,8 @@
           "recoil": 0,
           "targetType": "1",
           "accuracy": 100
-        },{
+        },
+        {
           "action_type": "guard",
           "name": "Starter Guard",
           "guard_val": 30,
@@ -1749,7 +2087,8 @@
           "counter_val": 0,
           "counter_type": "def",
           "speed": 3
-        },{
+        },
+        {
           "action_type": "stats",
           "name": "Starter Buff",
           "statChangeCount": 2,
@@ -1779,16 +2118,17 @@
         "spdef": 10,
         "spd": 10
       },
-      "presenceTimer":0,
-      "dailyTimer":0,
-      "dailyCount":0,
-      "challengeTimer":0,
-      "challenges":[
+      "presenceTimer": 0,
+      "dailyTimer": 0,
+      "dailyCount": 0,
+      "taskTimer": 0,
+      "challengeTimer": 0,
+      "challenges": [
         {
-          "type":0,
-          "rank":1,
-          "progress":0,
-          "goal":5
+          "type": 0,
+          "rank": 1,
+          "progress": 0,
+          "goal": 5
         }
       ],
       "boosters": [
@@ -1824,9 +2164,10 @@
           10
         ]
       },
-      "id":0,
+      "id": 0,
       "marketRestock": 0,
       "trainingRestock": 0,
+      "taskRestock": 0,
       "hallReset": 0,
       "hallStart": 0,
       "level": 1,
@@ -1883,6 +2224,51 @@
       }
     }
   },
+  "townTasks": [
+    {
+      "name": "Test Task",
+      "id": 0,
+      "description": "Test description for a task",
+      "taskPrompt": "Test prompt for a task",
+      "multiThresh": 1,
+      "expReward": 0.33,
+      "goldReward": 0.33,
+      "repReward": 0.33,
+      "solutionMap": {
+        "hp": {
+          "solution": "HP based prompt",
+          "solutionDesc": "HP based prompt desc",
+          "multi": 0.75
+        },
+        "atk": {
+          "solution": "ATK based prompt",
+          "solutionDesc": "ATK based prompt desc",
+          "multi": 1
+        },
+        "def": {
+          "solution": "DEF based prompt",
+          "solutionDesc": "DEF based prompt desc",
+          "multi": 1
+        },
+        "spatk": {
+          "solution": "SPATK based prompt",
+          "solutionDesc": "SPATK based prompt desc",
+          "multi": 1
+        },
+        "spdef": {
+          "solution": "SPDEF based prompt",
+          "solutionDesc": "SPDEF based prompt desc",
+          "multi": 1
+        },
+        "spd": {
+          "solution": "SPD based prompt",
+          "solutionDesc": "SPD based prompt desc",
+          "multi": 1
+        }
+      },
+      "suggestedSolutionPrompt": "Test prompt thats suggest which solution would be better for completing the task"
+    }
+  ],
   "innateFacilities": [
     {
       "description": "Facility to purchase lives and boosts",
@@ -1913,6 +2299,16 @@
       "description": "Facility to embark on dungeon raids and expeditions",
       "name": "Adventurer's Hall",
       "value": "adventure"
+    },
+    {
+      "description": "Facility to complete tasks given by townsfolk",
+      "name": "Task Hall",
+      "value": "tasks"
+    },
+    {
+      "description": "Facility to view accomplishments",
+      "name": "Record Hall",
+      "value": "records"
     }
   ],
   "acquiredFacilities": [
@@ -1972,6 +2368,9 @@
       50
     ]
   },
+  "raidBossNames":[
+    "Ghazat","Abghat","Adgulg","Aghed","Agugh","Aguk","Almthu","Alog","Ambilge","Apaugh","Argha","Argigoth","Argug","Arpigig","Auhgan","Azhug","Bagdud","Baghig","Bahgigoth","Bandagh","Barfu","Bargulg","Baugh","Bidgug","Bildud","Bilge","Bog","Boghat","Bogugh","Borgan","Borug","Braugh","Brougha","Brugagh","Bruigig","Buadagh","Buggug","Builge","Buimghig","Bulgan","Bumhug","Buomaugh","Buordud","Burghed","Buugug","Cabugbu","Cagan","Carguk","Carthurg","Clog","Corgak","Crothu","Cubub","Cukgilug","Curbag","Dabub","Dakgorim","Dakgu","Dalthu","Darfu","Deakgu","Dergu","Derthag","Digdug","Diggu","Dilug","Ditgurat","Dorgarag","Dregu","Dretkag","Drigka","Drikdarok","Drutha","Dudagog","Dugarod","Dugorim","Duiltag","Durbag","Eagungad","Eggha","Eggugat","Egharod","Eghuglat","Eichelberbog","Ekganit","Epkagut","Ergoth","Ertguth","Ewkbanok","Fagdud","Faghig","Fandagh","Farfu","Farghed","Fargigoth","Farod","Faugh","Feldgulg","Fidgug","Filge","Fodagog","Fogugh","Fozhug","Frikug","Frug","Frukag","Fubdagog","Fudhagh","Fupgugh","Furbog","Futgarek","Gaakt","Garekk","Gelub","Gholug","Gilaktug","Ginug","Gnabadug","Gnadug","Gnalurg","Gnarg","Gnarlug","Gnorl","Gnorth","Gnoth","Gnurl","Golag","Golub","Gomatug","Gomoku","Gorgu","Gorlag","Grikug","Grug","Grukag","Grukk","Grung","Gruul","Guag","Gubdagog","Gudhagh","Gug","Gujarek","Gujek","Gujjab","Gulm","Gulrn","Gunaakt","Gunag","Gunug","Gurukk","Guthakug","Guthug","Gutjja","Hagob","Hagu","Hagub","Haguk","Hebub","Hegug","Hibub","Hig","Hogug","Hoknath","Hoknuk","Hokulk","Holkurg","Horknuth","Hrolkug","Hugagug","Hugmug","Hugolm","Ig","Igmut","Ignatz","Ignorg","Igubat","Igug","Igurg","Ikgnath","Ikkath","Inkathu","Inkathurg","Isagubat","Jogug","Jokgagu","Jolagh","Jorgagu","Jregh","Jreghug","Jugag","Jughog","Jughragh","Jukha","Jukkhag","Julakgh","Kabugbu","Kagan","Kaghed","Kahigig","Karfu","Karguk","Karrghed","Karrhig","Karthurg","Kebub","Kegigoth","Kegth","Kerghug","Kertug","Kilug","Klapdud","Klog","Klughig","Knagh","Knaraugh","Knodagh","Knorgh","Knuguk","Knurigig","Kodagog","Kog","Kogan","Komarod","Korgak","Korgulg","Koughat","Kraugug","Krilge","Krothu","Krouthu","Krugbu","Krugorim","Kubub","Kugbu","Kukgilug","Kulgha","Kupgugh","Kurbag","Kurmbag","Laghed","Lamgugh","Mabub","Magdud","Malthu","Marfu","Margulg","Mazhug","Meakgu","Mergigoth","Milug","Mudagog","Mugarod","Mughragh","Mugorim","Murbag","Naghat","Naghig","Naguk","Nahgigoth","Nakgu","Narfu","Nargulg","Narhbub","Narod","Neghed","Nehrakgu","Nildud","Nodagog","Nofhug","Nogugh","Nomgulg","Noogugh","Nugbu","Nughilug","Nulgha","Numhug","Nurbag","Nurghed","Oagungad","Oakgu","Obghat","Oggha","Oggugat","Ogharod","Oghuglat","Oguk","Ohomdud","Ohulhug","Oilug","Okganit","Olaghig","Olaugh","Olmthu","Olodagh","Olog","Omaghed","Ombilge","Omegugh","Omogulg","Omugug","Onog","Onubub","Onugug","Oodagh","Oogorim","Oogugbu","Oomigig","Opathu","Opaugh","Opeghat","Opilge","Opkagut","Opoguk","Oquagan","Orgha","Orgoth","Orgug","Orpigig","Ortguth","Otugbu","Ougha","Ougigoth","Ouhgan","Owkbanok","Paghorim","Pahgigoth","Pahgorim","Pakgu","Parfu","Pargu","Parhbub","Parod","Peghed","Pehrakgu","Pergu","Perthag","Pigdug","Piggu","Pitgurat","Podagog","Pofhug","Pomgulg","Poogugh","Porgarag","Pregu","Pretkag","Prigka","Prikdarok","Prutha","Pughilug","Puiltag","Purbag","Qog","Quadagh","Quilge","Quimghig","Quomaugh","Quordud","Quugug","Raghat","Raguk","Rakgu","Rarfu","Rebub","Rilug","Rodagog","Rogan","Romarod","Routhu","Rugbu","Rugorim","Rurbag","Rurigig","Sabub","Saghig","Sahgigoth","Sahgorim","Sakgu","Salthu","Saraugug","Sarfu","Sargulg","Sarhbub","Sarod","Sbghat","Seakgu","Sguk","Shomdud","Shulhug","Sildud","Silge","Silug","Sinsbog","Slaghig","Slapdud","Slaugh","Slodagh","Slog","Slughig","Smaghed","Smegugh","Smogulg","Snog","Snubub","Snugug","Sodagh","Sog","Sogorim","Sogugbu","Sogugh","Sombilge","Somigig","Sonagh","Sorgulg","Sornaraugh","Soughat","Spathu","Speghat","Spilge","Spoguk","Squagan","Stugbu","Sudagog","Sugarod","Sugbu","Sugha","Sugigoth","Sugorim","Suhgan","Sulgha","Sulmthu","Sumhug","Sunodagh","Sunuguk","Supaugh","Supgugh","Surbag","Surgha","Surghed","Surgug","Surpigig","Tagdud","Taghig","Tandagh","Tarfu","Targhed","Targigoth","Tarod","Taugh","Teldgulg","Tidgug","Tilge","Todagog","Tog","Toghat","Togugh","Torgan","Torug","Tozhug","Traugh","Trilug","Trougha","Trugagh","Truigig","Tuggug","Tulgan","Turbag","Turge","Ug","Ugghra","Uggug","Ughat","Ulgan","Ulmragha","Ulmrougha","Umhra","Umragig","Umruigig","Ungagh","Unrugagh","Urag","Uraugh","Urg","Urgan","Urghat","Urgran","Urlgan","Urmug","Urug","Urulg","Vabugbu","Vagan","Vagrungad","Vagungad","Vakgar","Vakgu","Vakmu","Valthurg","Vambag","Vamugbu","Varbu","Varbuk","Varfu","Vargan","Varguk","Varkgorim","Varthurg","Vegum","Vergu","Verlgu","Verthag","Verthurg","Vetorkag","Vidarok","Vigdolg","Vigdug","Viggu","Viggulm","Viguka","Vitgurat","Vitgut","Vlog","Vlorg","Vorgak","Vorgarag","Vothug","Vregu","Vretkag","Vrigka","Vrikdarok","Vrogak","Vrograg","Vrothu","Vruhag","Vrutha","Vubub","Vugub","Vuiltag","Vukgilug","Vultog","Vulug","Vurbag","Wakgut","Wanug","Wapkagut","Waruk","Wauktug","Wegub","Welub","Wholug","Wilaktug","Wingloug","Winug","Woabadug","Woggha","Woggugat","Wogharod","Woghuglat","Woglug","Wokganit","Womkug","Womrikug","Wonabadug","Worthag","Wraog","Wrug","Wrukag","Wrukaog","Wubdagog","Wudgh","Wudhagh","Wudugog","Wuglat","Wumanok","Wumkbanok","Wurgoth","Wurmha","Wurtguth","Wurthu","Wutgarek","Xaakt","Xago","Xagok","Xagu","Xaguk","Xarlug","Xarpug","Xegug","Xepug","Xig","Xnath","Xnaurl","Xnurl","Xoknath","Xokuk","Xolag","Xolkug","Xomath","Xomkug","Xomoku","Xonoth","Xorag","Xorakk","Xoroku","Xoruk","Xothkug","Xruul","Xuag","Xug","Xugaa","Xugag","Xugagug","Xugar","Xugarf","Xugha","Xugor","Xugug","Xujarek","Xuk","Xulgag","Xunaakt","Xunag","Xunug","Xurek","Xurl","Xurug","Xurukk","Xutag","Xuthakug","Xutjja","Yaghed","Yagnar","Yagnatz","Yahg","Yahigig","Yakgnath","Yakha","Yalakgh","Yargug","Yegigoth","Yegoth","Yerghug","Yerug","Ymafubag","Yokgagu","Yokgu","Yolmar","Yonkathu","Yregh","Yroh","Ysagubar","Yughragh","Yugug","Yukgnath","Yukha","Yulakgh","Yunkathu","Zabghat","Zabub","Zaghig","Zahgigoth","Zahgorim","Zalthu","Zaraugug","Zarfu","Zargulg","Zarhbub","Zarod","Zeakgu","Zguk","Zildud","Zilge","Zilug","Zinsbog","Zlapdud","Zlog","Zlughig","Zodagh","Zog","Zogugbu","Zogugh","Zombilge","Zonagh","Zorfu","Zorgulg","Zorhgigoth","Zornaraugh","Zoughat","Zudagog","Zugarod","Zugbu","Zugorim","Zuhgan","Zulgha","Zulmthu","Zumhug","Zunodagh","Zunuguk","Zupaugh","Zupgugh","Zurbag","Zurgha","Zurghed","Zurgug","Zurpigig","Atulg","Azuk","Bagamul","Bakh","Baronk","Bashag","Bazgulub","Bogakh","Borug","Both","Bugdul","Bugharz","Bugrash","Bugrol","Bumbub","Burul","Dul","Dular","Duluk","Duma","Dumbuk","Dumburz","Dur","Durbul","Durgash","Durz","Durzol","Durzub","Durzum","Garothmuk","Garzonk","Gashna","Ghamborz","Ghamonk","Ghoragdush","Ghorlorz","Glush","Grat","Guarg","Gurak","Khadba","Khagra","Khargol","Koffutto","Largakh","Lorbumol","Lorzub","Lugdum","Lugrub","Lurog","Mash","Matuk","Mauhul","Mazorn","Mol","Morbash","Mug","Mugdul","Muk","Murag","Murkub","Murzol","Muzgonk","Nag","Nar","Nash","Ogrul","Ogrumbu","Olfin","Olumba","Orakh","Rogdul","Shakh","Shamar","Shamob","Shargam","Sharkub","Shat","Shulong","Shura","Shurkul","Shuzug","Snaglak","Snakha","Snat","Ugdumph","Ughash","Ulam","Umug","Uram","Urim","Urul","Urzog","Ushamph","Yadba","Yagak","Yak","Yam","Yambagorn","Yambul","Yargol","Yashnarz","Yatur","Agronak","Bat","Bazur","Brugo","Bogrum","Brag","Brokil","Bugak","Buramog","Burz","Dubok","Dul","Dulfish","Dumag","Dulphumph","Gaturn","Gogron","Gorgo","Graklak","Graman","Grommok","Gul","Hanz","Krognak","Kurdan","Kurz","Rugdumph","Lum","Lumdum","Luronk","Magra","Magub","Maknok","Mug","Orok","Shagol","Shagrol","Shobob","Shum","Ulmug","Urbul","Urul","Ushnar","Uzul","Arob","Balogog","Borkul","Burguk","Dushnamub","Gat","Ghamorz","Ghorbash","Gradba","Grogmar","Grushnag","Gularzob","Kharag","Larek","Lob","Lurbuk","Mahk","Makhel","Abbas","Mauhulakh","Moth","Mul","Mulush","Nagrub","Oglub","Ogol","Olur","Ulag","Umurn","Urag","Yamarz","Yar","Agrob","Badbog","Bashuk","Bogdub","Bugdurash","Bula","Bulak","Bulfim","Bum","Burzob","Burub","Dura","Durgat","Durz","Gashnakh","Ghob","Glasha","Glob","Gluronk","Gonk","Grat","Grazob","Gulfim","Kharzug","Lagakh","Lambug","Lazgar","Mogak","Morn","Murob","Murzush","Nargol","Rolfish","Orbul","Ragash","Rulfim","Shadbak","Shagar","Shagdub","Sharn","Sharog","Shazgob","Shelur","Uloth","Ulumpha","Urzoth","Urzul","Ushat","Ushug","Yazgash","Batul","Borba","Bumph","Homraz","Rogbut","Mazoga","Mog","Mor","Oghash","Rogmesh","Snak","Ugak","Umog","Arob","Atub","Bagrak","Bolar","Bor","Borgakh","Dulug","Garakh","Ghak","Gharol","Ghorza","Gul","Lash","Murbol","Sharamph","Shel","Shufharz","Ugor","Urog","Yotul"
+  ],
   "factionMatchups": {
     "0": {
       "0": 0.5,
@@ -5153,7 +5552,7 @@
         "speed": 1,
         "faction": -1,
         "action_type": "attack",
-        "accuracy": 80,
+        "accuracy": 100,
         "numHits": 3,
         "recoil": 0,
         "targetType": 1
@@ -5887,7 +6286,7 @@
         "action_type": "guard",
         "name": "Heightened Senses",
         "guard_val": 10,
-        "guard_type": "spdef",
+        "guard_type": "def",
         "success_level": 200,
         "counter_val": 0,
         "counter_type": "def",
@@ -5945,6 +6344,186 @@
         "targetType": 1
       },
       "id": 59,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 1,
+      "ability": {
+        "action_type": "stats",
+        "name": "Battle Stance",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "0",
+            "stat": "atk",
+            "value": 1
+          }
+        ],
+        "speed": 0
+      },
+      "id": 60,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 1,
+      "ability": {
+        "action_type": "stats",
+        "name": "Combat Focus",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "0",
+            "stat": "spatk",
+            "value": 1
+          }
+        ],
+        "speed": 0
+      },
+      "id": 61,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 1,
+      "ability": {
+        "action_type": "stats",
+        "name": "Up Tempo",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "0",
+            "stat": "spd",
+            "value": 1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 62,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Intimidate",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "2",
+            "stat": "atk",
+            "value": -1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 63,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Cower",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "2",
+            "stat": "spatk",
+            "value": -1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 64,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Glare",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "2",
+            "stat": "def",
+            "value": -1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 65,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Startle",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "2",
+            "stat": "spdef",
+            "value": -1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 66,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Gaze",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "2",
+            "stat": "spd",
+            "value": -1
+          }
+        ],
+        "speed": 1
+      },
+      "id": 67,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Brace",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "0",
+            "stat": "def",
+            "value": 1
+          }
+        ],
+        "speed": 2
+      },
+      "id": 68,
+      "wildUse": 1
+    },
+    {
+      "allowanceCost": 2,
+      "ability": {
+        "action_type": "stats",
+        "name": "Sharp Mind",
+        "statChangeCount": 1,
+        "effects": [
+          {
+            "target": "0",
+            "stat": "spdef",
+            "value": 1
+          }
+        ],
+        "speed": 2
+      },
+      "id": 69,
       "wildUse": 1
     }
   ],

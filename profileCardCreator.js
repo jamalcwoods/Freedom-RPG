@@ -1,11 +1,11 @@
-const { createCanvas, loadImage } = require('canvas')
-const canvas = createCanvas(1440, 720)
-const ctx = canvas.getContext('2d')
+const { createCanvas, registerFont, loadImage } = require('canvas')
 const data = {raceIndex, combatStyleIndex} = require('./data.json')
+registerFont('./fonts/ZenDots-Regular.ttf', { family: 'Zen Dots' })
+registerFont('./fonts/Oswald-VariableFont_wght.ttf', { family: 'Oswald Light' })
 
 let images = {}
 
-function toggleShadows(toggle){
+function toggleShadows(ctx,toggle){
     switch(toggle){
     	case true:
             ctx.shadowOffsetX = -4;
@@ -22,17 +22,17 @@ function toggleShadows(toggle){
     }
 }
 
-function drawAbilityBox(ability,x,y){
-    toggleShadows(true);
+function drawAbilityBox(ctx,ability,x,y){
+    toggleShadows(ctx,true);
     ctx.fillStyle = '#6473A6';
     ctx.strokeRect(x, y, 250, 175);
     ctx.fillRect(x, y, 250, 175);
-    toggleShadows(false);
+    toggleShadows(ctx,false);
 
     ctx.fillStyle = '#000000';
 
     if(ability != undefined){
-        ctx.font = '30px Impact'
+        ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "left"
         ctx.fillText(ability.name,x + 5,y+30)
         let speedText;
@@ -60,7 +60,7 @@ function drawAbilityBox(ability,x,y){
                         break;
                 }
 
-                ctx.font = '18px Impact'
+                ctx.font = '18px "Oswald Light"'
 
                 ctx.drawImage(images.attack_accuracy, x + 37, y + 132,18,18);
                 ctx.fillText(ability.accuracy + "%",x +47,y + 167)
@@ -87,7 +87,7 @@ function drawAbilityBox(ability,x,y){
                 ctx.fillText("Guard: " + ability.guard_val,x + 75,y + 97)
                 
                 ctx.textAlign = "center"
-                ctx.font = '24px Impact'
+                ctx.font = '24px "Oswald Light"'
                 ctx.drawImage(images["guard_counter_" + ability.counter_type], x + 26, y + 106,32,32);
                 ctx.fillText(ability.counter_val,x +45,y + 165)
                 
@@ -115,7 +115,7 @@ function drawAbilityBox(ability,x,y){
                         break;
                 }
 
-                ctx.font = '18px Impact'
+                ctx.font = '18px "Oswald Light"'
                 ctx.drawImage(images.attack_speed, x + 192, y,32,32);
                 ctx.fillText(speedText,x + 207, y + 40)
 
@@ -146,7 +146,7 @@ function drawAbilityBox(ability,x,y){
                         targetImgSize = 36
                         break;
                 }
-                ctx.font = targetImgSize/2 + 'px Impact'
+                ctx.font = targetImgSize/2 + 'px "Oswald Light"'
                 for(let i = 0; i < ability.effects.length;i++){
                     ctx.drawImage(images["stats_target_" + ability.effects[i].target], coords[i][0], coords[i][1],targetImgSize,targetImgSize);
                     if(ability.effects[i].value > 0){
@@ -160,13 +160,15 @@ function drawAbilityBox(ability,x,y){
                 break;
         }
     } else {
-        ctx.font = '30px Impact'
+        ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "center"
         ctx.fillText("No Ability",x + 125,y + 175/2)
     }
 }
 
 function makeCard(player,avatar,callback){
+    const canvas = createCanvas(1440, 720)
+    const ctx = canvas.getContext('2d')
     let imagePromises = [
         loadImage("./icons/default.png").then(img =>{
             return img
@@ -301,7 +303,7 @@ function makeCard(player,avatar,callback){
         ctx.fillStyle = "#000000"
 
         ctx.lineWidth = 10;
-        toggleShadows(true);
+        toggleShadows(ctx,true);
         ctx.beginPath();
         ctx.moveTo(50,50);
         ctx.lineTo(350,50);
@@ -311,7 +313,7 @@ function makeCard(player,avatar,callback){
         ctx.lineTo(50,50);
         ctx.closePath();
         ctx.stroke();
-        toggleShadows(false);
+        toggleShadows(ctx,false);
         
         ctx.lineWidth = 5;
         
@@ -320,24 +322,24 @@ function makeCard(player,avatar,callback){
 
         ctx.fillStyle = "#000000"
 
-        drawAbilityBox(player.abilities[0],450,25);
-        drawAbilityBox(player.abilities[1],450,225);
-        drawAbilityBox(player.abilities[2],800,25);
-        drawAbilityBox(player.abilities[3],800,225);
-        drawAbilityBox(player.abilities[4],1150,25);
-        drawAbilityBox(player.abilities[5],1150,225);
+        drawAbilityBox(ctx,player.abilities[0],450,25);
+        drawAbilityBox(ctx,player.abilities[1],450,225);
+        drawAbilityBox(ctx,player.abilities[2],800,25);
+        drawAbilityBox(ctx,player.abilities[3],800,225);
+        drawAbilityBox(ctx,player.abilities[4],1150,25);
+        drawAbilityBox(ctx,player.abilities[5],1150,225);
 
-        toggleShadows(true)
+        toggleShadows(ctx,true)
         ctx.fillStyle = '#6473A6';
         ctx.strokeRect(450, 425, 400, 275);
         ctx.fillRect(450, 425, 400, 275);
         ctx.strokeRect(1000, 425, 400, 275);
         ctx.fillRect(1000, 425, 400, 275);
-        toggleShadows(false)
+        toggleShadows(ctx,false)
         
         ctx.fillStyle = "#000000"
         
-        ctx.font = '30px Impact'
+        ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "center"
         
         
@@ -379,7 +381,7 @@ function makeCard(player,avatar,callback){
         ctx.fillText("LEVEL",650,550)
         
         
-        ctx.font = '28px Impact'
+        ctx.font = '28px "Oswald Light"'
         ctx.fillStyle = "#5751FF"
         ctx.fillText(player.stats.hp,650,495)
         ctx.fillStyle = "#B83A3A"
@@ -395,7 +397,7 @@ function makeCard(player,avatar,callback){
         ctx.fillStyle = "#000000"
         ctx.fillText(player.level,650,590)
         
-        ctx.font = '30px Impact'
+        ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "center"
         ctx.fillText("Ability Points",1100,475)
         ctx.fillText("Skill Points",1300,475)
@@ -403,7 +405,7 @@ function makeCard(player,avatar,callback){
         ctx.fillText("Lives",1100,650)
         ctx.fillText("Gold",1300,650)
         
-        ctx.font = '28px Impact'
+        ctx.font = '28px "Oswald Light"'
         ctx.fillText(player.abilitypoints,1100,515)
         ctx.fillText(player.statpoints,1300,515)
         ctx.fillText(player.lives,1100,690)
@@ -412,18 +414,18 @@ function makeCard(player,avatar,callback){
         
         ctx.drawImage(images.avatar, 136, 100,128,128);
         if(player.name.length > 10){
-            ctx.font = 48/(player.name.length/10) + 'px Impact'
+            ctx.font = 48/(player.name.length/10) + 'px "Oswald Light"'
         } else {
-            ctx.font = '48px Impact'
+            ctx.font = '48px "Oswald Light"'
         }
         
         ctx.fillText(player.name,200,280)
 
-        ctx.font = '32px Impact'
+        ctx.font = '32px "Oswald Light"'
         ctx.fillText("Wearing:",200,340)
         ctx.fillText("Wielding:",200,410)
 
-        ctx.font = '18px Impact'
+        ctx.font = '18px "Oswald Light"'
         if(player.gear && player.gear >= 0){
             ctx.fillText(player.inventory[player.gear].name,200,370)
         } else {
@@ -450,7 +452,7 @@ function makeCard(player,avatar,callback){
                 break;
             }
         }
-        ctx.font = '20px Impact'
+        ctx.font = '20px "Oswald Light"'
         ctx.fillText(raceText,160, 490)
         ctx.drawImage(images["race" + player.race], 128, 495,64,64);
         ctx.fillText(weaponText,240, 490)

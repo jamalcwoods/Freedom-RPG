@@ -1,12 +1,26 @@
 X Equipment Name Generation
 X Correct Tavern Booster Display
-- Ability Name Generation
+X Ability Name Generation
 X Counter Attack Damage Check
 X PVP Check
 X Per town resource contribution tracker
-V Expedition story text
+X Expedition story text
 ? Dungeon Rewards
 X Profile Card Rework
 X Ability Creation Weights
 X Dungeon and Expedition facility
 X Facility Acquisition Rework
+X Town Rankings
+? Rework multi hit display
+X Town Tasks
+X Town Task Maker
+- Import fonts onto amazon shell
+- Bulk stat changes
+X Stuck in session after dungeon fail
+X Flee from dungeon
+X Lobby check
+X Multiplayer Attack Queue Check
+- Ability point cost balancing
+X Stat based mob abilities 
+X AI warning for stat change
+- Town Raiders Traits

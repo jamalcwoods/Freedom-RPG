@@ -893,8 +893,168 @@ let Attacks = [
     "wildUse": 1
   }
 ]
-let Statuses = [
 
+let Statuses = [
+  {
+    "name": "Battle Stance",
+    "allowanceCost": 1,
+    "id": 60,
+    "speed": 0,
+    "t1": 0,
+    "s1": "atk",
+    "v1": 1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Combat Focus",
+    "allowanceCost": 1,
+    "id": 61,
+    "speed": 0,
+    "t1": 0,
+    "s1": "spatk",
+    "v1": 1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Up Tempo",
+    "allowanceCost": 1,
+    "id": 62,
+    "speed": 1,
+    "t1": 0,
+    "s1": "spd",
+    "v1": 1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Intimidate",
+    "allowanceCost": 2,
+    "id": 63,
+    "speed": 1,
+    "t1": 2,
+    "s1": "atk",
+    "v1": -1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Cower",
+    "allowanceCost": 2,
+    "id": 64,
+    "speed": 1,
+    "t1": 2,
+    "s1": "spatk",
+    "v1": -1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Glare",
+    "allowanceCost": 2,
+    "id": 65,
+    "speed": 1,
+    "t1": 2,
+    "s1": "def",
+    "v1": -1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Startle",
+    "allowanceCost": 2,
+    "id": 66,
+    "speed": 1,
+    "t1": 2,
+    "s1": "spdef",
+    "v1": -1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Gaze",
+    "allowanceCost": 2,
+    "id": 67,
+    "speed": 1,
+    "t1": 2,
+    "s1": "spd",
+    "v1": -1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Brace",
+    "allowanceCost": 2,
+    "id": 68,
+    "speed": 2,
+    "t1": 0,
+    "s1": "def",
+    "v1": 1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  },
+  {
+    "name": "Sharp Mind",
+    "allowanceCost": 2,
+    "id": 69,
+    "speed": 2,
+    "t1": 0,
+    "s1": "spdef",
+    "v1": 1,
+    "t2": 0,
+    "s2": 0,
+    "v2": 0,
+    "t3": 0,
+    "s3": 0,
+    "v3": 0,
+    "wildUse": 1
+  }
 ]
 
 for(ability of Attacks){
@@ -948,11 +1108,35 @@ for(ability of Blocks){
 
 for(ability of Statuses){
   let newAbility = {
-    
+    "action_type": "stats",
+    "name": ability.name,
+    "statChangeCount": 1,
+    "effects": [],
+    "speed": ability.speed
   }
+  for(var i = 3; i > 0; i--){
+    if(ability["v" + i] != 0){
+      newAbility.effects[(i - 1)] = {
+        "target": "" + ability["t" + i],
+        "stat": ability["s" + i],
+        "value": ability["v" + i]
+      }
+    }
+  }
+  newAbility.statChangeCount = newAbility.effects.length
+  newAbility = {
+    "allowanceCost":ability.allowanceCost,
+    "ability":newAbility,
+    "id":ability.id,
+    "wildUse":ability.wildUse
+  }
+  if(newAbility.id == "none"){
+    newAbility.id = inData.baseAbilities.length
+  }
+  inData.baseAbilities[newAbility.id] = newAbility
 }
 
 
 
 let data = JSON.stringify(inData,null,2);
-fs.writeFileSync('data.json', data);
+fs.writeFileSync('dataTest.json', data);

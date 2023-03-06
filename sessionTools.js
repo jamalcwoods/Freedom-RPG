@@ -2,7 +2,8 @@ const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchu
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
 const { clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const { stat } = require("fs");
-
+const { getTownDBData } = require("./firebaseTools.js")
+ 
 function eventComparator(e,data){
     let match = true
     if(e.data.staticData){
@@ -642,6 +643,10 @@ module.exports = {
                             case "guard":
                                 fighterDesc += "\n**Preparing to guard...**"
                                 break;
+
+                            case "stats":
+                                fighterDesc += "\n**Preparing to modify stats...**"
+                                break;
                         }
                     } else {
                         fighterDesc += "\n**Ready**"
@@ -863,7 +868,13 @@ module.exports = {
                                     if(target.alive && !target.forfeit){
 
                                         let attackNum = action.ability.numHits
-
+                                        let multiHit = false
+                                        let multiDamage = 0
+                                        if(attackNum > 1){
+                                            multiHit = true
+                                        }
+                                        let hitCount = 0
+                                        let critCount = 0
                                         while(attackNum > 0){
                                             let attackBase = action.ability.damage_val
                                             
@@ -885,6 +896,7 @@ module.exports = {
                                            
                                             let hitConfirm = accCheck < (action.ability.accuracy - repeatPenal)
                                             if(hitConfirm){
+                                                hitCount++
                                                 switch(action.ability.damage_type){
                                                     case "atk":
                                                         attacker.records.attacks++
@@ -896,6 +908,7 @@ module.exports = {
                                                 }
                                                 
                                                 if(target.guardData != "none" && target.guardData != "fail"){
+                                                    attackNum = 0
                                                     let guardValue = target.guardData.guard_val
                                                     switch(target.guardData.guard_type){
                                                         case "def":
@@ -928,7 +941,6 @@ module.exports = {
                                                                 target.liveData.stats.hp = target.liveData.maxhp
                                                             }
                                                             attackBase = 0
-                                                            attackNum = 0
                                                             let notice = target.staticData.name + " was able to block the attack"
                                                             if(healAmount > 0){
                                                                 notice += " and healed " + healAmount + " health"
@@ -969,7 +981,6 @@ module.exports = {
                                                                 target.liveData.stats.hp = target.liveData.maxhp
                                                             }
                                                             attackBase = 0
-                                                            attackNum = 0
                                                             notice = target.staticData.name + " blocked the attack"
                                                             target.records.timesBlocked++
                                                             target.records.completeBlocks++
@@ -1131,10 +1142,20 @@ module.exports = {
                                                     }
                                                     if(finalDamage > 0){
                                                         if(crit == 2){
+                                                            critCount++
                                                             attacker.records.criticalsLanded++
-                                                            session.session_data.battlelog.combat.push("A critical hit!")
+                                                            if(!multiHit){
+                                                                session.session_data.battlelog.combat.push("A critical hit!")
+                                                            }
                                                         }
-                                                        session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
+                                                        if(multiHit){
+                                                            multiDamage += finalDamage
+                                                            if(attackNum <= 1){
+                                                                session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
+                                                            }
+                                                        } else {
+                                                            session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
+                                                        }
                                                         target.liveData.stats.hp -= finalDamage;
                                                         target.records.timesHit++;
                                                         attacker.records.attackDamageDone += finalDamage
@@ -1204,14 +1225,18 @@ module.exports = {
                                                 }
                                                 attackNum -= 1
                                             } else {
-                                                if(repeatPenal > 0){
-                                                    if((action.ability.accuracy - repeatPenal) <= 0){
-                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " has become too predictable so " + target.staticData.name + " was able to avoid their attack!")
-                                                    } else {
-                                                        session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
-                                                    }
+                                                if(hitCount > 0){
+                                                        session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
                                                 } else {
-                                                    session.session_data.battlelog.combat.push(attacker.staticData.name + " was unable to land their attack!")
+                                                    if(repeatPenal > 0){
+                                                        if((action.ability.accuracy - repeatPenal) <= 0){
+                                                            session.session_data.battlelog.combat.push(attacker.staticData.name + " has become too predictable so " + target.staticData.name + " was able to avoid their attack!")
+                                                        } else {
+                                                            session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
+                                                        }
+                                                    } else {
+                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was unable to land their attack!")
+                                                    }
                                                 }
                                                 attackNum = 0
                                             }
@@ -1332,6 +1357,8 @@ module.exports = {
                                     }
                                 }
                                 user.lastAction = actionCode
+                                user.target = -1
+                                user.choosenAbility = -1
                                 session.session_data.battlelog.combat.push("---")
                             }
                             break;
@@ -1804,7 +1831,7 @@ module.exports = {
         let selectionLabels = []
 
         for(abilityStat in session.session_data.ability){
-            let noShow = ["effects","name"]
+            let noShow = ["effects","name","faction"]
             let description = "test"
             switch(abilityStat){
                 case "action_type":
@@ -2298,6 +2325,54 @@ module.exports = {
                 embed.addField("Choose a Destination","Where in the town would you like to visit?")
                 break;
 
+            case "records":
+                let recordText = "Coming Soon..."
+                embed.addField("Task Hall - Records:",recordText)
+                break;
+
+            case "tasks":
+                let taskText = ""
+                if(session.session_data.temp && session.session_data.temp.taskRollResults){
+                    console.log(session.session_data.temp)
+                    switch(session.session_data.temp.taskRollResults.roll){
+                        case 1:
+                        case 2:
+                        case 3:
+                            taskText += "You could have done better..."
+                            break;
+                        case 4:
+                        case 5:
+                        case 6:
+                            taskText += "You did alright"
+                            break;
+                        case 7:
+                        case 8:
+                        case 9:
+                            taskText += "You did pretty well!"
+                            break;
+                        case 10:
+                            taskText += "Perfect! "
+                            break;
+                    }
+                    taskText += " (Rolled a " + session.session_data.temp.taskRollResults.roll + " out of 10)\n"
+                    for(msg of session.session_data.temp.taskRollResults.extra){
+                        taskText += msg + "\n"
+                    }
+                    taskText += session.session_data.player.name + " earned " + session.session_data.temp.taskRollResults.rep + " town reputation!\n"
+                    console.log(session.session_data.temp.taskRollResults.multi,session.session_data.temp.currentTask.multiThresh)
+                    if(session.session_data.temp.taskRollResults.multi < session.session_data.temp.currentTask.multiThresh){
+                        taskText += "\n" + session.session_data.temp.currentTask.suggestedSolutionPrompt + "\n\n"
+                    }
+                } 
+                if(session.session_data.player.taskTimer && session.session_data.player.taskTimer > now){
+                    taskText += "You will be able to work on a task in " + msToTime(session.session_data.player.taskTimer - now) + "\n"
+                } else {
+                    taskText += "Choose a task you would like to work on from the drop down\n"
+                }
+                taskText += "New tasks will be available in " + msToTime(session.session_data.town.taskRestock - now)
+                embed.addField("Task Hall - Task Completion:",taskText)
+                break;
+
             case "adventure":
                 let adventureText = "From this facility you can enter your character in idle based expeditions or engagement based dungeon raids.\n\nExpeditions can serve as a great way to earn resources for a server town.\n\nDungeon raids are required in order for a town to increase it's level"
                 embed.addField("Adventurer's Hall - Expeditions and Dungeons:",adventureText)
@@ -2455,7 +2530,7 @@ module.exports = {
                 } else {
                     report += "**Complete the Retaliation Mission in " + msToTime(session.session_data.town.lastRaid - now.getTime()) + " or this town will lose " + session.session_data.town.level * 7 + " town points!**"
                 }
-                report +="\n\n"
+                report +="\nCurrent town points: " + session.session_data.town.points + "\n\n"
                 let missionsComplete = true;
                 for(var i = 0;i < 3; i++){
                     report += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
@@ -2510,7 +2585,7 @@ module.exports = {
         return [embed]
     },
     populateTownVisitControls(session){
-
+        let now = new Date()
         let selectionLabels = []
 
         for(location of innateFacilities){
@@ -2551,6 +2626,34 @@ module.exports = {
             case null:
                 return [travel]
 
+            case "records":
+                return [travel]
+
+            case "tasks":
+                if(session.session_data.town.taskList && session.session_data.player.taskTimer < now){
+                    let taskLabels = []
+                    for(t in session.session_data.town.taskList){
+                        let task = session.session_data.town.taskList[t]
+                        taskLabels.push({
+                            label: task.name,
+                            description: task.description,
+                            value: t,
+                        })
+                    }
+                    let taskList = new MessageActionRow()
+                    .addComponents(
+                        new MessageSelectMenu()
+                            .setCustomId('selectTask_' + session.session_id)
+                            .setPlaceholder('Select a task to work on')
+                            .addOptions(taskLabels),
+                            
+                    );
+                    return [taskList,travel]
+                } else {
+                    return [travel]
+                }
+                break;
+
             case "adventure":
                 let adventureChoice = new MessageActionRow()
                     .addComponents(
@@ -2562,7 +2665,6 @@ module.exports = {
                         .setCustomId('promptExpedition_' + session.session_id)
                         .setLabel("Expedition Adventure")
                         .setStyle('PRIMARY')
-                        .setDisabled(true)
                     )
                 return [adventureChoice,travel]
                 break;
@@ -2982,6 +3084,64 @@ module.exports = {
             return [embed]
         }
     },
+    populateTaskWindow(session){
+        const embed = new MessageEmbed()
+        embed.setColor("#7289da")
+        embed.setTitle(session.session_data.temp.currentTask.name)
+        embed.addField("Task Details",session.session_data.temp.currentTask.taskPrompt)
+        return [embed]
+    },
+    populateTasksControls(session){
+        let selectionLabels = []
+
+        for(location of innateFacilities){
+            selectionLabels.push({
+                label: location.name,
+                description: location.description,
+                value: location.value,
+            })
+        }
+
+        
+        for(location of acquiredFacilities){
+            if(location.minLevel <= session.session_data.town.level){
+                selectionLabels.push({
+                    label: location.name,
+                    description: location.description,
+                    value: location.value,
+                })
+            }
+        }
+
+        let solutionList = []
+        for(s in session.session_data.temp.currentTask.solutionMap){
+            let statSol = session.session_data.temp.currentTask.solutionMap[s]
+            solutionList.push({
+                label: statSol.solution,
+                description: statSol.solutionDesc,
+                value: s,
+            })
+        }
+
+        let actions = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('taskSolution_' + session.session_id)
+                .setPlaceholder('Choose your solution to the task')
+                .addOptions(solutionList),
+        );
+
+        const travel = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('townVisit_' + session.session_id)
+                .setPlaceholder('Select a facility to visit')
+                .addOptions(selectionLabels),
+                
+        );
+
+        return [actions,travel]
+    },
     populateConformationWindow(session){
         const embed = new MessageEmbed()
         let message;
@@ -3005,6 +3165,7 @@ module.exports = {
                 message = "You are preparing to embark on a dungeon adventure in the town of " + session.session_data.town.name
                 + "\n\n- Dungeons consist of multiple combat instances and stat check scenarios"
                 + "\n- You will not auto heal between combat instances"
+                + "\n- Fleeing from any combat instance will deplete your life count"
                 + "\n- Running out of lives will end your dungeon adventure"
                 + "\n- You may end your adventure during any stat check scenario"
                 + "\n- Passive benefits from messaging are disabled while on a dungeon adventure"
