@@ -1,6 +1,5 @@
 const { createCanvas, registerFont, loadImage } = require('canvas')
 const data = {raceIndex, combatStyleIndex} = require('./data.json')
-registerFont('./fonts/ZenDots-Regular.ttf', { family: 'Zen Dots' })
 registerFont('./fonts/Oswald-VariableFont_wght.ttf', { family: 'Oswald Light' })
 
 let images = {}
