@@ -15,8 +15,9 @@ module.exports = {
         if(session.type == "makeAbility"){
             session.session_data.editingAttribute = interaction.values[0];
             interaction.update({
-                content: populateAbilityCreatorWindow(session),
-                components: populateAbilityCreatorButtons(session)
+                content: " ",
+                components: populateAbilityCreatorButtons(session),
+                embeds: populateAbilityCreatorWindow(session)
             })
             
             callback({

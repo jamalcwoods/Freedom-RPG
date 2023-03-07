@@ -33,16 +33,18 @@ module.exports = {
                 }
                 session.session_data.statpoints += statpointsNeeded
                 interaction.update({
-                    content: populateStatEditWindow(session),
-                    components: populateStatEditButtons(session)
+                    content: " ",
+                    components: populateStatEditButtons(session),
+                    embeds: populateStatEditWindow(session)
                 })
                 callback({
                     updateSession:session
                 })
             } else {
                 interaction.update({
-                    content: populateStatEditWindow(session),
-                    components: populateStatEditButtons(session)
+                    content: " ",
+                    components: populateStatEditButtons(session),
+                    embeds: populateStatEditWindow(session)
                 })
             }
         }

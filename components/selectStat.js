@@ -15,8 +15,9 @@ module.exports = {
         if(session.type == "stats"){
             session.session_data.editingStat = interaction.values[0];
             interaction.update({
-                content: populateStatEditWindow(session),
-                components: populateStatEditButtons(session)
+                content: " ",
+                components: populateStatEditButtons(session),
+                embeds: populateStatEditWindow(session)
             })
             callback({
                 updateSession:session

@@ -28,9 +28,9 @@ module.exports = {
         }
         
         interaction.reply({
-                content: populateStatEditWindow(newSession),
+                content: " ",
                 components: populateStatEditButtons(newSession),
-                embeds: []
+                embeds: populateStatEditWindow(newSession)
         })
         callback({
             addSession:newSession

@@ -957,7 +957,7 @@ function generateRNGAbility(abilityData,abilityBase){
 function addAdditionals(string,additionals){
     if(additionals.length != 0){
         string += "Additionally this ability"
-        for(var i =0;i < additionals.length;i++){
+        for(var i =0; i < additionals.length;i++){
             let info = additionals[i]
             if(i == additionals.length - 1 && additionals.length != 1){
                 info = " and" + info
@@ -1092,15 +1092,15 @@ function createAbilityDescription(ability){
             if(ability.speed != 1){
                 let speedRating = ""
                 switch(ability.speed){
-                    case 0:
+                    case '0':
                         speedRating = " is slower than most other actions"
                         break;
                     
-                    case 2:
-                        speedRating =" is faster than the average action"
+                    case '2':
+                        speedRating = " is faster than the average action"
                         break;
                         
-                    case 4:
+                    case '4':
                         speedRating = " will happen before an opponent has the chance to guard themselves"
                         break;
                 }
@@ -1324,6 +1324,60 @@ module.exports = {
                                 case "guard":
                                     nextAction = fighter.index + "_" + abilityData.action_type
                                     break;
+                                
+                                case "stats":
+                                    console.log(abilityData)
+                                    let highestStatVal = 0
+                                    let highestTargetType = "-1"
+                                    let forAlly = false;
+                                    for(effect of abilityData.effects){
+                                        if(Math.abs(effect.value) > highestStatVal){
+                                            highestStatVal = Math.abs(effect.value)
+                                            if(effect.target == "2"){
+                                                forAlly = effect.value > 0
+                                            }
+                                        }
+                                    }
+                                    if(fighters.length == 2){
+                                        fighter.target = [1,0][fighter.index]
+                                    } else {
+                                        if(fighter.team != null){
+                                            let targetI;
+                                            if(forAlly){
+                                                let teamCount = 0;
+                                                for(f of fighters){
+                                                    if(f.alive && f.team == fighter.team){
+                                                        teamCount++
+                                                    }
+                                                }
+                                                if(teamCount > 1){
+                                                    targetI = Math.floor(Math.random() * fighters.length)
+                                                    while(targetI == fighter.index || fighters[targetI].team != fighter.team || fighters[targetI].alive == false){
+                                                        targetI = Math.floor(Math.random() * fighters.length)
+                                                    } 
+                                                } else {
+                                                    targetI = Math.floor(Math.random() * fighters.length)
+                                                    while(targetI == fighter.index || fighters[targetI].alive == false){
+                                                        targetI = Math.floor(Math.random() * fighters.length)
+                                                    } 
+                                                }
+                                            } else {
+                                                targetI = Math.floor(Math.random() * fighters.length)
+                                                while(targetI == fighter.index || fighters[targetI].team == fighter.team || fighters[targetI].alive == false){
+                                                    targetI = Math.floor(Math.random() * fighters.length)
+                                                }
+                                            }
+                                            fighter.target = targetI
+                                        } else {
+                                            let targetI = Math.floor(Math.random() * fighters.length)
+                                            while(targetI == fighter.index || fighters[targetI].alive == false){
+                                                targetI = Math.floor(Math.random() * fighters.length)
+                                            }
+                                            fighter.target = targetI
+                                        }
+                                    }
+                                    nextAction = fighter.index + "_" + abilityData.name + "_" + fighters[fighter.target]
+                                    break;
                             }
                             if(nextAction == fighter.lastAction && fighter.staticData.intelligence){
                                 selectAbility = fighter.staticData.intelligence.reuse < Math.random()
@@ -1497,9 +1551,6 @@ module.exports = {
         let statTotal = 0
         let spent = 0
         let pointsMax = points
-        console.log("Max points: " + pointsMax)
-        console.log("Pre stats: ")
-        console.log(unit.stats)
         while(Math.floor(points) > 0){
             for(var i = 0; i < stats.length; i++){
                 let toSpend = Math.ceil((Math.random() * 0.25) * points) 
@@ -1523,9 +1574,6 @@ module.exports = {
                 statTotal += unit.stats[stats[i]] - 5
             }
         }
-        console.log(unit.stats)
-        console.log("Spent: " + spent)
-        console.log("Stat Sum: " + statTotal)
         if(unit.level == 0){
             if(Math.floor(statTotal/6) < 1){
                 unit.level = 1
@@ -1577,6 +1625,18 @@ module.exports = {
                         amount: val * 5
                     }, player)
                     player = result[0]
+
+                    if(!data.resources){
+                        data.resources = {
+                            gold:val * 5
+                        }
+                    } else {
+                        if(!data.resources.gold){
+                            data.resources.gold = val * 5
+                        } else {
+                            data.resources.gold += val * 5
+                        }
+                    }
     
                     if(result[1].length > 0){
                         for(msg of result[1]){
@@ -1594,6 +1654,18 @@ module.exports = {
                         amount: val * 40
                     }, player)
                     player = result[0]
+
+                    if(!data.resources){
+                        data.resources = {
+                            exp:val * 40
+                        }
+                    } else {
+                        if(!data.resources.exp){
+                            data.resources.exp = val * 40
+                        } else {
+                            data.resources.exp += val * 40
+                        }
+                    }
     
                     if(result[1].length > 0){
                         for(msg of result[1]){
@@ -1620,6 +1692,16 @@ module.exports = {
                     result = parseReward(newData, player)
                     player = result[0]
     
+                    if(!data.rewardMessages){
+                        data.rewardMessages = [result[1][0]]
+                    } else {
+                        if(!data.rewardMessages){
+                            data.rewardMessages = [result[1][0]]
+                        } else {
+                            data.rewardMessages.push(result[1][0])
+                        }
+                    }
+                    
                     if(result[1].length > 0){
                         for(msg of result[1]){
                             message += "\n" + msg 
@@ -1636,6 +1718,18 @@ module.exports = {
                         amount: val * 3
                     }, player)
                     player = result[0]
+
+                    if(!data.resources){
+                        data.resources = {
+                            abilityPoints:val * 3
+                        }
+                    } else {
+                        if(!data.resources.abilityPoints){
+                            data.resources.abilityPoints = val * 3
+                        } else {
+                            data.resources.abilityPoints += val * 3
+                        }
+                    }
     
                     if(result[1].length > 0){
                         for(msg of result[1]){

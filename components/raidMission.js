@@ -235,7 +235,62 @@ module.exports = {
                             abilitypoints:0,
                             statpoints:0,
                             lives:1,
-                            abilities:[],
+                            abilities:[
+                                {
+                                    "action_type": "stats",
+                                    "name": session.session_data.town.raid.leader.name + "'s Judgement",
+                                    "statChangeCount": 2,
+                                    "effects": [
+                                        {
+                                            "target": "2",
+                                            "stat": "def",
+                                            "value": -1
+                                        },
+                                        {
+                                            "target": "2",
+                                            "stat": "spdef",
+                                            "value": -1
+                                        }
+                                    ],
+                                    "speed": 3
+                                },
+                                {
+                                    "action_type": "stats",
+                                    "name": session.session_data.town.raid.leader.name + "'s Inspiration",
+                                    "statChangeCount": 2,
+                                    "effects": [
+                                        {
+                                            "target": "1",
+                                            "stat": "atk",
+                                            "value": 1
+                                        },
+                                        {
+                                            "target": "1",
+                                            "stat": "spatk",
+                                            "value": 1
+                                        }
+                                    ],
+                                    "speed": 3
+                                },
+                                {
+                                    "action_type": "stats",
+                                    "name": session.session_data.town.raid.leader.name + "'s Protection",
+                                    "statChangeCount": 2,
+                                    "effects": [
+                                        {
+                                            "target": "1",
+                                            "stat": "def",
+                                            "value": 1
+                                        },
+                                        {
+                                            "target": "1",
+                                            "stat": "spdef",
+                                            "value": 1
+                                        }
+                                    ],
+                                    "speed": 3
+                                }
+                            ],
                             level:session.session_data.town.level * 10,
                             totalExp:0,
                             stats:{

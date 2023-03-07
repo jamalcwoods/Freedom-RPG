@@ -57,8 +57,9 @@ module.exports = {
             
 
             interaction.update({
-                content: populateAbilityCreatorWindow(session),
-                components: populateAbilityCreatorButtons(session)
+                content: " ",
+                components: populateAbilityCreatorButtons(session),
+                embeds: populateAbilityCreatorWindow(session)
             })
             
             callback({

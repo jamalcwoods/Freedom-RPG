@@ -24,24 +24,59 @@ module.exports = {
         ]
 
         getTownDBData(townID,function(town){
+            let titleMap = {
+                "exp":"Experience",
+                "abilityPoints":"Ability Points",
+                "gold":"Gold",
+                "wood":"Wood",
+                "food":"Food",
+                "minerals":"Minerals"
+            }   
+
+            let resourcesEarned = "Expedition Results:\n\n"
             for(var i = 0; i < town.expeditions.length;i++){
                 if(town.expeditions[i].playerID == player.id){
                     if(!town.contributors){
                         town.contributors = {}
                     }
                     for(resource in town.expeditions[i].townResources){
-                        town.resources[resource][0] += town.expeditions[i].townResources[resource]
-                        if(!town.contributors[player.id]){
-                            town.contributors[player.id] = town.expeditions[i].townResources[resource]
+                        resourcesEarned += titleMap[resource] +  ": " + town.expeditions[i].townResources[resource] + "\n"
+                        let amount = 0;
+                        if(town.resources[resource][0] + town.expeditions[i].townResources[resource] > town.resources[resource][1]){
+                            amount = (town.resources[resource][1] - town.resources[resource][0])
+                            town.resources[resource][0] = town.resources[resource][1]
+                            
                         } else {
-                            town.contributors[player.id] += town.expeditions[i].townResources[resource]
+                            amount = town.expeditions[i].townResources[resource]
+                            town.resources[resource][0] += amount
+                        }
+                        if(amount != 0){
+                            if(!town.contributors[player.id]){
+                                town.contributors[player.id] = amount
+                            } else {
+                                town.contributors[player.id] += amount
+                            }
+                        }
+                        if(amount > 0){
+                            resourcesEarned += response + ": " + amount + "\n"
                         }
                     }
-                    
-                    
+                    if(town.expeditions[i].resources){
+                        for(resource in town.expeditions[i].resources){
+                            resourcesEarned += titleMap[resource] +  ": " + town.expeditions[i].resources[resource] + "\n"
+                        }
+                    }
+                    if(town.expeditions[i].rewardMessages){
+                        for(message of town.expeditions[i].rewardMessages){
+                            resourcesEarned += message + "\n"
+                        }
+                    }
                     town.expeditions.splice(i,1)
+                    break;
                 }
             }
+
+                 
 
             let townUpdates = [
                 {
@@ -54,16 +89,16 @@ module.exports = {
             let response;
             if(val == "0"){
                 response = "Your expedition will continue"
+                callback({})
             } else {
-                response = "Expedition Ended. Resources earned have been delivered to the town you left from"
+                response = resourcesEarned
+                callback({
+                    updateTown:townUpdates,
+                    updatePlayer:updates
+                })
             }
 
             interaction.update(populateCloseInteractionMessage(response))
-            
-            callback({
-                updateTown:townUpdates,
-                updatePlayer:updates
-            })
         })
 
         

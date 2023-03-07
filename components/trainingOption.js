@@ -110,7 +110,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -238,7 +238,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -382,7 +382,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -509,7 +509,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -636,7 +636,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -679,7 +679,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":40,
+                                "hp":24,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -703,7 +703,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":40,
+                                "hp":24,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -728,19 +728,6 @@ module.exports = {
                             "spd":10
                         }
                         playerClone.abilities = [
-                            {
-                                "critical": 0,
-                                "damage_type": "spatk",
-                                "damage_val": 40,
-                                "name": "Special Attack",
-                                "speed": 1,
-                                "faction": -1,
-                                "action_type": "attack",
-                                "numHits": 1,
-                                "recoil": 0,
-                                "targetType": 1,
-                                "accuracy": 100
-                            },
                             {
                                 "critical": 0,
                                 "damage_type": "atk",
@@ -770,7 +757,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -855,7 +842,7 @@ module.exports = {
                                 {
                                     "target": "0",
                                     "stat": "atk",
-                                    "value": 200
+                                    "value": 4
                                 }
                                 ],
                                 "speed": 1
@@ -887,7 +874,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -907,7 +894,7 @@ module.exports = {
                                     }
                                 ],
                                 dialogue:[
-                                    "Stat changing abilities can be used to still give yourself an advantage over an opponent should they choose to go on the defensive. Additionally, unlike attacks and guards, they can be used repeatedly without any diminishing effect\n\nUse your abilities to defeat the fighter in 3 turns."
+                                    "Stat changing abilities can be used to still give yourself an advantage over an opponent should they choose to go on the defensive. Additionally, unlike attacks and guards, they can be used repeatedly without any diminishing effect\n\nUse your abilities to defeat the fighter in 4 turns."
                                 ],
                                 openingDialogue:0
                             })
@@ -939,7 +926,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":8,
+                                "hp":5,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -1004,7 +991,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,
@@ -1150,7 +1137,7 @@ module.exports = {
                             session_data:populateCombatData(fighters,{
                                 fightType:"pve",
                                 alliances:[0,1,1,1],
-                                canFlee:false,
+                                canFlee:true,
                                 progressiveCombat:false,
                                 rewardPlayer:false,
                                 returnSession:session.session_id,

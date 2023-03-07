@@ -43,9 +43,9 @@ module.exports = {
             newSession.session_data.ability.name = choices[0].value
             
             interaction.reply({
-                    content: populateAbilityCreatorWindow(newSession),
+                    content: " ",
                     components: populateAbilityCreatorButtons(newSession),
-                    embeds: []
+                    embeds: populateAbilityCreatorWindow(newSession)
             })
             callback({
                 addSession:newSession

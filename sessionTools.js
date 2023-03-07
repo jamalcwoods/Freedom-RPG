@@ -372,6 +372,8 @@ module.exports = {
         }
     },
     populateStatEditWindow (session){
+        const embed = new MessageEmbed()
+
         let statDescriptions = {
             "hp": "Total Hitpoints",
             "atk": "Increases damage done by physical attacks",
@@ -380,7 +382,8 @@ module.exports = {
             "spdef": "Decreases damage taken from physical attacks",
             "spd": "Determines how quickly you will preform abilities",
         }
-        
+    
+
         let displayText = "```diff\n"
         displayText += "Statpoints to spend: " + session.session_data.statpoints + "\n\n"
         for(statname in session.session_data.stats){
@@ -389,7 +392,7 @@ module.exports = {
             }else if(session.session_data.stats[statname] > session.session_data.prevStats[statname]){
                 displayText += "+"
             } 
-            displayText += statname + " (" + statDescriptions[statname] + "): " + session.session_data.stats[statname] 
+            displayText += statname.toLocaleUpperCase() + ": " + session.session_data.stats[statname] + "\n(" + statDescriptions[statname] + ")" 
             let statpointsNeeded;
             if(session.session_data.faction != -1){
                 if(statIncreaseRatios[session.session_data.faction][statname] > 0){
@@ -414,11 +417,15 @@ module.exports = {
                 }
                 
             }
-            displayText += "\n"
+            displayText += "\n\n"
         }
-        displayText += "\nUse the </> arrows to decrease/increase a stat\n"
+        displayText += "Use the </> arrows to decrease/increase a stat\n"
         displayText += "\n```"
-        return displayText
+        embed.addField(
+            "Modifying Stats",
+            displayText
+        )
+        return [embed]
     },
     populateStatEditButtons(session){
         let selectionLabels = []
@@ -1054,7 +1061,7 @@ module.exports = {
                                                                         }
                                                                     } else {
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                                        attacker.liveData.stats.hp = attacker.staticData.stats.hp
+                                                                        attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                                     }
                                                                 }
                                                             } else {
@@ -1148,18 +1155,19 @@ module.exports = {
                                                                 session.session_data.battlelog.combat.push("A critical hit!")
                                                             }
                                                         }
+                                                        
+                                                        target.liveData.stats.hp -= finalDamage;
+                                                        target.records.timesHit++;
+                                                        attacker.records.attackDamageDone += finalDamage
+                                                        target.records.enemyDamageTaken += finalDamage
                                                         if(multiHit){
                                                             multiDamage += finalDamage
-                                                            if(attackNum <= 1){
+                                                            if(attackNum <= 1 || target.liveData.stats.hp <= 0){
                                                                 session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
                                                             }
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
                                                         }
-                                                        target.liveData.stats.hp -= finalDamage;
-                                                        target.records.timesHit++;
-                                                        attacker.records.attackDamageDone += finalDamage
-                                                        target.records.enemyDamageTaken += finalDamage
                                                         triggerCombatEvent({
                                                             type:2,
                                                             data:target
@@ -1218,7 +1226,7 @@ module.exports = {
                                                                 }
                                                             } else {
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                                attacker.liveData.stats.hp = attacker.staticData.stats.hp
+                                                                attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                             }
                                                         }
                                                     }
@@ -1226,7 +1234,7 @@ module.exports = {
                                                 attackNum -= 1
                                             } else {
                                                 if(hitCount > 0){
-                                                        session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
+                                                    session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
                                                 } else {
                                                     if(repeatPenal > 0){
                                                         if((action.ability.accuracy - repeatPenal) <= 0){
@@ -1333,6 +1341,7 @@ module.exports = {
                                     }   
                                     for(t of targets){
                                         let target = session.session_data.fighters[t]
+                                        
                                         if(effect.value > 0){
                                             if(user.team == target.team){
                                                 user.records.timesStatsRaised++
@@ -1735,6 +1744,7 @@ module.exports = {
         return [row1]
     },
     populateAbilityCreatorWindow(session){
+        const embed = new MessageEmbed()
         let valueTranslate = {
             "faction":{
                 "-1":"None",
@@ -1767,25 +1777,31 @@ module.exports = {
         }
 
         let ability = session.session_data.ability
-        let displayText = "```diff\n"
+        let displayText = ""
         displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
-        displayText += "Current Ability point cost: " + calculateAbilityCost(
+        displayText += "Current Ability point cost: " + Math.ceil(calculateAbilityCost(
             session.session_data.ability,
             abilityWeights.weapon[session.session_data.weapon],
             abilityWeights.race[session.session_data.race]
-        ) + "\n\n"
+         )/5) + "\n\n"
         
-        displayText += "Character Weapon Type Modifiers:"
+        let weaponModifierText = ""
         for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
-            displayText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
+            weaponModifierText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
         }
-
-        displayText += "\n\nCharacter Race Modifiers:"
+        if(weaponModifierText != ""){
+            displayText += "Character Weapon Type Modifiers:" + weaponModifierText + "\n\n"
+        }
+        
+        let raceModifierText = ""
         for(mod in abilityWeights.race[session.session_data.race][session.session_data.ability.action_type]){
-            displayText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
+            raceModifierText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
+        }
+        if(raceModifierText != ""){
+            displayText += "Character Race Modifiers:" + raceModifierText + "\n\n"
         }
 
-        displayText += "\n\n" + ability.name + ":\n\n"
+        displayText += "__**" + ability.name + "**__\n\n"
         displayText += createAbilityDescription(ability)
         displayText += "\n\nCurrently Editing: " + session.session_data.editingAttribute
 
@@ -1824,8 +1840,11 @@ module.exports = {
                 attributeVal
             )
         }
-        displayText += "\n```"
-        return displayText  
+        embed.addField(
+            "Creating Ability: " + session.session_data.ability.name,
+            displayText
+        )
+        return [embed]
     },
     populateAbilityCreatorButtons(session){
         let selectionLabels = []
@@ -1958,11 +1977,11 @@ module.exports = {
                 .setLabel('Add Ability')
                 .setStyle('PRIMARY')
                 .setDisabled(
-                    calculateAbilityCost(
-                    session.session_data.ability,
-                    abilityWeights.weapon[session.session_data.weapon],
-                    abilityWeights.race[session.session_data.race]
-                    ) 
+                    Math.ceil(calculateAbilityCost(
+                        session.session_data.ability,
+                        abilityWeights.weapon[session.session_data.weapon],
+                        abilityWeights.race[session.session_data.race]
+                    )/5)
                     > session.session_data.abilitypoints
                 ),
         

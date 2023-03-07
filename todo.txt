@@ -14,13 +14,14 @@ X Town Rankings
 ? Rework multi hit display
 X Town Tasks
 X Town Task Maker
-- Import fonts onto amazon shell
+X Import fonts onto amazon shell
 - Bulk stat changes
 X Stuck in session after dungeon fail
 X Flee from dungeon
 X Lobby check
 X Multiplayer Attack Queue Check
-- Ability point cost balancing
+X Ability point cost balancing
 X Stat based mob abilities 
 X AI warning for stat change
 - Town Raiders Traits
+- Base Task Additions
