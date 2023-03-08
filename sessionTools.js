@@ -581,7 +581,7 @@ module.exports = {
                 title += "Waiting to begin"
             } else {
                 if(session.session_data.completed){
-                    title += "Turn #" + session.session_data.turn  + " - Battle Comlpeted"
+                    title += "Turn #" + session.session_data.turn  + " - Battle Completed"
                 } else {
                     title += "Turn #" + session.session_data.turn 
                 }
@@ -1616,7 +1616,7 @@ module.exports = {
 
                 let rankingText = ""
                 rankingText += "Clear Time (" + speedRank + "):\n" + msToTime(totalTime * 1000)
-                rankingText += "\n\nClear Survival (" + survivalRank + "):\nHealth: " + Math.floor((session.session_data.rankStats.currentHP/session.session_data.rankStats.startHP) * 100) + "%\nLives: " + session.session_data.rankStats.startLives + "/" + session.session_data.rankStats.currentLives
+                rankingText += "\n\nClear Survival (" + survivalRank + "):\nHealth: " + Math.floor((session.session_data.rankStats.currentHP/session.session_data.rankStats.startHP) * 100) + "%\nLives: " + session.session_data.rankStats.currentLives + "/" + session.session_data.rankStats.startLives 
                 rankingText += "\n\nClear Skill (" + skillRank + "):\nFails: " + session.session_data.rankStats.failedChecks + "\nSkips: " + session.session_data.rankStats.skips
                 
                 embed.addField(
@@ -1982,7 +1982,12 @@ module.exports = {
                         abilityWeights.weapon[session.session_data.weapon],
                         abilityWeights.race[session.session_data.race]
                     )/5)
-                    > session.session_data.abilitypoints
+                    > session.session_data.abilitypoints && Math.ceil(calculateAbilityCost(
+                        session.session_data.ability,
+                        abilityWeights.weapon[session.session_data.weapon],
+                        abilityWeights.race[session.session_data.race]
+                    )/5)
+                    <= 0
                 ),
         
                 new MessageButton()
