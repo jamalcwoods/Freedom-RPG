@@ -1777,13 +1777,17 @@ module.exports = {
         }
 
         let ability = session.session_data.ability
-        let displayText = ""
-        displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
-        displayText += "Current Ability point cost: " + Math.ceil(calculateAbilityCost(
+        let cost = Math.ceil(calculateAbilityCost(
             session.session_data.ability,
             abilityWeights.weapon[session.session_data.weapon],
             abilityWeights.race[session.session_data.race]
-         )/5) + "\n\n"
+         )/5)
+        let displayText = ""
+        displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
+        displayText += "Current Ability point cost: " + cost + "\n\n"
+
+        displayText += "Current Level: " + session.session_data.level + "\n"
+        displayText += "Level Requirement: " + Math.ceil(cost/5) * + "\n\n"
         
         let weaponModifierText = ""
         for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
@@ -1970,25 +1974,18 @@ module.exports = {
                     .addOptions(selectionLabels),
             );
         
+        let cost = Math.ceil(calculateAbilityCost(
+            session.session_data.ability,
+            abilityWeights.weapon[session.session_data.weapon],
+            abilityWeights.race[session.session_data.race]
+        )/5)
         const row2 = new MessageActionRow()
             .addComponents(
                 new MessageButton()
                 .setCustomId('addAbility_' + session.session_id)
                 .setLabel('Add Ability')
                 .setStyle('PRIMARY')
-                .setDisabled(
-                    Math.ceil(calculateAbilityCost(
-                        session.session_data.ability,
-                        abilityWeights.weapon[session.session_data.weapon],
-                        abilityWeights.race[session.session_data.race]
-                    )/5)
-                    > session.session_data.abilitypoints && Math.ceil(calculateAbilityCost(
-                        session.session_data.ability,
-                        abilityWeights.weapon[session.session_data.weapon],
-                        abilityWeights.race[session.session_data.race]
-                    )/5)
-                    <= 0
-                ),
+                .setDisabled(cost > session.session_data.abilitypoints || cost <= 0 || session.session_data.level < Math.ceil(cost/3)),
         
                 new MessageButton()
                 .setCustomId('cancel_' + session.session_id)
