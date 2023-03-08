@@ -1196,7 +1196,7 @@ module.exports = {
                                                             }
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " lost a life! (" + target.staticData.lives + " remaining)")
-                                                            target.liveData.stats.hp = target.staticData.stats.hp
+                                                            target.liveData.stats.hp = target.liveData.maxhp
                                                         }
                                                     }
 

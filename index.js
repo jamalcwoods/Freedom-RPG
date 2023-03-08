@@ -370,7 +370,6 @@ function playerPresenceCheck(message,user,town,callback){
                     })   
                 })
             }
-
             if(player.challengeTimer <= now.getTime()){
                 player.challengeTimer = now.getTime() + 28800000
                 if(!player.challenges){
@@ -715,7 +714,7 @@ setInterval(() => {
                         let expedition = townData.expeditions[i]
 
                         let active;
-                        if(chatLog){
+                        if(chatLog && chatLog[expedition.playerID]){
                             active = chatLog[expedition.playerID]
                         } else {
                             active = false
@@ -732,7 +731,7 @@ setInterval(() => {
                                         .setTitle("Expedition Event")
 
                                         embed.addField("---",stepResult[0])
-                                        dm.send({embeds:[embed]})
+                                        dm.send({embeds:[embed]}).catch((e) =>{})
                                     })
                                 })
                             })
@@ -768,7 +767,6 @@ setInterval(() => {
             messageLog = {}
         })
     })      
-}, 5000);
-//}, 300000);
+}, 300000);
 
 client.login(token);

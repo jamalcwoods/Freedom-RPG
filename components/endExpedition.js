@@ -1,5 +1,6 @@
 const { populateCloseInteractionMessage} = require("../sessionTools.js")
 const { getTownDBData } = require("../firebaseTools.js")
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     config:{
@@ -33,14 +34,13 @@ module.exports = {
                 "minerals":"Minerals"
             }   
 
-            let resourcesEarned = "Expedition Results:\n\n"
+            let resourcesEarned = ""
             for(var i = 0; i < town.expeditions.length;i++){
                 if(town.expeditions[i].playerID == player.id){
                     if(!town.contributors){
                         town.contributors = {}
                     }
                     for(resource in town.expeditions[i].townResources){
-                        resourcesEarned += titleMap[resource] +  ": " + town.expeditions[i].townResources[resource] + "\n"
                         let amount = 0;
                         if(town.resources[resource][0] + town.expeditions[i].townResources[resource] > town.resources[resource][1]){
                             amount = (town.resources[resource][1] - town.resources[resource][0])
@@ -58,7 +58,7 @@ module.exports = {
                             }
                         }
                         if(amount > 0){
-                            resourcesEarned += response + ": " + amount + "\n"
+                            resourcesEarned += titleMap[resource] +  ": " + town.expeditions[i].townResources[resource] + "\n"
                         }
                     }
                     if(town.expeditions[i].resources){
@@ -89,20 +89,29 @@ module.exports = {
             let response;
             if(val == "0"){
                 response = "Your expedition will continue"
+                interaction.update(populateCloseInteractionMessage(response))
                 callback({})
             } else {
-                response = resourcesEarned
+                if(resourcesEarned == ""){
+                    resourcesEarned = "None (Your expedition was too short!)"
+                }
+                const embed = new MessageEmbed()
+                .setColor('#00ff00')
+                .setTitle("Expedition Results")
+
+                embed.setDescription(resourcesEarned);
+
+                interaction.update({
+                    content: " ",
+                    components: [],
+                    embeds: [embed]
+                })
+
                 callback({
                     updateTown:townUpdates,
                     updatePlayer:updates
                 })
             }
-
-            interaction.update(populateCloseInteractionMessage(response))
-        })
-
-        
-
-        
+        })  
     }
 }
