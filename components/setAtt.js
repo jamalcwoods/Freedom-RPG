@@ -2,6 +2,7 @@
 // const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 
 const { populateAbilityCreatorWindow, populateAbilityCreatorButtons } = require("../sessionTools.js")
+const { clone } = require("../tools.js")
 const data = require("../data.json")
 
 module.exports = {
@@ -34,15 +35,15 @@ module.exports = {
                         let tempName = session.session_data.ability.name
                         switch(args[0]){
                             case "guard":
-                                session.session_data.ability = data.templates.guard
+                                session.session_data.ability = clone(data.templates.guard)
                                 break;
 
                             case "attack":
-                                session.session_data.ability = data.templates.attack
+                                session.session_data.ability = clone(data.templates.attack)
                                 break;
 
                             case "stats":
-                                session.session_data.ability = data.templates.stats
+                                session.session_data.ability = clone(data.templates.stats)
                                 break;
                         }
                         session.session_data.ability.name = tempName

@@ -15,7 +15,7 @@ X Town Rankings
 X Town Tasks
 X Town Task Maker
 X Import fonts onto amazon shell
-- Bulk stat changes
+X Bulk stat changes
 X Stuck in session after dungeon fail
 X Flee from dungeon
 X Lobby check
@@ -25,3 +25,15 @@ X Stat based mob abilities
 X AI warning for stat change
 - Town Raiders Traits
 - Base Task Additions
+X benefit of blocking an attack 
+- Ability icon explanation 
+- Tutorial from /profile
+X Ability Memory/removal 
+X Sell & Favorite items for server reputation
+X Reputation Leaderboards
+X Exponential cost of damage/guard_val
+X Tavern Life sales
+X Dungeon run timer
+X Expedition rewards (substantial increase for active player)
+X Point threshold scalar
+- Session Time Out

@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { populateTownVisitWindow, populateTownVisitControls } = require("../sessionTools.js")
 const { getTownDBData, updateTownDBData} = require("../firebaseTools.js");
-const { parseReward } = require('../tools.js');
+const { parseReward, applyTownReputation } = require('../tools.js');
 
 
 module.exports = {
@@ -27,16 +27,7 @@ module.exports = {
                 let goldVal = Math.ceil(final * session.session_data.temp.currentTask.goldReward)
                 let expVal = Math.ceil(final * session.session_data.temp.currentTask.expReward)
     
-                if(!session.session_data.town.reputations){
-                    session.session_data.town.reputations = {}
-                    session.session_data.town.reputations[session.session_data.player.id] = repVal
-                } else {
-                    if(!session.session_data.town.reputations[session.session_data.player.id]){
-                        session.session_data.town.reputations[session.session_data.player.id] = repVal
-                    } else {
-                        session.session_data.town.reputations[session.session_data.player.id] += repVal
-                    }
-                }
+                applyTownReputation(session.session_data.town,session.session_data.player.id,repVal)
                 
                 let result = parseReward({
                     type:"resource",

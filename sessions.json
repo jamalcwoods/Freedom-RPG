@@ -1,1 +1,1026 @@
-[]
+[
+    {
+        "type": "townVisit",
+        "session_id": 20921,
+        "user_ids": [
+            "163809334852190208"
+        ],
+        "session_data": {
+            "player": {
+                "abilities": [
+                    {
+                        "action_type": "guard",
+                        "counter_type": "def",
+                        "counter_val": 10,
+                        "guard_type": "def",
+                        "guard_val": 60,
+                        "name": "Starter Guard",
+                        "speed": 3,
+                        "success_level": 100
+                    },
+                    {
+                        "action_type": "stats",
+                        "effects": [
+                            {
+                                "stat": "atk",
+                                "target": "0",
+                                "value": 1
+                            },
+                            {
+                                "stat": "spatk",
+                                "target": "0",
+                                "value": 1
+                            }
+                        ],
+                        "name": "Starter Buff",
+                        "speed": 1,
+                        "statChangeCount": 2
+                    },
+                    {
+                        "accuracy": 90,
+                        "action_type": "attack",
+                        "critical": 0,
+                        "damage_type": "atk",
+                        "damage_val": 1000,
+                        "faction": -1,
+                        "name": "Starter Attack",
+                        "numHits": 5,
+                        "recoil": 0,
+                        "speed": 4,
+                        "targetType": "1"
+                    }
+                ],
+                "abilityPermissions": {
+                    "faction": false,
+                    "stats": false
+                },
+                "abilitypoints": 207,
+                "boosters": [
+                    {
+                        "expire": 1678805702979,
+                        "type": "speed",
+                        "value": 1
+                    }
+                ],
+                "challengeTimer": 1678865087458,
+                "combatStyle": "0",
+                "dailyCount": 15,
+                "dailyTimer": 1678923777526,
+                "dungeonTimer": 1678838117215,
+                "exp": 892,
+                "expCap": 1900,
+                "faction": -1,
+                "gold": 1620,
+                "id": "163809334852190208",
+                "inventory": [
+                    {
+                        "name": "Aegis Exploiting Guard Outfit",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 1,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 1
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Enchanted Prospering Axe",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 7,
+                            "spd": 1,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            1,
+                            1,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Chaotic Inspiring Aura",
+                        "stats": {
+                            "atk": 2,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 9,
+                            "spd": 3,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "weaponStyle": 3
+                    },
+                    {
+                        "name": "Noble Exploiting Uniform",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 8,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Loose Terrifying Hammer",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 2,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            1,
+                            1,
+                            1
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Reinforced Belittling Armor",
+                        "stats": {
+                            "atk": 0,
+                            "def": 7,
+                            "hp": 1,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            0,
+                            1,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Noble Preserving Guard Clothing",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 9,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 5
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Formidable Preserving Protection Armor",
+                        "stats": {
+                            "atk": 0,
+                            "def": 4,
+                            "hp": 4,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            0,
+                            0,
+                            1,
+                            0,
+                            0,
+                            1
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Sturdy Exploiting Armor",
+                        "stats": {
+                            "atk": 0,
+                            "def": 2,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            1,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Resplendent Ambushing Swift Wand",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 1,
+                            "spd": 1,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            1,
+                            1,
+                            0,
+                            1,
+                            0
+                        ],
+                        "weaponStyle": 2
+                    },
+                    {
+                        "name": "Protector's Exploiting Armor",
+                        "stats": {
+                            "atk": 0,
+                            "def": 2,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            0,
+                            1,
+                            0,
+                            1,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Merciless Inspiring Swift Scepter",
+                        "stats": {
+                            "atk": 7,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 2,
+                            "spd": 5,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1
+                        ],
+                        "weaponStyle": 2
+                    },
+                    {
+                        "name": "Hulking Exploiting Protection Armor",
+                        "stats": {
+                            "atk": 0,
+                            "def": 1,
+                            "hp": 1,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            0,
+                            0,
+                            0,
+                            1,
+                            1
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Formidable Belittling Outfit",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 11,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 3
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            0,
+                            1,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Sword",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Outfit",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Axe",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Bow",
+                        "stats": {
+                            "atk": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 0,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "weaponStyle": 1
+                    },
+                    {
+                        "name": "Merciless Emboldening Brave Armor",
+                        "stats": {
+                            "atk": 27,
+                            "def": 1,
+                            "hp": 14,
+                            "spatk": 11,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "gear",
+                        "typePerks": [
+                            1,
+                            0,
+                            1,
+                            1,
+                            0,
+                            2
+                        ],
+                        "weaponStyle": 0
+                    },
+                    {
+                        "name": "Sharp Battering Spell Aura",
+                        "stats": {
+                            "atk": 21,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 21,
+                            "spd": 0,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            1,
+                            0,
+                            0,
+                            1,
+                            0,
+                            1
+                        ],
+                        "weaponStyle": 3
+                    }
+                ],
+                "job": "1",
+                "level": 19,
+                "lives": 1,
+                "name": "Jemini W",
+                "presenceTimer": 1678837575531,
+                "race": "3",
+                "statpoints": 89,
+                "stats": {
+                    "atk": 20,
+                    "def": 10,
+                    "hp": 10,
+                    "spatk": 10,
+                    "spd": 10,
+                    "spdef": 10
+                },
+                "taskTimer": 0,
+                "totalExp": 17992
+            },
+            "town": {
+                "availableAbilities": [
+                    [
+                        {
+                            "accuracy": 120,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "spatk",
+                            "damage_val": 10,
+                            "faction": -1,
+                            "name": "Focused Spark",
+                            "numHits": 1,
+                            "recoil": 0,
+                            "speed": 1,
+                            "targetType": "1"
+                        },
+                        32
+                    ],
+                    [
+                        {
+                            "action_type": "guard",
+                            "counter_type": "def",
+                            "counter_val": 10,
+                            "guard_type": "def",
+                            "guard_val": 10,
+                            "name": "Retaliating Reflex",
+                            "speed": 3,
+                            "success_level": "100"
+                        },
+                        36
+                    ],
+                    [
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "spdef",
+                                    "target": "0",
+                                    "value": -1
+                                },
+                                {
+                                    "stat": "spd",
+                                    "target": "1",
+                                    "value": 2
+                                }
+                            ],
+                            "name": "Enabling Cheer",
+                            "speed": 0,
+                            "statChangeCount": 2
+                        },
+                        85
+                    ]
+                ],
+                "contributors": {
+                    "163809334852190208": 432,
+                    "290256677205180426": 15,
+                    "359934051525591041": 2,
+                    "365682211376201733": 5,
+                    "403036391673430016": 356,
+                    "588220226609348618": 10,
+                    "624753330660311070": 1,
+                    "694332417011482654": 149
+                },
+                "dungeonClear": true,
+                "hallOwner": {
+                    "abilitypoints": 0,
+                    "combatStyle": "0",
+                    "cpu": true,
+                    "exp": 0,
+                    "faction": "-1",
+                    "id": "hallNPC",
+                    "level": 12,
+                    "lives": 1,
+                    "name": "Hall Warden",
+                    "race": "0",
+                    "statpoints": 0,
+                    "stats": {
+                        "atk": 11,
+                        "def": 11,
+                        "hp": 22,
+                        "spatk": 11,
+                        "spd": 11,
+                        "spdef": 11
+                    },
+                    "totalExp": 0
+                },
+                "hallReset": 1678923113807,
+                "hallStart": 1678756646292,
+                "id": "1038950677260550274",
+                "lastRaid": 1678923113807,
+                "level": 6,
+                "listings": [
+                    [
+                        {
+                            "name": "Merciless Terrifying Wand",
+                            "stats": {
+                                "atk": 9,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 1,
+                                "spd": 1,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 2
+                        },
+                        26
+                    ],
+                    [
+                        {
+                            "name": "Aegis Looming Armor",
+                            "stats": {
+                                "atk": 0,
+                                "def": 0,
+                                "hp": 6,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 0
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                2,
+                                0,
+                                1
+                            ],
+                            "weaponStyle": 0
+                        },
+                        35
+                    ],
+                    [
+                        {
+                            "name": "Brutal Terrifying Staff",
+                            "stats": {
+                                "atk": 10,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 0,
+                                "spd": 4,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                1,
+                                1,
+                                0,
+                                2,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 2
+                        },
+                        57
+                    ],
+                    [
+                        {
+                            "name": "Hefty Preserving Clothing",
+                            "stats": {
+                                "atk": 0,
+                                "def": 10,
+                                "hp": 0,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 0
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                1,
+                                0,
+                                2,
+                                0,
+                                0,
+                                1
+                            ],
+                            "weaponStyle": 0
+                        },
+                        51
+                    ]
+                ],
+                "marketRestock": 1678923113807,
+                "name": "Untitled Discord RPG Official Server",
+                "points": 100,
+                "raid": {
+                    "completion": 0,
+                    "leader": {
+                        "equipment": {
+                            "name": "Divine Combat Clothing",
+                            "stats": {
+                                "atk": 32,
+                                "def": 0,
+                                "hp": 8,
+                                "spatk": 13,
+                                "spd": 12,
+                                "spdef": 35
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 0
+                        },
+                        "name": "Bogakh",
+                        "unit": {
+                            "abilities": [
+                                {
+                                    "action_type": "stats",
+                                    "effects": [
+                                        {
+                                            "stat": "atk",
+                                            "target": "0",
+                                            "value": 1
+                                        }
+                                    ],
+                                    "name": "Battle Stance",
+                                    "speed": 0,
+                                    "statChangeCount": 1
+                                },
+                                {
+                                    "accuracy": 100,
+                                    "action_type": "attack",
+                                    "critical": 0,
+                                    "damage_type": "spatk",
+                                    "damage_val": 20,
+                                    "faction": -1,
+                                    "name": "Elemental Surge",
+                                    "numHits": 1,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "targetType": 2
+                                },
+                                {
+                                    "action_type": "stats",
+                                    "effects": [
+                                        {
+                                            "stat": "atk",
+                                            "target": "0",
+                                            "value": 1
+                                        }
+                                    ],
+                                    "name": "Battle Stance",
+                                    "speed": 0,
+                                    "statChangeCount": 1
+                                },
+                                {
+                                    "action_type": "guard",
+                                    "counter_type": "spdef",
+                                    "counter_val": 0,
+                                    "guard_type": "spdef",
+                                    "guard_val": 20,
+                                    "name": "Shielding Aura",
+                                    "speed": 3,
+                                    "success_level": 200
+                                },
+                                {
+                                    "accuracy": 100,
+                                    "action_type": "attack",
+                                    "critical": 0,
+                                    "damage_type": "spatk",
+                                    "damage_val": 20,
+                                    "faction": -1,
+                                    "name": "Harmful Outcry",
+                                    "numHits": 1,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "targetType": 1
+                                }
+                            ],
+                            "abilitypoints": 0,
+                            "combatStyle": "0",
+                            "cpu": true,
+                            "exp": 0,
+                            "faction": "-1",
+                            "gear": 0,
+                            "id": "raidBoss",
+                            "inventory": [
+                                {
+                                    "name": "Divine Combat Clothing",
+                                    "stats": {
+                                        "atk": 32,
+                                        "def": 0,
+                                        "hp": 8,
+                                        "spatk": 13,
+                                        "spd": 12,
+                                        "spdef": 35
+                                    },
+                                    "type": "gear",
+                                    "typePerks": [
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "weaponStyle": 0
+                                }
+                            ],
+                            "level": 70,
+                            "lives": 1,
+                            "name": "Bogakh",
+                            "race": "0",
+                            "statpoints": 0,
+                            "stats": {
+                                "atk": 60,
+                                "def": 39,
+                                "hp": 82,
+                                "spatk": 93,
+                                "spd": 98,
+                                "spdef": 119
+                            },
+                            "totalExp": 0
+                        }
+                    },
+                    "missions": [
+                        [
+                            {
+                                "type": 2
+                            },
+                            {
+                                "type": 0
+                            }
+                        ],
+                        [
+                            {
+                                "type": 0
+                            },
+                            {
+                                "type": 1
+                            }
+                        ],
+                        [
+                            {
+                                "type": 1
+                            }
+                        ]
+                    ]
+                },
+                "regions": [
+                    "Forest",
+                    "Mountains"
+                ],
+                "reputations": {
+                    "163809334852190208": 24,
+                    "403036391673430016": 117
+                },
+                "resources": {
+                    "food": [
+                        5,
+                        320
+                    ],
+                    "minerals": [
+                        113,
+                        320
+                    ],
+                    "wood": [
+                        135,
+                        320
+                    ]
+                },
+                "taskList": [
+                    {
+                        "description": "Test description for a task",
+                        "expReward": 0.33,
+                        "goldReward": 0.33,
+                        "id": 0,
+                        "multiThresh": 1,
+                        "name": "Test Task",
+                        "repReward": 0.33,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 1,
+                                "solution": "ATK based prompt",
+                                "solutionDesc": "ATK based prompt desc"
+                            },
+                            "def": {
+                                "multi": 1,
+                                "solution": "DEF based prompt",
+                                "solutionDesc": "DEF based prompt desc"
+                            },
+                            "hp": {
+                                "multi": 0.75,
+                                "solution": "HP based prompt",
+                                "solutionDesc": "HP based prompt desc"
+                            },
+                            "spatk": {
+                                "multi": 1,
+                                "solution": "SPATK based prompt",
+                                "solutionDesc": "SPATK based prompt desc"
+                            },
+                            "spd": {
+                                "multi": 1,
+                                "solution": "SPD based prompt",
+                                "solutionDesc": "SPD based prompt desc"
+                            },
+                            "spdef": {
+                                "multi": 1,
+                                "solution": "SPDEF based prompt",
+                                "solutionDesc": "SPDEF based prompt desc"
+                            }
+                        },
+                        "suggestedSolutionPrompt": "Test prompt thats suggest which solution would be better for completing the task",
+                        "taskPrompt": "Test prompt for a task"
+                    },
+                    {
+                        "description": "Test description for a task",
+                        "expReward": 0.33,
+                        "goldReward": 0.33,
+                        "id": 0,
+                        "multiThresh": 1,
+                        "name": "Test Task",
+                        "repReward": 0.33,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 1,
+                                "solution": "ATK based prompt",
+                                "solutionDesc": "ATK based prompt desc"
+                            },
+                            "def": {
+                                "multi": 1,
+                                "solution": "DEF based prompt",
+                                "solutionDesc": "DEF based prompt desc"
+                            },
+                            "hp": {
+                                "multi": 0.75,
+                                "solution": "HP based prompt",
+                                "solutionDesc": "HP based prompt desc"
+                            },
+                            "spatk": {
+                                "multi": 1,
+                                "solution": "SPATK based prompt",
+                                "solutionDesc": "SPATK based prompt desc"
+                            },
+                            "spd": {
+                                "multi": 1,
+                                "solution": "SPD based prompt",
+                                "solutionDesc": "SPD based prompt desc"
+                            },
+                            "spdef": {
+                                "multi": 1,
+                                "solution": "SPDEF based prompt",
+                                "solutionDesc": "SPDEF based prompt desc"
+                            }
+                        },
+                        "suggestedSolutionPrompt": "Test prompt thats suggest which solution would be better for completing the task",
+                        "taskPrompt": "Test prompt for a task"
+                    },
+                    {
+                        "description": "Test description for a task",
+                        "expReward": 0.33,
+                        "goldReward": 0.33,
+                        "id": 0,
+                        "multiThresh": 1,
+                        "name": "Test Task",
+                        "repReward": 0.33,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 1,
+                                "solution": "ATK based prompt",
+                                "solutionDesc": "ATK based prompt desc"
+                            },
+                            "def": {
+                                "multi": 1,
+                                "solution": "DEF based prompt",
+                                "solutionDesc": "DEF based prompt desc"
+                            },
+                            "hp": {
+                                "multi": 0.75,
+                                "solution": "HP based prompt",
+                                "solutionDesc": "HP based prompt desc"
+                            },
+                            "spatk": {
+                                "multi": 1,
+                                "solution": "SPATK based prompt",
+                                "solutionDesc": "SPATK based prompt desc"
+                            },
+                            "spd": {
+                                "multi": 1,
+                                "solution": "SPD based prompt",
+                                "solutionDesc": "SPD based prompt desc"
+                            },
+                            "spdef": {
+                                "multi": 1,
+                                "solution": "SPDEF based prompt",
+                                "solutionDesc": "SPDEF based prompt desc"
+                            }
+                        },
+                        "suggestedSolutionPrompt": "Test prompt thats suggest which solution would be better for completing the task",
+                        "taskPrompt": "Test prompt for a task"
+                    }
+                ],
+                "taskRestock": 1678923113807,
+                "trainingRestock": 1678923113807
+            },
+            "location": "adventure"
+        }
+    }
+]

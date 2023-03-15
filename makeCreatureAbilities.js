@@ -3,147 +3,172 @@ let inData = require('./data.json')
 
 let Blocks = [
   {
-    "name": "Protecting Aura",
-    "allowanceCost": 4,
-    "guard_val": 60,
+    "name": "Feral Shudder",
+    "allowanceCost": 2,
+    "guard_val": 30,
+    "success_level": 100,
+    "counter_val": 20,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 1,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 37
+  },
+  {
+    "name": "Coiling Constriction",
+    "allowanceCost": 2,
+    "guard_val": 30,
+    "success_level": 100,
+    "counter_val": 20,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 6,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 37
+  },
+  {
+    "name": "Ink Field",
+    "allowanceCost": 2,
+    "guard_val": 40,
     "success_level": 100,
     "counter_val": 0,
     "counter_type": "spdef",
     "guard_type": "spdef",
     "speed": 3,
-    "id": 55,
+    "id": 9,
     "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 0,
+    "value": 36
   },
   {
-    "name": "Reflective Radiance",
-    "allowanceCost": 4,
+    "name": "Frantic Retaliation",
+    "allowanceCost": 2,
+    "guard_val": 20,
+    "success_level": 100,
+    "counter_val": 30,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 10,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 38
+  },
+  {
+    "name": "Instinctual Flail",
+    "allowanceCost": 2,
+    "guard_val": 30,
+    "success_level": 100,
+    "counter_val": 20,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 16,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 37
+  },
+  {
+    "name": "Tough Shell",
+    "allowanceCost": 3,
+    "guard_val": 40,
+    "success_level": 200,
+    "counter_val": 0,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 21,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 52
+  },
+  {
+    "name": "Prideful Stance",
+    "allowanceCost": 2,
+    "guard_val": 40,
+    "success_level": 100,
+    "counter_val": 20,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 22,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 43
+  },
+  {
+    "name": "Shell Brace",
+    "allowanceCost": 3,
+    "guard_val": 30,
+    "success_level": 300,
+    "counter_val": 0,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 24,
+    "action_type": "guard",
+    "wildUse": 0,
+    "value": 52
+  },
+  {
+    "name": "Ignorant Thrash",
+    "allowanceCost": 2,
     "guard_val": 40,
     "success_level": 90,
-    "counter_val": 40,
-    "counter_type": "spdef",
-    "guard_type": "spdef",
+    "counter_val": 30,
+    "counter_type": "def",
+    "guard_type": "def",
     "speed": 3,
-    "id": 54,
+    "id": 25,
     "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 0,
+    "value": 45
   },
   {
-    "name": "Battle Hardened",
-    "allowanceCost": 4,
-    "guard_val": 60,
+    "name": "Tuck In",
+    "allowanceCost": 2,
+    "guard_val": 40,
     "success_level": 100,
     "counter_val": 0,
     "counter_type": "def",
     "guard_type": "def",
     "speed": 3,
-    "id": 53,
+    "id": 30,
     "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 0,
+    "value": 36
   },
   {
-    "name": "Counter Clash",
-    "allowanceCost": 4,
-    "guard_val": 30,
-    "success_level": 90,
-    "counter_val": 50,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 52,
-    "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Protecting Aura",
+    "name": "Unflinching Stance",
     "allowanceCost": 2,
     "guard_val": 30,
-    "success_level": 100,
-    "counter_val": 0,
-    "counter_type": "spdef",
-    "guard_type": "spdef",
-    "speed": 3,
-    "id": 51,
-    "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Guardian Aura",
-    "allowanceCost": 2,
-    "guard_val": 20,
-    "success_level": 90,
-    "counter_val": 20,
-    "counter_type": "spdef",
-    "guard_type": "spdef",
-    "speed": 3,
-    "id": 50,
-    "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Shielding Aura",
-    "allowanceCost": 2,
-    "guard_val": 20,
     "success_level": 200,
-    "counter_val": 0,
-    "counter_type": "spdef",
-    "guard_type": "spdef",
+    "counter_val": 10,
+    "counter_type": "def",
+    "guard_type": "def",
     "speed": 3,
-    "id": 49,
+    "id": 31,
     "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 0,
+    "value": 48
   },
   {
-    "name": "Defensive Stance",
-    "allowanceCost": 2,
+    "name": "Lasting Endurance",
+    "allowanceCost": 3,
     "guard_val": 30,
-    "success_level": 100,
+    "success_level": 300,
     "counter_val": 0,
     "counter_type": "def",
     "guard_type": "def",
     "speed": 3,
-    "id": 57,
+    "id": 32,
     "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Heightened Senses",
-    "allowanceCost": 1,
-    "guard_val": 10,
-    "success_level": 200,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 56,
-    "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Light Guard",
-    "allowanceCost": 1,
-    "guard_val": 10,
-    "success_level": 200,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 48,
-    "action_type": "guard",
-    "wildUse": 1
-  },
-  {
-    "name": "Counter Stance",
-    "allowanceCost": 2,
-    "guard_val": 20,
-    "success_level": 90,
-    "counter_val": 20,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 47,
-    "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 0,
+    "value": 52
   },
   {
     "name": "Resist Stance",
@@ -156,171 +181,171 @@ let Blocks = [
     "speed": 3,
     "id": 46,
     "action_type": "guard",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 37
   },
   {
-    "name": "Lasting Endurance",
-    "allowanceCost": 4,
-    "guard_val": 30,
-    "success_level": 300,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 32,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Unflinching Stance",
-    "allowanceCost": 4,
-    "guard_val": 30,
-    "success_level": 200,
-    "counter_val": 10,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 31,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Tuck In",
-    "allowanceCost": 3,
-    "guard_val": 40,
-    "success_level": 100,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 30,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Ignorant Thrash",
-    "allowanceCost": 4,
-    "guard_val": 40,
-    "success_level": 90,
-    "counter_val": 30,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 25,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Shell Brace",
-    "allowanceCost": 4,
-    "guard_val": 30,
-    "success_level": 300,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 24,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Prideful Stance",
-    "allowanceCost": 4,
-    "guard_val": 40,
-    "success_level": 100,
-    "counter_val": 20,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 22,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Tough Shell",
-    "allowanceCost": 4,
-    "guard_val": 40,
-    "success_level": 200,
-    "counter_val": 0,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 21,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Instinctual Flail",
-    "allowanceCost": 3,
-    "guard_val": 30,
-    "success_level": 100,
-    "counter_val": 20,
-    "counter_type": "def",
-    "guard_type": "def",
-    "speed": 3,
-    "id": 16,
-    "action_type": "guard",
-    "wildUse": 0
-  },
-  {
-    "name": "Frantic Retaliation",
-    "allowanceCost": 3,
+    "name": "Counter Stance",
+    "allowanceCost": 2,
     "guard_val": 20,
-    "success_level": 100,
-    "counter_val": 30,
+    "success_level": 90,
+    "counter_val": 20,
     "counter_type": "def",
     "guard_type": "def",
     "speed": 3,
-    "id": 10,
+    "id": 47,
     "action_type": "guard",
-    "wildUse": 0
+    "wildUse": 1,
+    "value": 30
   },
   {
-    "name": "Ink Field",
-    "allowanceCost": 3,
-    "guard_val": 40,
+    "name": "Light Guard",
+    "allowanceCost": 2,
+    "guard_val": 10,
+    "success_level": 200,
+    "counter_val": 0,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 48,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 32
+  },
+  {
+    "name": "Shielding Aura",
+    "allowanceCost": 2,
+    "guard_val": 20,
+    "success_level": 200,
+    "counter_val": 0,
+    "counter_type": "spdef",
+    "guard_type": "spdef",
+    "speed": 3,
+    "id": 49,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 37
+  },
+  {
+    "name": "Guardian Aura",
+    "allowanceCost": 2,
+    "guard_val": 20,
+    "success_level": 90,
+    "counter_val": 20,
+    "counter_type": "spdef",
+    "guard_type": "spdef",
+    "speed": 3,
+    "id": 50,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 30
+  },
+  {
+    "name": "Protecting Aura",
+    "allowanceCost": 2,
+    "guard_val": 30,
     "success_level": 100,
     "counter_val": 0,
     "counter_type": "spdef",
     "guard_type": "spdef",
     "speed": 3,
-    "id": 9,
+    "id": 51,
     "action_type": "guard",
-    "wildUse": 0
+    "wildUse": 1,
+    "value": 30
   },
   {
-    "name": "Coiling Constriction",
+    "name": "Counter Clash",
     "allowanceCost": 3,
     "guard_val": 30,
-    "success_level": 100,
-    "counter_val": 20,
+    "success_level": 90,
+    "counter_val": 50,
     "counter_type": "def",
     "guard_type": "def",
     "speed": 3,
-    "id": 6,
+    "id": 52,
     "action_type": "guard",
-    "wildUse": 0
+    "wildUse": 1,
+    "value": 54
   },
   {
-    "name": "Feral Shudder",
+    "name": "Battle Hardened",
     "allowanceCost": 3,
-    "guard_val": 30,
+    "guard_val": 60,
     "success_level": 100,
-    "counter_val": 20,
+    "counter_val": 0,
     "counter_type": "def",
     "guard_type": "def",
     "speed": 3,
-    "id": 1,
+    "id": 53,
     "action_type": "guard",
-    "wildUse": 0
+    "wildUse": 1,
+    "value": 54
+  },
+  {
+    "name": "Reflective Radiance",
+    "allowanceCost": 3,
+    "guard_val": 40,
+    "success_level": 90,
+    "counter_val": 40,
+    "counter_type": "spdef",
+    "guard_type": "spdef",
+    "speed": 3,
+    "id": 54,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 51
+  },
+  {
+    "name": "Protecting Aura",
+    "allowanceCost": 3,
+    "guard_val": 60,
+    "success_level": 100,
+    "counter_val": 0,
+    "counter_type": "spdef",
+    "guard_type": "spdef",
+    "speed": 3,
+    "id": 55,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 54
+  },
+  {
+    "name": "Heightened Senses",
+    "allowanceCost": 2,
+    "guard_val": 10,
+    "success_level": 200,
+    "counter_val": 0,
+    "counter_type": "spdef",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 56,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 32
+  },
+  {
+    "name": "Defensive Stance",
+    "allowanceCost": 2,
+    "guard_val": 30,
+    "success_level": 100,
+    "counter_val": 0,
+    "counter_type": "def",
+    "guard_type": "def",
+    "speed": 3,
+    "id": 57,
+    "action_type": "guard",
+    "wildUse": 1,
+    "value": 30
   }
 ]
+
 let Attacks = [
   {
     "name": "Sudden Hop",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 40,
+    "damage_val": 30,
     "speed": 2,
     "faction": -1,
     "accuracy": 80,
@@ -330,13 +355,14 @@ let Attacks = [
     "targetType": 1,
     "id": 0,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 68
   },
   {
     "name": "Burrowing Strike",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 40,
+    "damage_val": 25,
     "speed": 4,
     "faction": -1,
     "accuracy": 90,
@@ -346,13 +372,14 @@ let Attacks = [
     "targetType": 1,
     "id": 2,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 63
   },
   {
     "name": "Lurking Sting",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 30,
+    "damage_val": 25,
     "speed": 2,
     "faction": -1,
     "accuracy": 100,
@@ -362,109 +389,116 @@ let Attacks = [
     "targetType": 1,
     "id": 3,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 69
   },
   {
     "name": "Prideful Pursuit",
-    "allowanceCost": 3,
+    "allowanceCost": 4,
     "damage_type": "atk",
-    "damage_val": 30,
+    "damage_val": 35,
     "speed": 1,
     "faction": -1,
     "accuracy": 120,
     "numHits": 1,
-    "critical": 0,
+    "critical": 50,
     "recoil": 0,
     "targetType": 1,
     "id": 4,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 94
   },
   {
     "name": "Frantic Bite",
-    "allowanceCost": 3,
+    "allowanceCost": 4,
     "damage_type": "atk",
     "damage_val": 20,
     "speed": 2,
     "faction": -1,
     "accuracy": 110,
-    "numHits": 1,
-    "critical": 40,
+    "numHits": 2,
+    "critical": 20,
     "recoil": 0,
     "targetType": 1,
     "id": 5,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 87
   },
   {
     "name": "Sucker Slap",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 30,
+    "damage_val": 20,
     "speed": 4,
     "faction": -1,
     "accuracy": 100,
     "numHits": 1,
-    "critical": 30,
+    "critical": 15,
     "recoil": 0,
     "targetType": 1,
     "id": 7,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 68
   },
   {
     "name": "Rapid Fangs",
     "allowanceCost": 2,
     "damage_type": "atk",
-    "damage_val": 20,
+    "damage_val": 15,
     "speed": 1,
     "faction": -1,
     "accuracy": 100,
     "numHits": 2,
-    "critical": 20,
+    "critical": 10,
     "recoil": 0,
     "targetType": 1,
     "id": 8,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 47
   },
   {
     "name": "Disturbing Buzz",
-    "allowanceCost": 3,
+    "allowanceCost": 4,
     "damage_type": "spatk",
     "damage_val": 30,
-    "speed": 1,
+    "speed": 2,
     "faction": -1,
     "accuracy": 110,
     "numHits": 1,
-    "critical": 30,
+    "critical": 70,
     "recoil": 0,
     "targetType": 1,
     "id": 11,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 89
   },
   {
     "name": "Rapid Pecks",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "atk",
     "damage_val": 10,
     "speed": 1,
     "faction": -1,
-    "accuracy": 100,
+    "accuracy": 80,
     "numHits": 3,
     "critical": 40,
     "recoil": 0,
     "targetType": 1,
     "id": 12,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 63
   },
   {
     "name": "Sliding Assault",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 40,
+    "damage_val": 30,
     "speed": 4,
     "faction": -1,
     "accuracy": 90,
@@ -474,11 +508,12 @@ let Attacks = [
     "targetType": 1,
     "id": 13,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 70
   },
   {
     "name": "Crooked Claws",
-    "allowanceCost": 3,
+    "allowanceCost": 5,
     "damage_type": "atk",
     "damage_val": 60,
     "speed": 1,
@@ -490,13 +525,14 @@ let Attacks = [
     "targetType": 1,
     "id": 14,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 103
   },
   {
     "name": "Irritating Echoes",
     "allowanceCost": 3,
     "damage_type": "spatk",
-    "damage_val": 30,
+    "damage_val": 20,
     "speed": 1,
     "faction": -1,
     "accuracy": 100,
@@ -506,29 +542,31 @@ let Attacks = [
     "targetType": 2,
     "id": 15,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 68
   },
   {
     "name": "Scurrying Scratches",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "atk",
     "damage_val": 10,
     "speed": 1,
     "faction": -1,
     "accuracy": 90,
     "numHits": 4,
-    "critical": 30,
+    "critical": 10,
     "recoil": 0,
     "targetType": 1,
     "id": 17,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 69
   },
   {
     "name": "Sudden Snap",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 40,
+    "damage_val": 30,
     "speed": 2,
     "faction": -1,
     "accuracy": 100,
@@ -538,7 +576,8 @@ let Attacks = [
     "targetType": 1,
     "id": 18,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 58
   },
   {
     "name": "Preying Pounce",
@@ -549,34 +588,36 @@ let Attacks = [
     "faction": -1,
     "accuracy": 100,
     "numHits": 1,
-    "critical": 40,
+    "critical": 20,
     "recoil": 0,
     "targetType": 1,
     "id": 19,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 65
   },
   {
     "name": "Harrowing Howls",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "spatk",
     "damage_val": 10,
     "speed": 1,
     "faction": -1,
     "accuracy": 100,
     "numHits": 3,
-    "critical": 50,
+    "critical": 20,
     "recoil": 0,
     "targetType": 1,
     "id": 20,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 65
   },
   {
     "name": "Reckless Rush",
     "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 40,
+    "damage_val": 30,
     "speed": 4,
     "faction": -1,
     "accuracy": 100,
@@ -584,25 +625,27 @@ let Attacks = [
     "critical": 10,
     "recoil": 30,
     "targetType": 1,
-    "id": 23,
+    "id": 1,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 70
   },
   {
     "name": "Dire Strike",
-    "allowanceCost": 3,
+    "allowanceCost": 4,
     "damage_type": "atk",
     "damage_val": 20,
     "speed": 1,
     "faction": -1,
     "accuracy": 110,
-    "numHits": 1,
+    "numHits": 2,
     "critical": 80,
     "recoil": 0,
     "targetType": 1,
     "id": 26,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 95
   },
   {
     "name": "Rapid Chatter",
@@ -618,11 +661,12 @@ let Attacks = [
     "targetType": 1,
     "id": 27,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 69
   },
   {
     "name": "Head Charge",
-    "allowanceCost": 3,
+    "allowanceCost": 5,
     "damage_type": "atk",
     "damage_val": 60,
     "speed": 1,
@@ -634,13 +678,14 @@ let Attacks = [
     "targetType": 1,
     "id": 28,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 122
   },
   {
     "name": "Delirous Fluttering",
     "allowanceCost": 3,
     "damage_type": "spatk",
-    "damage_val": 30,
+    "damage_val": 25,
     "speed": 1,
     "faction": -1,
     "accuracy": 90,
@@ -650,29 +695,31 @@ let Attacks = [
     "targetType": 2,
     "id": 29,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 68
   },
   {
     "name": "Spout Shot",
-    "allowanceCost": 3,
+    "allowanceCost": 5,
     "damage_type": "spatk",
     "damage_val": 50,
     "speed": 1,
     "faction": -1,
     "accuracy": 110,
     "numHits": 1,
-    "critical": 0,
+    "critical": 50,
     "recoil": 0,
     "targetType": 1,
     "id": 33,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 114
   },
   {
     "name": "Rolling Tackle",
-    "allowanceCost": 3,
+    "allowanceCost": 4,
     "damage_type": "atk",
-    "damage_val": 30,
+    "damage_val": 25,
     "speed": 1,
     "faction": -1,
     "accuracy": 70,
@@ -682,7 +729,8 @@ let Attacks = [
     "targetType": 1,
     "id": 34,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 83
   },
   {
     "name": "Tactical Takedown",
@@ -693,12 +741,13 @@ let Attacks = [
     "faction": -1,
     "accuracy": 100,
     "numHits": 1,
-    "critical": 50,
+    "critical": 30,
     "recoil": 10,
     "targetType": 1,
     "id": 35,
     "cal": "attack",
-    "wildUse": 0
+    "wildUse": 0,
+    "value": 65
   },
   {
     "name": "Standard Strike",
@@ -714,13 +763,14 @@ let Attacks = [
     "targetType": 1,
     "id": 36,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 46
   },
   {
     "name": "Brutal Blow",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "atk",
-    "damage_val": 60,
+    "damage_val": 55,
     "speed": 1,
     "faction": -1,
     "accuracy": 80,
@@ -730,7 +780,8 @@ let Attacks = [
     "targetType": 1,
     "id": 37,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 75
   },
   {
     "name": "Agile Attack",
@@ -746,11 +797,12 @@ let Attacks = [
     "targetType": 1,
     "id": 38,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 39
   },
   {
     "name": "Rune Pulse",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "spatk",
     "damage_val": 40,
     "speed": 1,
@@ -762,13 +814,14 @@ let Attacks = [
     "targetType": 1,
     "id": 39,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 51
   },
   {
     "name": "Malevolent Burst",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "damage_type": "spatk",
-    "damage_val": 60,
+    "damage_val": 55,
     "speed": 1,
     "faction": -1,
     "accuracy": 80,
@@ -778,7 +831,8 @@ let Attacks = [
     "targetType": 1,
     "id": 40,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 75
   },
   {
     "name": "Fleeting Sparks",
@@ -794,7 +848,8 @@ let Attacks = [
     "targetType": 1,
     "id": 41,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 39
   },
   {
     "name": "Precision Strike",
@@ -805,12 +860,64 @@ let Attacks = [
     "faction": -1,
     "accuracy": 100,
     "numHits": 1,
-    "critical": 40,
+    "critical": 20,
     "recoil": 0,
     "targetType": 1,
     "id": 42,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 65
+  },
+  {
+    "name": "Beat Down",
+    "allowanceCost": 4,
+    "damage_type": "atk",
+    "damage_val": 10,
+    "speed": 1,
+    "faction": -1,
+    "accuracy": 90,
+    "numHits": 6,
+    "critical": 0,
+    "recoil": 0,
+    "targetType": 1,
+    "id": 43,
+    "cal": "attack",
+    "wildUse": 1,
+    "value": 92
+  },
+  {
+    "name": "Spirit Rush",
+    "allowanceCost": 3,
+    "damage_type": "spatk",
+    "damage_val": 30,
+    "speed": 2,
+    "faction": -1,
+    "accuracy": 100,
+    "numHits": 1,
+    "critical": 10,
+    "recoil": 0,
+    "targetType": 1,
+    "id": 44,
+    "cal": "attack",
+    "wildUse": 1,
+    "value": 58
+  },
+  {
+    "name": "Elemental Surge",
+    "allowanceCost": 3,
+    "damage_type": "spatk",
+    "damage_val": 20,
+    "speed": 1,
+    "faction": -1,
+    "accuracy": 100,
+    "numHits": 1,
+    "critical": 0,
+    "recoil": 0,
+    "targetType": 2,
+    "id": 45,
+    "cal": "attack",
+    "wildUse": 1,
+    "value": 68
   },
   {
     "name": "Light Attack",
@@ -826,7 +933,8 @@ let Attacks = [
     "targetType": 1,
     "id": 58,
     "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 23
   },
   {
     "name": "Harmful Outcry",
@@ -842,62 +950,15 @@ let Attacks = [
     "targetType": 1,
     "id": 59,
     "cal": "attack",
-    "wildUse": 1
-  },
-  {
-    "name": "Beat Down",
-    "allowanceCost": 3,
-    "damage_type": "atk",
-    "damage_val": 10,
-    "speed": 1,
-    "faction": -1,
-    "accuracy": 90,
-    "numHits": 6,
-    "critical": 0,
-    "recoil": 0,
-    "targetType": 1,
-    "id": 43,
-    "cal": "attack",
-    "wildUse": 1
-  },
-  {
-    "name": "Spirit Rush",
-    "allowanceCost": 3,
-    "damage_type": "spatk",
-    "damage_val": 40,
-    "speed": 2,
-    "faction": -1,
-    "accuracy": 100,
-    "numHits": 1,
-    "critical": 10,
-    "recoil": 0,
-    "targetType": 1,
-    "id": 44,
-    "cal": "attack",
-    "wildUse": 1
-  },
-  {
-    "name": "Elemental Surge",
-    "allowanceCost": 3,
-    "damage_type": "spatk",
-    "damage_val": 30,
-    "speed": 1,
-    "faction": -1,
-    "accuracy": 100,
-    "numHits": 1,
-    "critical": 0,
-    "recoil": 0,
-    "targetType": 2,
-    "id": 45,
-    "cal": "attack",
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 23
   }
 ]
 
 let Statuses = [
   {
     "name": "Battle Stance",
-    "allowanceCost": 1,
+    "allowanceCost": 2,
     "id": 60,
     "speed": 0,
     "t1": 0,
@@ -909,11 +970,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 33
   },
   {
     "name": "Combat Focus",
-    "allowanceCost": 1,
+    "allowanceCost": 2,
     "id": 61,
     "speed": 0,
     "t1": 0,
@@ -925,11 +987,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 33
   },
   {
     "name": "Up Tempo",
-    "allowanceCost": 1,
+    "allowanceCost": 2,
     "id": 62,
     "speed": 1,
     "t1": 0,
@@ -941,11 +1004,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 30
   },
   {
     "name": "Intimidate",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "id": 63,
     "speed": 1,
     "t1": 2,
@@ -957,11 +1021,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 54
   },
   {
     "name": "Cower",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "id": 64,
     "speed": 1,
     "t1": 2,
@@ -973,11 +1038,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 54
   },
   {
     "name": "Glare",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "id": 65,
     "speed": 1,
     "t1": 2,
@@ -989,11 +1055,12 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 60
   },
   {
     "name": "Startle",
-    "allowanceCost": 2,
+    "allowanceCost": 3,
     "id": 66,
     "speed": 1,
     "t1": 2,
@@ -1005,7 +1072,8 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 60
   },
   {
     "name": "Gaze",
@@ -1021,7 +1089,8 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 45
   },
   {
     "name": "Brace",
@@ -1037,7 +1106,8 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 48
   },
   {
     "name": "Sharp Mind",
@@ -1053,9 +1123,10 @@ let Statuses = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1
+    "wildUse": 1,
+    "value": 48
   }
-]
+ ]
 
 for(ability of Attacks){
   let newAbility = {
@@ -1139,4 +1210,4 @@ for(ability of Statuses){
 
 
 let data = JSON.stringify(inData,null,2);
-fs.writeFileSync('dataTest.json', data);
+fs.writeFileSync('data.json', data);

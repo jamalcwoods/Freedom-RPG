@@ -22,15 +22,18 @@ module.exports = {
                     player:playerData,
                     inventory:clone(playerData.inventory),
                     page:1,
-                    seleceted:null
+                    selected:null,
+                    sellReward:{
+                        gold:0,
+                        rep:0
+                    }
                 }
             }
             
             interaction.reply({
                     content: " ",
                     components: populateInventoryControls(newSession),
-                    embeds: populateInventoryWindow(newSession),
-                    ephemeral: true,
+                    embeds: populateInventoryWindow(newSession)
             })
             
             callback({

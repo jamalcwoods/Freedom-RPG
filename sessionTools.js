@@ -1,6 +1,6 @@
 const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
-const { clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
+const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const { stat } = require("fs");
 const { getTownDBData } = require("./firebaseTools.js")
  
@@ -1769,10 +1769,10 @@ module.exports = {
             },
             "statchangetarget":{
                 "0":"User",
-                "1":"One Target",
-                "2":"All Enemies",
+                "1":"All Allies",
+                "2":"A Target",
                 "3":"All",
-                "4":"All Allies"
+                "4":"All Enemies"
             }
         }
 
@@ -1781,13 +1781,12 @@ module.exports = {
             session.session_data.ability,
             abilityWeights.weapon[session.session_data.weapon],
             abilityWeights.race[session.session_data.race]
-         )/5)
+         )/3)
         let displayText = ""
         displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
         displayText += "Current Ability point cost: " + cost + "\n\n"
-
         displayText += "Current Level: " + session.session_data.level + "\n"
-        displayText += "Level Requirement: " + Math.ceil(cost/5) * + "\n\n"
+        displayText += "Level Requirement: " + Math.ceil(cost/3) + "\n\n"
         
         let weaponModifierText = ""
         for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
@@ -1809,24 +1808,29 @@ module.exports = {
         displayText += createAbilityDescription(ability)
         displayText += "\n\nCurrently Editing: " + session.session_data.editingAttribute
 
-        let attributeVal;
         let subAttributes = ["statchangestat","statchangevalue","statchangetarget"]
+        let description;
+        let attributeVal;
         if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
             let subatt = session.session_data.editingAttribute.split("|")[0]
             let index = session.session_data.editingAttribute.split("|")[1]
             switch(subatt){
                 case "statchangestat":
                     attributeVal = session.session_data.ability.effects[index].stat
+                    description = "Stat changed by effect #" + parseInt(index) + 1 + " of this ability"
                     break;
 
                 case "statchangetarget":
                     attributeVal = session.session_data.ability.effects[index].target
+                    description = "Target of effect #" + parseInt(index) + 1 + " of this ability"
                     break;
 
                 case "statchangevalue":
                     attributeVal = session.session_data.ability.effects[index].value
+                    description = "Value stat change of effect #" + parseInt(index) + 1 + " of this ability"
                     break;
             }
+            displayText += "\n" + description 
             displayText += "\nCurrent Value: " + 
             (
                 valueTranslate[session.session_data.editingAttribute.split("|")[0]] != undefined ? 
@@ -1836,6 +1840,76 @@ module.exports = {
             )
         } else {
             attributeVal = session.session_data.ability[session.session_data.editingAttribute]
+            switch(session.session_data.editingAttribute){
+                case "action_type":
+                    if(!session.session_data.permissions.stats){
+                        description = "This changes an ability either a guard or an attack"
+                    } else {
+                        description = "This changes an ability either a guard, stat changer, or an attack"
+                    }
+                    break;
+            
+                case "critical":
+                    description = "This value affects the chance this ability has to land a critical hit"
+                    break;
+
+                case "damage_type":
+                    description = "This changes the type of damage dealt by the ability"
+                    break;
+
+                case "damage_val":
+                    description = "This value changes the amount of damage done by this ability"
+                    break;
+
+                case "speed":
+                    description = "This changes the order in which this ability is executed during a turn"
+                    break;
+
+                case "faction":
+                    description = "This changes the allignement of the attack, modifying what it's effective/less effective against"
+                    break;
+
+                case "accuracy":
+                    description = "This value changes an attacks chance to hit. Once over 100, it improves repeated useability"
+                    break;
+
+                case "guard_val":
+                    description = "This value changes the strength of protection provided by this ability"
+                    break;
+
+                case "success_level":
+                    description = "This changes the rate of success this ability will have when used"
+                    break;
+
+                case "counter_val":
+                    description = "This value changes the amount of damage done by the counter attack this ability triggers"
+                    break;
+
+                case "counter_type":
+                    description = "This changes the type of damage the counter attack of this ability will do"
+                    break;
+
+                case "counter_type":
+                    description = "This changes the type of damage this guard is most effective at blocking"
+                    break;
+
+                case "numHits":
+                    description = "This value changes the number of times this ability will attack"
+                    break;
+
+                case "targetType":
+                    description = "This changes the targets that this attack has"
+                    break;
+
+                case "recoil":
+                    description = "This value changes the percentage of damage the user will take based on damage done"
+                    break;
+
+                case "statChangeCount":
+                    description = "This value changes the number of stats that the ability changes"
+                    break;
+            }
+            displayText += "\n" + description 
             displayText += "\nCurrent Value: " + 
             (
                 valueTranslate[session.session_data.editingAttribute] != undefined ? 
@@ -1843,6 +1917,8 @@ module.exports = {
                 : 
                 attributeVal
             )
+
+            
         }
         embed.addField(
             "Creating Ability: " + session.session_data.ability.name,
@@ -1978,7 +2054,7 @@ module.exports = {
             session.session_data.ability,
             abilityWeights.weapon[session.session_data.weapon],
             abilityWeights.race[session.session_data.race]
-        )/5)
+        )/3)
         const row2 = new MessageActionRow()
             .addComponents(
                 new MessageButton()
@@ -2117,7 +2193,7 @@ module.exports = {
 
             case "statchangevalue":
                 AttributeType = "upgrades"
-                AttributeValues = [-75,300,5]
+                AttributeValues = [-16,16,1]
                 break;
 
             case "statchangestat":
@@ -2347,14 +2423,39 @@ module.exports = {
                 break;
 
             case "records":
-                let recordText = "Coming Soon..."
-                embed.addField("Task Hall - Records:",recordText)
+                let reputationText = ""
+                let sortable = [];
+                for (var id in session.session_data.town.reputations) {
+                    sortable.push([id, session.session_data.town.reputations[id]]);
+                }
+
+                sortable.sort(function(a, b) {
+                    return a[1] - b[1];
+                });
+                sortable.reverse()
+                for(entry of sortable){
+                    reputationText += "\n<@" + entry[0]+ ">: " + entry[1]
+                }
+                embed.addField("Reputation Leaderboards:",reputationText)
+                sortable = []
+                let resourceText = ""
+                for (var id in session.session_data.town.contributors) {
+                    sortable.push([id, session.session_data.town.contributors[id]]);
+                }
+
+                sortable.sort(function(a, b) {
+                    return a[1] - b[1];
+                });
+                sortable.reverse()
+                for(entry of sortable){
+                    resourceText += "\n<@" + entry[0]+ ">: " + entry[1]
+                }
+                embed.addField("Resource Leaderboards:",resourceText)
                 break;
 
             case "tasks":
                 let taskText = ""
                 if(session.session_data.temp && session.session_data.temp.taskRollResults){
-                    console.log(session.session_data.temp)
                     switch(session.session_data.temp.taskRollResults.roll){
                         case 1:
                         case 2:
@@ -2380,7 +2481,6 @@ module.exports = {
                         taskText += msg + "\n"
                     }
                     taskText += session.session_data.player.name + " earned " + session.session_data.temp.taskRollResults.rep + " town reputation!\n"
-                    console.log(session.session_data.temp.taskRollResults.multi,session.session_data.temp.currentTask.multiThresh)
                     if(session.session_data.temp.taskRollResults.multi < session.session_data.temp.currentTask.multiThresh){
                         taskText += "\n" + session.session_data.temp.currentTask.suggestedSolutionPrompt + "\n\n"
                     }
@@ -2461,7 +2561,7 @@ module.exports = {
                             if(item[0].type == "weapon" && session.session_data.player.weapon != undefined){
                                 yourListing = "```diff\n" + printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.weapon]) + "```"
                             }
-                            if(item[0].type == "gear" && session.session_data.player.weapon != undefined){
+                            if(item[0].type == "gear" && session.session_data.player.gear != undefined){
                                 yourListing = "```diff\n" + printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.gear]) + "```"
                             }   
                             if(yourListing != null){
@@ -2493,11 +2593,11 @@ module.exports = {
                         for(boost of p.boosters){
                             switch(boost.type){
                                 case "healing":
-                                    content += "\n" + boost.type + ": " + boost.value + "% (" + msToTime(Math.abs(now.getTime() - boost.expire)) +  " remaining)"
+                                    content += "\n" + capitalize(boost.type) + ": " + boost.value + "% (" + msToTime(Math.abs(now.getTime() - boost.expire)) +  " remaining)"
                                     break;
 
                                 default:
-                                    content += "\n" + boost.type + ": +" + boost.value + " Stage" + (boost.value > 1 ? "s" : "") + " (" + msToTime(Math.abs(now.getTime() - boost.expire)) +  " remaining)"
+                                    content += "\n" + capitalize(boost.type) + ": +" + boost.value + " Stage" + (boost.value > 1 ? "s" : "") + " (" + msToTime(Math.abs(now.getTime() - boost.expire)) +  " remaining)"
                                     break
                             }
                             
@@ -2509,6 +2609,7 @@ module.exports = {
                     content += "\nNo Active Boosters"
                 }
                 content += "\n\nYour gold: " + p.gold
+                content += "\n\nLives remaining: " + p.lives
                 embed.addField("Tavern - Booster Shop:",content)
                 break;
             
@@ -2526,16 +2627,16 @@ module.exports = {
                 let resourceCheck = foodCheck && woodCheck && mineralsCheck
 
                 let nextBuild = "\n\n**Progress To Town Level Up (Level " + (town.level + 1) + ")**"
-                nextBuild += "\nCurrent Level Dungeon Cleared (Level " + town.level + "): " + (town.dungeonCleared ? "✅ Complete" : "❌ Incomplete")
+                nextBuild += "\nCurrent Level Dungeon Cleared (Level " + town.level + "): " + (town.dungeonClear ? "✅ Complete" : "❌ Incomplete")
                 nextBuild += "\nResources Maxed: " + (resourceCheck ? "✅ Complete" : "❌ Incomplete") 
-                nextBuild += "\nPoint Threshold Reached (" + town.points + "/" + town.level * 10 + "): " + (town.points >= town.level * 10 ? "✅ Complete" : "❌ Incomplete") 
+                nextBuild += "\nPoint Threshold Reached (" + town.points + "/" + town.level * 30 + "): " + (town.points >= town.level * 30 ? "✅ Complete" : "❌ Incomplete") 
 
                 embed.addField("Meeting Hall - Town Status:",
                     "🪵(Wood): " + town.resources.wood[0] + "/" + town.resources.wood[1] +
                     "\n🥩(Food): " + town.resources.food[0] + "/" + town.resources.food[1] +
                     "\n💎(Minerals): " + town.resources.minerals[0] + "/" + town.resources.minerals[1]+
                     "\n\nTown Points: " + town.points +
-                    "\n\nTotal resources you have contributed towards next level: " +  (!town.contributors[session.session_data.player.id] ? 0 : town.contributors[session.session_data.player.id])  + 
+                    "\n\nTotal resources you have contributed: " +  (!town.contributors[session.session_data.player.id] ? 0 : town.contributors[session.session_data.player.id])  + 
                     "\n\nYour current job: " + jobs[session.session_data.player.job] + nextBuild 
                     
                 )
@@ -2936,7 +3037,7 @@ module.exports = {
                 }]
 
                 let lifeDifference = 3 - session.session_data.player.lives
-                for(var i = 3 - lifeDifference;i < 3; i++){
+                for(var i = lifeDifference;i > 0; i--){
                     let pluralCheck = i > 1 ? "Slices" : "Slice"
                     menu.push({
                         label: i + " " + pluralCheck + " of cake",
@@ -2973,13 +3074,24 @@ module.exports = {
         }
 
         const select = new MessageActionRow()
-        .addComponents(
-            new MessageSelectMenu()
-                .setCustomId('selectInventory_' + session.session_id)
-                .setPlaceholder('Select an item to view')
-                .addOptions(selectionLabels),
-                
-        );
+        if(session.session_data.inventory.length > 0){
+            select.addComponents(
+                new MessageSelectMenu()
+                    .setCustomId('selectInventory_' + session.session_id)
+                    .setPlaceholder('Select an item to view')
+                    .addOptions(selectionLabels),
+                    
+            );
+        } else {
+            select.addComponents(
+                new MessageButton()
+                .setCustomId('fake_' + session.session_id + "_0")
+                .setLabel('Inventory Empty')
+                .setStyle('DANGER')
+                .setDisabled(true),
+            )
+        }   
+        
 
         const pages = new MessageActionRow()
         .addComponents(
@@ -2998,10 +3110,21 @@ module.exports = {
             new MessageButton()
             .setCustomId('closeInventory_' + session.session_id)
             .setLabel('Leave Inventory')
+            .setStyle('SUCCESS'),
+
+            new MessageButton()
+            .setCustomId('cancelInventory_' + session.session_id)
+            .setLabel('Cancel Inventory')
             .setStyle('DANGER')
         )
         if(session.session_data.selected == null){
-            return [select,pages]
+            const sellAll = new MessageActionRow().addComponents(
+                new MessageButton()
+                .setCustomId('sellAll_' + session.session_id)
+                .setLabel('Sell All Non-Favorited')
+                .setStyle('DANGER')
+            )
+            return [select,sellAll,pages]
         } else {
             const itemActions = new MessageActionRow()
             let item = session.session_data.inventory[session.session_data.selected]
@@ -3048,7 +3171,20 @@ module.exports = {
                 .setLabel('Unselect Item')
                 .setStyle('DANGER')
             )
-            return [select,pages,itemActions]
+            const itemActions2 = new MessageActionRow()
+            itemActions2.addComponents(
+                new MessageButton()
+                .setCustomId('favoriteItem_' + session.session_id)
+                .setLabel(session.session_data.inventory[session.session_data.selected].favorite? 'Unfavorite Item' : 'Favorite Item')
+                .setStyle(session.session_data.inventory[session.session_data.selected].favorite? 'DANGER' : 'PRIMARY')
+            )
+            itemActions2.addComponents(
+                new MessageButton()
+                .setCustomId('sellItem_' + session.session_id)
+                .setLabel('Sell Item')
+                .setStyle('DANGER')
+            )
+            return [select,pages,itemActions,itemActions2]
         }
         
         
@@ -3057,6 +3193,12 @@ module.exports = {
         const embed = new MessageEmbed()
         embed.setColor("#7289da")
         embed.setTitle(session.session_data.player.name + "'s Inventory")
+        if(session.session_data.sellReward.gold != 0){
+            embed.addField(
+                "Sellig Rewards:",
+                "Gold: " + session.session_data.sellReward.gold + "\nReputation: " + session.session_data.sellReward.rep
+            )
+        }
         let items = "```diff\n"
         for(var i = 0 + (session.session_data.page - 1) * 5; i < (session.session_data.page) * 5; i++){
             if(session.session_data.inventory[i]){
@@ -3077,6 +3219,9 @@ module.exports = {
                     case "weapon":
                         items += "🗡️"
                         break;
+                }
+                if(item.favorite){
+                    items += "⭐"
                 }
                 if(i == session.session_data.selected){
                     items += " <<"
@@ -3259,6 +3404,82 @@ module.exports = {
                 return [actions, actions2]
             
         }
-        
+    },
+    populateManageAbilityControls(session){
+        let actions = new MessageActionRow()
+        let actions2 = new MessageActionRow()
+        let actions3 = new MessageActionRow()
+        actions3.addComponents(
+            new MessageButton()
+            .setCustomId('closeAbilityManage_' + session.session_id)
+            .setLabel('Close Window')
+            .setStyle('DANGER')
+        )
+
+        let abilityList = []
+
+        for(let i = 0; i < session.session_data.player.abilities.length; i++){
+            let ability = session.session_data.player.abilities[i]
+            abilityList.push({
+                label: ability.name,
+                description: "Remove " + ability.name,
+                value: i.toString(),
+            })
+        }
+
+        actions.addComponents(
+            new MessageSelectMenu()
+                .setCustomId('removeAbility_' + session.session_id)
+                .setPlaceholder('Select an ability to remove')
+                .addOptions(abilityList),
+                
+        );
+
+        if(session.session_data.player.abilityMemory && session.session_data.player.abilityMemory.length > 0){
+            let memoryList = []
+
+            for(let i = 0; i < session.session_data.player.abilityMemory.length; i++){
+                let ability = session.session_data.player.abilityMemory[i]
+                memoryList.push({
+                    label: ability.name,
+                    description: "Add " + ability.name,
+                    value: i.toString(),
+                })
+            }
+
+            actions2.addComponents(
+                new MessageSelectMenu()
+                    .setCustomId('rememberAbility_' + session.session_id)
+                    .setPlaceholder('Select an ability to remember')
+                    .addOptions(memoryList),
+                    
+            );
+            return [actions,actions2,actions3]
+        } else {
+            return [actions,actions3]
+        }
+    },
+    populateManegeAbilityWindow(session){
+        const embed = new MessageEmbed()
+        .setColor("#7289da")
+        .setTitle("Your Abilities")
+
+        let player = session.session_data.player
+
+        for(var i = 0; i < 6;i++){
+            let abilityData = player.abilities[i]
+            if(abilityData != undefined){
+                embed.addField(
+                    "Ability #" + (i+1) + " - " + abilityData.name,
+                    "```diff\n" + createAbilityDescription(abilityData) + "```"
+                ,true)
+            } else {
+                embed.addField(
+                    "Ability #" + (i+1) + " - No Ability In This Slot",
+                    "```diff\n---```"
+                ,true)
+            }
+        }
+        return [embed]
     }
 }

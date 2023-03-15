@@ -90,7 +90,7 @@ module.exports = {
                                 {
                                     "target": "0",
                                     "stat": "atk",
-                                    "value": 50
+                                    "value": 1
                                 }
                                 ],
                                 "speed": 1
@@ -217,7 +217,7 @@ module.exports = {
                                 {
                                     "target": "1",
                                     "stat": "atk",
-                                    "value": 50
+                                    "value": 1
                                 }
                                 ],
                                 "speed": 1
@@ -1189,7 +1189,7 @@ module.exports = {
                     viewingAbilities:true
                 }
 
-                interaction.reply({
+                interaction.update({
                     content: " ",
                     embeds: populateTownVisitWindow(session),
                     components: populateTownVisitControls(session)

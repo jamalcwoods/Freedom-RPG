@@ -15,7 +15,7 @@ module.exports = {
                 session.session_data.ability,
                 abilityWeights.weapon[session.session_data.weapon],
                 abilityWeights.race[session.session_data.race]
-            )/5)
+            )/3)
             session.session_data.abilitypoints -= cost
             session.session_data.abilities.push(session.session_data.ability)
 

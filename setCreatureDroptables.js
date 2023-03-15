@@ -40,9 +40,12 @@ for(creature of inData.creatures){
       chance:8,
       obj:{
         ref:{
+            type:"rngEquipment",
             rngEquipment:{
             scaling:true,
-            value:0.8,
+            value:0.5,
+            conValue:0.6,
+            lockStatTypes: true,
             types:["weapon"]
             }
         }
@@ -52,9 +55,12 @@ for(creature of inData.creatures){
       chance:8,
       obj:{
         ref:{
+            type:"rngEquipment",
             rngEquipment:{
             scaling:true,
-            value:0.8,
+            value:0.5,
+            conValue:0.6,
+            lockStatTypes: true,
             types:["gear"]
             }
         }

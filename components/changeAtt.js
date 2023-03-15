@@ -42,7 +42,7 @@ module.exports = {
                     session.session_data.ability.effects.push({
                         "target":"0",
                         "stat":"atk",
-                        "value":50
+                        "value":1
                     })
                 }
                 while(session.session_data.ability.effects.length > session.session_data.ability[session.session_data.editingAttribute]){

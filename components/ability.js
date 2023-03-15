@@ -1,12 +1,9 @@
 // const { SlashCommandBuilder } = require('@discordjs/builders');
 // const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 
-
-const fight = require("../commands/fight.js")
 const { populateCombatWindow, processCombatSession, populateCombatToQuestTransition, populateCombatControls, populateReturnFromCombat} = require("../sessionTools.js")
 const { getTownDBData } = require("../firebaseTools.js")
 const { raidPresets, challengeDict } = require("../data.json")
-const { data } = require("../commands/fight.js")
 const { parseReward } = require("../tools.js")
 module.exports = {
     config:{
@@ -307,6 +304,7 @@ module.exports = {
                                                         }
                                                         town.points += 5
                                                         fighter.staticData.gold += raidPresets.goldRewards[3]
+                                                        town.raid.bossDefeats = m
                                                     }
                                                     break;
                                             }
@@ -319,7 +317,6 @@ module.exports = {
                                 if(fighter.staticData.challenges){
                                     for(var i = 0; i < fighter.staticData.challenges.length;i++){
                                         let c = fighter.staticData.challenges[i]
-                                        console.log(c)
                                         let progressVal = 0;
                                         switch(c.type){
                                             case 0:
@@ -412,23 +409,24 @@ module.exports = {
                             if(rewards.overwriteHallOwner){
                                 if(session.user_ids.includes(session.session_data.winners[0])){
                                     let newOwner = rewards.overwriteHallOwner
-                                    newOwner.id = "playerClone"
-                                    newOwner.name = "Shadow of " + newOwner.name
-                                    townUpdates.push({
-                                        id:session.server_id,
-                                        path:"hallOwner",
-                                        value:newOwner
-                                    })
-                                    
-                                    townUpdates.push({
-                                        id:session.server_id,
-                                        path:"hallStart",
-                                        value:now.getTime()
-                                    })  
+                                    if(newOwner.id != session.session_data.winners[0]){
+                                        newOwner.id = "playerClone"
+                                        newOwner.name = "Shadow of " + newOwner.name
+                                        townUpdates.push({
+                                            id:session.server_id,
+                                            path:"hallOwner",
+                                            value:newOwner
+                                        })
+                                        
+                                        townUpdates.push({
+                                            id:session.server_id,
+                                            path:"hallStart",
+                                            value:now.getTime()
+                                        })  
+                                    }
                                 }
                             }    
                         }
-                        
                         if(town.raid){
                             townUpdates.push({
                                 id:session.server_id,

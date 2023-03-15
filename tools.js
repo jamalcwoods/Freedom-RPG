@@ -1,14 +1,12 @@
 const { stat } = require("fs");
 const { off } = require("process");
-const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank } = require("./data.json");
+const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank, explorationTables } = require("./data.json");
 
 
 function parseReward(drop,player,mob){
     let messages = []
     if(drop.nothing)
         return [player,messages];
-
-
     if(drop.ref){
         switch(drop.ref.type){
             case "rngEquipment":
@@ -168,12 +166,12 @@ function calculateAbilityCost(ability,weapon,race){
     let value = 0
     switch(ability.action_type){
         case "attack":
-            value = ability.damage_val * weights.damage_val
+            value = Math.pow(1.5,ability.damage_val/10) * 10 * weights.damage_val
             value *= {
-                0:0.9,
+                0:0.8,
                 1:1,
-                2:1.2,
-                4:1.6
+                2:1.5,
+                4:2.5
             }[ability.speed] * weights.speed
 
             if(ability.numHits >  1){
@@ -182,7 +180,7 @@ function calculateAbilityCost(ability,weapon,race){
                 value *= ability.numHits * weights.numHits
             }
 
-            value *= 1 + ((ability.critical * weights.critical)/100)
+            value *= 1 + ((ability.critical * weights.critical)/75)
 
             value *= 1 - (0.9 * ((ability.recoil * weights.recoil)/100))
 
@@ -195,11 +193,11 @@ function calculateAbilityCost(ability,weapon,race){
             if(ability.accuracy <= 100){
                 value *= (ability.accuracy/100) * weights.accuracy
             } else {
-                value *= (((ability.accuracy - 90)/10) * 0.35) * weights.accuracy
+                value *= (((ability.accuracy - 90)/10) * 0.45) * weights.accuracy
             }
             break
         case "guard":
-            value = ((ability.guard_val * weights.guard_val) * 1.625) + ability.counter_val * weights.counter_val
+            value = (Math.pow(1.2,ability.guard_val/10) * 9) * weights.guard_val + Math.pow(1.3,ability.counter_val/10) * 10 * weights.counter_val
             value *= 1 + 0.45 * (Math.log(parseInt(Math.ceil(ability.success_level * weights.success_level))/25)/Math.log(2) - 2)
             break;
 
@@ -263,15 +261,15 @@ function levelTown(town){
     let woodCheck = town.resources.wood[0] >= town.resources.wood[1]   
     let mineralsCheck = town.resources.minerals[0] >= town.resources.minerals[1]
     let resourceCheck = foodCheck && woodCheck && mineralsCheck
-    if(resourceCheck && town.dungeonClear && town.points >= town.level * 10){
+    if(resourceCheck && town.dungeonClear && town.points >= town.level * 30){
         town.resources.food[0] -= town.resources.food[1]
         town.resources.wood[0] -= town.resources.wood[1]
         town.resources.minerals[0] -= town.resources.minerals[1]
         town.resources.food[1] *= 2
         town.resources.wood[1] *= 2
         town.resources.minerals[1] *= 2
-        delete town.contributors
         town.level++
+        town.points -= town.level * 30
         town.dungeonClear = false
     }
     return town
@@ -516,15 +514,21 @@ function generateRNGEquipment(dropData,SP){
     
 
     let val = rngSet.baseVal
-
     if(rngSet.scaling){
         val = SP * 6
     }
-    val = Math.ceil(val * rngSet.value)
-    
-    let conVal = -Math.ceil(val * rngSet.conValue)
-    val += Math.ceil((Math.abs(conVal) / 2))
 
+    val = Math.ceil(val * rngSet.value)
+
+    let conVal;
+    if(!rngSet.conValue){
+        conVal = 1 - rngSet.value
+    } else {
+        conVal = -Math.ceil(val * rngSet.conValue)
+    }
+    
+    val += Math.ceil((Math.abs(conVal) / 2))
+    
     let valMax = val;
     let conValMax = Math.abs(conVal)
 
@@ -999,7 +1003,7 @@ function createAbilityDescription(ability){
             }
             if(ability.speed != 1){
                 let speedRating = ""
-                switch(ability.speed){
+                switch(parseInt(ability.speed)){
                     case 0:
                         speedRating = " is slower than most other actions"
                         break;
@@ -1151,7 +1155,7 @@ module.exports = {
     prepCombatFighter(fighter,index){
         let fighterStats = clone(fighter.stats)
         if(fighter.inventory){
-            if(fighter.gear){
+            if(fighter.gear != undefined){
                 let fGear = fighter.inventory[fighter.gear]
                 for(s in fGear.stats){
                     if(s == "hp"){
@@ -1164,7 +1168,7 @@ module.exports = {
                     }
                 }
             }
-            if(fighter.weapon){
+            if(fighter.weapon != undefined){
                 let fWeapon = fighter.inventory[fighter.weapon]
                 for(s in fWeapon.stats){
                     if(s == "hp"){
@@ -1767,5 +1771,20 @@ module.exports = {
             }
             return [message,player];
         }
+    },
+    applyTownReputation(town,id,amount){
+        if(!town.reputations){
+            town.reputations = {}
+            town.reputations[id] = amount
+        } else {
+            if(!town.reputations[id]){
+                town.reputations[id] = amount
+            } else {
+                town.reputations[id] += amount
+            }
+        }
+    },
+    capitalize(text){
+        return text.charAt(0).toUpperCase() + text.slice(1);
     }
 }

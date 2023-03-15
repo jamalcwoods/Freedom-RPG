@@ -767,6 +767,7 @@ setInterval(() => {
             messageLog = {}
         })
     })      
-}, 300000);
+}, 5000);
+//}, 300000);
 
 client.login(token);

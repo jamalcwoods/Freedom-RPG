@@ -15,7 +15,7 @@ module.exports = {
         if(interaction.values[0] == "practiceLessons"){
             delete session.session_data.temp 
 
-            interaction.reply({
+            interaction.update({
                 content: " ",
                 embeds: populateTownVisitWindow(session),
                 components: populateTownVisitControls(session)

@@ -1,18 +1,18 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { populateCombatWindow, populateCombatData, populateCombatControls} = require("../sessionTools.js")
-const { runEnemyCombatAI, weightedRandom, simulateCPUSPAssign, simulateCPUAbilityAssign} = require("../tools.js")
+const { runEnemyCombatAI, weightedRandom, simulateCPUSPAssign, simulateCPUAbilityAssign, run} = require("../tools.js")
 const data = require("../data.json")
 
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('fight')
+		.setName('explore')
 		.setDescription('Start Combat')
         .addStringOption(option =>
-            option.setName('type')
-                .setDescription('Type of Fight')
+            option.setName('action')
+                .setDescription('Exploration Action')
                 .setRequired(true)
-                .addChoice('Fight an Enemy In The Wild', 'wild')),
+                .addChoice('Look for an enemy to fight in the wild', 'wild')),
     config:{
         getPlayerData:true
     },
@@ -153,7 +153,6 @@ module.exports = {
                         }
                     }
                     let statPoints = ((playerData.level) * 6) * statLevel
-                    console.log("stat level: " + statLevel)
                     enemy = simulateCPUSPAssign(enemy,statPoints,mob)
                     enemy = simulateCPUAbilityAssign(enemy,mob.innateAbilities,allowance)
 
@@ -161,6 +160,65 @@ module.exports = {
 
                     if(mob.droptable){
                         enemy.droptable = mob.droptable   
+                        // enemy.droptable = [
+                        //     {
+                        //       "chance": 1,
+                        //       "obj": {
+                        //         "type": "resource",
+                        //         "resource": "gold",
+                        //         "resourceName": "gold",
+                        //         "amount": 5
+                        //       }
+                        //     },
+                        //     {
+                        //       "chance": 1,
+                        //       "obj": {
+                        //         "type": "resource",
+                        //         "resource": "gold",
+                        //         "resourceName": "gold",
+                        //         "amount": 10
+                        //       }
+                        //     },
+                        //     {
+                        //       "chance": 1,
+                        //       "obj": {
+                        //         "type": "resource",
+                        //         "resource": "gold",
+                        //         "resourceName": "gold",
+                        //         "amount": 15
+                        //       }
+                        //     },
+                        //     {
+                        //       "chance": 30,
+                        //       "obj": {
+                        //         "ref": {
+                        //             "type": "rngEquipment",
+                        //           "rngEquipment": {
+                        //             "scaling": true,
+                        //             "value": 0.8,
+                        //             "types": [
+                        //               "weapon"
+                        //             ]
+                        //           }
+                        //         }
+                        //       }
+                        //     },
+                        //     {
+                        //       "chance": 30,
+                        //       "obj": {
+                        //         "ref": {
+                        //             "type": "rngEquipment",
+                        //           "rngEquipment": {
+                        //             "scaling": true,
+                        //             "value": 0.8,
+                        //             "types": [
+                        //               "gear"
+                        //             ]
+                        //           }
+                        //         }
+                        //       }
+                        //     }
+                        //   ]
                     }
                     enemies[e] = enemy
                 }

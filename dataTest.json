@@ -3582,12 +3582,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3599,12 +3596,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3665,12 +3659,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3682,12 +3673,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3748,12 +3736,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3765,12 +3750,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3831,12 +3813,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3848,12 +3827,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3914,12 +3890,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -3931,12 +3904,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -3997,12 +3967,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4014,12 +3981,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4080,12 +4044,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4097,12 +4058,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4163,12 +4121,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4180,12 +4135,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4246,12 +4198,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4263,12 +4212,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4329,12 +4275,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4346,12 +4289,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4412,12 +4352,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4429,12 +4366,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4495,12 +4429,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4512,12 +4443,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4578,12 +4506,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4595,12 +4520,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4661,12 +4583,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4678,12 +4597,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4744,12 +4660,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4761,12 +4674,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4827,12 +4737,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4844,12 +4751,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4910,12 +4814,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -4927,12 +4828,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -4993,12 +4891,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5010,12 +4905,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5076,12 +4968,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5093,12 +4982,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5159,12 +5045,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5176,12 +5059,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5242,12 +5122,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5259,12 +5136,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5325,12 +5199,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5342,12 +5213,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5408,12 +5276,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5425,12 +5290,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5491,12 +5353,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5508,12 +5367,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5574,12 +5430,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5591,12 +5444,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5657,12 +5507,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5674,12 +5521,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5740,12 +5584,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5757,12 +5598,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5823,12 +5661,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5840,12 +5675,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5906,12 +5738,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -5923,12 +5752,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -5989,12 +5815,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6006,12 +5829,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6072,12 +5892,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6089,12 +5906,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6155,12 +5969,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6172,12 +5983,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6238,12 +6046,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6255,12 +6060,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6321,12 +6123,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6338,12 +6137,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6404,12 +6200,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6421,12 +6214,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6487,12 +6277,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "weapon"
                 ]
@@ -6504,12 +6291,9 @@
           "chance": 8,
           "obj": {
             "ref": {
-              "type": "rngEquipment",
               "rngEquipment": {
                 "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
+                "value": 0.8,
                 "types": [
                   "gear"
                 ]
@@ -6526,7 +6310,7 @@
       "ability": {
         "critical": 50,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 40,
         "name": "Sudden Hop",
         "speed": 2,
         "faction": -1,
@@ -6559,7 +6343,7 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 40,
         "name": "Burrowing Strike",
         "speed": 4,
         "faction": -1,
@@ -6577,7 +6361,7 @@
       "ability": {
         "critical": 50,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 30,
         "name": "Lurking Sting",
         "speed": 2,
         "faction": -1,
@@ -6591,11 +6375,11 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
-        "critical": 50,
+        "critical": 0,
         "damage_type": "atk",
-        "damage_val": 35,
+        "damage_val": 30,
         "name": "Prideful Pursuit",
         "speed": 1,
         "faction": -1,
@@ -6609,9 +6393,9 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
-        "critical": 20,
+        "critical": 40,
         "damage_type": "atk",
         "damage_val": 20,
         "name": "Frantic Bite",
@@ -6619,7 +6403,7 @@
         "faction": -1,
         "action_type": "attack",
         "accuracy": 110,
-        "numHits": 2,
+        "numHits": 1,
         "recoil": 0,
         "targetType": 1
       },
@@ -6644,9 +6428,9 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 15,
+        "critical": 30,
         "damage_type": "atk",
-        "damage_val": 20,
+        "damage_val": 30,
         "name": "Sucker Slap",
         "speed": 4,
         "faction": -1,
@@ -6662,9 +6446,9 @@
     {
       "allowanceCost": 2,
       "ability": {
-        "critical": 10,
+        "critical": 20,
         "damage_type": "atk",
-        "damage_val": 15,
+        "damage_val": 20,
         "name": "Rapid Fangs",
         "speed": 1,
         "faction": -1,
@@ -6708,13 +6492,13 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
-        "critical": 70,
+        "critical": 30,
         "damage_type": "spatk",
         "damage_val": 30,
         "name": "Disturbing Buzz",
-        "speed": 2,
+        "speed": 1,
         "faction": -1,
         "action_type": "attack",
         "accuracy": 110,
@@ -6726,7 +6510,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "critical": 40,
         "damage_type": "atk",
@@ -6735,7 +6519,7 @@
         "speed": 1,
         "faction": -1,
         "action_type": "attack",
-        "accuracy": 80,
+        "accuracy": 100,
         "numHits": 3,
         "recoil": 0,
         "targetType": 1
@@ -6748,7 +6532,7 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 40,
         "name": "Sliding Assault",
         "speed": 4,
         "faction": -1,
@@ -6762,7 +6546,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 5,
+      "allowanceCost": 3,
       "ability": {
         "critical": 0,
         "damage_type": "atk",
@@ -6784,7 +6568,7 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 20,
+        "damage_val": 30,
         "name": "Irritating Echoes",
         "speed": 1,
         "faction": -1,
@@ -6813,9 +6597,9 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
-        "critical": 10,
+        "critical": 30,
         "damage_type": "atk",
         "damage_val": 10,
         "name": "Scurrying Scratches",
@@ -6835,7 +6619,7 @@
       "ability": {
         "critical": 10,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 40,
         "name": "Sudden Snap",
         "speed": 2,
         "faction": -1,
@@ -6851,7 +6635,7 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 20,
+        "critical": 40,
         "damage_type": "atk",
         "damage_val": 30,
         "name": "Preying Pounce",
@@ -6867,9 +6651,9 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
-        "critical": 20,
+        "critical": 50,
         "damage_type": "spatk",
         "damage_val": 10,
         "name": "Harrowing Howls",
@@ -6900,7 +6684,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 3,
       "ability": {
         "action_type": "guard",
         "name": "Prideful Stance",
@@ -6933,7 +6717,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
         "name": "Shell Brace",
@@ -6948,7 +6732,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 3,
       "ability": {
         "action_type": "guard",
         "name": "Ignorant Thrash",
@@ -6963,7 +6747,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
         "critical": 80,
         "damage_type": "atk",
@@ -6973,7 +6757,7 @@
         "faction": -1,
         "action_type": "attack",
         "accuracy": 110,
-        "numHits": 2,
+        "numHits": 1,
         "recoil": 0,
         "targetType": 1
       },
@@ -6999,7 +6783,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 5,
+      "allowanceCost": 3,
       "ability": {
         "critical": 50,
         "damage_type": "atk",
@@ -7021,7 +6805,7 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 25,
+        "damage_val": 30,
         "name": "Delirous Fluttering",
         "speed": 1,
         "faction": -1,
@@ -7050,7 +6834,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 3,
       "ability": {
         "action_type": "guard",
         "name": "Unflinching Stance",
@@ -7065,7 +6849,7 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
         "name": "Lasting Endurance",
@@ -7080,9 +6864,9 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 5,
+      "allowanceCost": 3,
       "ability": {
-        "critical": 50,
+        "critical": 0,
         "damage_type": "spatk",
         "damage_val": 50,
         "name": "Spout Shot",
@@ -7098,11 +6882,11 @@
       "wildUse": 0
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
         "critical": 30,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 30,
         "name": "Rolling Tackle",
         "speed": 1,
         "faction": -1,
@@ -7118,7 +6902,7 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 30,
+        "critical": 50,
         "damage_type": "atk",
         "damage_val": 40,
         "name": "Tactical Takedown",
@@ -7152,11 +6936,11 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 55,
+        "damage_val": 60,
         "name": "Brutal Blow",
         "speed": 1,
         "faction": -1,
@@ -7188,7 +6972,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
@@ -7206,11 +6990,11 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 55,
+        "damage_val": 60,
         "name": "Malevolent Burst",
         "speed": 1,
         "faction": -1,
@@ -7244,7 +7028,7 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 20,
+        "critical": 40,
         "damage_type": "atk",
         "damage_val": 40,
         "name": "Precision Strike",
@@ -7260,7 +7044,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 4,
+      "allowanceCost": 3,
       "ability": {
         "critical": 0,
         "damage_type": "atk",
@@ -7282,7 +7066,7 @@
       "ability": {
         "critical": 10,
         "damage_type": "spatk",
-        "damage_val": 30,
+        "damage_val": 40,
         "name": "Spirit Rush",
         "speed": 2,
         "faction": -1,
@@ -7300,7 +7084,7 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 20,
+        "damage_val": 30,
         "name": "Elemental Surge",
         "speed": 1,
         "faction": -1,
@@ -7344,7 +7128,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 1,
       "ability": {
         "action_type": "guard",
         "name": "Light Guard",
@@ -7464,7 +7248,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 1,
       "ability": {
         "action_type": "guard",
         "name": "Heightened Senses",
@@ -7530,7 +7314,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 1,
       "ability": {
         "action_type": "stats",
         "name": "Battle Stance",
@@ -7548,7 +7332,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 1,
       "ability": {
         "action_type": "stats",
         "name": "Combat Focus",
@@ -7566,7 +7350,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 2,
+      "allowanceCost": 1,
       "ability": {
         "action_type": "stats",
         "name": "Up Tempo",
@@ -7584,7 +7368,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "stats",
         "name": "Intimidate",
@@ -7602,7 +7386,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "stats",
         "name": "Cower",
@@ -7620,7 +7404,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "stats",
         "name": "Glare",
@@ -7638,7 +7422,7 @@
       "wildUse": 1
     },
     {
-      "allowanceCost": 3,
+      "allowanceCost": 2,
       "ability": {
         "action_type": "stats",
         "name": "Startle",
