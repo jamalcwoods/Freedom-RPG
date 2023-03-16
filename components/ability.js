@@ -409,9 +409,10 @@ module.exports = {
                             if(rewards.overwriteHallOwner){
                                 if(session.user_ids.includes(session.session_data.winners[0])){
                                     let newOwner = rewards.overwriteHallOwner
-                                    if(newOwner.id != session.session_data.winners[0]){
+                                    if(session.session_data.fighters[1].staticData.prevID != session.session_data.winners[0]){
                                         newOwner.id = "playerClone"
                                         newOwner.name = "Shadow of " + newOwner.name
+                                        newOwner.prevID = session.session_data.winners[0]
                                         townUpdates.push({
                                             id:session.server_id,
                                             path:"hallOwner",

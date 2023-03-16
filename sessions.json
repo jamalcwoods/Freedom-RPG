@@ -1,19 +1,32 @@
 [
     {
         "type": "townVisit",
-        "session_id": 20921,
+        "session_id": 28684,
         "user_ids": [
-            "163809334852190208"
+            "692812919859314758"
         ],
         "session_data": {
             "player": {
                 "abilities": [
                     {
+                        "accuracy": 100,
+                        "action_type": "attack",
+                        "critical": 0,
+                        "damage_type": "atk",
+                        "damage_val": 20,
+                        "faction": -1,
+                        "name": "Starter Attack",
+                        "numHits": 1,
+                        "recoil": 0,
+                        "speed": 1,
+                        "targetType": "1"
+                    },
+                    {
                         "action_type": "guard",
                         "counter_type": "def",
-                        "counter_val": 10,
+                        "counter_val": 0,
                         "guard_type": "def",
-                        "guard_val": 60,
+                        "guard_val": 30,
                         "name": "Starter Guard",
                         "speed": 3,
                         "success_level": 100
@@ -35,482 +48,66 @@
                         "name": "Starter Buff",
                         "speed": 1,
                         "statChangeCount": 2
-                    },
-                    {
-                        "accuracy": 90,
-                        "action_type": "attack",
-                        "critical": 0,
-                        "damage_type": "atk",
-                        "damage_val": 1000,
-                        "faction": -1,
-                        "name": "Starter Attack",
-                        "numHits": 5,
-                        "recoil": 0,
-                        "speed": 4,
-                        "targetType": "1"
                     }
                 ],
                 "abilityPermissions": {
                     "faction": false,
                     "stats": false
                 },
-                "abilitypoints": 207,
+                "abilitypoints": 12,
                 "boosters": [
                     {
-                        "expire": 1678805702979,
-                        "type": "speed",
-                        "value": 1
+                        "expire": 0,
+                        "type": "none",
+                        "value": 0
                     }
                 ],
-                "challengeTimer": 1678865087458,
-                "combatStyle": "0",
-                "dailyCount": 15,
-                "dailyTimer": 1678923777526,
-                "dungeonTimer": 1678838117215,
-                "exp": 892,
-                "expCap": 1900,
+                "challengeTimer": 1678936504795,
+                "challenges": [
+                    {
+                        "goal": 5,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 0
+                    },
+                    {
+                        "goal": 80,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 2
+                    },
+                    {
+                        "goal": 100,
+                        "progress": 0,
+                        "rank": 2,
+                        "type": 1
+                    }
+                ],
+                "combatStyle": "1",
+                "dailyCount": 1,
+                "dailyTimer": 1678945841816,
+                "exp": 175,
+                "expCap": 300,
                 "faction": -1,
-                "gold": 1620,
-                "id": "163809334852190208",
-                "inventory": [
-                    {
-                        "name": "Aegis Exploiting Guard Outfit",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 1,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 1
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            0,
-                            1,
-                            0,
-                            1,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Enchanted Prospering Axe",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 7,
-                            "spd": 1,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            1,
-                            1,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Chaotic Inspiring Aura",
-                        "stats": {
-                            "atk": 2,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 9,
-                            "spd": 3,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "weaponStyle": 3
-                    },
-                    {
-                        "name": "Noble Exploiting Uniform",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 8,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Loose Terrifying Hammer",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 2,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            1,
-                            1,
-                            1
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Reinforced Belittling Armor",
-                        "stats": {
-                            "atk": 0,
-                            "def": 7,
-                            "hp": 1,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            0,
-                            1,
-                            1,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Noble Preserving Guard Clothing",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 9,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 5
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Formidable Preserving Protection Armor",
-                        "stats": {
-                            "atk": 0,
-                            "def": 4,
-                            "hp": 4,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            0,
-                            0,
-                            1,
-                            0,
-                            0,
-                            1
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Sturdy Exploiting Armor",
-                        "stats": {
-                            "atk": 0,
-                            "def": 2,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            1,
-                            1,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Resplendent Ambushing Swift Wand",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 1,
-                            "spd": 1,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            1,
-                            1,
-                            0,
-                            1,
-                            0
-                        ],
-                        "weaponStyle": 2
-                    },
-                    {
-                        "name": "Protector's Exploiting Armor",
-                        "stats": {
-                            "atk": 0,
-                            "def": 2,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            0,
-                            1,
-                            0,
-                            1,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Merciless Inspiring Swift Scepter",
-                        "stats": {
-                            "atk": 7,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 2,
-                            "spd": 5,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1
-                        ],
-                        "weaponStyle": 2
-                    },
-                    {
-                        "name": "Hulking Exploiting Protection Armor",
-                        "stats": {
-                            "atk": 0,
-                            "def": 1,
-                            "hp": 1,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            0,
-                            0,
-                            0,
-                            1,
-                            1
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Formidable Belittling Outfit",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 11,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 3
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            0,
-                            1,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Sword",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Outfit",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Axe",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Bow",
-                        "stats": {
-                            "atk": 0,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 0,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
-                        ],
-                        "weaponStyle": 1
-                    },
-                    {
-                        "name": "Merciless Emboldening Brave Armor",
-                        "stats": {
-                            "atk": 27,
-                            "def": 1,
-                            "hp": 14,
-                            "spatk": 11,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "gear",
-                        "typePerks": [
-                            1,
-                            0,
-                            1,
-                            1,
-                            0,
-                            2
-                        ],
-                        "weaponStyle": 0
-                    },
-                    {
-                        "name": "Sharp Battering Spell Aura",
-                        "stats": {
-                            "atk": 21,
-                            "def": 0,
-                            "hp": 0,
-                            "spatk": 21,
-                            "spd": 0,
-                            "spdef": 0
-                        },
-                        "type": "weapon",
-                        "typePerks": [
-                            1,
-                            0,
-                            0,
-                            1,
-                            0,
-                            1
-                        ],
-                        "weaponStyle": 3
-                    }
-                ],
-                "job": "1",
-                "level": 19,
-                "lives": 1,
-                "name": "Jemini W",
-                "presenceTimer": 1678837575531,
-                "race": "3",
-                "statpoints": 89,
+                "gold": 20,
+                "id": "692812919859314758",
+                "job": "exp",
+                "level": 3,
+                "lives": 3,
+                "name": "FirePK",
+                "presenceTimer": 1678907847678,
+                "race": "0",
+                "statpoints": 12,
                 "stats": {
-                    "atk": 20,
+                    "atk": 10,
                     "def": 10,
-                    "hp": 10,
+                    "hp": 20,
                     "spatk": 10,
                     "spd": 10,
                     "spdef": 10
                 },
                 "taskTimer": 0,
-                "totalExp": 17992
+                "totalExp": 475
             },
             "town": {
                 "availableAbilities": [
@@ -566,43 +163,370 @@
                     ]
                 ],
                 "contributors": {
-                    "163809334852190208": 432,
-                    "290256677205180426": 15,
+                    "163809334852190208": 815,
+                    "290256677205180426": 19,
                     "359934051525591041": 2,
                     "365682211376201733": 5,
-                    "403036391673430016": 356,
+                    "403036391673430016": 2321,
                     "588220226609348618": 10,
                     "624753330660311070": 1,
+                    "692812919859314758": 13,
                     "694332417011482654": 149
                 },
                 "dungeonClear": true,
                 "hallOwner": {
-                    "abilitypoints": 0,
-                    "combatStyle": "0",
-                    "cpu": true,
-                    "exp": 0,
-                    "faction": "-1",
-                    "id": "hallNPC",
-                    "level": 12,
-                    "lives": 1,
-                    "name": "Hall Warden",
-                    "race": "0",
-                    "statpoints": 0,
-                    "stats": {
-                        "atk": 11,
-                        "def": 11,
-                        "hp": 22,
-                        "spatk": 11,
-                        "spd": 11,
-                        "spdef": 11
+                    "abilities": [
+                        {
+                            "accuracy": 130,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "atk",
+                            "damage_val": 100,
+                            "faction": -1,
+                            "name": "Volley",
+                            "numHits": 5,
+                            "recoil": 0,
+                            "speed": "4",
+                            "targetType": "2"
+                        },
+                        {
+                            "action_type": "guard",
+                            "counter_type": "def",
+                            "counter_val": 100,
+                            "guard_type": "def",
+                            "guard_val": 100,
+                            "name": "Deflect",
+                            "speed": 3,
+                            "success_level": "400"
+                        },
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "atk",
+                                    "target": "1",
+                                    "value": 8
+                                },
+                                {
+                                    "stat": "spatk",
+                                    "target": "1",
+                                    "value": 8
+                                },
+                                {
+                                    "stat": "spd",
+                                    "target": "1",
+                                    "value": 8
+                                }
+                            ],
+                            "name": "Transcension",
+                            "speed": "4",
+                            "statChangeCount": 3
+                        },
+                        {
+                            "accuracy": 130,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "spatk",
+                            "damage_val": 100,
+                            "faction": -1,
+                            "name": "Wither",
+                            "numHits": 5,
+                            "recoil": 0,
+                            "speed": "4",
+                            "targetType": "2"
+                        },
+                        {
+                            "action_type": "guard",
+                            "counter_type": "spdef",
+                            "counter_val": 100,
+                            "guard_type": "spdef",
+                            "guard_val": 100,
+                            "name": "Mirror",
+                            "speed": 3,
+                            "success_level": "400"
+                        },
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "def",
+                                    "target": "4",
+                                    "value": -8
+                                },
+                                {
+                                    "stat": "spdef",
+                                    "target": "4",
+                                    "value": -8
+                                }
+                            ],
+                            "name": "Chaos",
+                            "speed": "2",
+                            "statChangeCount": 2
+                        }
+                    ],
+                    "abilityMemory": [
+                        {
+                            "accuracy": 100,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "atk",
+                            "damage_val": 20,
+                            "faction": -1,
+                            "name": "Starter Attack",
+                            "numHits": 1,
+                            "recoil": 0,
+                            "speed": 1,
+                            "targetType": "1"
+                        },
+                        {
+                            "accuracy": 130,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "atk",
+                            "damage_val": 40,
+                            "faction": -1,
+                            "name": "Quick Attack",
+                            "numHits": 1,
+                            "recoil": 0,
+                            "speed": "4",
+                            "targetType": "1"
+                        },
+                        {
+                            "accuracy": 100,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "spatk",
+                            "damage_val": 30,
+                            "faction": -1,
+                            "name": "wave",
+                            "numHits": 2,
+                            "recoil": 0,
+                            "speed": "1",
+                            "targetType": "2"
+                        },
+                        {
+                            "action_type": "guard",
+                            "counter_type": "def",
+                            "counter_val": 0,
+                            "guard_type": "def",
+                            "guard_val": 30,
+                            "name": "Starter Guard",
+                            "speed": 3,
+                            "success_level": 100
+                        },
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "atk",
+                                    "target": "0",
+                                    "value": 1
+                                },
+                                {
+                                    "stat": "spatk",
+                                    "target": "0",
+                                    "value": 1
+                                }
+                            ],
+                            "name": "Starter Buff",
+                            "speed": 1,
+                            "statChangeCount": 2
+                        },
+                        {
+                            "accuracy": 130,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "atk",
+                            "damage_val": 100,
+                            "faction": -1,
+                            "name": "Flash Attack",
+                            "numHits": 5,
+                            "recoil": 0,
+                            "speed": "4",
+                            "targetType": "2"
+                        }
+                    ],
+                    "abilityPermissions": {
+                        "faction": false,
+                        "stats": false
                     },
-                    "totalExp": 0
+                    "abilitypoints": 536,
+                    "boosters": [
+                        {
+                            "expire": 1678874493472,
+                            "type": "special",
+                            "value": 1
+                        }
+                    ],
+                    "challengeTimer": 1678901384142,
+                    "combatStyle": "1",
+                    "dailyCount": 4,
+                    "dailyTimer": 1678929006990,
+                    "dungeonClears": [
+                        null,
+                        [
+                            4,
+                            "B",
+                            "B-",
+                            "B"
+                        ],
+                        [
+                            3,
+                            "B+",
+                            "B+",
+                            "A+"
+                        ],
+                        [
+                            1,
+                            "A",
+                            "A-",
+                            "A"
+                        ],
+                        [
+                            15,
+                            "A",
+                            "A",
+                            "C-"
+                        ],
+                        [
+                            1,
+                            "A+",
+                            "A+",
+                            "A"
+                        ],
+                        [
+                            2,
+                            "A+",
+                            "A+",
+                            "A-"
+                        ],
+                        [
+                            2,
+                            "A+",
+                            "A+",
+                            "A+"
+                        ]
+                    ],
+                    "dungeonTimer": 1678893400362,
+                    "exp": 9385,
+                    "expCap": 21700,
+                    "faction": -1,
+                    "gear": 0,
+                    "gold": 17650,
+                    "id": "playerClone",
+                    "inventory": [
+                        {
+                            "favorite": true,
+                            "name": "Firm Belittling Brave Uniform",
+                            "stats": {
+                                "atk": 65,
+                                "def": 41,
+                                "hp": 55,
+                                "spatk": 41,
+                                "spd": 52,
+                                "spdef": 2
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                1,
+                                2,
+                                1,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 0
+                        },
+                        {
+                            "favorite": true,
+                            "name": "Sharp Ambushing Bow",
+                            "stats": {
+                                "atk": 205,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 98,
+                                "spd": 47,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                2,
+                                3,
+                                3,
+                                2,
+                                2,
+                                1
+                            ],
+                            "weaponStyle": 1
+                        },
+                        {
+                            "name": "Flimsy Cursed Raiding Energy",
+                            "stats": {
+                                "atk": -29,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 357,
+                                "spd": 95,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                3,
+                                3,
+                                4,
+                                4,
+                                5,
+                                5
+                            ],
+                            "weaponStyle": 3
+                        },
+                        {
+                            "name": "Barbed Raiding Spell Crossbow",
+                            "stats": {
+                                "atk": 181,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 180,
+                                "spd": 9,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                2,
+                                2,
+                                3,
+                                0,
+                                4,
+                                3
+                            ],
+                            "weaponStyle": 1
+                        }
+                    ],
+                    "job": "2",
+                    "level": 217,
+                    "lives": 3,
+                    "name": "Shadow of Morpheye",
+                    "presenceTimer": 1678893172280,
+                    "prevID": "403036391673430016",
+                    "race": "1",
+                    "statpoints": 841,
+                    "stats": {
+                        "atk": 55,
+                        "def": 55,
+                        "hp": 250,
+                        "spatk": 55,
+                        "spd": 55,
+                        "spdef": 55
+                    },
+                    "taskTimer": 0,
+                    "totalExp": 2352985,
+                    "weapon": 1
                 },
                 "hallReset": 1678923113807,
-                "hallStart": 1678756646292,
+                "hallStart": 1678893179045,
                 "id": "1038950677260550274",
                 "lastRaid": 1678923113807,
-                "level": 6,
+                "level": 7,
                 "listings": [
                     [
                         {
@@ -703,8 +627,13 @@
                 ],
                 "marketRestock": 1678923113807,
                 "name": "Untitled Discord RPG Official Server",
-                "points": 100,
+                "points": 433,
                 "raid": {
+                    "bossDefeats": {
+                        "403036391673430016": {
+                            "times": 17
+                        }
+                    },
                     "completion": 0,
                     "leader": {
                         "equipment": {
@@ -843,22 +772,95 @@
                     "missions": [
                         [
                             {
+                                "completers": {
+                                    "290256677205180426": {
+                                        "progression": [
+                                            3,
+                                            8
+                                        ],
+                                        "times": 0
+                                    },
+                                    "403036391673430016": {
+                                        "progression": [
+                                            4,
+                                            8
+                                        ],
+                                        "times": 1
+                                    }
+                                },
                                 "type": 2
                             },
                             {
+                                "completers": {
+                                    "290256677205180426": {
+                                        "progression": [
+                                            0,
+                                            8
+                                        ],
+                                        "times": 9
+                                    },
+                                    "403036391673430016": {
+                                        "progression": [
+                                            7,
+                                            8
+                                        ],
+                                        "times": 233
+                                    }
+                                },
                                 "type": 0
                             }
                         ],
                         [
                             {
+                                "completers": {
+                                    "290256677205180426": {
+                                        "progression": [
+                                            1,
+                                            2
+                                        ],
+                                        "times": 0
+                                    },
+                                    "403036391673430016": {
+                                        "progression": [
+                                            0,
+                                            2
+                                        ],
+                                        "times": 49
+                                    }
+                                },
                                 "type": 0
                             },
                             {
+                                "completers": {
+                                    "290256677205180426": {
+                                        "progression": [
+                                            0,
+                                            2
+                                        ],
+                                        "times": 1
+                                    },
+                                    "403036391673430016": {
+                                        "progression": [
+                                            0,
+                                            2
+                                        ],
+                                        "times": 53
+                                    }
+                                },
                                 "type": 1
                             }
                         ],
                         [
                             {
+                                "completers": {
+                                    "403036391673430016": {
+                                        "progression": [
+                                            0,
+                                            1
+                                        ],
+                                        "times": 3
+                                    }
+                                },
                                 "type": 1
                             }
                         ]
@@ -869,21 +871,21 @@
                     "Mountains"
                 ],
                 "reputations": {
-                    "163809334852190208": 24,
-                    "403036391673430016": 117
+                    "163809334852190208": 81,
+                    "403036391673430016": 1068
                 },
                 "resources": {
                     "food": [
-                        5,
-                        320
+                        387,
+                        640
                     ],
                     "minerals": [
-                        113,
-                        320
+                        640,
+                        640
                     ],
                     "wood": [
-                        135,
-                        320
+                        631,
+                        640
                     ]
                 },
                 "taskList": [
@@ -1020,7 +1022,7 @@
                 "taskRestock": 1678923113807,
                 "trainingRestock": 1678923113807
             },
-            "location": "adventure"
+            "location": "training"
         }
     }
 ]

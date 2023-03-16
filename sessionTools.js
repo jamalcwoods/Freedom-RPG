@@ -420,6 +420,7 @@ module.exports = {
             displayText += "\n\n"
         }
         displayText += "Use the </> arrows to decrease/increase a stat\n"
+        displayText += "Currently Modifying by value of: " + session.session_data.editAmount + " \n"
         displayText += "\n```"
         embed.addField(
             "Modifying Stats",
@@ -450,7 +451,7 @@ module.exports = {
         let canIncrease = true;
         let canDecrease = true; 
         if(session.session_data.editingStat != "none"){
-            if(session.session_data.prevStats[session.session_data.editingStat] < session.session_data.stats[session.session_data.editingStat]){
+            if(session.session_data.prevStats[session.session_data.editingStat] <= session.session_data.stats[session.session_data.editingStat] - session.session_data.editAmount){
                 canDecrease = false;
             }
             let statpointsNeeded;
@@ -458,12 +459,12 @@ module.exports = {
 
             if(session.session_data.faction != -1){
                 if(statIncreaseRatios[session.session_data.faction][stat] > 0){
-                    statpointsNeeded = 1
+                    statpointsNeeded = session.session_data.editAmount
                 } else {
-                    statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][stat]
+                    statpointsNeeded = session.session_data.editAmount/statIncreaseRatios[session.session_data.faction][stat]
                 }
             } else {
-                statpointsNeeded = 1
+                statpointsNeeded = session.session_data.editAmount
             }
             if(session.session_data.statpoints >= statpointsNeeded){
                 canIncrease = false;
@@ -493,7 +494,34 @@ module.exports = {
                     .setLabel('Cancel')
                     .setStyle('DANGER')
             );
-        return [row1,row2]
+
+        const row3 = new MessageActionRow().addComponents(
+            new MessageButton()
+            .setCustomId('setEditVal_' + session.session_id + "_1")
+            .setLabel('1')
+            .setStyle('PRIMARY')
+            .setDisabled(session.session_data.editAmount == 1),
+
+            new MessageButton()
+            .setCustomId('setEditVal_' + session.session_id + "_5")
+            .setLabel('5')
+            .setStyle('PRIMARY')
+            .setDisabled(session.session_data.editAmount == 5),
+
+
+            new MessageButton()
+            .setCustomId('setEditVal_' + session.session_id + "_10")
+            .setLabel('10')
+            .setStyle('PRIMARY')
+            .setDisabled(session.session_data.editAmount == 10),
+
+            new MessageButton()
+            .setCustomId('setEditVal_' + session.session_id + "_20")
+            .setLabel('20')
+            .setStyle('PRIMARY')
+            .setDisabled(session.session_data.editAmount == 20)
+    );
+        return [row1,row2,row3]
     },
     populateCombatControls(session){
         const row1 = new MessageActionRow()
@@ -1817,17 +1845,17 @@ module.exports = {
             switch(subatt){
                 case "statchangestat":
                     attributeVal = session.session_data.ability.effects[index].stat
-                    description = "Stat changed by effect #" + parseInt(index) + 1 + " of this ability"
+                    description = "Stat changed by effect #" + (parseInt(index) + 1) + " of this ability"
                     break;
 
                 case "statchangetarget":
                     attributeVal = session.session_data.ability.effects[index].target
-                    description = "Target of effect #" + parseInt(index) + 1 + " of this ability"
+                    description = "Target of effect #" + (parseInt(index) + 1) + " of this ability"
                     break;
 
                 case "statchangevalue":
                     attributeVal = session.session_data.ability.effects[index].value
-                    description = "Value stat change of effect #" + parseInt(index) + 1 + " of this ability"
+                    description = "Value stat change of effect #" + (parseInt(index) + 1)    + " of this ability"
                     break;
             }
             displayText += "\n" + description 

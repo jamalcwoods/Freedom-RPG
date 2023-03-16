@@ -44,7 +44,7 @@ function drawAbilityBox(ctx,ability,x,y){
                 
                 ctx.textAlign = "center"
                 speedText = ""
-                switch(ability.speed ){
+                switch(parseInt(ability.speed)){
                     case 0:
                         speedText = "Slow"
                         break;
@@ -56,6 +56,9 @@ function drawAbilityBox(ctx,ability,x,y){
                         break;
                     case 3:
                         speedText = "Fast"
+                        break;
+                    case 4:
+                        speedText = "Early"
                         break;
                 }
 
@@ -77,7 +80,23 @@ function drawAbilityBox(ctx,ability,x,y){
                 ctx.fillText(ability.critical + "%",x + 207,y + 167)
                 
                 // Faction Icon - Disabled for now 
-                //ctx.drawImage(images.icon, x + 212, y + 3,32,32);
+                //ctx.drawImage(images.icon, x + 170, y + 3,32,32);
+
+                let targetIcon;
+                switch(ability.targetType){
+                    case "1":
+                        targetIcon = "stats_target_0"
+                        break;
+
+                    case "2":
+                        targetIcon = "stats_target_4"
+                        break;
+
+                    case "3":
+                        targetIcon = "stats_target_3"
+                        break;
+                }
+                ctx.drawImage(images[targetIcon], x + 212, y + 3,32,32);
                 break;
                 
             case "guard":

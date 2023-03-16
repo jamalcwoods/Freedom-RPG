@@ -953,8 +953,6 @@ function generateRNGAbility(abilityData,abilityBase){
     }
     
     newAbility.name = generateAbilityName(newAbility)
-    console.log(newAbility.name + ": " + createAbilityDescription(newAbility))
-    console.log()
     return newAbility
 }
 
@@ -1330,7 +1328,6 @@ module.exports = {
                                     break;
                                 
                                 case "stats":
-                                    console.log(abilityData)
                                     let highestStatVal = 0
                                     let highestTargetType = "-1"
                                     let forAlly = false;

@@ -36,4 +36,4 @@ X Tavern Life sales
 X Dungeon run timer
 X Expedition rewards (substantial increase for active player)
 X Point threshold scalar
-- Session Time Out
+- Session Relocate

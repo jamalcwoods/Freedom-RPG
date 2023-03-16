@@ -23,6 +23,7 @@ module.exports = {
                 level:playerData.level,
                 stats:clone(playerData.stats),
                 prevStats:playerData.stats,
+                editAmount:1,
                 editingStat:"none"
             }
         }

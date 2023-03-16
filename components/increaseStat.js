@@ -18,18 +18,18 @@ module.exports = {
             let statpointsNeeded;
             if(session.session_data.faction != -1){
                 if(statIncreaseRatios[session.session_data.faction][editingStat] > 0){
-                    statpointsNeeded = 1
+                    statpointsNeeded = session.session_data.editAmount
                 } else {
-                    statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][editingStat]
+                    statpointsNeeded = session.session_data.editAmount/statIncreaseRatios[session.session_data.faction][editingStat]
                 }
             } else {
-                statpointsNeeded = 1
+                statpointsNeeded = session.session_data.editAmount
             }
             if(session.session_data.statpoints >= statpointsNeeded){
                 if(session.session_data.faction != -1){
-                    session.session_data.stats[editingStat] += statIncreaseRatios[session.session_data.faction][editingStat]
+                    session.session_data.stats[editingStat] += statIncreaseRatios[session.session_data.faction][editingStat] * session.session_data.editAmount
                 } else {
-                    session.session_data.stats[editingStat] += 1
+                    session.session_data.stats[editingStat] += session.session_data.editAmount
                 }
                 session.session_data.statpoints -= statpointsNeeded
                 interaction.update({
