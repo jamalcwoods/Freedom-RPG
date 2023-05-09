@@ -1,7 +1,6 @@
 const { stat } = require("fs");
 const { off } = require("process");
-const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank, explorationTables } = require("./data.json");
-
+const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank, passiveDescriptions } = require("./data.json");
 
 function parseReward(drop,player,mob){
     let messages = []
@@ -249,7 +248,7 @@ function clone(obj){
 
 function levelPlayer(player){
     player.level++;
-    player.statpoints += 6;
+    player.statpoints += 2;
     player.abilitypoints += 6;
     player.exp -= player.expCap
     player.expCap = player.level * 100
@@ -1228,6 +1227,9 @@ module.exports = {
             lastAction:"",
             guardData:"none"
         }
+        if(fighter.passives){
+            fighterData.passives = fighter.passives
+        }
         if(fighter.inventory){
             let gear = fighter.inventory[fighter.gear]
             let weapon = fighter.inventory[fighter.weapon]
@@ -1270,9 +1272,9 @@ module.exports = {
                             fighterData.liveData.statChanges.spdef += b.value
                             break;
 
-                        case "healing":
+                        case "random":
                             let stats = ["atk","spatk","def","spdef","spd"]
-                            fighterData.liveData.statChanges[Math.floor(Math.random() * stats.length)] += b.value - 1
+                            fighterData.liveData.statChanges[Math.floor(Math.random() * stats.length)] += b.value
                             break;
                     }
                 }

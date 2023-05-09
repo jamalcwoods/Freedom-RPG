@@ -16,7 +16,7 @@ X Town Tasks
 X Town Task Maker
 X Import fonts onto amazon shell
 X Bulk stat changes
-X Stuck in session after dungeon fail
+X Stuck in session after dungeon fail   
 X Flee from dungeon
 X Lobby check
 X Multiplayer Attack Queue Check
@@ -37,3 +37,5 @@ X Dungeon run timer
 X Expedition rewards (substantial increase for active player)
 X Point threshold scalar
 - Session Relocate
+X "Passive" Stat Point Acquisition 
+- Passive Management 

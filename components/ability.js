@@ -88,10 +88,48 @@ module.exports = {
                 } else {
                     getTownDBData(session.server_id,function(town){
                         let updates = []
+                        let now = new Date()
+
                         for(var i = 0; i < session.session_data.fighters.length; i++){
                             let fighter = session.session_data.fighters[i]
                             if(session.user_ids.includes(fighter.staticData.id)){
                                 // Update actual player data here
+
+                                if(fighter.staticData.statGrowthTimer < now.getTime()){
+                                    let growthMessage = fighter.staticData.name + "'s stats slightly grew!"
+                                    if(fighter.records.timesBlocked < fighter.records.timesHit){
+                                        if(fighter.records.spattacks > fighter.records.attacks){
+                                            fighter.staticData.stats.spatk++
+                                            fighter.staticData.stats.spd++
+                                            growthMessage += "\n(+1 SPATK / +1 SPD)"
+                                        } else if(fighter.records.spattacks < fighter.records.attacks){
+                                            fighter.staticData.stats.atk++
+                                            fighter.staticData.stats.spd++
+                                            growthMessage += "\n(+1 ATK / +1 SPD)"
+                                        } else {
+                                            fighter.staticData.stats.hp++
+                                            fighter.staticData.stats.spd++
+                                            growthMessage += "\n(+1 HP / +1 SPD)"
+                                        }
+                                    } else if(fighter.records.timesBlocked < fighter.records.timesHit){
+                                        if(fighter.records.spguards > fighter.records.guards){
+                                            fighter.staticData.stats.spdef++
+                                            fighter.staticData.stats.hp++
+                                            growthMessage += "\n(+1 HP / +1 SPDEF)"
+                                        } else if(fighter.records.spguards < fighter.records.guards){
+                                            fighter.staticData.stats.def++
+                                            fighter.staticData.stats.hp++
+                                            growthMessage += "\n(+1 HP / +1 DEF)"
+                                        } else {
+                                            fighter.staticData.stats.hp++
+                                            fighter.staticData.stats.spd++
+                                            growthMessage += "\n(+1 HP / +1 SPD)"
+                                        }
+                                    }
+                                    session.session_data.battlelog.rewards.push(growthMessage)
+                                    fighter.staticData.statGrowthTimer = now.getTime() + 14400000
+                                }
+
                                 if(town){
                                     if(town.raid){
                                         let missions = town.raid.missions
@@ -401,7 +439,7 @@ module.exports = {
                                 })
                             }
                         }
-                        let now = new Date()
+                        
                         let townUpdates = []
 
                         if(session.session_data.options.combatRewards){

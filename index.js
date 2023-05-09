@@ -597,6 +597,20 @@ setInterval(() => {
                             "spd":15
                         }
                     }
+                    let passives = []
+                    while(passives.length < 3){
+                        let id = Math.floor(Math.random() * data.passiveDescriptions.length)
+                        if(!passives.includes(id)){
+                            passives.push(id)
+                        }
+                    }
+                    boss.passives = []
+                    for(var i = 0; i < passives.length; i++){
+                        boss.passives.push({
+                            id:passives[i],
+                            rank:Math.floor(Math.random() * 5)
+                        })
+                    }
                     boss = simulateCPUAbilityAssign(boss,[],10)
                     boss = simulateCPUSPAssign(clone(boss),townData.level * 60)
                     townData.raid = {

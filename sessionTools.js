@@ -1,9 +1,21 @@
-const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights } = require("./data.json");
+const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
 const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const { stat } = require("fs");
 const { getTownDBData } = require("./firebaseTools.js")
- 
+
+function getPassive(fighter, passiveID){
+    if(fighter.passives){
+        for(var i = 0; i < fighter.passives;i++){
+            if(fighter.passives[i].id == passiveID){
+                return fighter.passives[i]
+            }
+        }
+    } else {
+        return null
+    }
+}
+
 function eventComparator(e,data){
     let match = true
     if(e.data.staticData){
@@ -192,6 +204,7 @@ function checkActiveCombatants(session){
 }
 
 function getAbilityOrder(fighters){
+    let actionCount = 0
     let abilityOrder = [
         [],
         [],
@@ -234,6 +247,7 @@ function getAbilityOrder(fighters){
                     ability:choosenData,
                     targets:targets
                 })
+                actionCount++
             }
         }
     }
@@ -251,7 +265,9 @@ function getAbilityOrder(fighters){
         })
     }
 
-    return abilityOrder
+    abilityOrder = abilityOrder.reverse()
+
+    return [abilityOrder.reverse(),actionCount]
 }
 
 function processMobRewards(mob,session){
@@ -806,7 +822,9 @@ module.exports = {
         }
         if(simTurn){
             let first = true
-            let schedule = getAbilityOrder(fighters).reverse()
+            let schedule = getAbilityOrder(fighters)
+            let actionCount = schedule[1]
+            let currentActionCount = 0
             if(session.session_data.turn == 0){
                 for(var i = 0; i < fighters.length;i++){
                     let fighter = session.session_data.fighters[i]
@@ -860,8 +878,9 @@ module.exports = {
                     }
                 }
             }
-            for(timePeriod of schedule){
+            for(timePeriod of schedule[0]){
                 for(action of timePeriod){
+                    currentActionCount++
                     let actionCode;
                     let weaponPassives = session.session_data.fighters[action.index].weaponPassives;
 
@@ -894,7 +913,21 @@ module.exports = {
                                     }
                                 }
 
+                                let rageBonus = 0
+                                let passiveDataRage = getPassive(attacker,5)
+                                if(passiveDataRage != null){
+                                    rageBonus += attacker.records.timesHit * (passiveDescriptions[passiveDataRage.id].scalar.stat1[passiveDataRage.rank])
+                                    if(rageBonus > 0){
+                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " is being empowered with rage! (x" + attacker.records.timesHit + ")")
+                                    }
+                                }
+
                                 session.session_data.battlelog.combat.push(abilityUseNotif)
+
+                                
+                                let reactiveDamage = 0
+
+                                let bonusBaseDamage = rageBonus
 
                                 for(t of action.targets){
 
@@ -910,9 +943,26 @@ module.exports = {
                                         }
                                         let hitCount = 0
                                         let critCount = 0
+
+                                        let ignoreBlock = false
+
+                                        let passiveData = getPassive(attacker,9)
+                                        if(passiveData != null){
+                                            if(attacker.liveData.stats.hp <= attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)){
+                                                ignoreBlock = true
+                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " is filled with rage!")
+                                            }
+                                        }
+
                                         while(attackNum > 0){
-                                            let attackBase = action.ability.damage_val
+                                            let attackBase = action.ability.damage_val + bonusBaseDamage
                                             
+                                            let passiveDataLast = getPassive(attacker,6)
+                                            if(passiveDataLast != null){
+                                                attackBase *= (passiveDescriptions[passiveDataLast.id].scalar.stat1[passiveDataLast.rank])
+                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " begins a decimating attack!")
+                                            }
+
                                             let accCheck = Math.floor(Math.random() * 100) 
 
                                             let repeatPenal = 0;
@@ -942,7 +992,7 @@ module.exports = {
                                                         break;
                                                 }
                                                 
-                                                if(target.guardData != "none" && target.guardData != "fail"){
+                                                if(target.guardData != "none" && target.guardData != "fail" && ignoreBlock == false){
                                                     attackNum = 0
                                                     let guardValue = target.guardData.guard_val
                                                     switch(target.guardData.guard_type){
@@ -1029,7 +1079,7 @@ module.exports = {
                                                                         target.liveData.statChanges[choosenStat] = 16
                                                                         msg = target.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
                                                                     } else {
-                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[target.liveData.statChanges[effect.stat]] + ")."
+                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[target.liveData.statChanges[choosenStat]] + ")."
                                                                     }
                                                                     session.session_data.battlelog.combat.push(msg)
                                                                 }
@@ -1091,6 +1141,20 @@ module.exports = {
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
                                                                         attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                                     }
+
+                                                                    let passiveData = getPassive(attacker,3)
+                                                                    if(passiveData != null){
+                                                                        let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                                        for(var i = 0; i < fighters.length;i++){
+                                                                            if(fighters[i].index != attacker.index){
+                                                                                fighters[i].liveData.hp -= damage
+                                                                                if(fighters[i].liveData.hp < 1 && fighters[i].alive){
+                                                                                    fighters[i].liveData.hp = 1
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+                                                                    }
                                                                 }
                                                             } else {
                                                                 if(healAmount > 0){
@@ -1121,6 +1185,12 @@ module.exports = {
 
                                                 if(attacker.alive){
                                                     let critRoll = action.ability.critical
+
+                                                    let passiveData = getPassive(attacker,7)
+                                                    if(passiveData != null){
+                                                        critRoll += Math.floor(action.ability.recoil/10) * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank])
+                                                    }
+
                                                     if(weaponPassives[4] > 0){
                                                         if(attacker.lastAction == actionCode){
                                                             critRoll += weaponPassives[4] * 10
@@ -1128,6 +1198,7 @@ module.exports = {
                                                     }
                                                     let crit = Math.floor(Math.random() * 100) < critRoll ? 2 : 1
                                                     let totalDamage;
+
                                                     if(!target.hasActed && weaponPassives[1] > 0){
                                                         attackBase += weaponPassives[1] * 4
                                                     }
@@ -1182,8 +1253,20 @@ module.exports = {
                                                             if(!multiHit){
                                                                 session.session_data.battlelog.combat.push("A critical hit!")
                                                             }
+
+                                                            let passiveData = getPassive(target,4)
+                                                            if(passiveData != null){
+                                                                let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                                reactiveDamage += damage
+                                                            }
                                                         }
-                                                        
+
+                                                        let passiveDataGiantSlayer = getPassive(attacker,8)
+                                                        if(passiveDataGiantSlayer != null){
+                                                            finalDamage *= 1 + (passiveDescriptions[passiveDataGiantSlayer.id].scalar.stat1[passiveDataGiantSlayer.rank]/100) * ((target.liveData.maxhp/attacker.liveData.maxhp) - 1) * 20
+                                                        }
+
+                                                        finalDamage = Math.ceil(finalDamage)
                                                         target.liveData.stats.hp -= finalDamage;
                                                         target.records.timesHit++;
                                                         attacker.records.attackDamageDone += finalDamage
@@ -1200,9 +1283,29 @@ module.exports = {
                                                             type:2,
                                                             data:target
                                                         },session)
+
+                                                        
+                                                        
+                                                        if(action.ability.damage_type == "spatk"){
+                                                            let passiveData = getPassive(target,1)
+                                                            if(passiveData != null){
+                                                                let damage = attacker.liveData.stats.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                                reactiveDamage += damage
+                                                            }
+                                                        }
+
+                                                        if(action.ability.damage_type == "atk"){
+                                                            let passiveData = getPassive(target,2)
+                                                            if(passiveData != null){
+                                                                let damage = attacker.liveData.stats.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                                reactiveDamage += damage
+                                                            }
+                                                        }
+                                                        
                                                     }
                                                     if(target.liveData.stats.hp <= 0){
                                                         target.staticData.lives -= 1
+
                                                         if(target.staticData.lives <= 0){
                                                             attackNum = 0
                                                             target.liveData.stats.hp = 0
@@ -1225,6 +1328,20 @@ module.exports = {
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " lost a life! (" + target.staticData.lives + " remaining)")
                                                             target.liveData.stats.hp = target.liveData.maxhp
+                                                        }
+
+                                                        let passiveData = getPassive(target,3)
+                                                        if(passiveData != null){
+                                                            let damage = target.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                            for(var i = 0; i < fighters.length;i++){
+                                                                if(fighters[i].index != target.index){
+                                                                    fighters[i].liveData.hp -= damage
+                                                                    if(fighters[i].liveData.hp < 1 && fighters[i].alive){
+                                                                        fighters[i].liveData.hp = 1
+                                                                    }
+                                                                }
+                                                            }
+                                                            session.session_data.battlelog.combat.push(target.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
                                                         }
                                                     }
 
@@ -1256,6 +1373,20 @@ module.exports = {
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
                                                                 attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                             }
+
+                                                            let passiveData = getPassive(attacker,3)
+                                                            if(passiveData != null){
+                                                                let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                                for(var i = 0; i < fighters.length;i++){
+                                                                    if(fighters[i].index != attacker.index){
+                                                                        fighters[i].liveData.hp -= damage
+                                                                        if(fighters[i].liveData.hp < 1 && fighters[i].alive){
+                                                                            fighters[i].liveData.hp = 1
+                                                                        }
+                                                                    }
+                                                                }
+                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1281,6 +1412,17 @@ module.exports = {
                                         }
                                     }
                                 }
+
+                                if(reactiveDamage > 0){
+                                    if(attacker.alive){
+                                        attacker.liveData.stats.hp -= damage
+                                        session.session_data.battlelog.combat.push("As a result of attacking, " + attacker.staticData.name + " endured " + reactiveDamage + " damage!")
+                                        if(attacker.liveData.stats.hp < 1){
+                                            attacker.liveData.stats.hp = 1
+                                        }
+                                    }
+                                }
+                                
                                 attacker.lastAction = actionCode
                                 session.session_data.battlelog.combat.push("---")
                             }
@@ -1404,12 +1546,24 @@ module.exports = {
                 }
             }
             for(f of fighters){
-                if(f.liveData.healing > 0){
-                    f.liveData.hp += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
+                let passiveData = getPassive(f,0)
+                let regeneratedHealth = 0 
+                if(passiveData != null){
+                    f.liveData.hp += f.records.timesHit * passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]
+                    regeneratedHealth += f.records.timesHit * passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]
                     if(f.liveData.hp > f.liveData.maxhp){
                         f.liveData.hp = f.liveData.maxhp
                     }
-                    session.session_data.battlelog.combat.push(f.staticData.name + " regenerated " + f.liveData.healing + "% of their maximum health!")
+                }
+                if(f.liveData.healing > 0){
+                    f.liveData.hp += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
+                    regeneratedHealth += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
+                    if(f.liveData.hp > f.liveData.maxhp){
+                        f.liveData.hp = f.liveData.maxhp
+                    }
+                }
+                if(regeneratedHealth > 0){
+                    session.session_data.battlelog.combat.push(f.staticData.name + " regenerated " + regeneratedHealth + " health!")
                 }
             }
             triggerCombatEvent({
@@ -2675,12 +2829,23 @@ module.exports = {
                 let rankIndexer = ["Simple","Normal","Challenging"]
                 let pointIndexer = [1,2,3]
                 let report = "Current Raid Leader: " + raidData.leader.name + "\n\n"
+                
+                if(raidData.leader.unit.passives){
+                    report += "__Raider Passives:__\n"
+                    for(var i = 0;i < raidData.leader.unit.passives.length; i++){
+                        let passive = raidData.leader.unit.passives[i]
+                        let description = passiveDescriptions[passive.id].description
+                        report += passiveDescriptions[passive.id].name +":\n" + description.replace("X",passiveDescriptions[passive.id].scalar.stat1[passive.rank]) + "\n\n"
+
+                    }
+                }
+
                 if(raidData.bossDefeats){
                     report += "Raiders defeated - New raid in " + msToTime(session.session_data.town.lastRaid - now.getTime())
                 } else {
                     report += "**Complete the Retaliation Mission in " + msToTime(session.session_data.town.lastRaid - now.getTime()) + " or this town will lose " + session.session_data.town.level * 7 + " town points!**"
                 }
-                report +="\nCurrent town points: " + session.session_data.town.points + "\n\n"
+                report +="\n\nCurrent town points: " + session.session_data.town.points + "\n\n"
                 let missionsComplete = true;
                 for(var i = 0;i < 3; i++){
                     report += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
