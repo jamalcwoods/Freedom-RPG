@@ -85,7 +85,7 @@ function drawAbilityBox(ctx,ability,x,y){
                 let targetIcon;
                 switch(ability.targetType){
                     case "1":
-                        targetIcon = "stats_target_0"
+                        targetIcon = "stats_target_2"
                         break;
 
                     case "2":
@@ -444,13 +444,13 @@ function makeCard(player,avatar,callback){
         ctx.fillText("Wielding:",200,410)
 
         ctx.font = '18px "Oswald Light"'
-        if(player.gear && player.gear >= 0){
+        if(player.gear != undefined && player.gear >= 0){
             ctx.fillText(player.inventory[player.gear].name,200,370)
         } else {
             ctx.fillText("Basic Gear",200,370)
         }
 
-        if(player.weapon && player.weapon >= 0){
+        if(player.weapon != undefined && player.weapon >= 0){
             ctx.fillText(player.inventory[player.weapon].name,200,440)
         } else {
             ctx.fillText("Basic Weapon",200,440)

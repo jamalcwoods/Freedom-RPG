@@ -155,6 +155,8 @@ module.exports = {
                             session.session_data.eventResult = {}
                         }
 
+                        session.session_data.onHold = true
+
                         newSession = {
                             type:"combat",
                             session_id: Math.floor(Math.random() * 100000),
@@ -191,6 +193,7 @@ module.exports = {
                             embeds:populateCombatWindow(newSession)
                         })
                         callback({
+                            updateSession:session,
                             addSession:newSession
                         })
                     }

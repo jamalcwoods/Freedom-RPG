@@ -1092,16 +1092,16 @@ function createAbilityDescription(ability){
             desc += ". "
             if(ability.speed != 1){
                 let speedRating = ""
-                switch(ability.speed){
-                    case '0':
+                switch(parseInt(ability.speed)){
+                    case 0:
                         speedRating = " is slower than most other actions"
                         break;
                     
-                    case '2':
+                    case 2:
                         speedRating = " is faster than the average action"
                         break;
                         
-                    case '4':
+                    case 4:
                         speedRating = " will happen before an opponent has the chance to guard themselves"
                         break;
                 }

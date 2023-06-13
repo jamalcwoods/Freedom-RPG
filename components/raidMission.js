@@ -2,6 +2,11 @@ const { populateCombatData, populateCombatWindow, populateCombatControls } = req
 const { getPlayerDBData,} = require("../firebaseTools")
 const { simulateCPUSPAssign, simulateCPUAbilityAssign, clone, runEnemyCombatAI} = require("../tools.js")
 
+
+function getRandomPassive(leader){
+    return [leader.passives[Math.floor(Math.random() * leader.passives.length)]]
+}
+
 module.exports = {
     config:{
         getSession:true
@@ -69,6 +74,7 @@ module.exports = {
                         abilities:[],
                         level:0,
                         totalExp:0,
+                        passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                         stats:{
                             "hp":10,
                             "atk":5,
@@ -164,6 +170,7 @@ module.exports = {
                             abilities:[],
                             level:0,
                             totalExp:0,
+                            passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
                                 "hp":100,
                                 "atk":100,
@@ -293,6 +300,7 @@ module.exports = {
                             ],
                             level:session.session_data.town.level * 10,
                             totalExp:0,
+                            passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
                                 "hp":100,
                                 "atk":0,
@@ -326,6 +334,7 @@ module.exports = {
                             abilities:[],
                             level:0,
                             totalExp:0,
+                            passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
                                 "hp":10,
                                 "atk":5,

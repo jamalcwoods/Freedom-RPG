@@ -77,6 +77,7 @@ module.exports = {
 
                     
                     callback({
+                        unHoldSession:session.session_data.options.returnSession,
                         removeSession:session
                     })
                 } else {

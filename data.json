@@ -1614,11 +1614,11 @@
       {
         "type": "choice",
         "title": "Magical Totems",
-        "prompt": "You come across a room where multiple large totems a positioned in the center. Upon entering the room the totems light up and begin hurling magical energy at you.",
+        "prompt": "You come across a room where multiple large totems are positioned in the center. Upon entering the room the totems light up and begin hurling magical energy at you.",
         "options": [
           {
             "name": "Evade and escape",
-            "description": "Use your agility to evade the incoming magical attacks and excape",
+            "description": "Use your agility to evade the incoming magical attacks and escape",
             "value": "spd|2"
           },
           {
@@ -2309,47 +2309,130 @@
   },
   "townTasks": [
     {
-      "name": "Test Task",
-      "id": 0,
-      "description": "Test description for a task",
-      "taskPrompt": "Test prompt for a task",
-      "multiThresh": 1,
-      "expReward": 0.33,
-      "goldReward": 0.33,
-      "repReward": 0.33,
+      "name": "Cattle Round Up",
+      "description": "The cattle of the town have gotten loose! They've spread themselves all around the town.",
+      "taskPrompt": "Determine the best way to get the cattle back into their pens.",
+      "multiThresh": 0.75,
+      "suggestedSolutionPrompt": "The cattle are numerous and very spread out. It might be easier to stop the cattle with something other than your physical body.",
+      "expReward": 0.5,
+      "goldReward": 0.5,
+      "repReward": 1.0588235294117647,
       "solutionMap": {
         "hp": {
-          "solution": "HP based prompt",
-          "solutionDesc": "HP based prompt desc",
-          "multi": 0.75
+          "solution": "Carry them all back",
+          "solutionDesc": "Collect the cattle by lifting them and return them to their pens.",
+          "multi": 0.5
         },
         "atk": {
-          "solution": "ATK based prompt",
-          "solutionDesc": "ATK based prompt desc",
-          "multi": 1
+          "solution": "Scare with attacks",
+          "solutionDesc": "Scare the cattle back to their pens by using intimidating attacks.",
+          "multi": 0.5
         },
         "def": {
-          "solution": "DEF based prompt",
-          "solutionDesc": "DEF based prompt desc",
-          "multi": 1
+          "solution": "Wear them out",
+          "solutionDesc": "Resist their attempts to flee until they tire and can be easily led back to their pens.",
+          "multi": 0.5
         },
         "spatk": {
-          "solution": "SPATK based prompt",
-          "solutionDesc": "SPATK based prompt desc",
+          "solution": "Lure with magic",
+          "solutionDesc": "Use powerful magic to scare the cattle back into their pens.",
           "multi": 1
         },
         "spdef": {
-          "solution": "SPDEF based prompt",
-          "solutionDesc": "SPDEF based prompt desc",
+          "solution": "Block their escape",
+          "solutionDesc": "Use magic to set up blockades so that the cattle have no where to run.",
           "multi": 1
         },
         "spd": {
-          "solution": "SPD based prompt",
-          "solutionDesc": "SPD based prompt desc",
+          "solution": "Catch them one by one",
+          "solutionDesc": "Use your agility to catch each one individually and return them to their pen.",
+          "multi": 0.75
+        }
+      }
+    },
+    {
+      "name": "Building Repair",
+      "description": "A member of the town would like some assistance in rebuilding their home after the last storm.",
+      "taskPrompt": "Determine the best way to help them reconstruct their home",
+      "multiThresh": 0.75,
+      "suggestedSolutionPrompt": "Physical strength would be helpful in taking care of the many tasks need for construction",
+      "expReward": 0.5,
+      "goldReward": 0.5,
+      "repReward": 1.0588235294117647,
+      "solutionMap": {
+        "hp": {
+          "solution": "Work tirelessly",
+          "solutionDesc": "Use you perseverance to work nonstop on rebuilding the house.",
+          "multi": 1
+        },
+        "atk": {
+          "solution": "Use brute strength",
+          "solutionDesc": "Use your strength to rebuild the house efficiently. ",
+          "multi": 1
+        },
+        "def": {
+          "solution": "Provide foundation",
+          "solutionDesc": "Rely on your constitution to hold things in place while others work on the house's structure.",
+          "multi": 0.75
+        },
+        "spatk": {
+          "solution": "Rebuild with magic",
+          "solutionDesc": "Use supernatural forces to manipulate the pieces of the house back into place.",
+          "multi": 0.5
+        },
+        "spdef": {
+          "solution": "Stabilize with magic",
+          "solutionDesc": "Use supernatural forces to protect and stabilize the house while others work on the house's structure.",
+          "multi": 0.5
+        },
+        "spd": {
+          "solution": "Work hastily",
+          "solutionDesc": "Use your dexterity to be everywhere at once, working on the house as quickly as possible.",
+          "multi": 0.5
+        }
+      }
+    },
+    {
+      "name": "Dangerous Storm",
+      "description": "A terrible storm has rolled into town unexpectedly",
+      "taskPrompt": "The townsfolk need to be protected!",
+      "multiThresh": 0.75,
+      "suggestedSolutionPrompt": "The storm seems to be supernatural in nature, think of ways you can protect and shelter others without using magic.",
+      "expReward": 0.5,
+      "goldReward": 0.5,
+      "repReward": 1.05882352941176474117647,
+      "solutionMap": {
+        "hp": {
+          "solution": "Bring groups to safety",
+          "solutionDesc": "Round up groups of people and carry them inside",
+          "multi": 0.75
+        },
+        "atk": {
+          "solution": "Shove away",
+          "solutionDesc": "Push people out of harms way of the storm",
+          "multi": 0.5
+        },
+        "def": {
+          "solution": "Shield people",
+          "solutionDesc": "Provide cover for people caught out in the open",
+          "multi": 1
+        },
+        "spatk": {
+          "solution": "Combat the storm",
+          "solutionDesc": "Use supernatural abilities to fight the storm",
+          "multi": 0.5
+        },
+        "spdef": {
+          "solution": "Protective magic",
+          "solutionDesc": "Use supernatural abilities to protect the towns people from the storm",
+          "multi": 0.5
+        },
+        "spd": {
+          "solution": "Bring individuals to safety ",
+          "solutionDesc": "Use your speed to run through town, urging people to take cover and leading them to shelter",
           "multi": 1
         }
-      },
-      "suggestedSolutionPrompt": "Test prompt thats suggest which solution would be better for completing the task"
+      }
     }
   ],
   "innateFacilities": [

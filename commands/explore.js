@@ -160,65 +160,6 @@ module.exports = {
 
                     if(mob.droptable){
                         enemy.droptable = mob.droptable   
-                        // enemy.droptable = [
-                        //     {
-                        //       "chance": 1,
-                        //       "obj": {
-                        //         "type": "resource",
-                        //         "resource": "gold",
-                        //         "resourceName": "gold",
-                        //         "amount": 5
-                        //       }
-                        //     },
-                        //     {
-                        //       "chance": 1,
-                        //       "obj": {
-                        //         "type": "resource",
-                        //         "resource": "gold",
-                        //         "resourceName": "gold",
-                        //         "amount": 10
-                        //       }
-                        //     },
-                        //     {
-                        //       "chance": 1,
-                        //       "obj": {
-                        //         "type": "resource",
-                        //         "resource": "gold",
-                        //         "resourceName": "gold",
-                        //         "amount": 15
-                        //       }
-                        //     },
-                        //     {
-                        //       "chance": 30,
-                        //       "obj": {
-                        //         "ref": {
-                        //             "type": "rngEquipment",
-                        //           "rngEquipment": {
-                        //             "scaling": true,
-                        //             "value": 0.8,
-                        //             "types": [
-                        //               "weapon"
-                        //             ]
-                        //           }
-                        //         }
-                        //       }
-                        //     },
-                        //     {
-                        //       "chance": 30,
-                        //       "obj": {
-                        //         "ref": {
-                        //             "type": "rngEquipment",
-                        //           "rngEquipment": {
-                        //             "scaling": true,
-                        //             "value": 0.8,
-                        //             "types": [
-                        //               "gear"
-                        //             ]
-                        //           }
-                        //         }
-                        //       }
-                        //     }
-                        //   ]
                     }
                     enemies[e] = enemy
                 }

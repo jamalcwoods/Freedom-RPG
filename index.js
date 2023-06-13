@@ -9,6 +9,7 @@ const data = require ("./data.json");
 const { populateConformationControls } = require("./sessionTools.js")
 const { off } = require("firebase/database");
 const { callbackify } = require("util");
+const { error } = require("console");
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -84,6 +85,15 @@ function getSessionByID(id){
     return null
 }
 
+function unHoldSession(id){
+    for(var i = 0;i < sessions.length; i++){
+        let session = sessions[i]
+        if(session.session_id == id){
+            delete session.session_data.onHold;
+        }
+    }
+}
+
 
 function processResult(result){
     if(result.removeSession){
@@ -109,6 +119,10 @@ function processResult(result){
             updateTownDBData(batch.id,batch.path,batch.value)
         }
     }
+
+    if(result.unHoldSession){
+        unHoldSession(result.unHoldSession)
+    }
 }
 
 client.on('interactionCreate', async interaction => {  
@@ -118,6 +132,9 @@ client.on('interactionCreate', async interaction => {
                 let componenetVals = interaction.customId.split("_")
                 const component = client.components.get(componenetVals[0])
                 let sessionID = componenetVals[1]
+                if(sessionID == "NULL"){
+                    sessionID = null
+                }
                 let args = ""
                 if(componenetVals[2]){
                     args = componenetVals[2].split("|")
@@ -370,6 +387,7 @@ function playerPresenceCheck(message,user,town,callback){
                     })   
                 })
             }
+
             if(player.challengeTimer <= now.getTime()){
                 player.challengeTimer = now.getTime() + 28800000
                 if(!player.challenges){
@@ -630,23 +648,23 @@ setInterval(() => {
                     townData.taskList = []
                     while(townData.taskList.length < 3){
                         let newTask = data.townTasks[Math.floor(Math.random() * data.townTasks.length)]
-                        // let repeat = false;
-                        // for(task of townData.taskList){
-                        //     if(task.id == newTask.id){
-                        //         repeat = true
-                        //         break;
-                        //     }
-                        // }
-                        // while(repeat){
-                        //     repeat = false
-                        //     newTask = data.townTasks[Math.floor(Math.random() * data.townTasks.length)]
-                        //     for(task of townData.taskList){
-                        //         if(task.id == newTask.id){
-                        //             repeat = true
-                        //             break;
-                        //         }
-                        //     }
-                        // }
+                        let repeat = false;
+                        for(task of townData.taskList){
+                            if(task.name == newTask.name){
+                                repeat = true
+                                break;
+                            }
+                        }
+                        while(repeat){
+                            repeat = false
+                            newTask = data.townTasks[Math.floor(Math.random() * data.townTasks.length)]
+                            for(task of townData.taskList){
+                                if(task.name == newTask.name){
+                                    repeat = true
+                                    break;
+                                }
+                            }
+                        }
                         townData.taskList.push(newTask)
                     }
                 }
@@ -736,9 +754,11 @@ setInterval(() => {
 
                         let stepResult = runExpeditionStep(expedition,active,townData,players[expedition.playerID])
                         if(stepResult){
+                            const expeditionIndex = i;
                             players[expedition.playerID] = stepResult[1]
                             client.guilds.fetch(town).then(guild =>{
-                                guild.members.fetch(stepResult[1].id).then(member =>{ 
+                                guild.members.fetch(stepResult[1].id)
+                                .then(member =>{ 
                                     member.createDM().then(dm =>{
                                         const embed = new MessageEmbed()
                                         .setColor('#00ff00')
@@ -746,6 +766,9 @@ setInterval(() => {
 
                                         embed.addField("---",stepResult[0])
                                         dm.send({embeds:[embed]}).catch((e) =>{})
+                                    })
+                                }).catch(error =>{
+                                    updateTownDBData(guild.id,"expeditions/" + expeditionIndex,null,function(){
                                     })
                                 })
                             })
@@ -783,5 +806,9 @@ setInterval(() => {
     })      
 }, 5000);
 //}, 300000);
+
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
+});
 
 client.login(token);

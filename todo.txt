@@ -23,10 +23,11 @@ X Multiplayer Attack Queue Check
 X Ability point cost balancing
 X Stat based mob abilities 
 X AI warning for stat change
-- Town Raiders Traits
-- Base Task Additions
+X Town Raiders Traits
+X Base Task Additions
 X benefit of blocking an attack 
-- Ability icon explanation 
+X Ability icon explanation 
+X Profile term explanation 
 - Tutorial from /profile
 X Ability Memory/removal 
 X Sell & Favorite items for server reputation
@@ -36,6 +37,5 @@ X Tavern Life sales
 X Dungeon run timer
 X Expedition rewards (substantial increase for active player)
 X Point threshold scalar
-- Session Relocate
-X "Passive" Stat Point Acquisition 
-- Passive Management 
+X Session Relocate
+X "Passive" Stat Point Acquisition

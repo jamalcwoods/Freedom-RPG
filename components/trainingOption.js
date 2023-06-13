@@ -1173,6 +1173,8 @@ module.exports = {
                         break;
                 }
 
+                session.session_data.onHold = true
+
                 runEnemyCombatAI(newSession.session_data.fighters)
 
                 interaction.update({
@@ -1182,7 +1184,8 @@ module.exports = {
                 })
         
                 callback({
-                    addSession: newSession
+                    updateSession:session,
+                    addSession:newSession
                 })
             } else {
                 session.session_data.temp = {

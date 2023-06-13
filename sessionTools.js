@@ -218,29 +218,27 @@ function getAbilityOrder(fighters){
             if(fighter.alive && fighter.choosenAbility != -2 && fighter.staticData.abilities.length > 0){
                 let choosenData = fighter.staticData.abilities[fighter.choosenAbility]
                 let targets = []
-                switch(choosenData.action_type){
-                    case "attack":
-                        switch(parseInt(choosenData.targetType)){
-                            case 1:
-                                targets = [fighter.target]
-                                break;
-                            
-                            case 2:
-                                for(f in fighters){
-                                    if(fighters[f].team != fighter.team){
-                                        targets.push(f)
-                                    }
+                if(choosenData.action_type == "attack"){
+                    switch(parseInt(choosenData.targetType)){
+                        case 1:
+                            targets = [fighter.target]
+                            break;
+                        
+                        case 2:
+                            for(f in fighters){
+                                if(fighters[f].team != fighter.team){
+                                    targets.push(f)
                                 }
-                                break;
-                            case 3:
-                                for(f in fighters){
-                                    if(fighters[f].index != fighter.index){
-                                        targets.push(f)
-                                    }
+                            }
+                            break;
+                        case 3:
+                            for(f in fighters){
+                                if(fighters[f].index != fighter.index){
+                                    targets.push(f)
                                 }
-                                break;
-                        }
-                        break;
+                            }
+                            break;
+                    }
                 }
                 abilityOrder[choosenData.speed].push({
                     index:fighter.index,
@@ -267,7 +265,7 @@ function getAbilityOrder(fighters){
 
     abilityOrder = abilityOrder.reverse()
 
-    return [abilityOrder.reverse(),actionCount]
+    return [abilityOrder,actionCount]
 }
 
 function processMobRewards(mob,session){
@@ -851,6 +849,7 @@ module.exports = {
                               },
                             targets:[]
                         })
+                        actionCount++
                     }
                     if(fighter.gearPassives[3] > 0 && Math.random() < fighter.gearPassives[3] * 0.15){                    
                         schedule[0].push({
@@ -875,6 +874,7 @@ module.exports = {
                               },
                             targets:[]
                         })
+                        actionCount++
                     }
                 }
             }
@@ -957,10 +957,12 @@ module.exports = {
                                         while(attackNum > 0){
                                             let attackBase = action.ability.damage_val + bonusBaseDamage
                                             
-                                            let passiveDataLast = getPassive(attacker,6)
-                                            if(passiveDataLast != null){
-                                                attackBase *= (passiveDescriptions[passiveDataLast.id].scalar.stat1[passiveDataLast.rank])
-                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " begins a decimating attack!")
+                                            if(currentActionCount == actionCount){
+                                                let passiveDataLast = getPassive(attacker,6)
+                                                if(passiveDataLast != null){
+                                                    attackBase *= (passiveDescriptions[passiveDataLast.id].scalar.stat1[passiveDataLast.rank])
+                                                    session.session_data.battlelog.combat.push(attacker.staticData.name + " begins a decimating attack!")
+                                                }
                                             }
 
                                             let accCheck = Math.floor(Math.random() * 100) 
@@ -1641,7 +1643,7 @@ module.exports = {
 
             
     },
-    populateDungeonEvent(session,interaction,callback){
+    populateDungeonEvent(session,interaction,callback,fresh){
         const embed = new MessageEmbed()
         .setColor("#7289da")
         .setTitle(session.session_data.player.name + "'s Dungeon Adventure - " + session.session_data.town.name + " (Level " + session.session_data.dungeonRank + ")")
@@ -1706,13 +1708,19 @@ module.exports = {
                         .addOptions(selectionLabels),
                 );
 
-                interaction.update({
-                    content:" ",
-                    embeds:[embed],
-                    components:[choices]
-                })
-                break;
-                
+                if(fresh){
+                    interaction.reply({
+                        content:" ",
+                        embeds:[embed],
+                        components:[choices]
+                    })
+                } else {
+                    interaction.update({
+                        content:" ",
+                        embeds:[embed],
+                        components:[choices]
+                    })
+                }
                 break;
             case "complete":
 
@@ -2638,6 +2646,9 @@ module.exports = {
             case "tasks":
                 let taskText = ""
                 if(session.session_data.temp && session.session_data.temp.taskRollResults){
+                    taskText += "You tried to:\n\n"
+                    taskText += session.session_data.temp.taskRollResults.solutionText
+                    taskText += "\n\n"
                     switch(session.session_data.temp.taskRollResults.roll){
                         case 1:
                         case 2:
@@ -2664,8 +2675,9 @@ module.exports = {
                     }
                     taskText += session.session_data.player.name + " earned " + session.session_data.temp.taskRollResults.rep + " town reputation!\n"
                     if(session.session_data.temp.taskRollResults.multi < session.session_data.temp.currentTask.multiThresh){
-                        taskText += "\n" + session.session_data.temp.currentTask.suggestedSolutionPrompt + "\n\n"
+                        taskText += "\n" + session.session_data.temp.currentTask.suggestedSolutionPrompt + "\n"
                     }
+                    taskText += "\n"
                 } 
                 if(session.session_data.player.taskTimer && session.session_data.player.taskTimer > now){
                     taskText += "You will be able to work on a task in " + msToTime(session.session_data.player.taskTimer - now) + "\n"
@@ -2835,7 +2847,7 @@ module.exports = {
                     for(var i = 0;i < raidData.leader.unit.passives.length; i++){
                         let passive = raidData.leader.unit.passives[i]
                         let description = passiveDescriptions[passive.id].description
-                        report += passiveDescriptions[passive.id].name +":\n" + description.replace("X",passiveDescriptions[passive.id].scalar.stat1[passive.rank]) + "\n\n"
+                        report += passiveDescriptions[passive.id].name +" - Rank " + (passive.rank+1) +":\n" + description.replace("X",passiveDescriptions[passive.id].scalar.stat1[passive.rank]) + "\n\n"
 
                     }
                 }
@@ -2847,54 +2859,56 @@ module.exports = {
                 }
                 report +="\n\nCurrent town points: " + session.session_data.town.points + "\n\n"
                 let missionsComplete = true;
+                let missionText = ""
                 for(var i = 0;i < 3; i++){
-                    report += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
+                    missionText += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
                     for(mission of raidData.missions[i]){
-                        report += missions[i][mission.type]
+                        missionText += missions[i][mission.type]
                         if(mission.completers){
                             let count = 0
                             for(player in mission.completers){
                                 count += mission.completers[player].times
                             }
                             if(count > 0){
-                                report += " - ✅ Completed " + count + " times"
+                                missionText += " - ✅ Completed " + count + " times"
                             } else {
-                                report += " - ❌ Incomplete"
+                                missionText += " - ❌ Incomplete"
                                 missionsComplete = false
                             }
                             if(mission.completers[session.session_data.player.id]){
                                 let progress = mission.completers[session.session_data.player.id]
-                                report += "\nYou progression towards completion: " + progress.progression[0] + "/" + progress.progression[1] + "\n"
+                                missionText += "\nYou progression towards completion: " + progress.progression[0] + "/" + progress.progression[1] + "\n"
                             } else {
-                                report += "\n"
+                                missionText += "\n"
                             }
                         } else {
-                            report += " - ❌ Incomplete"
+                            missionText += " - ❌ Incomplete"
                             missionsComplete = false
                         }
-                        report += "\n"
+                        missionText += "\n"
                     }
-                    report += "\n"
+                    missionText += "\n"
                 }
                 if(missionsComplete){
-                    report += "**Retaliation Mission Avaliable (5 town points) - Confront Raid Leader**"
+                    missionText += "**Retaliation Mission Avaliable (5 town points) - Confront Raid Leader**"
                     if(raidData.bossDefeats){
                         let count = 0
                         for(player in raidData.bossDefeats){
                             count += raidData.bossDefeats[player].times
                         }
                         if(count > 0){
-                            report += " - ✅ Completed " + count + " times"
+                            missionText += " - ✅ Completed " + count + " times"
                         } else {
-                            report += " - ❌ Incomplete"
+                            missionText += " - ❌ Incomplete"
                         }   
                     } else {
-                        report += " - ❌ Incomplete"
+                        missionText += " - ❌ Incomplete"
                     }
                 } else {
-                    report += "**Retaliation Mission Unavaliable (5 town points)** - *All other missions must be completed at least once to unlock*"
+                    missionText += "**Retaliation Mission Unavaliable (5 town points)** - *All other missions must be completed at least once to unlock*"
                 }
                 embed.addField("Militia Hall - Raid Defense Effort:",report)
+                embed.addField("Militia Hall - Raid Missions:",missionText)
                 break;
         }
         return [embed]
@@ -3447,7 +3461,7 @@ module.exports = {
         const embed = new MessageEmbed()
         embed.setColor("#7289da")
         embed.setTitle(session.session_data.temp.currentTask.name)
-        embed.addField("Task Details",session.session_data.temp.currentTask.taskPrompt)
+        embed.addField("Task Details",session.session_data.temp.currentTask.description + "\n\n" + session.session_data.temp.currentTask.taskPrompt)
         return [embed]
     },
     populateTasksControls(session){
