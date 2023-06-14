@@ -827,7 +827,7 @@ module.exports = {
                 for(var i = 0; i < fighters.length;i++){
                     let fighter = session.session_data.fighters[i]
                     if(fighter.weaponPassives[3] > 0 && Math.random() < fighter.weaponPassives[3] * 0.15){
-                        schedule[0].push({
+                        schedule[0][0].push({
                             index:fighter.index,
                             ability:{
                                 "action_type": "stats",
@@ -852,7 +852,7 @@ module.exports = {
                         actionCount++
                     }
                     if(fighter.gearPassives[3] > 0 && Math.random() < fighter.gearPassives[3] * 0.15){                    
-                        schedule[0].push({
+                        schedule[0][0].push({
                             index:fighter.index,
                             ability:{
                                 "action_type": "stats",
@@ -3429,6 +3429,12 @@ module.exports = {
                 }
                 if(item.favorite){
                     items += "⭐"
+                }
+                if(item.type == "gear" && parseInt(session.session_data.player.gear) == i){
+                    items += " (E)"
+                }
+                if(item.type == "weapon" && parseInt(session.session_data.player.weapon) == i){
+                    items += " (E)"
                 }
                 if(i == session.session_data.selected){
                     items += " <<"
