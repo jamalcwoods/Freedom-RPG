@@ -60,7 +60,7 @@ module.exports = {
                 }
             }
 
-            if(session.session_data.player.gear){
+            if(session.session_data.player.gear != undefined){
                 let fGear = session.session_data.player.inventory[session.session_data.player.gear]
                 if(fGear.stats.hp){
                     newSession.session_data.rankStats.currentHP += fGear.stats.hp * 2
@@ -68,7 +68,7 @@ module.exports = {
                 }
             }
 
-            if(session.session_data.player.weapon){
+            if(session.session_data.player.weapon != undefined){
                 let fWeapon = session.session_data.player.inventory[session.session_data.player.weapon]
                 if(fWeapon.stats.hp){
                     newSession.session_data.rankStats.currentHP += fWeapon.stats.hp * 2

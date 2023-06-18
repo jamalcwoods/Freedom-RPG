@@ -1,4 +1,5 @@
 const { createCanvas, registerFont, loadImage } = require('canvas')
+const { clone } = require('./tools.js')
 const data = {raceIndex, combatStyleIndex} = require('./data.json')
 registerFont('./fonts/Oswald-VariableFont_wght.ttf', { family: 'Oswald Light' })
 
@@ -359,37 +360,7 @@ function makeCard(player,avatar,callback){
         
         ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "center"
-        
-        
-        if(player.inventory){
-            if(player.gear){
-                let fGear = player.inventory[player.gear]
-                for(s in fGear.stats){
-                    if(s == "hp"){
-                        player.stats[s] += fGear.stats[s] * 2
-                    } else {
-                        player.stats[s] += fGear.stats[s] 
-                    }
-                    if(player.stats[s] < 1){
-                        player.stats[s] = 1
-                    }
-                }
-            }
-            if(player.weapon){
-                let fWeapon = player.inventory[player.weapon]
-                for(s in fWeapon.stats){
-                    if(s == "hp"){
-                        player.stats[s] += fWeapon.stats[s] * 2
-                    } else {
-                        player.stats[s] += fWeapon.stats[s] 
-                    }
-                    if(player.stats[s] < 1){
-                        player.stats[s] = 1
-                    }
-                }
-            }
-        }
-
+    
         ctx.fillText("HP",650,455)
         ctx.fillText("ATK",525,500)
         ctx.fillText("SP ATK",525,600)
@@ -398,20 +369,50 @@ function makeCard(player,avatar,callback){
         ctx.fillText("SPD",650,650)
         ctx.fillText("LEVEL",650,550)
         
-        
+        let playerStats = clone(player.stats)
+
+        if(player.inventory){
+            if(player.gear != undefined){
+                let fGear = player.inventory[player.gear]
+                for(s in fGear.stats){
+                    if(s == "hp"){
+                        playerStats[s] += fGear.stats[s] * 2
+                    } else {
+                        playerStats[s] += fGear.stats[s] 
+                    }
+                    if(playerStats[s] < 1){
+                        playerStats[s] = 1
+                    }
+                }
+            }
+            if(player.weapon != undefined){
+                let fWeapon = player.inventory[player.weapon]
+                for(s in fWeapon.stats){
+                    if(s == "hp"){
+                        playerStats[s] += fWeapon.stats[s] * 2
+                    } else {
+                        playerStats[s] += fWeapon.stats[s] 
+                    }
+                    if(playerStats[s] < 1){
+                        playerStats[s] = 1
+                    }
+                }
+            }
+        }
+
         ctx.font = '28px "Oswald Light"'
         ctx.fillStyle = "#5751FF"
-        ctx.fillText(player.stats.hp,650,495)
+        ctx.fillText(playerStats.hp,650,495)
         ctx.fillStyle = "#B83A3A"
-        ctx.fillText(player.stats.atk,525,540)
+        ctx.fillText(playerStats.atk,525,540)
         ctx.fillStyle = "#D5C035"
-        ctx.fillText(player.stats.spatk,525,640)
+        ctx.fillText(playerStats.spatk,525,640)
         ctx.fillStyle = "#4D934F"
-        ctx.fillText(player.stats.def,775,540)
+        ctx.fillText(playerStats.def,775,540)
         ctx.fillStyle = "#D6943C"
-        ctx.fillText(player.stats.spdef,775,640)
+        ctx.fillText(playerStats.spdef,775,640)
         ctx.fillStyle = "#91E1DE"
-        ctx.fillText(player.stats.spd,650,690)
+        ctx.fillText(playerStats.spd,650,690)
         ctx.fillStyle = "#000000"
         ctx.fillText(player.level,650,590)
         

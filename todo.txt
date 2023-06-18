@@ -11,7 +11,7 @@ X Ability Creation Weights
 X Dungeon and Expedition facility
 X Facility Acquisition Rework
 X Town Rankings
-? Rework multi hit display
+X Rework multi hit display
 X Town Tasks
 X Town Task Maker
 X Import fonts onto amazon shell
@@ -39,3 +39,4 @@ X Expedition rewards (substantial increase for active player)
 X Point threshold scalar
 X Session Relocate
 X "Passive" Stat Point Acquisition
+- Gear stat application in dungeons
