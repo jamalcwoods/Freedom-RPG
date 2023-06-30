@@ -681,16 +681,16 @@ setInterval(() => {
                                 rngEquipment: {
                                     scaling: false,
                                     value:1,
-                                    conValue:0,
+                                    conValue:0.25,
                                     lockStatTypes: true,
-                                    baseVal: 20,
+                                    baseVal: 15 * townData.level,
                                     types: i % 2 == 0 ? ["weapon"] : ["gear"]
                                 }
                             }
                         }
                         newData.ref.rngEquipment.baseVal = Math.ceil(val * newData.ref.rngEquipment.baseVal)
                         let item = generateRNGEquipment(newData)
-                        townData.listings.push([item,Math.ceil(val * 30)])
+                        townData.listings.push([item,Math.ceil(val * 30 * townData.level)])
                     }
                 }
 
@@ -700,14 +700,14 @@ setInterval(() => {
                     townData.availableAbilities = []
                     for(var i = 0; i < 3;i++){
                         let newData = {
-                            baseVal: 25,
-                            conSteps:1,
+                            baseVal: 20 * townData.level,
+                            conSteps:Math.floor(townData.level/3),
                             forceType: ["attack","guard","stats"][i % 3],
                             forceStats: false
                         }
                         let ability = generateRNGAbility(newData)
                         let val = calculateAbilityCost(ability)/newData.baseVal
-                        townData.availableAbilities.push([ability,Math.ceil(val * 37.5)])
+                        townData.availableAbilities.push([ability,Math.ceil(val * 37.5 * townData.level)])
                     }
                 }
 

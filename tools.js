@@ -248,8 +248,8 @@ function clone(obj){
 
 function levelPlayer(player){
     player.level++;
-    player.statpoints += 2;
-    player.abilitypoints += 6;
+    player.statpoints += 1;
+    player.abilitypoints += 2;
     player.exp -= player.expCap
     player.expCap = player.level * 100
     return player
@@ -393,13 +393,16 @@ function generateAbilityName(ability){
                 }
             }
             let listGuard;
+        
             if(primeRatingGuard == -1){
                 listGuard = ["Normal","Basic","Simple"]
             } else {
                 listGuard = nameBank.ability.guard[primeStatGuard][nameBank.ability.guard[primeStatGuard].scalar[primeIndexGuard]]
             }
 
-            name += listGuard[Math.floor(Math.random() * listGuard.length)]
+            if(listGuard != undefined){
+                name += listGuard[Math.floor(Math.random() * listGuard.length)]
+            }
             let guardMilestones = [10,20,40,60,80,100]
             for(i in guardMilestones){
                 let val = guardMilestones[i]
