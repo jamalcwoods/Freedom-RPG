@@ -738,7 +738,6 @@ setInterval(() => {
                         }
                     }
                 }
-                
 
                 //Manage Expeditions
                 if(townData.expeditions){

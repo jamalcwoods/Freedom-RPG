@@ -890,10 +890,10 @@ function generateRNGAbility(abilityData,abilityBase){
             cost = calculateAbilityCost(newAbility)
         }
     }
-
+    let limit = 5
     if(cost > abilityData.baseVal){
         if(newAbility.action_type != "stats"){
-            while(cost > abilityData.baseVal){
+            while(cost > abilityData.baseVal && limit > 0){
                 let targetStat = typeValues[Math.floor(Math.random() * typeValues.length)]
                 while(targetStat[2] == "val"){
                     targetStat = typeValues[Math.floor(Math.random() * typeValues.length)]
@@ -908,6 +908,7 @@ function generateRNGAbility(abilityData,abilityBase){
                 }
                 lastChange = [targetStat[0],newAbility[targetStat[0]]]
                 cost = calculateAbilityCost(newAbility)
+                limit -= 1
             }
         } else {
             while(cost > abilityData.baseVal && cost < 0){
