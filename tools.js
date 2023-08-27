@@ -46,11 +46,21 @@ function parseReward(drop,player,mob){
                     player.exp += drop.amount;
                     player.totalExp += drop.amount
                     let prevLevel = player.level
+                    let statIncreases;
                     while(player.exp >= player.expCap){
-                        player = levelPlayer(player)
+                        result = levelPlayer(player,statIncreases)
+                        player = result[0]
+                        statIncreases = result[1]
                     }
                     if(player.level > prevLevel){
                         messages.push(player.name + " is now level " + player.level + "!")
+                        let statMessage = ""
+                        for(s in statIncreases){
+                            if(statIncreases[s] != 0){
+                                statMessage += "(" + s.toUpperCase() + " +" + statIncreases[s] + ")\n"
+                            }
+                        }
+                        messages.push(statMessage)
                     }
                     break;
 
@@ -246,13 +256,29 @@ function clone(obj){
     return JSON.parse(JSON.stringify(obj))
 }
 
-function levelPlayer(player){
+function levelPlayer(player,statIncreases){
     player.level++;
     player.statpoints += 1;
     player.abilitypoints += 2;
     player.exp -= player.expCap
     player.expCap = player.level * 100
-    return player
+    let stats = ["hp","atk","def","spatk","spdef","spd"]
+    if(statIncreases == undefined){
+        statIncreases = {
+            "hp":0,
+            "atk":0,
+            "def":0,
+            "spatk":0,
+            "spdef":0,
+            "spd":0
+        }
+    }
+    for(var i = 0;i < 2; i++){
+        let stat = stats[Math.floor(Math.random() * stats.length)]
+        player.stats[stat] += 1
+        statIncreases[stat]++
+    }
+    return [player,statIncreases]
 }
 
 function formatTown(town){
@@ -1495,8 +1521,8 @@ module.exports = {
         }
         return data
     },
-    levelPlayer(player){
-        return levelPlayer(player)
+    levelPlayer(player,statIncreases){
+        return levelPlayer(player,statIncreases)
     },
     givePlayerItem(item,player){
         return givePlayerItem(item,player)

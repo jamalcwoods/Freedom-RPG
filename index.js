@@ -463,7 +463,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             }
                             const embed = new MessageEmbed()
                             embed.setColor("#7289da")
-                            embed.addField("Level Up!",player.name + " is now level " + player.level + "!")
+                            embed.addField("Level Up!",text)
                             
                             let removeRow = new MessageActionRow()
                             .addComponents(
