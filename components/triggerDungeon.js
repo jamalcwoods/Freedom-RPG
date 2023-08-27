@@ -22,11 +22,18 @@ module.exports = {
                 removeSession:session
             })
         } else {
+
+            let bonus = false
+            if(session.session_data.town.bossDefeats){
+                bonus = true
+            }
+
             let newSession = {
                 type:"dungeon",
                 session_id: Math.floor(Math.random() * 100000),
                 user_ids:session.user_ids,
                 session_data:{
+                    bonus:true,
                     player:session.session_data.player,
                     town:session.session_data.town,
                     eventLineUp:{

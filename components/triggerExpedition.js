@@ -22,7 +22,13 @@ module.exports = {
     
             let now = new Date();
     
+            let bonus = false
+            if(session.session_data.town.bossDefeats){
+                bonus = true
+            }
+
             session.session_data.town.expeditions.push({
+                bonus:bonus,
                 playerID: session.session_data.player.id,
                 startTime: now.getTime(),
                 status: {

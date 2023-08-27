@@ -42,5 +42,18 @@ module.exports = {
                 callback()
             }
         })
-    }
+    },
+    updatePotentialData(data){
+        set(ref(db, 'potential/'), data);
+    },
+    getPotentialData(callback){
+        get(ref(db, `potential`)).then((snapshot) => {
+            let data = snapshot.val();
+            if(data == null){
+                callback(false)
+            } else {
+                callback(data);
+            }
+        });
+    },
 }

@@ -77,7 +77,7 @@ module.exports = {
                         let eventRank = session.session_data.dungeonRank + session.session_data.dangerValue/8
                         let eventReq = choiceVal.split("|")
                         let playerRoll = Math.floor(session.session_data.player.stats[eventReq[0]] * 0.25 + (Math.random() * session.session_data.player.stats[eventReq[0]] * 0.75))
-                        let eventRoll = 5 + Math.ceil(Math.random() * (parseInt(eventReq[1]) * 0.1666) * (10 * eventRank))
+                        let eventRoll = Math.floor(2.5 + Math.floor(Math.random() * (parseInt(eventReq[1]) * 0.1666) * (10 * eventRank)))
                         pass = playerRoll >= eventRoll
                         if(!pass){
                             session.session_data.dangerValue++

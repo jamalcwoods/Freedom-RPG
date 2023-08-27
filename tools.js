@@ -31,16 +31,16 @@ function parseReward(drop,player,mob){
 
         case "gear":
             player = givePlayerItem(drop,player)
-            messages.push(player.name + " recieved: " + drop.name + "!")
+            messages.push(player.name + " received: " + drop.name + "!")
             break;
 
         case "loot":
             player = givePlayerItem(drop,player)
-            messages.push(player.name + " recieved: " + drop.name + "!")
+            messages.push(player.name + " received: " + drop.name + "!")
             break;
 
         case "resource":
-            messages.push(player.name + " recieved " + drop.amount + " " + drop.resourceName + "!")
+            messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + "!")
             switch(drop.resource){
                 case "exp":
                     player.exp += drop.amount;
@@ -196,7 +196,7 @@ function calculateAbilityCost(ability,weapon,race){
             }
             break
         case "guard":
-            value = (Math.pow(1.2,ability.guard_val/10) * 9) * weights.guard_val + Math.pow(1.3,ability.counter_val/10) * 10 * weights.counter_val
+            value = (Math.pow(1.375,ability.guard_val/10) * 10) * weights.guard_val + Math.pow(1.4,ability.counter_val/10) * 10 * weights.counter_val
             value *= 1 + 0.45 * (Math.log(parseInt(Math.ceil(ability.success_level * weights.success_level))/25)/Math.log(2) - 2)
             break;
 
@@ -255,7 +255,7 @@ function levelPlayer(player){
     return player
 }
 
-function levelTown(town){
+function formatTown(town){
     let foodCheck = town.resources.wood[0] >= town.resources.food[1]
     let woodCheck = town.resources.wood[0] >= town.resources.wood[1]   
     let mineralsCheck = town.resources.minerals[0] >= town.resources.minerals[1]
@@ -270,6 +270,14 @@ function levelTown(town){
         town.level++
         town.points -= town.level * 30
         town.dungeonClear = false
+    } else if(resourceCheck && town.points < town.level * 30){
+        town.resources.food[0] -= Math.floor(town.resources.food[1] * 0.1)
+        town.resources.wood[0] -= Math.floor(town.resources.wood[1] * 0.1)
+        town.resources.minerals[0] -= Math.floor(town.resources.minerals[1] * 0.1)
+        town.points += Math.ceil((town.level * 30) * 0.05)
+        if(town.points > town.level * 30){
+            town.points = town.level * 30
+        }
     }
     return town
 }
@@ -1144,8 +1152,8 @@ function clarifyFighterNames(fighters){
 }
 
 module.exports = {
-    levelTown(town){
-        return levelTown(town)
+    formatTown(town){
+        return formatTown(town)
     },
     msToTime(s){
         return msToTime(s)
@@ -1155,9 +1163,11 @@ module.exports = {
     },
     prepCombatFighter(fighter,index){
         let fighterStats = clone(fighter.stats)
+        let fWeapon = null;
+        let fGear = null;
         if(fighter.inventory){
             if(fighter.gear != undefined){
-                let fGear = fighter.inventory[fighter.gear]
+                fGear = fighter.inventory[fighter.gear]
                 for(s in fGear.stats){
                     if(s == "hp"){
                         fighterStats[s] += fGear.stats[s] * 2
@@ -1170,7 +1180,7 @@ module.exports = {
                 }
             }
             if(fighter.weapon != undefined){
-                let fWeapon = fighter.inventory[fighter.weapon]
+                fWeapon = fighter.inventory[fighter.weapon]
                 for(s in fWeapon.stats){
                     if(s == "hp"){
                         fighterStats[s] += fWeapon.stats[s] * 2
@@ -1184,6 +1194,8 @@ module.exports = {
             }
         }
         let fighterData = {
+            weapon:fWeapon,
+            gear:fGear,
             alive:true,
             forfeit:false,
             index:index,
@@ -1222,7 +1234,9 @@ module.exports = {
                 timesStatsLowered:0,
                 timesStatsRaised:0,
                 timesFirstAttack:0,
-                timesAbilityRepeat:0
+                timesAbilityRepeat:0,
+                livesLost:0,
+                strongestStrike:0
             },
             choosenAbility:-1,
             target:-1,
@@ -1406,7 +1420,12 @@ module.exports = {
         data += item.name + "\n"
         switch(item.type){
             case "weapon":
-                data += "Type: " + ["Melee","Ranged","Spell-Casting","Rune"][item.weaponStyle] +"\n\n"
+                data += "Type: " + [
+                    "Melee - Class Synergy: Physical Attacks have higher chance of succeeding when used in succession",
+                    "Ranged - Class Synergy: Gain up to % critical chance based on attack speed priority",
+                    "Spell-Casting - Class Synergy: Critical Special Attacks have a 3x damage multiplier",
+                    "Rune-Based - Class Synergy: Attack hits have a 10% to increase the used offensive stat by 1 stage"
+                ][item.weaponStyle] +"\n\n"
                 for(s in item.stats){
                     let val = item.stats[s]
                     if(s == "hp"){

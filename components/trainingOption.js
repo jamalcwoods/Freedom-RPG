@@ -679,7 +679,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":24,
+                                "hp":12,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -809,7 +809,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":20,
+                                "hp":10,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -916,7 +916,7 @@ module.exports = {
                             abilities:[{
                                 "action_type": "guard",
                                 "name": "Basic Guard",
-                                "guard_val": 30,
+                                "guard_val": 50,
                                 "guard_type": "def",
                                 "success_level": 100,
                                 "counter_val": 0,
@@ -926,11 +926,11 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":5,
+                                "hp":1,
                                 "atk":1,
-                                "def":10,
+                                "def":11,
                                 "spatk":1,
-                                "spdef":10,
+                                "spdef":1,
                                 "spd":1
                             }
                         }

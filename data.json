@@ -830,7 +830,7 @@
           ],
           [
             {
-              "name": "Summoned Wraith",
+              "name": "Lesser Wraith",
               "id": "summoned",
               "cpu": true,
               "faction": "-1",
@@ -1320,7 +1320,7 @@
           {
             "type": 0,
             "data": {
-              "count": 5
+              "count": 7
             },
             "result": "win_0"
           }
@@ -2098,6 +2098,43 @@
       ]
     ]
   },
+  "tavernOptions":[{
+      "label": "Tavern Special",
+      "description": "Random booster for 30 minutes - 20 gold",
+      "value": "special_1_50_0.5"
+  },{
+      "label": "Assassin's Asparagus",
+      "description": "1 Stage Speed booster for 1 hour - 50 gold",
+      "value": "speed_1_50_1"
+  },{
+      "label": "Berserker's Beef",
+      "description": "1 Stage Attack booster for 1 hour - 50 gold",
+      "value": "attack_1_50_1"
+  },{
+      "label": "Caster's Cornbread",
+      "description": "1 Stage Special Attack booster for 1 hour - 50 gold",
+      "value": "spattack_1_50_1"
+  },{
+      "label": "Defender's Dumplings",
+      "description": "1 Stage Defense booster for 1 hour - 50 gold",
+      "value": "defense_1_50_1"
+  },{
+      "label": "Enforcer's Empanada's",
+      "description": "1 Stage Special Defense booster for 1 hour - 50 gold",
+      "value": "spdefense_1_50_1"
+  },{
+      "label": "Frontliner's Flapjacks",
+      "description": "2.5% Health Regeneration for 1 hour - 50 gold",
+      "value": "healing_2.5_50_1"
+  }],
+  "scoreModifiers":{
+    "kills":50,
+    "livesLost":-100,
+    "tasksCompleted":25,
+    "dungeonsCleared":250,
+    "raidLeaderKills":500,
+    "playerBattlesWon":100
+  },
   "templates": {
     "attack": {
       "critical": 0,
@@ -2228,7 +2265,18 @@
       "abilityPermissions": {
         "stats": false,
         "faction": false
-      }
+      },
+      "achievements":{
+        "kills":0,
+        "abilitiesUsed":0,
+        "livesLost":0,
+        "strongestAttack":0,
+        "tasksCompleted":0,
+        "dungeonsCleared":0,
+        "raidLeaderKills":0,
+        "playerBattlesWon":0
+      },
+      "tutorial":0
     },
     "emptyTownData": {
       "name": "",
@@ -2437,11 +2485,6 @@
   ],
   "innateFacilities": [
     {
-      "description": "Facility to purchase lives and boosts",
-      "name": "Tavern",
-      "value": "tavern"
-    },
-    {
       "description": "Facility to learn mechanics or new/upgrade abilities",
       "name": "Training Hall",
       "value": "training"
@@ -2457,11 +2500,6 @@
       "value": "defense"
     },
     {
-      "description": "Facility to buy gear and weapons",
-      "name": "Market",
-      "value": "market"
-    },
-    {
       "description": "Facility to embark on dungeon raids and expeditions",
       "name": "Adventurer's Hall",
       "value": "adventure"
@@ -2472,11 +2510,51 @@
       "value": "tasks"
     },
     {
+      "description": "Facility to purchase lives and boosts",
+      "name": "Tavern",
+      "value": "tavern"
+    },
+    {
+      "description": "Facility to buy gear and weapons",
+      "name": "Market",
+      "value": "market"
+    },
+    {
       "description": "Facility to view accomplishments",
       "name": "Record Hall",
       "value": "records"
     }
   ],
+  "helpMessages":{
+    "training":{
+      "title":"Training Hall",
+      "info":"In this facility you can learn the basics of combat encounters by completing the various training lessons. Additionally you can also spend gold to learn new combat abilities that reset daily. These abilities are unique to this town and become better as a town’s level increases.\n\nTo learn more about town level, it’s recommended you visit the Meeting Hall."
+    },
+    "jobs":{
+      "title":"Meeting Hall",
+      "info":"In this facility you can view the town’s progression towards the next level. You can also assign yourself a different job to help the town gain resources needed to level up. Once the point threshold is reached, resources are maxed, and the respective dungeon level is cleared the town will level up.\n\nWhile a town’s resources are maxed it will generate town points over time in exchange for a small portion of resources. Additionally, failing to defend your town from the daily raid will result in a loss of town points. To learn about raids, it’s recommended you visit the Militia Hall"
+    },
+    "defense":{
+      "title":"Militia Hall",
+      "info":"In this facility you can learn about the current raiding forces that are attacking the town. To stop the forces you must defeat their leader and in order to challenge them the Simple, Normal, and Challenging Missions must be completed. You don’t have to do these missions alone, anyone in this discord server can help towards completing these missions so that the raid leader becomes available to challenge.\n\nOnce a raid leader is defeated, expeditions and dungeon runs from the town will become more rewarding. To learn more about expeditions and dungeons, it’s recommended you visit the Adventurer’s Hall."
+    },
+    "adventure":{
+      "title":"Adventure Hall",
+      "info":"In this facility you may embark on expeditions or dungeon runs. During an expedition you won’t be able to perform any commands, but your character will automatically earn rewards that can be claimed when you decide to end the expedition.\n\nDuring a dungeon run you will face combat challenges alongside situations that will test your character’s stats. After completing a run, you will earn rewards based on your performance. To learn about ways to increase your stats, it’s recommended you visit the Task Hall."
+    },
+    "tasks":{
+      "title":"Task Hall",
+      "info":"In this facility you can complete tasks for the people of the town. Each task has a solution that corresponds to a particular stat. Not every solution is as effective depending on the task so choose wisely.\n\nAfter completing a task you will be rewarded with gold, experience and occasionally your stats will increase. To learn about ways to spend gold, it’s recommended you visit the Tavern."  
+    },
+    "tavern":{
+      "title":"Tavern",
+      "info":"In this facility you can spend gold on meals that increase your stats for a set period of time. Additionally you can purchase more lives to give you extra chances in combat. To learn about ways to increase your stats for longer periods of time, it’s recommended you visit the Market."    
+    },
+    "market":{
+      "title":"Market",
+      "info":"In this facility you can spend gold to purchase weapons and gear that can increase your stats and provide passive benefits. Similarly to the training hall, the equipment purchased here is unique to this town and improves as the town level increases.\n\nOnce a piece of equipment has been purchased, you can equip it by viewing it in your inventory using the /inventory command."
+    }
+  },
   "acquiredFacilities": [
     {
       "description": "Facility to compete in 'King of the Hill' mini-game",

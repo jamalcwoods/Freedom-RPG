@@ -24,7 +24,7 @@ module.exports = {
             embed.setTitle(playerData.name + "'s Challenges (" + playerData.challenges.length + "/5)")
             for(c of playerData.challenges){
                 embed.addField(
-                    challengeDict[c.type].name + " - Rank " + c.rank + " (" + c.rank * 5 + " gold)",
+                    challengeDict[c.type].name + " - Rank " + c.rank + " (" + c.rank * 15 + " gold)",
                     challengeDict[c.type].description.replace("X",c.progress + "/" + c.goal)
                 )
             }
@@ -40,7 +40,7 @@ module.exports = {
         interaction.reply({
                 content: " ",
                 embeds: [embed],
-                ephemeral: true,
+                ephemeral: false,
         })
         
         callback({})

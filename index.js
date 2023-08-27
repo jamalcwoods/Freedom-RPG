@@ -1,10 +1,10 @@
 
 const { token } = require("./private/credentials.json");
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton} = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const { getPlayerDBData, updatePlayerDBData, getTownDBData, updateTownDBData, updateAllTownDBData } = require("./firebaseTools")
-const { clone, generateRNGEquipment, simulateCPUSPAssign, simulateCPUAbilityAssign, generateRNGAbility, calculateAbilityCost, runExpeditionStep, parseReward, levelTown } = require("./tools.js")
+const { getPlayerDBData, updatePlayerDBData, getTownDBData, updateTownDBData, updateAllTownDBData, getPotentialData, updatePotentialData } = require("./firebaseTools")
+const { clone, generateRNGEquipment, simulateCPUSPAssign, simulateCPUAbilityAssign, generateRNGAbility, calculateAbilityCost, runExpeditionStep, parseReward, formatTown } = require("./tools.js")
 const data = require ("./data.json");
 const { populateConformationControls } = require("./sessionTools.js")
 const { off } = require("firebase/database");
@@ -130,6 +130,7 @@ client.on('interactionCreate', async interaction => {
         switch(interaction.type){
             case "MESSAGE_COMPONENT":
                 let componenetVals = interaction.customId.split("_")
+                console.log(componenetVals)
                 const component = client.components.get(componenetVals[0])
                 let sessionID = componenetVals[1]
                 if(sessionID == "NULL"){
@@ -203,7 +204,11 @@ client.on('interactionCreate', async interaction => {
                 if (!command) return;
                 try {
     
-                    let choices  = interaction.options["_hoistedOptions"]
+                    let choices = interaction.options["_hoistedOptions"]
+                    console.log(interaction.commandName)
+                    for(var i = 0; i < choices.length;i++){
+                        console.log(choices[i].name + ": " + choices[i].value)
+                    }
                     let commandConfig = {};
                     if(command.config){
                         if(getUserSession(interaction.user) == null || command.config.sessionCommand){
@@ -289,12 +294,15 @@ client.on('messageCreate', async message =>{
 })
 
 function onPlayerPresence(user,callback,message){
+    let intervalMsg = false;
     if(messageLog[message.guildId] == undefined){
         messageLog[message.guildId] = {}
         messageLog[message.guildId][message.author.id] = true
+        intervalMsg = true
     } else {
         if(messageLog[message.guildId][message.author.id] == undefined){
             messageLog[message.guildId][message.author.id] = true
+            intervalMsg = true
         } 
     }
     getTownDBData(message.guildId,function(town){
@@ -311,207 +319,258 @@ function onPlayerPresence(user,callback,message){
                     }
                 }
                 updateTownDBData(message.guildId,"",town,function(){
-                    playerPresenceCheck(message,user,town,callback)
+                    playerPresenceCheck(message,user,town,intervalMsg,callback)
                 })
             })
         } else {
-            playerPresenceCheck(message,user,town,callback)
+            playerPresenceCheck(message,user,town,intervalMsg,callback)
         }
     })
 }
 
-function playerPresenceCheck(message,user,town,callback){
-    getPlayerDBData(user,function(result){
-        if(result.session && getSessionByID(result.session) == null){
-            delete result.session
-        }
-        let now = new Date();
-        if(result && !result.session && !result.dungeon && !result.expedition){
-            let player = result
-
-            let needToUpdatePlayer = false
-            let needToUpdateTown = false
-
-            if(player.dailyTimer <= now.getTime()){
-                player.dailyTimer = now.getTime() + 86400000
-
-                player.dailyCount++ 
-
-
-                let expAmount;
-                if(player.level < 5){
-                    expAmount = player.expCap - player.exp
-                } else {
-                    expAmount = Math.ceil(player.expCap * 0.25)
-                    if(expAmount < 400){
-                        expAmount = 400
-                    }
-                }
-
-                let rewardsText = ""
-                let result;
-                
-                result = parseReward({
-                    type:"resource",
-                    resource:"exp",
-                    resourceName: "experience",
-                    amount: expAmount
-                }, player)
-                player = result[0]
-                for(msg of result[1]){
-                    rewardsText += msg + "\n"
-                }
-
-                result = parseReward({
-                    type:"resource",
-                    resource:"gold",
-                    resourceName:"gold",
-                    amount: 20
-                }, player)
-                player = result[0]
-                for(msg of result[1]){
-                    rewardsText += msg + "\n"
-                }
-
-                needToUpdatePlayer = true 
-
-                const embed = new MessageEmbed()
-                embed.setColor("#7289da")
-                embed.setTitle("Daily Login #" +  player.dailyCount)
-
-                embed.addField("Rewards",rewardsText)
-                client.channels.fetch(message.channelId).then(channel =>{
-                    channel.send({
-                        content: " ",
-                        embeds:[embed]
-                    })   
-                })
+function playerPresenceCheck(message,user,town,intervalMsg,callback){
+    getPotentialData(function(potential){
+        getPlayerDBData(user,function(result){
+            if(result.session && getSessionByID(result.session) == null){
+                delete result.session
             }
+            let now = new Date();
+            if(result && !result.session && !result.dungeon && !result.expedition){
+                let player = result
 
-            if(player.challengeTimer <= now.getTime()){
-                player.challengeTimer = now.getTime() + 28800000
-                if(!player.challenges){
-                    player.challenges = []
-                }
-                if(player.challenges.length < 5){
-                    let rankmap = {
-                        1:1,
-                        2:2,
-                        3:4
-                    }
-                    let type = Math.floor(Math.random() * data.challengeDict.length)
-                    let dupe = false;
-                    for(c of player.challenges){
-                        if(c.type == type){
-                            dupe = true
-                            break;
+                let needToUpdatePlayer = false
+                let needToUpdateTown = false
+
+                if(player.dailyTimer <= now.getTime()){
+                    player.dailyTimer = now.getTime() + 86400000
+
+                    player.dailyCount++ 
+
+
+                    let expAmount;
+                    if(player.level < 5){
+                        expAmount = player.expCap - player.exp
+                    } else {
+                        expAmount = Math.ceil(player.expCap * 0.25)
+                        if(expAmount < 400){
+                            expAmount = 400
                         }
                     }
-                    while(dupe){
-                        dupe = false
-                        type = Math.floor(Math.random() * data.challengeDict.length)
+
+                    let rewardsText = ""
+                    let result;
+                    
+                    result = parseReward({
+                        type:"resource",
+                        resource:"exp",
+                        resourceName: "experience",
+                        amount: expAmount
+                    }, player)
+                    player = result[0]
+                    for(msg of result[1]){
+                        rewardsText += msg + "\n"
+                    }
+
+                    result = parseReward({
+                        type:"resource",
+                        resource:"gold",
+                        resourceName:"gold",
+                        amount: 20
+                    }, player)
+                    player = result[0]
+                    for(msg of result[1]){
+                        rewardsText += msg + "\n"
+                    }
+
+                    needToUpdatePlayer = true 
+
+                    const embed = new MessageEmbed()
+                    embed.setColor("#7289da")
+                    embed.setTitle("Daily Login #" +  player.dailyCount)
+
+                    embed.addField("Rewards",rewardsText)
+                    let removeRow = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                        .setCustomId('deleteMessage')
+                        .setLabel("Dismiss")
+                        .setStyle('DANGER'))
+                    client.channels.fetch(message.channelId).then(channel =>{
+                        channel.send({
+                            embeds:[embed],
+                            components:[removeRow]
+                        })   
+                    })
+                }
+
+                if(player.challengeTimer <= now.getTime()){
+                    player.challengeTimer = now.getTime() + 7200000
+                    if(!player.challenges){
+                        player.challenges = []
+                    }
+                    if(player.challenges.length < 5){
+                        let rankmap = {
+                            1:1,
+                            2:2,
+                            3:4
+                        }
+                        let type = Math.floor(Math.random() * data.challengeDict.length)
+                        let dupe = false;
                         for(c of player.challenges){
                             if(c.type == type){
                                 dupe = true
                                 break;
                             }
                         }
-                    }
-                    let rank = Math.ceil(Math.random() * 3)
-                    player.challenges.push({
-                        type:type,
-                        rank:rank,
-                        progress:0,
-                        goal:data.challengeDict[type].baseGoal * rankmap[rank]
-                    })
-                    needToUpdatePlayer = true
-                }
-            }
-
-            if(player.presenceTimer <= now.getTime()){
-                player.presenceTimer = now.getTime() + 1000
-                let resourcesAdded = 0
-                let resourceMap = ["minerals","wood","food"]
-                if(player.job == "exp"){
-                    let levelUp = player.exp + 25 >= player.expCap
-                    let result = parseReward({
-                        type:"resource",
-                        resource:"exp",
-                        resourceName: "experience",
-                        amount: 25
-                    }, player)
-                    player = result[0]
-                    if(levelUp){
-                        let text = ""
-                        for(msg of result[1]){
-                            text += "\n" + msg
+                        while(dupe){
+                            dupe = false
+                            type = Math.floor(Math.random() * data.challengeDict.length)
+                            for(c of player.challenges){
+                                if(c.type == type){
+                                    dupe = true
+                                    break;
+                                }
+                            }
                         }
-                        const embed = new MessageEmbed()
-                        embed.setColor("#7289da")
-                        embed.setTitle("Level Up!")
-                        embed.addField("---",player.name + " is now level " + player.level + "!")
-                        client.channels.fetch(message.channelId).then(channel=>{
-                            channel.send({embeds:[embed]})
+                        let rank = Math.ceil(Math.random() * 3)
+                        player.challenges.push({
+                            type:type,
+                            rank:rank,
+                            progress:0,
+                            goal:data.challengeDict[type].baseGoal * rankmap[rank]
                         })
+                        needToUpdatePlayer = true
                     }
-                    let index = Math.floor(Math.random() * resourceMap.length)
-                    if(town.resources[resourceMap[index]][0] + 1 < town.resources[resourceMap[index]][1]){
-                        town.resources[resourceMap[index]][0] += 1
-                        resourcesAdded = 1
-                    } else {
-                        resourcesAdded = town.resources[resourceMap[index]][1] - town.resources[resourceMap[index]][0]
-                        town.resources[resourceMap[index]][0] = town.resources[resourceMap[index]][1] 
-                    }
-                    needToUpdatePlayer = true
-                    needToUpdateTown = true
-                } else {
-                    if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
-                        town.resources[resourceMap[player.job]][0] += 3
-                        resourcesAdded = 3
-                    } else {
-                        resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
-                        town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
-                    }
-                    needToUpdatePlayer = true
-                    needToUpdateTown = true
                 }
-                if(!town.contributors){
-                    town.contributors = {}
-                }
-                if(!town.contributors[player.id]){
-                    town.contributors[player.id] = resourcesAdded
-                } else {
-                    town.contributors[player.id] += resourcesAdded
-                }
-                town = levelTown(town)
-            }
 
-            if(needToUpdatePlayer && needToUpdateTown){
-                updatePlayerDBData(player.id,"",player,function(){
+                if(player.presenceTimer <= now.getTime()){
+                    player.presenceTimer = now.getTime() + 1000
+                    let resourcesAdded = 0
+                    let resourceMap = ["minerals","wood","food"]
+                    if(player.job == "exp"){
+                        let levelUp = player.exp + 25 >= player.expCap
+                        let result = parseReward({
+                            type:"resource",
+                            resource:"exp",
+                            resourceName: "experience",
+                            amount: 25
+                        }, player)
+                        player = result[0]
+                        if(levelUp){
+                            let text = ""
+                            for(msg of result[1]){
+                                text += "\n" + msg
+                            }
+                            const embed = new MessageEmbed()
+                            embed.setColor("#7289da")
+                            embed.addField("Level Up!",player.name + " is now level " + player.level + "!")
+                            
+                            let removeRow = new MessageActionRow()
+                            .addComponents(
+                                new MessageButton()
+                                .setCustomId('deleteMessage')
+                                .setLabel("Dismiss")
+                                .setStyle('DANGER'))
+                            client.channels.fetch(message.channelId).then(channel=>{
+                                channel.send({
+                                    embeds:[embed],
+                                    components:[removeRow]
+                                })
+                            })
+                        }
+                        let index = Math.floor(Math.random() * resourceMap.length)
+                        if(town.resources[resourceMap[index]][0] + 1 < town.resources[resourceMap[index]][1]){
+                            town.resources[resourceMap[index]][0] += 1
+                            resourcesAdded = 1
+                        } else {
+                            resourcesAdded = town.resources[resourceMap[index]][1] - town.resources[resourceMap[index]][0]
+                            town.resources[resourceMap[index]][0] = town.resources[resourceMap[index]][1] 
+                        }
+                        needToUpdatePlayer = true
+                        needToUpdateTown = true
+                    } else {
+                        if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
+                            town.resources[resourceMap[player.job]][0] += 3
+                            resourcesAdded = 3
+                        } else {
+                            resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
+                            town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
+                        }
+                        needToUpdatePlayer = true
+                        needToUpdateTown = true
+                    }
+                    if(!town.contributors){
+                        town.contributors = {}
+                    }
+                    if(!town.contributors[player.id]){
+                        town.contributors[player.id] = resourcesAdded
+                    } else {
+                        town.contributors[player.id] += resourcesAdded
+                    }
+                    town = formatTown(town)
+                }
+
+                if(needToUpdatePlayer && needToUpdateTown){
+                    updatePlayerDBData(player.id,"",player,function(){
+                        updateTownDBData(town.id,"",town,function(){
+                            if(callback){
+                                callback()
+                            }
+                        })
+                    })
+                } else if(needToUpdateTown){
+                    updatePlayerDBData(player.id,"",player,function(){
+                        if(callback){
+                            callback()
+                        }
+                    })
+                } else if(needToUpdateTown){
                     updateTownDBData(town.id,"",town,function(){
                         if(callback){
                             callback()
                         }
                     })
-                })
-            } else if(needToUpdateTown){
-                updatePlayerDBData(player.id,"",player,function(){
-                    if(callback){
-                        callback()
+                }
+            } else {
+                if(!result && intervalMsg){
+                    if(!potential){
+                        potential = {}
                     }
-                })
-            } else if(needToUpdateTown){
-                updateTownDBData(town.id,"",town,function(){
-                    if(callback){
-                        callback()
+                    if(potential[user.id]){
+                        potential[user.id].count++
+                    } else {
+                        potential[user.id] = {
+                            count:1,
+                            notif:false
+                        }
                     }
-                })
+                    if(!potential[user.id].notif && potential[user.id].count >= 15){
+                        potential[user.id].notif = true
+                        const embed = new MessageEmbed()
+                                embed.setColor("#7289da")
+                                embed.addField("Bonus Achieved!","<@" + user.id + "> can use the /start command to gain an improved start\n*(Start game at level 5 with bonus ability points)*")
+                                
+                        let removeRow = new MessageActionRow()
+                        .addComponents(
+                            new MessageButton()
+                            .setCustomId('deleteMessage')
+                            .setLabel("Dismiss")
+                            .setStyle('DANGER'))
+
+                        client.channels.fetch(message.channelId).then(channel=>{
+                            channel.send({
+                                embeds:[embed],
+                                components:[removeRow]
+                            })
+                        })
+                    }
+                    updatePotentialData(potential)
+                }
+                if(callback){
+                    callback()
+                }
             }
-        } else {
-            if(callback){
-                callback()
-            }
-        }
+        })
     })
 }
 
@@ -538,7 +597,7 @@ setInterval(() => {
                         }
                     }
                 }
-                townData = levelTown(townData)
+                townData = formatTown(townData)
                 let now = new Date();
 
                 //Update Raid
@@ -700,14 +759,14 @@ setInterval(() => {
                     townData.availableAbilities = []
                     for(var i = 0; i < 3;i++){
                         let newData = {
-                            baseVal: 20 * townData.level,
+                            baseVal: 40 + (30 * townData.level),
                             conSteps:Math.floor(townData.level/3),
                             forceType: ["attack","guard","stats"][i % 3],
                             forceStats: false
                         }
                         let ability = generateRNGAbility(newData)
                         let val = calculateAbilityCost(ability)/newData.baseVal
-                        townData.availableAbilities.push([ability,Math.ceil(val * 37.5 * townData.level)])
+                        townData.availableAbilities.push([ability,Math.ceil(val * 30 * townData.level)])
                     }
                 }
 
@@ -802,9 +861,9 @@ setInterval(() => {
             updateAllTownDBData(towns)
             messageLog = {}
         })
-    })      
-}, 5000);
-//}, 300000);
+    })  
+}, 300000);
+//}, 30000);
 
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);

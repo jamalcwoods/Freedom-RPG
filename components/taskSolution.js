@@ -28,8 +28,8 @@ module.exports = {
 
 
                 let repVal = Math.ceil(final * session.session_data.temp.currentTask.repReward) * (final? 1 : 2)
-                let goldVal = Math.ceil(final * session.session_data.temp.currentTask.goldReward * 1 + (session.session_data.town.level * 0.25))
-                let expVal = Math.ceil(final * session.session_data.temp.currentTask.expReward * 1 + (session.session_data.town.level * 0.25))
+                let goldVal = Math.ceil((roll * 20) * session.session_data.temp.currentTask.goldReward * (0.75 + (session.session_data.town.level * 0.25)))
+                let expVal = Math.ceil((session.session_data.player.expCap * 0.20) * session.session_data.temp.currentTask.expReward * (0.75 + (session.session_data.town.level * 0.25)))
     
                 applyTownReputation(session.session_data.town,session.session_data.player.id,repVal)
                 
@@ -94,12 +94,25 @@ module.exports = {
                         let stat = interaction.values[0]
                         session.session_data.player.stats[interaction.values[0]] += val
                         growthMessage += "\n(+" + val + " " + stat.toUpperCase() + ")"
-                        session.session_data.player.staticData.statGrowthTimer = now.getTime() + 3600000 
+                        session.session_data.player.statGrowthTimer = now.getTime() + 3600000 
                         extra.push(growthMessage)
                     }
                 }
 
                 session.session_data.player.taskTimer = now.getTime() + 3600000 
+                if(!session.session_data.player.achievements){
+                    session.session_data.player.achievements = {
+                        kills:0,
+                        abilitiesUsed:0,
+                        livesLost:0,
+                        strongestAttack:0,
+                        tasksCompleted:0,
+                        dungeonsCleared:0,
+                        raidLeaderKills:0,
+                        playerBattlesWon:0
+                    }
+                }
+                session.session_data.player.achievements.tasksCompleted++
 
                 session.session_data.temp.taskRollResults = {
                     clear:clear,

@@ -5,7 +5,7 @@ X Counter Attack Damage Check
 X PVP Check
 X Per town resource contribution tracker
 X Expedition story text
-? Dungeon Rewards
+X Dungeon Rewards
 X Profile Card Rework
 X Ability Creation Weights
 X Dungeon and Expedition facility
@@ -28,7 +28,6 @@ X Base Task Additions
 X benefit of blocking an attack 
 X Ability icon explanation 
 X Profile term explanation 
-- Tutorial from /profile
 X Ability Memory/removal 
 X Sell & Favorite items for server reputation
 X Reputation Leaderboards
@@ -39,4 +38,27 @@ X Expedition rewards (substantial increase for active player)
 X Point threshold scalar
 X Session Relocate
 X "Passive" Stat Point Acquisition
-- Gear stat application in dungeons
+X Gear stat application in dungeons
+X Tutorial from /profile
+X Better Option Displays 
+X Score Calculation and Display
+X Delete Daily/Level Up Notification
+X Accolades section of profile
+X View Other's Profile
+X Action Chains (Incentivize repeated interaction)
+    - Encounter Combos: Upon completing two combat encounters in succession (Time between last finished one and start of recent one is short) increase encounter combo counter
+    - Higher counter means more exp and harder enemies
+X Balance Raid Missions
+X Reduce Town Ability Costs 
+X Reduce Dungeon Trial Difficulty
+X Reduce Challenge Timer
+X Weapon/Class Synergy
+X Nerf Guard Value
+X Increase Task Rewards
+X Improve Town Ability Quality
+X New Player Prompt
+X Passive Town Power Generation
+X Defeated Raid Leader Benefits
+X Alternate Explore Options
+    - External Town Request - Combat instance but goal isn't to just defeat an enemy, rewards high reputation
+    - Internal Town Request - Combat instance that rolls reputation to reset town task eligibility 

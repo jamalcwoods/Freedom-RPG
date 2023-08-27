@@ -11,8 +11,7 @@ module.exports = {
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         let client = componentConfig.client
-
-        if(interaction.values[0] != interaction.users.id){
+        if(interaction.values[0] != interaction.user.id){
             session.user_ids.splice(session.user_ids.indexOf(interaction.values[0]),1)
 
             for(i in session.session_data.players){

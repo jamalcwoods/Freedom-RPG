@@ -4,7 +4,7 @@
 const { populateCombatWindow, processCombatSession, populateCombatToQuestTransition, populateCombatControls, populateReturnFromCombat} = require("../sessionTools.js")
 const { getTownDBData } = require("../firebaseTools.js")
 const { raidPresets, challengeDict } = require("../data.json")
-const { parseReward } = require("../tools.js")
+const { parseReward, givePlayerItem, generateRNGEquipment } = require("../tools.js")
 module.exports = {
     config:{
         getSession:true
@@ -74,12 +74,40 @@ module.exports = {
                         case "combat":
                                 switch(session.session_data.options.fightType){
                                     case "pvp":
+                                        let updates = []
+                                        
+                                        for(var i = 0; i < session.session_data.fighters.length; i++){
+                                            let fighter = session.session_data.fighters[i]
+                                            if(!fighter.staticData.achievements){
+                                                fighter.staticData.achievements = {
+                                                    kills:0,
+                                                    abilitiesUsed:0,
+                                                    livesLost:0,
+                                                    strongestAttack:0,
+                                                    tasksCompleted:0,
+                                                    dungeonsCleared:0,
+                                                    raidLeaderKills:0,
+                                                    playerBattlesWon:0
+                                                }
+                                            } 
+
+                                            if(session.session_data.winners.includes(fighter.staticData.id)){
+                                                fighter.staticData.achievements.playerBattlesWon++
+                                                updates.push({
+                                                    id:fighter.staticData.id,
+                                                    path:"achievements",
+                                                    value:fighter.staticData.achievements
+                                                })
+                                            }
+                                        }
+
                                         interaction.update({
                                             embeds:populateCombatWindow(session),
                                             components:populateReturnFromCombat(session)
                                         })
                                         callback({
-                                            removeSession:session
+                                            removeSession:session,
+                                            updatePlayer:updates
                                         })
                                         break;
                                 }
@@ -88,13 +116,48 @@ module.exports = {
                 } else {
                     getTownDBData(session.server_id,function(town){
                         let updates = []
+                        let townUpdates = []
                         let now = new Date()
 
                         for(var i = 0; i < session.session_data.fighters.length; i++){
                             let fighter = session.session_data.fighters[i]
                             if(session.user_ids.includes(fighter.staticData.id)){
                                 // Update actual player data here
+                                if(!fighter.staticData.achievements){
+                                    fighter.staticData.achievements = {
+                                        kills:0,
+                                        abilitiesUsed:0,
+                                        livesLost:0,
+                                        strongestAttack:0,
+                                        tasksCompleted:0,
+                                        dungeonsCleared:0,
+                                        raidLeaderKills:0,
+                                        playerBattlesWon:0
+                                    }
+                                } 
 
+                                fighter.staticData.lastEncounter = now.getTime()
+                                if(session.session_data.winners.includes(fighter.staticData.id)){
+                                    if(session.session_data.options.encounterStreak){
+                                        fighter.staticData.encounterStreak++
+                                        session.session_data.battlelog.alerts.push("Encounter Streak x" + fighter.staticData.encounterStreak + "!")
+                                        let result = parseReward({
+                                            type:"resource",
+                                            resource:"exp",
+                                            resourceName: "exp",
+                                            amount: Math.ceil(fighter.staticData.expCap * (0.01 + (0.01) * fighter.staticData.encounterStreak))
+                                        }, fighter.staticData)
+                                        fighter.staticData = result[0]
+                                        if(result[1].length > 0){
+                                            for(msg of result[1]){
+                                                session.session_data.battlelog.rewards.push(msg)
+                                            }
+                                        }
+                                    } else {
+                                        fighter.staticData.encounterStreak = 1
+                                    }
+                                }
+                                
                                 if(fighter.staticData.statGrowthTimer < now.getTime()){
                                     let growthMessage = fighter.staticData.name + "'s stats slightly grew!"
                                     if(fighter.records.timesBlocked < fighter.records.timesHit){
@@ -343,13 +406,106 @@ module.exports = {
                                                         town.points += 5
                                                         fighter.staticData.gold += raidPresets.goldRewards[3]
                                                         town.raid.bossDefeats = m
+                                                        fighter.staticData.achievements.raidLeaderKills++
                                                     }
                                                     break;
                                             }
                                             
                                         }
+
+                                        if(session.session_data.options.encounterRewards){
+                                            if(session.user_ids.includes(session.session_data.winners[0])){
+                                                let townRoll = Math.floor(Math.random() * (town.level * 100))
+                                                let playerRoll;
+                                                if(town.reputations[fighter.staticData.id]){
+                                                    playerRoll = Math.floor(Math.random() * town.reputations[fighter.staticData.id] * 0.75)
+                                                    playerRoll += Math.floor(town.reputations[fighter.staticData.id] * 0.25)
+                                                } else {
+                                                    playerRoll = 0
+                                                }
+                                                if(playerRoll >= townRoll){
+                                                    session.session_data.battlelog.rewards.push(fighter.staticData.name + "'s efforts to protect the town are appreciated! (-" + 10 * town.level + " town reputation)")
+                                                    town.reputations[fighter.staticData.id] -= 10 * town.level
+                                                    if(town.reputations[fighter.staticData.id] < 0){
+                                                        town.reputations[fighter.staticData.id] = 0
+                                                    }
+                                                    townUpdates.push({
+                                                        id:session.server_id,
+                                                        path:"reputations/" + fighter.staticData.id,
+                                                        value:town.reputations[fighter.staticData.id]
+                                                    })
+
+                                                    switch(session.session_data.options.encounterRewards.type){
+                                                        case "extTown":
+                                                            let newData = {
+                                                                ref:{
+                                                                    type: "rngEquipment",
+                                                                    rngEquipment: {
+                                                                        scaling: false,
+                                                                        value:1,
+                                                                        conValue:0,
+                                                                        lockStatTypes: true,
+                                                                        baseVal: 35 * town.level,
+                                                                        weaponType:fighter.staticData.combatStyle,
+                                                                        types: ["weapon","gear"]
+                                                                    }
+                                                                }
+                                                            }
+                                            
+                                                            let player = fighter.staticData
+                                            
+                                                            let item = generateRNGEquipment(newData)
+                                                            fighter.staticData = givePlayerItem(item,player)
+                                                            session.session_data.battlelog.rewards.push(player.name + " received equipment: " + item.name)
+                                                            break;
+
+                                                        case "intTown":
+                                                            if(Math.random < 0.5){
+                                                                let result = parseReward({
+                                                                    type:"resource",
+                                                                    resource:"abilitypoints",
+                                                                    resourceName: "ability points",
+                                                                    amount: Math.floor(town.level * 1.5)
+                                                                }, fighter.staticData)
+                                                                fighter.staticData = result[0]
+    
+                                                                if(result[1].length > 0){
+                                                                    for(msg of result[1]){
+                                                                        session.session_data.battlelog.rewards.push(msg)
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                let result = parseReward({
+                                                                    type:"resource",
+                                                                    resource:"statpoints",
+                                                                    resourceName: "skill points",
+                                                                    amount: Math.ceil(town.level * 0.75)
+                                                                }, fighter.staticData)
+                                                                fighter.staticData = result[0]
+    
+                                                                if(result[1].length > 0){
+                                                                    for(msg of result[1]){
+                                                                        session.session_data.battlelog.rewards.push(msg)
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }  
+
+                                fighter.staticData.achievements.kills += fighter.records.unitsDefeated
+                                fighter.staticData.achievements.abilitiesUsed += fighter.records.attacks
+                                fighter.staticData.achievements.abilitiesUsed += fighter.records.guards
+                                fighter.staticData.achievements.abilitiesUsed += fighter.records.statChanges
+                                if(fighter.staticData.achievements.strongestAttack < fighter.records.strongestAttack){
+                                    fighter.staticData.achievements.strongestAttack = fighter.records.strongestAttack
+                                }
+                                
+
                                 let challengesCompleted = 0;
                                 let totalGoldReward = 0;
                                 if(fighter.staticData.challenges){
@@ -406,7 +562,7 @@ module.exports = {
                                             c.progress += progressVal
                                             if(c.goal <= c.progress){
                                                 challengesCompleted++
-                                                totalGoldReward += c.rank * 5   
+                                                totalGoldReward += c.rank * 15  
                                                 session.session_data.battlelog.rewards.push(challengeDict[c.type].name + " - Rank " + c.rank + ": Complete!")
                                                 fighter.staticData.challenges.splice(i)
                                                 i--
@@ -440,7 +596,7 @@ module.exports = {
                             }
                         }
                         
-                        let townUpdates = []
+                        
 
                         if(session.session_data.options.combatRewards){
                             let rewards = session.session_data.options.combatRewards

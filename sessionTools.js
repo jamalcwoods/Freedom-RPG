@@ -1,4 +1,4 @@
-const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions } = require("./data.json");
+const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions, tavernOptions } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
 const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const { stat } = require("fs");
@@ -191,7 +191,7 @@ function checkActiveCombatants(session){
     if(!session.session_data.completed){
         let NonCPUPlayersLeft = []
         for(fighter of session.session_data.fighters){
-            if(fighter.alive && fighter.staticData.cpu == undefined){
+            if(fighter.alive && !fighter.forfeit && fighter.staticData.cpu == undefined){
                 NonCPUPlayersLeft.push(fighter.staticData.id)
             }
         }
@@ -964,14 +964,18 @@ module.exports = {
                                                     session.session_data.battlelog.combat.push(attacker.staticData.name + " begins a decimating attack!")
                                                 }
                                             }
-
                                             let accCheck = Math.floor(Math.random() * 100) 
 
                                             let repeatPenal = 0;
                                             if(!target.staticData.object){
                                                 if(attacker.lastAction == actionCode){
                                                     attacker.repeats++
-                                                    repeatPenal = 10 * attacker.repeats
+                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 0 && attacker.weapon.weaponStyle == 0 && action.ability.damage_type == "atk"){
+                                                        repeatPenal = 2.5 * attacker.repeats
+                                                    } else {
+                                                        repeatPenal = 10 * attacker.repeats    
+                                                    }
+                                                    
                                                 } else {
                                                     attacker.repeats = 0
                                                 }
@@ -1141,6 +1145,7 @@ module.exports = {
                                                                         }
                                                                     } else {
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
+                                                                        attacker.records.livesLost++
                                                                         attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                                     }
 
@@ -1187,7 +1192,11 @@ module.exports = {
 
                                                 if(attacker.alive){
                                                     let critRoll = action.ability.critical
-
+                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 1 && attacker.weapon.weaponStyle == 1){
+                                                        if(action.ability.speed > 1){
+                                                            critRoll += (action.ability.speed/2) * 15
+                                                        }
+                                                    }
                                                     let passiveData = getPassive(attacker,7)
                                                     if(passiveData != null){
                                                         critRoll += Math.floor(action.ability.recoil/10) * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank])
@@ -1198,7 +1207,13 @@ module.exports = {
                                                             critRoll += weaponPassives[4] * 10
                                                         }
                                                     }
-                                                    let crit = Math.floor(Math.random() * 100) < critRoll ? 2 : 1
+                                                    let critMulti;
+                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 2 && attacker.weapon.weaponStyle == 2){
+                                                        critMulti = 3
+                                                    } else {
+                                                        critMulti = 2
+                                                    }
+                                                    let crit = Math.floor(Math.random() * 100) < critRoll ? critMulti : 1
                                                     let totalDamage;
 
                                                     if(!target.hasActed && weaponPassives[1] > 0){
@@ -1277,9 +1292,45 @@ module.exports = {
                                                             multiDamage += finalDamage
                                                             if(attackNum <= 1 || target.liveData.stats.hp <= 0){
                                                                 session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
+                                                                if(multiDamage > attacker.records.strongestStrike){
+                                                                    attacker.records.strongestStrike = multiDamage
+                                                                }
+                                                                if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
+                                                                    for(var i = 0; i < hitCount; i++){
+                                                                        if(Math.random() <= 0.1){
+                                                                            let choosenStat = action.ability.damage_type
+                                                                            attacker.liveData.statChanges[choosenStat] += 1
+                                                                            let msg;
+                                                                            if(attacker.liveData.statChanges[choosenStat] > 16){
+                                                                                attacker.liveData.statChanges[choosenStat] = 16
+                                                                                msg = attacker.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
+                                                                            } else {
+                                                                                msg = attacker.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[attacker.liveData.statChanges[choosenStat]] + ")."
+                                                                            }
+                                                                            session.session_data.battlelog.combat.push(msg)
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
+                                                            if(finalDamage > attacker.records.strongestStrike){
+                                                                attacker.records.strongestStrike = finalDamage
+                                                            }
+                                                            if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
+                                                                if(Math.random() <= 0.1){
+                                                                    let choosenStat = action.ability.damage_type
+                                                                    attacker.liveData.statChanges[choosenStat] += 1
+                                                                    let msg;
+                                                                    if(attacker.liveData.statChanges[choosenStat] > 16){
+                                                                        attacker.liveData.statChanges[choosenStat] = 16
+                                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
+                                                                    } else {
+                                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[attacker.liveData.statChanges[choosenStat]] + ")."
+                                                                    }
+                                                                    session.session_data.battlelog.combat.push(msg)
+                                                                }
+                                                            }
                                                         }
                                                         triggerCombatEvent({
                                                             type:2,
@@ -1329,6 +1380,7 @@ module.exports = {
                                                             }
                                                         } else {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " lost a life! (" + target.staticData.lives + " remaining)")
+                                                            target.records.livesLost++
                                                             target.liveData.stats.hp = target.liveData.maxhp
                                                         }
 
@@ -1373,6 +1425,7 @@ module.exports = {
                                                                 }
                                                             } else {
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
+                                                                attacker.records.livesLost++
                                                                 attacker.liveData.stats.hp = attacker.liveData.maxhp
                                                             }
 
@@ -1671,16 +1724,28 @@ module.exports = {
                     session.session_data.event.title,
                     session.session_data.event.prompt
                 )
+                
 
                 let selectionLabels = []
+                let choicesText = ""
 
                 for(option of session.session_data.event.options){
+                    let optionStatTip;
+                    if(option.value != null){
+                        optionStatTip = "(" + option.value.split("|")[0].toLocaleUpperCase() + ")"
+                    }
                     selectionLabels.push({
                         label: option.name,
-                        description: option.description,
+                        description: optionStatTip,
                         value: JSON.stringify(option.value)
                     })
+                    choicesText += "**" + option.name + "**\n" + option.description + "\n\n"
                 }
+
+                embed.addField(
+                    "Choices",
+                    choicesText
+                )
                 
                 selectionLabels.push({
                     label:"Leave Dungeon",
@@ -1823,7 +1888,7 @@ module.exports = {
                             value:1.25,
                             conValue:0.25,
                             lockStatTypes: true,
-                            baseVal: 30 * session.session_data.dungeonRank,
+                            baseVal: (30 + (session.session_data.bonus ? 10 : 0)) * session.session_data.dungeonRank,
                             weaponType:session.session_data.player.combatStyle,
                             types: ["weapon","gear"]
                         }
@@ -1840,7 +1905,7 @@ module.exports = {
                     type:"resource",
                     resource:"abilitypoints",
                     resourceName: "ability points",
-                    amount: session.session_data.dungeonRank * 5
+                    amount: session.session_data.dungeonRank * (5 + (session.session_data.bonus ? 1 : 0))
                 }, player)
                 player = result[0]
 
@@ -1853,6 +1918,10 @@ module.exports = {
                 let expAmount = Math.floor((player.expCap *0.5) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
                 if(expAmount < 500){
                     expAmount = 500
+                }
+
+                if(session.session_data.bonus){
+                    expAmount = Math.ceil(expAmount * 2)
                 }
 
                 result = parseReward({
@@ -1870,6 +1939,11 @@ module.exports = {
                 }
 
                 let goldAmount = Math.ceil((10 * session.session_data.dungeonRank) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                
+                if(session.session_data.bonus){
+                    goldAmount = Math.ceil(goldAmount * 2)
+                }
+
                 result = parseReward({
                     type:"resource",
                     resource:"gold",
@@ -1884,6 +1958,19 @@ module.exports = {
                     }
                 }
 
+                if(!session.session_data.player.achievements){
+                    session.session_data.player.achievements = {
+                        kills:0,
+                        abilitiesUsed:0,
+                        livesLost:0,
+                        strongestAttack:0,
+                        tasksCompleted:0,
+                        dungeonsCleared:0,
+                        raidLeaderKills:0,
+                        playerBattlesWon:0
+                    }
+                }
+                session.session_data.player.achievements.dungeonsCleared++
 
                 embed.addField(
                     "Dungeon Rewards!",
@@ -2613,34 +2700,45 @@ module.exports = {
                 break;
 
             case "records":
-                let reputationText = ""
                 let sortable = [];
-                for (var id in session.session_data.town.reputations) {
-                    sortable.push([id, session.session_data.town.reputations[id]]);
+                let leaderboardText = ""
+                if(!session.session_data.temp){
+                    session.session_data.temp = {
+                        recordPage:"rep"
+                    }
                 }
+                switch(session.session_data.temp.recordPage){
+                    case "rep":
+                        for (var id in session.session_data.town.reputations) {
+                            sortable.push([id, session.session_data.town.reputations[id]]);
+                        }
+        
+                        sortable.sort(function(a, b) {
+                            return a[1] - b[1];
+                        });
+                        sortable.reverse()
+                        for(entry of sortable){
+                            leaderboardText += "\n<@" + entry[0]+ ">: " + entry[1]
+                        }
+                        embed.addField("Reputation Leaderboards:",leaderboardText)
+                        break;
 
-                sortable.sort(function(a, b) {
-                    return a[1] - b[1];
-                });
-                sortable.reverse()
-                for(entry of sortable){
-                    reputationText += "\n<@" + entry[0]+ ">: " + entry[1]
+                    case "resource":
+                        for (var id in session.session_data.town.contributors) {
+                            sortable.push([id, session.session_data.town.contributors[id]]);
+                        }
+        
+                        sortable.sort(function(a, b) {
+                            return a[1] - b[1];
+                        });
+                        sortable.reverse()
+                        for(entry of sortable){
+                            leaderboardText += "\n<@" + entry[0]+ ">: " + entry[1]
+                        }
+                        embed.addField("Resource Leaderboards:",leaderboardText)
+                        break;
                 }
-                embed.addField("Reputation Leaderboards:",reputationText)
-                sortable = []
-                let resourceText = ""
-                for (var id in session.session_data.town.contributors) {
-                    sortable.push([id, session.session_data.town.contributors[id]]);
-                }
-
-                sortable.sort(function(a, b) {
-                    return a[1] - b[1];
-                });
-                sortable.reverse()
-                for(entry of sortable){
-                    resourceText += "\n<@" + entry[0]+ ">: " + entry[1]
-                }
-                embed.addField("Resource Leaderboards:",resourceText)
+                
                 break;
 
             case "tasks":
@@ -2709,14 +2807,17 @@ module.exports = {
                 if(session.session_data.temp && session.session_data.temp.viewingAbilities){
                     let trainingMessage = "```diff\nAn instructor comes over and begins to asses your gear\n\n'I should be able to teach you a new trick or two, interested?'```"
                     trainingMessage += "\nListing Resets In: " + msToTime(session.session_data.town.trainingRestock - now.getTime()) + "\n"                    
-                    for(ability of session.session_data.town.availableAbilities){
-                        trainingMessage += "\n**" + ability[0].name + "** (Costs " + ability[1] + " Gold)\n```" +  createAbilityDescription(ability[0]) + "```"
-                    }
+                    
+                    trainingMessage += "\nYour gold: " + session.session_data.player.gold
+
                     if(session.session_data.temp.resultMessage){
                         trainingMessage += "\n" + session.session_data.temp.resultMessage + "\n"
                     }
-                    trainingMessage += "\nYour gold: " + session.session_data.player.gold
                     embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
+
+                    for(ability of session.session_data.town.availableAbilities){
+                        embed.addField("**" + ability[0].name + "** (Costs " + ability[1] + " Gold)","```" + createAbilityDescription(ability[0]) + "```")
+                    }
                 } else {
                     let trainingMessage = "```diff\nA cheerful person greets you as you walk into to the training hall\n\n'Welcome traveler! Here you can prepare for battle with combat lessons or learn new/upgraded abilities from a combat master! What would you like to do today?'```\nNote: For tutorial lessons, your abilities and stats will be temporarily modified"
                     embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
@@ -2944,21 +3045,26 @@ module.exports = {
         })
 
         const travel = new MessageActionRow()
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('townVisit_' + session.session_id)
-                    .setPlaceholder('Select a facility to visit')
-                    .addOptions(selectionLabels),
-                    
-            );
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('townVisit_' + session.session_id)
+                .setPlaceholder('Select a facility to visit')
+                .addOptions(selectionLabels),
+                
+        );
+        const help = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('help_NULL_' + session.session_data.location)
+                .setLabel('Info')
+                .setStyle('PRIMARY')
+        );
         switch(session.session_data.location){
             case null:
                 return [travel]
 
-            case "records":
-                return [travel]
-
             case "tasks":
+                
                 if(session.session_data.town.taskList && session.session_data.player.taskTimer < now){
                     let taskLabels = []
                     for(t in session.session_data.town.taskList){
@@ -2977,9 +3083,9 @@ module.exports = {
                             .addOptions(taskLabels),
                             
                     );
-                    return [taskList,travel]
+                    return [help,taskList,travel]
                 } else {
-                    return [travel]
+                    return [help,travel]
                 }
                 break;
 
@@ -2995,7 +3101,7 @@ module.exports = {
                         .setLabel("Expedition Adventure")
                         .setStyle('PRIMARY')
                     )
-                return [adventureChoice,travel]
+                return [help,adventureChoice,travel]
                 break;
 
             case "hall":
@@ -3008,7 +3114,7 @@ module.exports = {
                         .setLabel("Fight to Claim the Battle Hall")
                         .setStyle('PRIMARY')
                     )
-                    return [hallChoice,travel]
+                    return [help,hallChoice,travel]
                 } else {
                     hallChoice = new MessageActionRow()
                     .addComponents(
@@ -3017,7 +3123,7 @@ module.exports = {
                         .setLabel("Claim Battle Hall From " + session.session_data.town.hallOwner.name)
                         .setStyle('PRIMARY') 
                     )
-                    return [hallChoice,travel]
+                    return [help,hallChoice,travel]
                 }
                 break;
 
@@ -3043,7 +3149,7 @@ module.exports = {
                             .setPlaceholder('What would you like to do')
                             .addOptions(abilityOptions),                 
                     );
-                    return [trainingChoice,travel]
+                    return [help,trainingChoice,travel]
                 } else {
                     let trainingOptions = [
                         {
@@ -3096,7 +3202,7 @@ module.exports = {
                             .setPlaceholder('Choose something to do')
                             .addOptions(trainingOptions),                 
                     );
-                    return [trainingChoice,travel]
+                    return [help,trainingChoice,travel]
                 }
                 break;
 
@@ -3132,12 +3238,12 @@ module.exports = {
                             .setStyle('SUCCESS')
                             .setDisabled(session.session_data.player.gold < session.session_data.town.listings[session.session_data.temp.selectedItem][1]),
                         )
-                        return [purchaseOptions,marketListings,travel]
+                        return [help,purchaseOptions,marketListings,travel]
                     } else {
-                        return [marketListings,travel]
+                        return [help,marketListings,travel]
                     }
                 } else {
-                    return [marketListings,travel]
+                    return [help,marketListings,travel]
                 }
                 break;
 
@@ -3174,7 +3280,7 @@ module.exports = {
                             .addOptions(jobLabels),
                             
                     );
-                return [jobChoice,travel]
+                return [help,jobChoice,travel]
 
             case "defense":
                 let challengingMissions = ["Defend The Town Walls From Onslaught","Distract A Large Enemy","Siege An Enemy Camp"]
@@ -3210,39 +3316,11 @@ module.exports = {
                         .setStyle('PRIMARY'),
                     )
                 }
-                return [missions,travel]
+                return [help,missions,travel]
 
             case "tavern":
-                let menu = [{
-                    label: "Tavern Special",
-                    description: "Random booster for 30 minutes - 20 gold",
-                    value: "special_1_50_0.5",
-                },{
-                    label: "Assassin's Asparagus",
-                    description: "1 Stage Speed booster for 1 hour - 50 gold",
-                    value: "speed_1_50_1",
-                },{
-                    label: "Berserker's Beef",
-                    description: "1 Stage Attack booster for 1 hour - 50 gold",
-                    value: "attack_1_50_1",
-                },{
-                    label: "Caster's Cornbread",
-                    description: "1 Stage Special Attack booster for 1 hour - 50 gold",
-                    value: "spattack_1_50_1",
-                },{
-                    label: "Defender's Dumplings",
-                    description: "1 Stage Defense booster for 1 hour - 50 gold",
-                    value: "defense_1_50_1",
-                },{
-                    label: "Enforcer's Empanadas",
-                    description: "1 Stage Special Defense booster for 1 hour - 50 gold",
-                    value: "spdefense_1_50_1",
-                },{
-                    label: "Frontliner's Flapjacks",
-                    description: "2.5% Health Regeneration for 1 hour - 50 gold",
-                    value: "healing_2.5_50_1",
-                }]
-
+                let menu = tavernOptions
+                
                 let lifeDifference = 3 - session.session_data.player.lives
                 for(var i = lifeDifference;i > 0; i--){
                     let pluralCheck = i > 1 ? "Slices" : "Slice"
@@ -3259,9 +3337,29 @@ module.exports = {
                     .setPlaceholder('What would you like to order?')
                     .addOptions(menu),
                 )
-                return [orders,travel]
+                return [help,orders,travel]
                 break;
 
+            case "records":
+                let leaderboardPages = [{
+                    label: "Town Reputation",
+                    description: "View town reputation leaderboard",
+                    value: "rep"
+                },{
+                    label: "Town Resource Contribution",
+                    description: "View town resource leaderboard",
+                    value: "resource"
+                }]
+
+                const pages = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                    .setCustomId('recordPage_' + session.session_id)
+                    .setPlaceholder('Select leaderboard to view')
+                    .addOptions(leaderboardPages),
+                )
+                return [pages,travel]
+                
             default:
                 return [travel]
         }
@@ -3402,7 +3500,7 @@ module.exports = {
         embed.setTitle(session.session_data.player.name + "'s Inventory")
         if(session.session_data.sellReward.gold != 0){
             embed.addField(
-                "Sellig Rewards:",
+                "Selling Rewards:",
                 "Gold: " + session.session_data.sellReward.gold + "\nReputation: " + session.session_data.sellReward.rep
             )
         }

@@ -219,7 +219,7 @@ module.exports = {
                                                 id:"large"
                                             },
                                             records:{
-                                                timesHit:15
+                                                timesHit:10
                                             }
                                         },
                                         result:"win_0"
@@ -302,7 +302,7 @@ module.exports = {
                             totalExp:0,
                             passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
-                                "hp":100,
+                                "hp":50,
                                 "atk":0,
                                 "def":50,
                                 "spatk":0,
@@ -317,7 +317,7 @@ module.exports = {
                             "spd": 0,
                             "def": 0,
                             "spdef": 0,
-                            "hp": 1,
+                            "hp": 0,
                         }
         
                         let rallyEnemy = {
@@ -377,6 +377,13 @@ module.exports = {
                                             }
                                         },
                                         result:"win_0"
+                                    },
+                                    {
+                                        type:0,
+                                        data:{
+                                            count:25
+                                        },
+                                        result:"win_1"
                                     }
                                 ]
                             })
