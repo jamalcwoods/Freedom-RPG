@@ -465,12 +465,18 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             embed.setColor("#7289da")
                             embed.addField("Level Up!",text)
                             
+                            console.log(message)
                             let removeRow = new MessageActionRow()
                             .addComponents(
                                 new MessageButton()
                                 .setCustomId('deleteMessage')
                                 .setLabel("Dismiss")
                                 .setStyle('DANGER'))
+                            .addComponents(
+                                new MessageButton()
+                                .setCustomId('profilePopUp_NULL_' + player.id + '|' + message.author.avatar)
+                                .setLabel("View Stats")
+                                .setStyle('PRIMARY'))
                             client.channels.fetch(message.channelId).then(channel=>{
                                 channel.send({
                                     embeds:[embed],
@@ -863,7 +869,6 @@ setInterval(() => {
         })
     })  
 }, 300000);
-//}, 30000);
 
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);

@@ -7,7 +7,6 @@ module.exports = {
     },
     execute(interaction,componentConfig,callback){
         const embed = new MessageEmbed()
-        console.log(componentConfig.args[0])
         embed.addField(
             "Info - " + helpMessages[componentConfig.args[0]].title,
             "```" + helpMessages[componentConfig.args[0]].info + "```"
