@@ -293,14 +293,14 @@ function formatTown(town){
         town.resources.food[1] *= 2
         town.resources.wood[1] *= 2
         town.resources.minerals[1] *= 2
-        town.level++
         town.points -= town.level * 30
+        town.level++
         town.dungeonClear = false
     } else if(resourceCheck && town.points < town.level * 30){
         town.resources.food[0] -= Math.floor(town.resources.food[1] * 0.1)
         town.resources.wood[0] -= Math.floor(town.resources.wood[1] * 0.1)
         town.resources.minerals[0] -= Math.floor(town.resources.minerals[1] * 0.1)
-        town.points += Math.ceil((town.level * 30) * 0.05)
+        town.points += Math.ceil((town.level * 30) * 0.1)
         if(town.points > town.level * 30){
             town.points = town.level * 30
         }

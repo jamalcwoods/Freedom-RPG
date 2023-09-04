@@ -395,6 +395,11 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                         .setCustomId('deleteMessage')
                         .setLabel("Dismiss")
                         .setStyle('DANGER'))
+                    .addComponents(
+                        new MessageButton()
+                        .setCustomId('profilePopUp_NULL_' + player.id + '|' + message.author.avatar)
+                        .setLabel("View Stats")
+                        .setStyle('PRIMARY'))
                     client.channels.fetch(message.channelId).then(channel =>{
                         channel.send({
                             embeds:[embed],

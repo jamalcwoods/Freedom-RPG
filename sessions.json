@@ -1,1 +1,689 @@
-[]
+[
+    {
+        "type": "townVisit",
+        "session_id": 84334,
+        "user_ids": [
+            "163809334852190208"
+        ],
+        "session_data": {
+            "player": {
+                "abilities": [
+                    {
+                        "accuracy": 100,
+                        "action_type": "attack",
+                        "critical": 0,
+                        "damage_type": "atk",
+                        "damage_val": 20,
+                        "faction": -1,
+                        "name": "Starter Attack",
+                        "numHits": 1,
+                        "recoil": 0,
+                        "speed": 1,
+                        "targetType": "1"
+                    },
+                    {
+                        "action_type": "guard",
+                        "counter_type": "def",
+                        "counter_val": 0,
+                        "guard_type": "def",
+                        "guard_val": 30,
+                        "name": "Starter Guard",
+                        "speed": 3,
+                        "success_level": 100
+                    },
+                    {
+                        "action_type": "stats",
+                        "effects": [
+                            {
+                                "stat": "atk",
+                                "target": "0",
+                                "value": 1
+                            },
+                            {
+                                "stat": "spatk",
+                                "target": "0",
+                                "value": 1
+                            }
+                        ],
+                        "name": "Starter Buff",
+                        "speed": 1,
+                        "statChangeCount": 2
+                    }
+                ],
+                "abilityPermissions": {
+                    "faction": false,
+                    "stats": false
+                },
+                "abilitypoints": 26,
+                "achievements": {
+                    "abilitiesUsed": 58,
+                    "dungeonsCleared": 0,
+                    "kills": 1,
+                    "livesLost": 0,
+                    "playerBattlesWon": 0,
+                    "raidLeaderKills": 0,
+                    "strongestAttack": 0,
+                    "tasksCompleted": 1
+                },
+                "boosters": [
+                    {
+                        "expire": 1693581159537,
+                        "type": "attack",
+                        "value": 1
+                    }
+                ],
+                "challengeTimer": 1693843706245,
+                "challenges": [
+                    {
+                        "goal": 5,
+                        "progress": 1,
+                        "rank": 1,
+                        "type": 0
+                    },
+                    {
+                        "goal": 80,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 2
+                    },
+                    {
+                        "goal": 6,
+                        "progress": 0,
+                        "rank": 2,
+                        "type": 5
+                    },
+                    {
+                        "goal": 3,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 9
+                    },
+                    {
+                        "goal": 12,
+                        "progress": 0,
+                        "rank": 3,
+                        "type": 10
+                    }
+                ],
+                "combatStyle": "0",
+                "dailyCount": 6,
+                "dailyTimer": 1693853803130,
+                "encounterStreak": 1,
+                "exp": 23,
+                "expCap": 1400,
+                "faction": -1,
+                "gold": 145,
+                "id": "163809334852190208",
+                "job": "exp",
+                "lastEncounter": 1693579125541,
+                "level": 14,
+                "lives": 1,
+                "name": "jeminiw",
+                "presenceTimer": 1693837168046,
+                "race": "1",
+                "statGrowthTimer": 1693593291598,
+                "statpoints": 13,
+                "stats": {
+                    "atk": 16,
+                    "def": 14,
+                    "hp": 25,
+                    "spatk": 13,
+                    "spd": 18,
+                    "spdef": 14
+                },
+                "taskTimer": 1693582860996,
+                "totalExp": 4930,
+                "tutorial": 1
+            },
+            "town": {
+                "availableAbilities": [
+                    [
+                        {
+                            "accuracy": 80,
+                            "action_type": "attack",
+                            "critical": 0,
+                            "damage_type": "atk",
+                            "damage_val": 10,
+                            "faction": -1,
+                            "name": "Extensive Wild Jabs",
+                            "numHits": 3,
+                            "recoil": 0,
+                            "speed": 1,
+                            "targetType": "2"
+                        },
+                        92
+                    ],
+                    [
+                        {
+                            "action_type": "guard",
+                            "counter_type": "spdef",
+                            "counter_val": 20,
+                            "guard_type": "spdef",
+                            "guard_val": 65,
+                            "name": "Effortless Meditation",
+                            "speed": 3,
+                            "success_level": "200"
+                        },
+                        108
+                    ],
+                    [
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "spatk",
+                                    "target": "0",
+                                    "value": 2
+                                },
+                                {
+                                    "stat": "spd",
+                                    "target": "1",
+                                    "value": 2
+                                }
+                            ],
+                            "name": "Enabling Cheer",
+                            "speed": 4,
+                            "statChangeCount": 2
+                        },
+                        147
+                    ]
+                ],
+                "contributors": {
+                    "163809334852190208": 77,
+                    "207680443200307201": 43,
+                    "388549749269069849": 18,
+                    "403036391673430016": 407
+                },
+                "dungeonClear": true,
+                "hallOwner": {
+                    "abilitypoints": 0,
+                    "combatStyle": "0",
+                    "cpu": true,
+                    "exp": 0,
+                    "faction": "-1",
+                    "id": "hallNPC",
+                    "level": 12,
+                    "lives": 1,
+                    "name": "Hall Warden",
+                    "race": "0",
+                    "statpoints": 0,
+                    "stats": {
+                        "atk": 11,
+                        "def": 11,
+                        "hp": 22,
+                        "spatk": 11,
+                        "spd": 11,
+                        "spdef": 11
+                    },
+                    "totalExp": 0
+                },
+                "hallReset": 1693848166452,
+                "hallStart": 0,
+                "id": "1038950677260550274",
+                "lastRaid": 1693848166452,
+                "level": 4,
+                "listings": [
+                    [
+                        {
+                            "name": "Heavy Cursed Battering Wand",
+                            "stats": {
+                                "atk": 0,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 5,
+                                "spd": -8,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                5,
+                                1,
+                                1,
+                                2,
+                                3,
+                                2
+                            ],
+                            "weaponStyle": 2
+                        },
+                        185
+                    ],
+                    [
+                        {
+                            "name": "Delicate Rune-guarded Exploiting Armor",
+                            "stats": {
+                                "atk": 0,
+                                "def": -3,
+                                "hp": -4,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 15
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                3,
+                                2,
+                                2,
+                                1,
+                                1,
+                                3
+                            ],
+                            "weaponStyle": 0
+                        },
+                        181
+                    ],
+                    [
+                        {
+                            "name": "Cumbersome Enchanted Prospering Staff",
+                            "stats": {
+                                "atk": -2,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 3,
+                                "spd": -4,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                0,
+                                2,
+                                3,
+                                0,
+                                1,
+                                1
+                            ],
+                            "weaponStyle": 2
+                        },
+                        90
+                    ],
+                    [
+                        {
+                            "name": "Risky Hefty Belittling Guard Clothing",
+                            "stats": {
+                                "atk": 0,
+                                "def": 22,
+                                "hp": -14,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 13
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                2,
+                                3,
+                                1,
+                                1,
+                                2,
+                                2
+                            ],
+                            "weaponStyle": 0
+                        },
+                        198
+                    ]
+                ],
+                "marketRestock": 1693848166452,
+                "name": "Untitled Discord RPG Official Server",
+                "points": 0,
+                "raid": {
+                    "completion": 0,
+                    "leader": {
+                        "equipment": {
+                            "name": "Energized Looming Outfit",
+                            "stats": {
+                                "atk": 0,
+                                "def": 1,
+                                "hp": 0,
+                                "spatk": 4,
+                                "spd": 10,
+                                "spdef": 1
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                1,
+                                0,
+                                3,
+                                4,
+                                3,
+                                3
+                            ],
+                            "weaponStyle": 0
+                        },
+                        "name": "Dilug",
+                        "unit": {
+                            "abilities": [
+                                {
+                                    "accuracy": 90,
+                                    "action_type": "attack",
+                                    "critical": 0,
+                                    "damage_type": "atk",
+                                    "damage_val": 10,
+                                    "faction": -1,
+                                    "name": "Beat Down",
+                                    "numHits": 6,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "targetType": 1
+                                },
+                                {
+                                    "action_type": "stats",
+                                    "effects": [
+                                        {
+                                            "stat": "def",
+                                            "target": "2",
+                                            "value": -1
+                                        }
+                                    ],
+                                    "name": "Glare",
+                                    "speed": 1,
+                                    "statChangeCount": 1
+                                },
+                                {
+                                    "action_type": "guard",
+                                    "counter_type": "def",
+                                    "counter_val": 20,
+                                    "guard_type": "def",
+                                    "guard_val": 20,
+                                    "name": "Counter Stance",
+                                    "speed": 3,
+                                    "success_level": 90
+                                },
+                                {
+                                    "accuracy": 90,
+                                    "action_type": "attack",
+                                    "critical": 0,
+                                    "damage_type": "atk",
+                                    "damage_val": 10,
+                                    "faction": -1,
+                                    "name": "Beat Down",
+                                    "numHits": 6,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "targetType": 1
+                                }
+                            ],
+                            "abilitypoints": 0,
+                            "combatStyle": "0",
+                            "cpu": true,
+                            "exp": 0,
+                            "faction": "-1",
+                            "gear": 0,
+                            "id": "raidBoss",
+                            "inventory": [
+                                {
+                                    "name": "Energized Looming Outfit",
+                                    "stats": {
+                                        "atk": 0,
+                                        "def": 1,
+                                        "hp": 0,
+                                        "spatk": 4,
+                                        "spd": 10,
+                                        "spdef": 1
+                                    },
+                                    "type": "gear",
+                                    "typePerks": [
+                                        1,
+                                        0,
+                                        3,
+                                        4,
+                                        3,
+                                        3
+                                    ],
+                                    "weaponStyle": 0
+                                }
+                            ],
+                            "level": 50,
+                            "lives": 1,
+                            "name": "Dilug",
+                            "passives": [
+                                {
+                                    "id": 7,
+                                    "rank": 4
+                                },
+                                {
+                                    "id": 4,
+                                    "rank": 0
+                                },
+                                {
+                                    "id": 8,
+                                    "rank": 0
+                                }
+                            ],
+                            "race": "0",
+                            "statpoints": 0,
+                            "stats": {
+                                "atk": 48,
+                                "def": 70,
+                                "hp": 80,
+                                "spatk": 35,
+                                "spd": 81,
+                                "spdef": 56
+                            },
+                            "totalExp": 0
+                        }
+                    },
+                    "missions": [
+                        [
+                            {
+                                "type": 3
+                            },
+                            {
+                                "type": 2
+                            }
+                        ],
+                        [
+                            {
+                                "type": 1
+                            },
+                            {
+                                "type": 2
+                            }
+                        ],
+                        [
+                            {
+                                "type": 1
+                            }
+                        ]
+                    ]
+                },
+                "regions": [
+                    "Tundra",
+                    "Forest"
+                ],
+                "reputations": {
+                    "163809334852190208": 4,
+                    "207680443200307201": 9,
+                    "388549749269069849": 2,
+                    "403036391673430016": 107
+                },
+                "resources": {
+                    "food": [
+                        80,
+                        80
+                    ],
+                    "minerals": [
+                        71,
+                        80
+                    ],
+                    "wood": [
+                        79,
+                        80
+                    ]
+                },
+                "taskList": [
+                    {
+                        "description": "A terrible storm has rolled into town unexpectedly",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Dangerous Storm",
+                        "repReward": 1.0588235294117647,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 0.5,
+                                "solution": "Shove away",
+                                "solutionDesc": "Push people out of harms way of the storm"
+                            },
+                            "def": {
+                                "multi": 1,
+                                "solution": "Shield people",
+                                "solutionDesc": "Provide cover for people caught out in the open"
+                            },
+                            "hp": {
+                                "multi": 0.75,
+                                "solution": "Bring groups to safety",
+                                "solutionDesc": "Round up groups of people and carry them inside"
+                            },
+                            "spatk": {
+                                "multi": 0.5,
+                                "solution": "Combat the storm",
+                                "solutionDesc": "Use supernatural abilities to fight the storm"
+                            },
+                            "spd": {
+                                "multi": 1,
+                                "solution": "Bring individuals to safety ",
+                                "solutionDesc": "Use your speed to run through town, urging people to take cover and leading them to shelter"
+                            },
+                            "spdef": {
+                                "multi": 0.5,
+                                "solution": "Protective magic",
+                                "solutionDesc": "Use supernatural abilities to protect the towns people from the storm"
+                            }
+                        },
+                        "suggestedSolutionPrompt": "The storm seems to be supernatural in nature, think of ways you can protect and shelter others without using magic.",
+                        "taskPrompt": "The townsfolk need to be protected!"
+                    },
+                    {
+                        "description": "The cattle of the town have gotten loose! They've spread themselves all around the town.",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Cattle Round Up",
+                        "repReward": 1.0588235294117647,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 0.5,
+                                "solution": "Scare with attacks",
+                                "solutionDesc": "Scare the cattle back to their pens by using intimidating attacks."
+                            },
+                            "def": {
+                                "multi": 0.5,
+                                "solution": "Wear them out",
+                                "solutionDesc": "Resist their attempts to flee until they tire and can be easily led back to their pens."
+                            },
+                            "hp": {
+                                "multi": 0.5,
+                                "solution": "Carry them all back",
+                                "solutionDesc": "Collect the cattle by lifting them and return them to their pens."
+                            },
+                            "spatk": {
+                                "multi": 1,
+                                "solution": "Lure with magic",
+                                "solutionDesc": "Use powerful magic to scare the cattle back into their pens."
+                            },
+                            "spd": {
+                                "multi": 0.75,
+                                "solution": "Catch them one by one",
+                                "solutionDesc": "Use your agility to catch each one individually and return them to their pen."
+                            },
+                            "spdef": {
+                                "multi": 1,
+                                "solution": "Block their escape",
+                                "solutionDesc": "Use magic to set up blockades so that the cattle have no where to run."
+                            }
+                        },
+                        "suggestedSolutionPrompt": "The cattle are numerous and very spread out. It might be easier to stop the cattle with something other than your physical body.",
+                        "taskPrompt": "Determine the best way to get the cattle back into their pens."
+                    },
+                    {
+                        "description": "A member of the town would like some assistance in rebuilding their home after the last storm.",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Building Repair",
+                        "repReward": 1.0588235294117647,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 1,
+                                "solution": "Use brute strength",
+                                "solutionDesc": "Use your strength to rebuild the house efficiently. "
+                            },
+                            "def": {
+                                "multi": 0.75,
+                                "solution": "Provide foundation",
+                                "solutionDesc": "Rely on your constitution to hold things in place while others work on the house's structure."
+                            },
+                            "hp": {
+                                "multi": 1,
+                                "solution": "Work tirelessly",
+                                "solutionDesc": "Use you perseverance to work nonstop on rebuilding the house."
+                            },
+                            "spatk": {
+                                "multi": 0.5,
+                                "solution": "Rebuild with magic",
+                                "solutionDesc": "Use supernatural forces to manipulate the pieces of the house back into place."
+                            },
+                            "spd": {
+                                "multi": 0.5,
+                                "solution": "Work hastily",
+                                "solutionDesc": "Use your dexterity to be everywhere at once, working on the house as quickly as possible."
+                            },
+                            "spdef": {
+                                "multi": 0.5,
+                                "solution": "Stabilize with magic",
+                                "solutionDesc": "Use supernatural forces to protect and stabilize the house while others work on the house's structure."
+                            }
+                        },
+                        "suggestedSolutionPrompt": "Physical strength would be helpful in taking care of the many tasks need for construction",
+                        "taskPrompt": "Determine the best way to help them reconstruct their home"
+                    }
+                ],
+                "taskRestock": 1693848166452,
+                "trainingRestock": 1693848166452
+            },
+            "location": "tasks",
+            "temp": {
+                "currentTask": {
+                    "description": "A member of the town would like some assistance in rebuilding their home after the last storm.",
+                    "expReward": 0.5,
+                    "goldReward": 0.5,
+                    "multiThresh": 0.75,
+                    "name": "Building Repair",
+                    "repReward": 1.0588235294117647,
+                    "solutionMap": {
+                        "atk": {
+                            "multi": 1,
+                            "solution": "Use brute strength",
+                            "solutionDesc": "Use your strength to rebuild the house efficiently. "
+                        },
+                        "def": {
+                            "multi": 0.75,
+                            "solution": "Provide foundation",
+                            "solutionDesc": "Rely on your constitution to hold things in place while others work on the house's structure."
+                        },
+                        "hp": {
+                            "multi": 1,
+                            "solution": "Work tirelessly",
+                            "solutionDesc": "Use you perseverance to work nonstop on rebuilding the house."
+                        },
+                        "spatk": {
+                            "multi": 0.5,
+                            "solution": "Rebuild with magic",
+                            "solutionDesc": "Use supernatural forces to manipulate the pieces of the house back into place."
+                        },
+                        "spd": {
+                            "multi": 0.5,
+                            "solution": "Work hastily",
+                            "solutionDesc": "Use your dexterity to be everywhere at once, working on the house as quickly as possible."
+                        },
+                        "spdef": {
+                            "multi": 0.5,
+                            "solution": "Stabilize with magic",
+                            "solutionDesc": "Use supernatural forces to protect and stabilize the house while others work on the house's structure."
+                        }
+                    },
+                    "suggestedSolutionPrompt": "Physical strength would be helpful in taking care of the many tasks need for construction",
+                    "taskPrompt": "Determine the best way to help them reconstruct their home"
+                }
+            }
+        }
+    }
+]

@@ -1133,6 +1133,7 @@ module.exports = {
                                                                         attacker.choosenAbility = -2
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
                                                                         attacker.staticData.lives = 1
+                                                                        attacker.records.livesLost++
                                                                         if(attacker.staticData.cpu){
                                                                             processMobRewards(attacker,session)
                                                                         }
@@ -1367,7 +1368,8 @@ module.exports = {
                                                             target.target = -1
                                                             target.choosenAbility = -2
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " was defeated!")
-                                                            target.staticData.lives = 3
+                                                            target.staticData.lives = 1
+                                                            target.records.livesLost++
                                                             if(target.staticData.cpu){
                                                                 processMobRewards(target,session)
                                                             }
@@ -1413,6 +1415,7 @@ module.exports = {
                                                                 attacker.choosenAbility = -2
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
                                                                 attacker.staticData.lives = 1
+                                                                attacker.records.livesLost++
                                                                 if(attacker.staticData.cpu){
                                                                     processMobRewards(target,session)
                                                                 }
@@ -3319,7 +3322,7 @@ module.exports = {
                 return [help,missions,travel]
 
             case "tavern":
-                let menu = tavernOptions
+                let menu = clone(tavernOptions)
                 
                 let lifeDifference = 3 - session.session_data.player.lives
                 for(var i = lifeDifference;i > 0; i--){
@@ -3330,6 +3333,7 @@ module.exports = {
                         value: "lives_" + i,
                     })
                 }
+
                 const orders = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
@@ -3565,7 +3569,14 @@ module.exports = {
         const embed = new MessageEmbed()
         embed.setColor("#7289da")
         embed.setTitle(session.session_data.temp.currentTask.name)
-        embed.addField("Task Details",session.session_data.temp.currentTask.description + "\n\n" + session.session_data.temp.currentTask.taskPrompt)
+        embed.addField("Task Details",session.session_data.temp.currentTask.description)
+        let promptText = ""
+        promptText += session.session_data.temp.currentTask.taskPrompt
+        for(s in session.session_data.temp.currentTask.solutionMap){
+            let statSol = session.session_data.temp.currentTask.solutionMap[s]
+            promptText += "**" + statSol.solution + "**\n" + statSol.solutionDesc + "\n\n"
+        }
+        embed.addField("Task Prompt",promptText)
         return [embed]
     },
     populateTasksControls(session){
@@ -3595,7 +3606,7 @@ module.exports = {
             let statSol = session.session_data.temp.currentTask.solutionMap[s]
             solutionList.push({
                 label: statSol.solution,
-                description: statSol.solutionDesc,
+                description: "(" + s.toLocaleUpperCase() + ")",
                 value: s,
             })
         }

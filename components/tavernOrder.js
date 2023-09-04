@@ -15,6 +15,10 @@ module.exports = {
             if(interaction.values[0].split("_")[0] == "lives"){
                 if(session.session_data.player.gold >= parseInt(interaction.values[0].split("_")[1]) * 15){
                     session.session_data.player.lives += parseInt(interaction.values[0].split("_")[1])
+
+                    session.session_data.player.gold -= parseInt(interaction.values[0].split("_")[1]) * 15
+                } else {
+                    interaction.reply({ content: "You can not afford this purchase!", ephemeral: true });
                 }
             } else if(session.session_data.player.gold >= parseInt(interaction.values[0].split("_")[2])){
                 let now = new Date();
@@ -40,6 +44,8 @@ module.exports = {
                 }
                 
                 session.session_data.player.gold -= parseInt(interaction.values[0].split("_")[2])
+            } else {
+                interaction.reply({ content: "You can not afford this purchase!", ephemeral: true });
             }
 
             interaction.update({

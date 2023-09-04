@@ -449,11 +449,11 @@ module.exports = {
                             level:townData.level * 10,
                             totalExp:0,
                             stats:{
-                                "hp":50,
+                                "hp":20,
                                 "atk":0,
-                                "def":50,
+                                "def":30,
                                 "spatk":0,
-                                "spdef":50,
+                                "spdef":30,
                                 "spd":0
                             }
                         }
