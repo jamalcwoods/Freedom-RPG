@@ -183,8 +183,8 @@ function calculateAbilityCost(ability,weapon,race){
                 4:2.5
             }[ability.speed] * weights.speed
 
-            if(ability.numHits >  1){
-                value *= (ability.numHits * 1.125) * weights.numHits
+            if(ability.numHits > 1){
+                value *=  Math.pow(1.8,ability.numHits) * weights.numHits
             } else {
                 value *= ability.numHits * weights.numHits
             }
@@ -195,8 +195,8 @@ function calculateAbilityCost(ability,weapon,race){
 
             value *= {
                 1:1,
-                2:3,
-                3:2.5
+                2:3.5,
+                3:3
             }[ability.targetType]
 
             if(ability.accuracy <= 100){
@@ -1191,6 +1191,14 @@ module.exports = {
         let fighterStats = clone(fighter.stats)
         let fWeapon = null;
         let fGear = null;
+        let fDiscrim = ""
+        let fTarget = null
+        if(fighter.discrim){
+            fDiscrim = fighter.discrim
+        }
+        if(fighter.target){
+            fTarget = fighter.target
+        }
         if(fighter.inventory){
             if(fighter.gear != undefined){
                 fGear = fighter.inventory[fighter.gear]
@@ -1219,12 +1227,29 @@ module.exports = {
                 }
             }
         }
+
+        let discriminator = ""
+        if(fDiscrim  == ""){
+            for(var i = 0; i < 6;i++){
+                discriminator += Math.floor(Math.random() * 10)
+            }
+        } else {
+            discriminator = fDiscrim
+        }
+
+        let target = -1
+        if(fTarget != null){
+            target = fTarget
+        }
+        
         let fighterData = {
             weapon:fWeapon,
             gear:fGear,
             alive:true,
             forfeit:false,
             index:index,
+            discriminator:discriminator,
+            currentTarget:target,
             staticData:fighter,
             liveData:{
                 stats:fighterStats,
@@ -1388,39 +1413,47 @@ module.exports = {
                                     if(fighters.length == 2){
                                         fighter.target = [1,0][fighter.index]
                                     } else {
-                                        if(fighter.team != null){
-                                            let targetI;
-                                            if(forAlly){
-                                                let teamCount = 0;
-                                                for(f of fighters){
-                                                    if(f.alive && f.team == fighter.team){
-                                                        teamCount++
+                                        if(fighter.currentTarget == -1){
+                                            if(fighter.team != null){
+                                                let targetI;
+                                                if(forAlly){
+                                                    let teamCount = 0;
+                                                    for(f of fighters){
+                                                        if(f.alive && f.team == fighter.team){
+                                                            teamCount++
+                                                        }
                                                     }
-                                                }
-                                                if(teamCount > 1){
-                                                    targetI = Math.floor(Math.random() * fighters.length)
-                                                    while(targetI == fighter.index || fighters[targetI].team != fighter.team || fighters[targetI].alive == false){
+                                                    if(teamCount > 1){
                                                         targetI = Math.floor(Math.random() * fighters.length)
-                                                    } 
+                                                        while(targetI == fighter.index || fighters[targetI].team != fighter.team || fighters[targetI].alive == false){
+                                                            targetI = Math.floor(Math.random() * fighters.length)
+                                                        } 
+                                                    } else {
+                                                        targetI = Math.floor(Math.random() * fighters.length)
+                                                        while(targetI == fighter.index || fighters[targetI].alive == false){
+                                                            targetI = Math.floor(Math.random() * fighters.length)
+                                                        } 
+                                                    }
                                                 } else {
                                                     targetI = Math.floor(Math.random() * fighters.length)
-                                                    while(targetI == fighter.index || fighters[targetI].alive == false){
+                                                    while(targetI == fighter.index || fighters[targetI].team == fighter.team || fighters[targetI].alive == false){
                                                         targetI = Math.floor(Math.random() * fighters.length)
-                                                    } 
+                                                    }
                                                 }
+                                                fighter.target = targetI
                                             } else {
-                                                targetI = Math.floor(Math.random() * fighters.length)
-                                                while(targetI == fighter.index || fighters[targetI].team == fighter.team || fighters[targetI].alive == false){
+                                                let targetI = Math.floor(Math.random() * fighters.length)
+                                                while(targetI == fighter.index || fighters[targetI].alive == false){
                                                     targetI = Math.floor(Math.random() * fighters.length)
                                                 }
+                                                fighter.target = targetI
                                             }
-                                            fighter.target = targetI
                                         } else {
-                                            let targetI = Math.floor(Math.random() * fighters.length)
-                                            while(targetI == fighter.index || fighters[targetI].alive == false){
-                                                targetI = Math.floor(Math.random() * fighters.length)
+                                            for(var x = 0; x < fighters.length;x++){
+                                                if(fighters[x].discriminator == currentTarget){
+                                                    fighter.target = x 
+                                                }
                                             }
-                                            fighter.target = targetI
                                         }
                                     }
                                     nextAction = fighter.index + "_" + abilityData.name + "_" + fighters[fighter.target]
@@ -1447,10 +1480,10 @@ module.exports = {
         switch(item.type){
             case "weapon":
                 data += "Type: " + [
-                    "Melee - Class Synergy: Physical Attacks have higher chance of succeeding when used in succession",
-                    "Ranged - Class Synergy: Gain up to % critical chance based on attack speed priority",
+                    "\nMelee - Class Synergy: Physical Attacks have higher chance of succeeding when used in succession",
+                    "Ranged - Class Synergy: Gain up to 30% critical chance based on ability speed priority",
                     "Spell-Casting - Class Synergy: Critical Special Attacks have a 3x damage multiplier",
-                    "Rune-Based - Class Synergy: Attack hits have a 10% to increase the used offensive stat by 1 stage"
+                    "Rune-Based - Class Synergy: Attack hits have a 15% to increase the used offensive stat by 1 stage"
                 ][item.weaponStyle] +"\n\n"
                 for(s in item.stats){
                     let val = item.stats[s]
@@ -1581,18 +1614,37 @@ module.exports = {
                 unit.abilities = []
                 lastType = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
             }
-            let desiredSpend = Math.ceil(Math.random() * highestCost)
-            if(abilityDict[desiredSpend]){
-                let catalouge = clone(abilityDict[desiredSpend])
-                let chosen;
-                do {
-                    let x = Math.floor(Math.random() * catalouge.length)
-                    chosen = catalouge[x]
-                    catalouge.splice(x,1)
-                } while(chosen.ability.action_type == lastType && catalouge.length > 0)
-                if(!(catalouge.length == 0 && chosen.ability.action_type == lastType)){
-                    unit.abilities.push(chosen.ability)
-                    allowance -= chosen.allowanceCost
+            if(allowance >= 2 && Math.random() < 0.5){
+                let forceTypeOverride = lastType
+                while(forceTypeOverride == lastType){
+                    forceTypeOverride = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
+                }
+                let rngValue = Math.ceil(Math.random() * allowance)
+                let negRngValue = Math.ceil(Math.random() * Math.ceil(allowance * 0.25))
+                rngValue += negRngValue
+                let newData = {
+                    baseVal: 25 * rngValue,
+                    conSteps: negRngValue,
+                    forceType: forceTypeOverride,
+                    forceStats: false
+                }
+                let ability = generateRNGAbility(newData)
+                allowance -= rngValue
+                unit.abilities.push(ability)
+            } else {
+                let desiredSpend = Math.ceil(Math.random() * highestCost)
+                if(abilityDict[desiredSpend]){
+                    let catalouge = clone(abilityDict[desiredSpend])
+                    let chosen;
+                    do {
+                        let x = Math.floor(Math.random() * catalouge.length)
+                        chosen = catalouge[x]
+                        catalouge.splice(x,1)
+                    } while(chosen.ability.action_type == lastType && catalouge.length > 0)
+                    if(!(catalouge.length == 0 && chosen.ability.action_type == lastType)){
+                        unit.abilities.push(chosen.ability)
+                        allowance -= chosen.allowanceCost
+                    }
                 }
             }
         }

@@ -62,3 +62,8 @@ X Defeated Raid Leader Benefits
 X Alternate Explore Options
     - External Town Request - Combat instance but goal isn't to just defeat an enemy, rewards high reputation
     - Internal Town Request - Combat instance that rolls reputation to reset town task eligibility 
+X Exponential Pricing for multi hit moves
+X Exponential Pricing for multi enemy moves
+X Enemies Generate moves
+X Weaken "Wounded Explorer"
+X Enemy Targeting 

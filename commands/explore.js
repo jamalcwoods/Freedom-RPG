@@ -578,7 +578,7 @@ module.exports = {
             
                         fighters = [
                             playerData,
-                            simulateCPUSPAssign(woundedUnit,townData.level * 60,wallScalar),
+                            simulateCPUSPAssign(woundedUnit,townData.level * 6,wallScalar),
                             simulateCPUSPAssign(clone(enemy),townData.level * 50,enemyScalar),
                             simulateCPUSPAssign(clone(enemy),townData.level * 50,enemyScalar)
                         ]

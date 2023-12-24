@@ -50,6 +50,8 @@ module.exports = {
                 }
             }
         }
+
+        // REVISIT - AUTO TARGETING LAST OPPONENT FROM MULTI BATTLE
         // for(var i = 0;i < session.session_data.fighters.length;i++){
         //     let fighter = session.session_data.fighters[i]
         //     if(!fighter.alive){
@@ -59,6 +61,7 @@ module.exports = {
         // for(var i = 0;i < session.session_data.fighters.length;i++){
         //     session.session_data.fighters[i].index = i
         // }
+        
         if(session.session_data.completed){
             if(session.session_data.options.progressiveCombat != false){
                 if(session.session_data.options.quest){
