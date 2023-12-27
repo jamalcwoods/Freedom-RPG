@@ -40,7 +40,7 @@ module.exports = {
                 addSession:newSession
             })
         } else {
-            interaction.reply({ content: 'Your inventory is empty', ephemeral: true });
+            interaction.reply({ content: '```Your inventory is empty\n\nYou can add things to your inventory by using gold to buy weapons or gear from the market.\n\nGold can be earned by using the /explore command and fighting enemies in the wild```', ephemeral: true });
         }
 	},
 };

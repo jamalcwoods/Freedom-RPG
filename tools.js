@@ -297,9 +297,9 @@ function formatTown(town){
         town.level++
         town.dungeonClear = false
     } else if(resourceCheck && town.points < town.level * 30){
-        town.resources.food[0] -= Math.floor(town.resources.food[1] * 0.1)
-        town.resources.wood[0] -= Math.floor(town.resources.wood[1] * 0.1)
-        town.resources.minerals[0] -= Math.floor(town.resources.minerals[1] * 0.1)
+        town.resources.food[0] -= Math.ceil(town.resources.food[1] * 0.1)
+        town.resources.wood[0] -= Math.ceil(town.resources.wood[1] * 0.1)
+        town.resources.minerals[0] -= Math.ceil(town.resources.minerals[1] * 0.1)
         town.points += Math.ceil((town.level * 30) * 0.1)
         if(town.points > town.level * 30){
             town.points = town.level * 30
@@ -1341,9 +1341,13 @@ module.exports = {
                             fighterData.liveData.statChanges.spdef += b.value
                             break;
 
+                        case "healing":
+                            fighterData.liveData.healing += b.value
+                            break;
+
                         case "random":
                             let stats = ["atk","spatk","def","spdef","spd"]
-                            fighterData.liveData.statChanges[Math.floor(Math.random() * stats.length)] += b.value
+                            fighterData.liveData.statChanges[stats[Math.floor(Math.random() * stats.length)]] += b.value
                             break;
                     }
                 }
@@ -1450,7 +1454,7 @@ module.exports = {
                                             }
                                         } else {
                                             for(var x = 0; x < fighters.length;x++){
-                                                if(fighters[x].discriminator == currentTarget){
+                                                if(parseInt(fighters[x].discriminator) == fighter.currentTarget){
                                                     fighter.target = x 
                                                 }
                                             }

@@ -10,10 +10,13 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	commands.push(command.data.toJSON());
 }
+
+
 const rest = new REST({ version: '9' }).setToken(token);
 
-// rest.put(Routes.applicationGuildCommands(clientId, "1038950677260550274"), { body: commands })
-// 	.then(() => console.log('Successfully registered application commands.'))
+
+// rest.put(Routes.applicationGuildCommands(clientId, "1038950677260550274"), { body: [] })
+// 	.then(() => console.log('Successfully deleted all guild commands.'))
 // 	.catch(console.error);
 
 rest.put(

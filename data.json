@@ -2100,8 +2100,8 @@
   },
   "tavernOptions":[{
       "label": "Tavern Special",
-      "description": "Random booster for 30 minutes - 20 gold",
-      "value": "special_1_50_0.5"
+      "description": "Random 2 Stage booster for 30 minutes - 50 gold",
+      "value": "random_2_50_0.5"
   },{
       "label": "Assassin's Asparagus",
       "description": "1 Stage Speed booster for 1 hour - 50 gold",
@@ -2124,8 +2124,8 @@
       "value": "spdefense_1_50_1"
   },{
       "label": "Frontliner's Flapjacks",
-      "description": "2.5% Health Regeneration for 1 hour - 50 gold",
-      "value": "healing_2.5_50_1"
+      "description": "5% Health Regeneration for 1 hour - 50 gold",
+      "value": "healing_5_50_1"
   }],
   "scoreModifiers":{
     "kills":50,
@@ -2532,7 +2532,7 @@
     },
     "jobs":{
       "title":"Meeting Hall",
-      "info":"In this facility you can view the town’s progression towards the next level. You can also assign yourself a different job to help the town gain resources needed to level up. Once the point threshold is reached, resources are maxed, and the respective dungeon level is cleared the town will level up.\n\nWhile a town’s resources are maxed it will generate town points over time in exchange for a small portion of resources. Additionally, failing to defend your town from the daily raid will result in a loss of town points. To learn about raids, it’s recommended you visit the Militia Hall"
+      "info":"In this facility you can view the town’s progression towards the next level. You can also assign yourself a different job to help the town gain resources needed to level up. Once the point threshold is reached, resources are maxed, and the respective dungeon level is cleared, the town will level up.\n\nWhile a town’s resources are maxed it will generate town points over time in exchange for a small portion of resources. Additionally, failing to defend your town from the daily raid will result in a loss of town points. To learn about raids, it’s recommended you visit the Militia Hall"
     },
     "defense":{
       "title":"Militia Hall",

@@ -434,6 +434,7 @@ module.exports = {
                 switch(extMissionType){
                     case 0: 
                         let woundedUnit = {
+                            discrim:1234,
                             object: true,
                             name:  "Wounded Explorer",
                             id: "explorer",
@@ -472,6 +473,7 @@ module.exports = {
                         switch(Math.floor(Math.random() * 3)){
                             case 0:
                                 enemy = {
+                                    target:1234,
                                     name:"Enraged Petrite",
                                     id:Math.floor(Math.random() * 1000),
                                     cpu:true,
@@ -506,6 +508,7 @@ module.exports = {
                                 break;
                             case 1:
                                 enemy = {
+                                    target:1234,
                                     name:"Fiendish Goblin",
                                     id:Math.floor(Math.random() * 1000),
                                     cpu:true,
@@ -540,6 +543,7 @@ module.exports = {
                                 break;
                             case 2:
                                 enemy = {
+                                    target:1234,
                                     name:"Giant Spider",
                                     id:Math.floor(Math.random() * 1000),
                                     cpu:true,

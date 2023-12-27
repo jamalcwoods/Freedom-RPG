@@ -504,8 +504,8 @@ module.exports = {
                                 fighter.staticData.achievements.abilitiesUsed += fighter.records.attacks
                                 fighter.staticData.achievements.abilitiesUsed += fighter.records.guards
                                 fighter.staticData.achievements.abilitiesUsed += fighter.records.statChanges
-                                if(fighter.staticData.achievements.strongestAttack < fighter.records.strongestAttack){
-                                    fighter.staticData.achievements.strongestAttack = fighter.records.strongestAttack
+                                if(fighter.staticData.achievements.strongestAttack < fighter.records.strongestStrike){
+                                    fighter.staticData.achievements.strongestAttack = fighter.records.strongestStrike
                                 }
                                 
 

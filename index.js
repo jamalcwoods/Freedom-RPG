@@ -654,7 +654,8 @@ setInterval(() => {
                                 "lockStatTypes": false,
                                 "baseVal": 100,
                                 "types": [
-                                    "gear"
+                                    "gear",
+                                    "weapon"
                                 ]
                             }
                         }
