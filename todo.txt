@@ -67,3 +67,4 @@ X Exponential Pricing for multi enemy moves
 X Enemies Generate moves
 X Weaken "Wounded Explorer"
 X Enemy Targeting 
+- Add thumbnail of user to embeds of sessions that they are in control of 

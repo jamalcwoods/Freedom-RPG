@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { populateQuestConsole } = require("../sessionTools.js")
 const { getPotentialData, updatePotentialData } = require("../firebaseTools.js")
 const { templates } = require ("../data.json")
+const { clone } = require ("../tools.js")
 
 
 module.exports = {
@@ -29,10 +30,9 @@ module.exports = {
                         quest_id:0,
                         quest:{},
                         questStep:0,
-                        player:templates.emptyPlayerData
+                        player:clone(templates.emptyPlayerData)
                     }
                 }
-                console.log(bonus)
                 if(bonus >= 15){
                     newSession.session_data.player.level = 5
                     newSession.session_data.player.abilitypoints = bonus

@@ -128,7 +128,7 @@ module.exports = {
                                         }
                                 })  
                         } else {
-                                interaction.reply({ content: "This user does not have an account", ephemeral: true });   
+                                interaction.reply({ content: "This user does not have an account, they must do the `/start` command to create one", ephemeral: true });   
                         }
                 })
         }
