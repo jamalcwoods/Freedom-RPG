@@ -402,7 +402,7 @@ module.exports = {
                                     }
                                 ],
                                 dialogue:[
-                                    "When dealing damage with an attack, the damage will be reduced depending on the stat that increased the damage and the respective defensive stat of your target.\n\nAttacks made stronger by your atk stat are reduced by an enemy's def stat\nAttacks made stronger by your spatk stat are reduced by an enemy's spdef stat\n\nWhen in combat, you can determine a fighter's higher defensive stat by looking at the color of their health bar\n\n🟪 = spdef is higher\n🟫 = def is higher\n🟩 = both stats are relatively the same\n\nCheck your abilities by pressing 'My Fighter' and then use this knowledge to defeat the practice dummies in less than 3 turns"
+                                    "When dealing damage with an attack, the damage will be reduced depending on the stat that increased the damage and the respective defensive stat of your target.\n\nAttacks made stronger by your atk stat are reduced by an enemy's def stat\nAttacks made stronger by your spatk stat are reduced by an enemy's spdef stat\n\nWhen in combat, you can determine a fighter's higher defensive stat by looking at the color of their health bar\n\n🟪 = spdef is higher\n🟫 = def is higher\n🟩 = both stats are relatively the same\n\nCheck your abilities by clicking the 'Non-ability Actions' dropdown and selecting 'View Fighter' and then use this knowledge to defeat the practice dummies in less than 3 turns"
                                 ],
                                 openingDialogue:0
                             })
@@ -529,7 +529,7 @@ module.exports = {
                                     }
                                 ],
                                 dialogue:[
-                                    "Guard abilities allow you to reduce the base damage of incoming attacks for a turn. If an attack's base damage is lowered below 0, it will deal no damage.\n\nYour opponent is going to use an ability that scales off of their atk stat and has a base damage of 30. Click the 'My Fighter' button to determine what ability you should use in order to survive their attack."
+                                    "Guard abilities allow you to reduce the base damage of incoming attacks for a turn. If an attack's base damage is lowered below 0, it will deal no damage.\n\nYour opponent is going to use an ability that scales off of their atk stat and has a base damage of 30. Click the 'Non-ability Actions' dropdown and select 'View Fighter' to determine what ability you should use in order to survive their attack."
                                 ],
                                 openingDialogue:0
                             })
@@ -679,7 +679,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":12,
+                                "hp":10,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -703,7 +703,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":24,
+                                "hp":15,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -771,13 +771,13 @@ module.exports = {
                                     },{
                                         type:0,
                                         data:{
-                                            count:7
+                                            count:5
                                         },
                                         result:"win_1"
                                     }
                                 ],
                                 dialogue:[
-                                    "Using the same ability repeatedly on the same targets causes it to become predictable by enemies. To ensure that you are always able to land your attacks, it is advised that you switch targets or avoid using the same ability back to back.\n\nNote: Unlike attacks, using a guard reduces the success rate of any guard ability you use until you use a non-guard ability\n\nAlternate your abilities to defeat the fighters in 8 turns"
+                                    "Using the same ability repeatedly on the same targets causes it to become predictable by enemies. To ensure that you are always able to land your attacks, it is advised that you switch targets or avoid using the same ability back to back.\n\nNote: Unlike attacks, using a guard reduces the success rate of any guard ability you use until you use a non-guard ability\n\nAlternate your abilities to defeat the fighters in 6 turns"
                                 ],
                                 openingDialogue:0
                             })

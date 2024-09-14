@@ -15,6 +15,7 @@ module.exports = {
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         let subAttributes = ["statchangestat","statchangetarget"]
+        let error = false
         if(session.type == "makeAbility"){
             let args = componentConfig.args
             if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
@@ -22,7 +23,19 @@ module.exports = {
                 let index = session.session_data.editingAttribute.split("|")[1]
                 switch(subatt){
                     case "statchangestat":
-                        session.session_data.ability.effects[index].stat = args[0];
+                        let repeat = false
+                        for(e of session.session_data.ability.effects){
+                            if(e.stat == args[0]){
+                                error = true
+                                repeat = true;
+                                break;
+                            }
+                        }
+                        if(!repeat){
+                            session.session_data.ability.effects[index].stat = args[0];
+                        } else {
+                            interaction.reply({ content: 'Two effects on the same ability can not modify the same stat', ephemeral: true });
+                        }
                         break;
 
                     case "statchangetarget":
@@ -55,17 +68,17 @@ module.exports = {
                 }
             }
 
-            
-
-            interaction.update({
-                content: " ",
-                components: populateAbilityCreatorButtons(session),
-                embeds: populateAbilityCreatorWindow(session)
-            })
-            
-            callback({
-                updateSession:session
-            })
+            if(!error){
+                interaction.update({
+                    content: " ",
+                    components: populateAbilityCreatorButtons(session),
+                    embeds: populateAbilityCreatorWindow(session)
+                })
+                
+                callback({
+                    updateSession:session
+                })
+            }
         }
     }
 }

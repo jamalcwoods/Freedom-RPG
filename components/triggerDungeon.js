@@ -98,7 +98,7 @@ module.exports = {
             }
 
             session.session_data.player.dungeon = newSession.session_id
-            session.session_data.player.dungeonTimer = now.getTime() + 600000
+            session.session_data.player.dungeonTimer = now.getTime() + 900000
 
             let updates = [
                 {

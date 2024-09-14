@@ -1,17 +1,28 @@
 
 const { token } = require("./private/credentials.json");
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton} = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu} = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 const { getPlayerDBData, updatePlayerDBData, getTownDBData, updateTownDBData, updateAllTownDBData, getPotentialData, updatePotentialData } = require("./firebaseTools")
-const { clone, generateRNGEquipment, simulateCPUSPAssign, simulateCPUAbilityAssign, generateRNGAbility, calculateAbilityCost, runExpeditionStep, parseReward, formatTown } = require("./tools.js")
+const { clone, generateRNGEquipment, simulateCPUSPAssign, simulateCPUAbilityAssign, generateRNGAbility, calculateAbilityCost, createAbilityDescription, runExpeditionStep, parseReward, formatTown, weightedRandom, generateEquipmentName } = require("./tools.js")
 const data = require ("./data.json");
 const { populateConformationControls } = require("./sessionTools.js")
-const { off } = require("firebase/database");
-const { callbackify } = require("util");
-const { error } = require("console");
+
 client.once('ready', () => {
 	console.log('Ready!');
+    client.channels.fetch("1232765826231308419").then(channel =>{
+        const embed = new MessageEmbed()
+
+        embed.addFields(
+            { name: 'BOT REBOOT', value: "Time of reboot: " + new Date().toString() + "\n\nPlayer sessions have been cleared, apologies for the inconvenience" }
+        )
+
+        channel.send({
+            content:" ",
+            embeds:[embed]
+        })
+    })
+    botUpdate()
 });
 
 client.commands = new Collection();
@@ -41,19 +52,30 @@ function updateSession(newSession){
             for(p of newSession.user_ids){
                 updatePlayerDBData(p,"session",newSession.session_id)
             }
-            break;
+        }
+
+        if(session.session_data.subSession == newSession.session_id && session.session_data.removeOnUpdate){
+            removeSession(session)
         }
     }
 }
 
+
 function removeSession(newSession){
+    for(var i = 0;i < sessions.length; i++){
+        let session = sessions[i]
+        if(session.session_data.subSession == newSession.session_id && session.session_data.removeOnUpdate){
+            removeSession(session)
+        }
+    }
+
     for(var i = 0;i < sessions.length; i++){
         let session = sessions[i]
         if(session.session_id == newSession.session_id && newSession.type == session.type){
             sessions.splice(i,1) 
-            break;
         }
     }
+
     for(p of newSession.user_ids){
         updatePlayerDBData(p,"session",null)
     }
@@ -149,15 +171,20 @@ client.on('interactionCreate', async interaction => {
                         componentConfig.client = client
                     }
                     if(component.config.getSession){
-                        componentConfig.session = getSessionByID(sessionID)
-                        if(componentConfig.session){
-                            if(componentConfig.session.user_ids.includes(interaction.user.id)){
-                                component.execute(interaction,componentConfig,processResult)
-                            } else {
-                                await interaction.reply({ content: "You are not a user of this component's session!", ephemeral: true });
-                            }
+                        if(component.config.onlySessionID){
+                            componentConfig.session = sessionID
+                            component.execute(interaction,componentConfig,processResult)
                         } else {
-                            await interaction.reply({ content: 'The session for this component no longer exists!', ephemeral: true });
+                            componentConfig.session = getSessionByID(sessionID)
+                            if(componentConfig.session){
+                                if(componentConfig.session.user_ids.includes(interaction.user.id)){
+                                    component.execute(interaction,componentConfig,processResult)
+                                } else {
+                                    await interaction.reply({ content: "You are not a user of this component's session!", ephemeral: true });
+                                }
+                            } else {
+                                await interaction.reply({ content: 'The session for this component no longer exists!', ephemeral: true });
+                            }
                         }
                     } else if(component.config.addToSession){
                         if(getUserSession(interaction.user) == null){
@@ -176,15 +203,29 @@ client.on('interactionCreate', async interaction => {
                                     } else {
                                         interaction.reply({ content: 'The session for this component no longer exists!', ephemeral: true });
                                     }
-                                }
+                                } 
                             })
                         } else {
                             interaction.reply({ content: 'You can not join a session while already in one', ephemeral: true });
                         }
                     } else {
-                        if(component.config.getPlayerData){
+                        if(component.config.getPlayerData && component.config.getGuildTown){
+                            getTownDBData(interaction.guildId,function(town){
+                                getPlayerDBData(interaction.user,function(data){
+                                    componentConfig.playerData = data
+                                    componentConfig.townData = town
+                                    component.execute(interaction,componentConfig,processResult)
+                                })
+                            })
+                        } else if(component.config.getPlayerData){
                             getPlayerDBData(interaction.user,function(data){
                                 componentConfig.playerData = data
+                                component.execute(interaction,componentConfig,processResult)
+                            })
+                            
+                        } else if(component.config.getGuildTown){
+                            getTownDBData(interaction.guildId,function(town){
+                                componentConfig.townData = town
                                 component.execute(interaction,componentConfig,processResult)
                             })
                         } else {
@@ -217,6 +258,9 @@ client.on('interactionCreate', async interaction => {
                             } 
                             if(choices){
                                 commandConfig.choices = choices
+                            }
+                            if(command.config.getClient){
+                                commandConfig.client = client
                             }
                             if(command.config.getPlayerData){
                                 if(command.config.getGuildTown){
@@ -287,6 +331,26 @@ client.on('interactionCreate', async interaction => {
 
 let messageLog = {}
 
+client.on('voiceStateUpdate', async (oldState, newState) =>{
+    if(oldState.channelId != newState.channelId){
+        let voiceState;
+        if(oldState.channelId == null){
+            voiceState = newState
+        } else {
+            voiceState = oldState
+        }
+        let message = {
+            author:voiceState.member,
+            guildId:voiceState.guild.id,
+            channelId:voiceState.channel.id
+        }
+
+        if(!message.author.bot){
+            onPlayerPresence(message.author,null,message)
+        }
+    }
+})
+
 client.on('messageCreate', async message =>{
     if(!message.author.bot && message.guildId){
         onPlayerPresence(message.author,null,message)
@@ -341,20 +405,17 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                 let needToUpdatePlayer = false
                 let needToUpdateTown = false
 
-                if(player.dailyTimer <= now.getTime()){
+                if(player.dailyTimer <= now.getTime() || (player.id == '163809334852190208' && message.content == "daily")){
                     player.dailyTimer = now.getTime() + 86400000
 
                     player.dailyCount++ 
 
 
                     let expAmount;
-                    if(player.level < 5){
+                    if(player.level < 10){
                         expAmount = player.expCap - player.exp
                     } else {
-                        expAmount = Math.ceil(player.expCap * 0.25)
-                        if(expAmount < 400){
-                            expAmount = 400
-                        }
+                        expAmount = Math.ceil(player.expCap * 0.33)
                     }
 
                     let rewardsText = ""
@@ -375,7 +436,18 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                         type:"resource",
                         resource:"gold",
                         resourceName:"gold",
-                        amount: 20
+                        amount: 50 * player.dailyCount
+                    }, player)
+                    player = result[0]
+                    for(msg of result[1]){
+                        rewardsText += msg + "\n"
+                    }
+
+                    result = parseReward({
+                        type:"resource",
+                        resource:"abilitypoints",
+                        resourceName:"ability points",
+                        amount: 10 * player.dailyCount
                     }, player)
                     player = result[0]
                     for(msg of result[1]){
@@ -388,28 +460,63 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                     embed.setColor("#7289da")
                     embed.setTitle("Daily Login #" +  player.dailyCount)
 
-                    embed.addField("Rewards",rewardsText)
+                    embed.addField("Thank You!","The Freedom RPG Team thanks you for your continued support!\n \-Spiné")
+
+                    player.dailyText = rewardsText
+
+                    let actionOptions = [
+                        {
+                            label: "View Challenges",
+                            description: "View your current challenges",
+                            value: "challenges",
+                        },
+                        {
+                            label: "Explore Wild",
+                            description: "Venture out into the wild",
+                            value: "explore",
+                        },
+                        {
+                            label: "Support Town",
+                            description: "Visit this town's militia hall",
+                            value: "militia",
+                        },
+                        {
+                            label: "View Rewards",
+                            description: "View your daily rewards",
+                            value: "rewards",
+                        },
+                        {
+                            label: "View Profile",
+                            description: "View your profile",
+                            value: "profile",
+                        }           
+                    ]
+
+                    let optionRow = new MessageActionRow()
+                    .addComponents(
+                        new MessageSelectMenu()
+                        .setCustomId('dailySelection_NULL')
+                        .setPlaceholder('Choose An Action')
+                        .addOptions(actionOptions)
+                    )
+
                     let removeRow = new MessageActionRow()
                     .addComponents(
                         new MessageButton()
                         .setCustomId('deleteMessage')
                         .setLabel("Dismiss")
                         .setStyle('DANGER'))
-                    .addComponents(
-                        new MessageButton()
-                        .setCustomId('profilePopUp_NULL_' + player.id + '|' + message.author.avatar)
-                        .setLabel("View Stats")
-                        .setStyle('PRIMARY'))
                     client.channels.fetch(message.channelId).then(channel =>{
                         channel.send({
                             embeds:[embed],
-                            components:[removeRow]
+                            components:[optionRow,removeRow]
                         })   
                     })
                 }
 
                 if(player.challengeTimer <= now.getTime()){
-                    player.challengeTimer = now.getTime() + 7200000
+                    //600000
+                    player.challengeTimer = now.getTime() + 600000
                     if(!player.challenges){
                         player.challenges = []
                     }
@@ -449,16 +556,17 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                 }
 
                 if(player.presenceTimer <= now.getTime()){
-                    player.presenceTimer = now.getTime() + 1000
+                    //600000
+                    player.presenceTimer = now.getTime() + 600000
                     let resourcesAdded = 0
                     let resourceMap = ["minerals","wood","food"]
                     if(player.job == "exp"){
-                        let levelUp = player.exp + 25 >= player.expCap
+                        let levelUp = player.exp + 40 >= player.expCap
                         let result = parseReward({
                             type:"resource",
                             resource:"exp",
                             resourceName: "experience",
-                            amount: 25
+                            amount: 40
                         }, player)
                         player = result[0]
                         if(levelUp){
@@ -470,7 +578,6 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             embed.setColor("#7289da")
                             embed.addField("Level Up!",text)
                             
-                            console.log(message)
                             let removeRow = new MessageActionRow()
                             .addComponents(
                                 new MessageButton()
@@ -541,6 +648,10 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             callback()
                         }
                     })
+                } else {
+                    if(callback){
+                        callback()
+                    }
                 }
             } else {
                 if(!result && intervalMsg){
@@ -551,15 +662,13 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                         potential[user.id].count++
                     } else {
                         potential[user.id] = {
-                            count:1,
-                            notif:false
+                            count:1
                         }
                     }
-                    if(!potential[user.id].notif && potential[user.id].count >= 15){
-                        potential[user.id].notif = true
+                    if(potential[user.id].count % 25 == 0){
                         const embed = new MessageEmbed()
                                 embed.setColor("#7289da")
-                                embed.addField("Bonus Achieved!","<@" + user.id + "> can use the /start command to gain an improved start\n*(Start game at level 5 with bonus ability points)*")
+                                embed.addField("Bonus Achieved!","You can use the /start command to gain an improved start\n*(Start game at level 5 with " + potential[user.id].count + " bonus ability/skill points)*")
                                 
                         let removeRow = new MessageActionRow()
                         .addComponents(
@@ -570,6 +679,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
 
                         client.channels.fetch(message.channelId).then(channel=>{
                             channel.send({
+                                content:"<@" + user.id + ">",
                                 embeds:[embed],
                                 components:[removeRow]
                             })
@@ -586,7 +696,29 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
 }
 
 
-setInterval(() => {
+//Interval Tester
+// setInterval(() => {
+//     let val = Math.ceil(50 + Math.random() * 50)
+//     let newData = {
+//         ref:{
+//             type: "rngEquipment",
+//             rngEquipment: {
+//                 scaling: false,
+//                 value:1,
+//                 conStats:1,
+//                 conValue:0.2,
+//                 lockStatTypes: true,
+//                 baseVal: val,
+//                 types: ["gear","weapon"]
+//             }
+//         }
+//     }
+    
+//     let item = generateRNGEquipment(newData)
+//     console.log(val,item)
+// }, 5000)
+
+function botUpdate(){
     getPlayerDBData({id:""},function(players){
         getTownDBData("",function(towns){
             for(town in towns){
@@ -613,7 +745,7 @@ setInterval(() => {
 
                 //Update Raid
                 if(townData.lastRaid < now.getTime()){
-                    if(!townData.bossDefeats){
+                    if(!townData.raid.bossDefeats){
                         townData.points -= townData.level * 7
                         if(townData.points < 0){
                             townData.points = 0
@@ -652,7 +784,7 @@ setInterval(() => {
                                 "value":1,
                                 "conValue": 0,
                                 "lockStatTypes": false,
-                                "baseVal": 100,
+                                "baseVal": 20 * townData.level,
                                 "types": [
                                     "gear",
                                     "weapon"
@@ -660,8 +792,11 @@ setInterval(() => {
                             }
                         }
                     })
+                    let bossName = data.raidBossNames[Math.floor(Math.random()*data.raidBossNames.length)]
+                    bossEquipment.name = bossName + "'s " + bossEquipment.name
                     let boss = {
-                        name:data.raidBossNames[Math.floor(Math.random()*data.raidBossNames.length)],
+                        name:bossName,
+                        tele:0.3,
                         id:"raidBoss",
                         cpu:true,
                         faction:"-1",
@@ -670,7 +805,7 @@ setInterval(() => {
                         exp:0,
                         abilitypoints:0,
                         statpoints:0,
-                        lives:1,
+                        lives:3,
                         abilities:[],
                         inventory:[bossEquipment],
                         weapon: bossEquipment.type == "weapon" ? 0 : null,
@@ -678,12 +813,12 @@ setInterval(() => {
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":30,
-                            "atk":15,
-                            "def":15,
-                            "spatk":15,
-                            "spdef":15,
-                            "spd":15
+                            "hp":50,
+                            "atk":25,
+                            "def":25,
+                            "spatk":25,
+                            "spdef":25,
+                            "spd":25
                         }
                     }
                     let passives = []
@@ -700,8 +835,25 @@ setInterval(() => {
                             rank:Math.floor(Math.random() * 5)
                         })
                     }
-                    boss = simulateCPUAbilityAssign(boss,[],10)
-                    boss = simulateCPUSPAssign(clone(boss),townData.level * 60)
+                    boss = simulateCPUAbilityAssign(boss,[],15 +(townData.level * 1.25))
+                    boss = simulateCPUSPAssign(clone(boss),townData.level * 90)
+
+                    let highestStat;
+                    let highestVal = 0
+                    for(s in boss.stats){
+                        let value = boss.stats[s]
+                        if(s == "hp"){
+                            value *= 0.5
+                        }
+
+                        if(value > highestVal){
+                            highestStat = s
+                            highestVal = value
+                        }
+                    }
+
+                    boss.highestStat = highestStat
+
                     townData.raid = {
                         leader:{
                             name:boss.name,
@@ -740,45 +892,135 @@ setInterval(() => {
                     }
                 }
 
-                //Restock Market
+
+                //Restock Market / Armory
                 if(townData.marketRestock < now.getTime()){
+                    // Market
+                    let regionStatKey = {
+                        "Swamp":"hp",
+                        "Tundra":"atk",
+                        "Desert":"def",
+                        "Islands":"spatk",
+                        "Mountains":"spdef",
+                        "Forest":"spd"
+                    }
+
                     townData.marketRestock = now.getTime() + 86400000
                     townData.listings = []
-                    for(var i = 0; i < 4;i++){
-                        let val = 0.5 + (Math.random() * 2)
+                    for(var i = 0; i < 6;i++){
+                        let val = 0.75 + (Math.random() * 0.5)
                         let newData = {
                             ref:{
                                 type: "rngEquipment",
                                 rngEquipment: {
                                     scaling: false,
                                     value:1,
-                                    conValue:0.25,
+                                    conStats:1,
+                                    conValue:0.2,
                                     lockStatTypes: true,
-                                    baseVal: 15 * townData.level,
-                                    types: i % 2 == 0 ? ["weapon"] : ["gear"]
+                                    baseVal: Math.ceil(val * 10 * townData.level),
+                                    types: i % 2 == 0 ? ["weapon"] : ["gear"],
                                 }
                             }
                         }
-                        newData.ref.rngEquipment.baseVal = Math.ceil(val * newData.ref.rngEquipment.baseVal)
+                    
                         let item = generateRNGEquipment(newData)
-                        townData.listings.push([item,Math.ceil(val * 30 * townData.level)])
+                        for(r of townData.regions){
+                            if(item.stats[regionStatKey[r]] < 0){
+                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 0.8)
+                            } else {
+                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 1.2)
+                            }
+                        }
+                        item.name = generateEquipmentName(item)
+                        townData.listings.push([item,Math.ceil(val * Math.pow(townData.level,Math.log10(40)) * 350)])
                     }
+
+                    // Armory
+                    townData.armorylistings = {
+                        ability:[],
+                        equipment:[]
+                    }
+
+                    let equipmentUpgrades = [
+                        ["hp",1],
+                        ["atk",0.4],
+                        ["def",0.4],
+                        ["spatk",0.4],
+                        ["spdef",0.4],
+                        ["spd",0.75],
+                        ["baseAtk","p",1.2],
+                        ["baseSpAtk","p",1.2],
+                        ["baseDef","p",1.4],
+                        ["baseSpDef","p",1.4]
+                    ]
+
+                    let abilityUpgrades = {
+                        attack:[
+                            "critical",
+                            "damage_val",
+                            "speed",
+                            "numHits",
+                            "recoil",
+                            "accuracy"
+                        ],
+                        guard:[
+                            "guard_val",
+                            "success_level",
+                            "counter_val"
+                        ],
+                        stats:[
+                            "speed",
+                            "focus"
+                        ]
+                    }
+
+                    for(var i = 0; i < 5; i++){
+                        let index = Math.floor(Math.random() * equipmentUpgrades.length)
+                        let upgrade = equipmentUpgrades[index]
+                        let upgradeData = {
+                            stat:upgrade[0],
+                            multi:upgrade[1],
+                            roll:Math.ceil(Math.random() * 5)
+                        }
+                        if(upgrade[1] == "p"){
+                            upgradeData.pow = true
+                            upgradeData.multi = upgrade[2]
+                        }
+                        townData.armorylistings.equipment.push(upgradeData)
+                        equipmentUpgrades.splice(index,1)
+                    }
+
+                    for(var i = 0; i <5; i++){
+                        let type = ["attack","guard","stats"][i % 3]
+                        let index = Math.floor(Math.random() * abilityUpgrades[type].length)
+                        let upgrade = abilityUpgrades[type]
+                        townData.armorylistings.ability.push({
+                            type:type,
+                            stat:abilityUpgrades[type][index],
+                            roll:Math.ceil(Math.random() * 5)
+                        })
+                        abilityUpgrades[type].splice(index,1)
+                    }
+
+                    
                 }
 
                 //Restock Training
                 if(townData.trainingRestock < now.getTime()){
                     townData.trainingRestock = now.getTime() + 86400000
                     townData.availableAbilities = []
-                    for(var i = 0; i < 3;i++){
+                    let inVal = 100 * (townData.level + 1.125)
+                    for(var i = 0; i < 6;i++){
                         let newData = {
-                            baseVal: 40 + (30 * townData.level),
-                            conSteps:Math.floor(townData.level/3),
+                            baseVal: inVal,
                             forceType: ["attack","guard","stats"][i % 3],
                             forceStats: false
                         }
                         let ability = generateRNGAbility(newData)
-                        let val = calculateAbilityCost(ability)/newData.baseVal
-                        townData.availableAbilities.push([ability,Math.ceil(val * 30 * townData.level)])
+                        let ratio = calculateAbilityCost(ability)/inVal
+                        console.log(ratio)
+                        townData.availableAbilities.push([ability,Math.ceil(500 * ratio * Math.pow(townData.level,1.43775056282))])
                     }
                 }
 
@@ -874,10 +1116,49 @@ setInterval(() => {
             messageLog = {}
         })
     })  
+}
+
+setInterval(() => {
+    botUpdate()
 }, 300000);
+
 
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);
 });
+
+// process.on('SIGINT', () => {
+//     client.channels.fetch("1232765826231308419").then(channel =>{
+//         const embed = new MessageEmbed()
+
+//         embed.addFields(
+//             { name: 'MANUAL BOT RESET', value: "Time of reset: " + new Date().toString() + "\n\nPlayer sessions have been cleared, apologies for the inconvenience" }
+//         )
+
+//         channel.send({
+//             content:" ",
+//             embeds:[embed]
+//         }).then(() => {
+//             process.exit()
+//         })
+//     })
+// })
+
+// process.on('SIGHUP', function () {
+//     client.channels.fetch("1232765826231308419").then(channel =>{
+//         const embed = new MessageEmbed()
+
+//         embed.addFields(
+//             { name: 'MANUAL BOT RESET', value: "Time of reset: " + new Date().toString() + "\n\nPlayer sessions have been cleared, apologies for the inconvenience" }
+//         )
+
+//         channel.send({
+//             content:" ",
+//             embeds:[embed]
+//         }).then(() => {
+//             process.exit()
+//         })
+//     })
+// })
 
 client.login(token);

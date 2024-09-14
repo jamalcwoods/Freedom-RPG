@@ -1,8 +1,1378 @@
-const { statChangeStages ,raidPresets, quests, statIncreaseRatios, factionMatchups, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions, tavernOptions } = require("./data.json");
+const { stanceBuffs, statChangeStages ,raidPresets, quests, statIncreaseRatios, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions, tavernOptions, stanceDict ,standardDroptables, regionsEmojis, challengeDict, stanceMatchups } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
-const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
-const { stat } = require("fs");
 const { getTownDBData } = require("./firebaseTools.js")
+const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
+const fs = require('fs');
+
+function getFighterStat(fighter,stat){
+       let rawValue = fighter.liveData.stats[stat] * statChangeStages[fighter.liveData.statChanges[stat]]
+       switch(stat){
+            case "atk":
+                if(fighter.staticData.stance == "atk" && fighter.staticData.stances.atk.upgrades[1] > 0){
+                    let buffData = getStanceBuffValues("atk",fighter.staticData.stances,1)
+                    if(fighter.rageStacks){
+                        rawValue = Math.ceil(rawValue *  (1 + ((buffData.val * fighter.rageStacks)/100)))
+                    }
+                }
+                break;
+            
+            case "spatk":
+                if(fighter.staticData.stance == "spatk" && fighter.staticData.stances.spatk.upgrades[1] > 0){
+                    let buffData = getStanceBuffValues("spatk",fighter.staticData.stances,1)
+                    if(fighter.nonDamaging){
+                        rawValue = Math.ceil(rawValue *  (1 + ((buffData.val * fighter.nonDamaging)/100)))
+                    }
+                }
+                break;
+       }
+       return rawValue
+}
+
+function getStanceBuffValues(stat,stanceData,index){
+    return {
+        val:stanceData[stat].upgrades[index] * stanceBuffs[stat][index].val,
+        baseval:stanceBuffs[stat][index].baseval
+    }
+}
+
+function processStanceGrowth(unit,stat,value){
+    let messages = []
+
+    if(unit.stances && unit.cpu == undefined){
+        unit.stances[stat].points += value
+
+        if(unit.stances[stat].points > 100){
+            if(unit.stances[stat].active){
+                unit.stances[stat].points -= 100
+                if(unit.stances[stat].upgrades[0] + unit.stances[stat].upgrades[1]+ unit.stances[stat].upgrades[2] < 15){
+                    let index = Math.floor(Math.random() * 3)
+                    while(unit.stances[stat].upgrades[index] == 5){
+                        index = Math.floor(Math.random() * 3)
+                    }
+                    unit.stances[stat].upgrades[index]++
+                    messages.push(unit.name + "'s " + stanceBuffs[stat][index].name + " has been increased to rank " + unit.stances[stat].upgrades[index] + "!")
+                } else {
+                    let now = new Date()
+                    unit.stances[stat].surgeTimer = now.getTime() + 900000
+                    messages.push(unit.name + "'s " + stanceDict[stat] + " stance will be improved for the next 15 minutes!")
+                }
+            } else {
+                unit.stances[stat].active = true
+                messages.push(unit.name + " has unlocked the " + stanceDict[stat] + " stance!")
+            }
+        }
+    }
+    return messages
+}
+
+function damageFighter(session,damage,fighter,announce = false,returnDamage = false){
+    fighter.records.timesHit++
+    let messages = []
+    messages = messages.concat(processStanceGrowth(fighter.staticData,"hp",1))
+    if(messages.length > 0){
+        for(m of messages){
+            session.session_data.battlelog.alerts.push(m)
+        }
+    }
+    if(fighter.shieldVal > 0){
+        fighter.shieldVal -= damage
+        damage -= fighter.shieldVal
+        if(damage < 0){
+            fighter.shieldVal = Math.abs(damage)
+            damage = 0
+        } else {
+            fighter.shieldVal = 0
+        }
+    }
+    fighter.liveData.stats.hp -= damage
+    if(fighter.staticData.stance == "atk" && fighter.staticData.stances.atk.upgrades[1] > 0){
+        if(!fighter.rageStacks){
+            fighter.rageStacks = 0
+        }
+        fighter.rageStacks++
+    }
+    if(announce){
+        session.session_data.battlelog.combat.push(fighter.staticData.name + " took " + damage + " damage!")
+    }
+
+    if(returnDamage){
+        return damage
+    }
+}
+
+function populateCombatWindow(session){     
+    let fightData = session.session_data
+    let title = ""
+    if(session.session_data.options.quest){
+        title = session.session_data.options.quest.title
+    } else {
+        if(session.session_data.turn == 0){
+            title += "Waiting to begin"
+        } else {
+            if(session.session_data.completed){
+                title += "Turn #" + session.session_data.turn  + " - Battle Completed"
+            } else {
+                title += "Turn #" + session.session_data.turn 
+            }
+            
+        }
+
+        if(fightData.fighters.length < 3){
+            title += ": " + printFighter(fightData.fighters[0]) + " vs " + printFighter(fightData.fighters[1],false)
+        } else {
+            title += ": Mult-Duel (" + fightData.fighters.length + " combatants)"
+        }
+    }
+    const embed = new MessageEmbed()
+        .setColor("#7289da")
+        .setTitle(title)
+        .setFooter({ text: 'Session #' + session.session_id});
+
+    if(session.session_data.options.quest){
+        embed.addField("Story",session.session_data.options.quest.entryText)
+    }
+
+    for(fighter of fightData.fighters){
+        if(!fighter.hide){
+            if(!fighter.alive){
+                fighter.hide = true
+            }
+            let emojiHealthbar = ""
+            let hpRatio = Math.floor((fighter.liveData.stats.hp / fighter.liveData.maxhp)*8) 
+
+            let teamDict = ["🟢","🔴​","🟠​","🟡","​🔵","🟣"]
+            let character = ""
+            
+            let defVal = fighter.liveData.stats.def * statChangeStages[fighter.liveData.statChanges.def]
+            let spdefVal = fighter.liveData.stats.spdef * statChangeStages[fighter.liveData.statChanges.spdef]
+            if(defVal > spdefVal * 1.25){
+                character = "🟫"
+            } else if(spdefVal > + defVal * 1.25){
+                character = "🟪"
+            } else {
+                character = "🟩"
+            }
+
+            let nodeI = 1
+            for(let i = 1; i <= hpRatio;i++){
+                if(fighter.staticData.weakPoint == fighter.staticData.lootPoint && fighter.staticData.lootPoint == nodeI){
+                    if(nodeI == hpRatio){
+                        emojiHealthbar += "❎"
+                    } else {
+                        emojiHealthbar += "🟧"
+                    }
+                } else  if(fighter.staticData.weakPoint == nodeI){
+                    if(nodeI == hpRatio){
+                        emojiHealthbar += "❎"
+                    } else {
+                        emojiHealthbar += "🟥"
+                    }
+                } else if(fighter.staticData.lootPoint == nodeI){
+                    if(nodeI == hpRatio){
+                        emojiHealthbar += "❎"
+                    } else {
+                        emojiHealthbar += "🟨"
+                    }
+                } else {
+                    emojiHealthbar += character
+                }
+                nodeI++
+            }
+            for(let i = 1; i <= 8 - hpRatio;i++){
+                if(fighter.staticData.weakPoint == nodeI || fighter.staticData.lootPoint == nodeI){
+                    if((fighter.staticData.weakPoint == nodeI && fighter.weakPointHit) || (fighter.staticData.lootPoint == nodeI && fighter.lootPointHit)){
+                        emojiHealthbar += "❌"    
+                    } else {
+                        emojiHealthbar += "🔳"
+                    }
+                } else {
+                    emojiHealthbar += "🔲"
+                }
+                nodeI++
+            }
+            let hearts = ""
+            if(fighter.alive){
+                for(var i = 0; i < fighter.staticData.lives;i++){
+                    hearts += "❤️"
+                }
+            }
+            let fighterDesc = stanceDict[fighter.staticData.stance] + " Stance\n" + fighter.liveData.stats.hp + "/" + fighter.liveData.maxhp + " | " + hearts + "\n" + emojiHealthbar
+            
+            if(fighter.meter != undefined){
+                fighterDesc += "\n"
+                let meterRatio = Math.floor((fighter.meter/30)*8)
+                for(let i = 1; i <= meterRatio;i++){
+                    fighterDesc += "🟦"
+                    nodeI++
+                }
+                for(let i = 1; i <= 8 - meterRatio;i++){
+                    if(fighter.staticData.meterRank < 3){
+                        fighterDesc += "🔲"
+                    } else {
+                        fighterDesc += "🟦"
+                    }
+                    
+                    nodeI++
+                }
+            }
+            
+            if(fighter.staticData.meterRank > 0){
+                if(fighter.staticData.meterRank < 3){
+                    fighterDesc += "\n**x" + fighter.staticData.meterRank + "**"
+                } else {
+                    fighterDesc += "\n**MAX**"
+                }
+            }
+
+            if(!fighter.alive){
+                fighterDesc += "\n💀 **DEAD** 💀"
+            } else if(session.session_data.winners.includes(fighter.staticData.id)){
+                fighterDesc += "\n**Winner**"
+            } else if(fighter.choosenAbility > -1 || fighter.stanceSwitch != undefined){
+                if(fighter.staticData.cpu){
+                    let tele = 0.90
+                    if(fighter.staticData.tele){
+                        tele = fighter.staticData.tele
+                    }
+                    let telegraphed = Math.random() < tele
+                    if(telegraphed){
+                        if(fighter.stanceSwitch){
+                            fighterDesc += "\n**Preparing to switch stance...**"
+                        } else {
+                            switch(fighter.staticData.abilities[fighter.choosenAbility].action_type){
+                                case "attack":
+                                    fighterDesc += "\n**Preparing to attack...**"
+                                    break;
+                                
+                                case "guard":
+                                    fighterDesc += "\n**Preparing to guard...**"
+                                    break;
+
+                                case "stats":
+                                    fighterDesc += "\n**Preparing to modify stats...**"
+                                    break;
+                            }
+                        }
+                    } else {
+                        fighterDesc += "\n**???**"
+                    }
+                } else {
+                    fighterDesc += "\n**Ready**"
+                }
+            } else if (fighter.forfeit){
+                if(fighter.customForfeit){
+                    fighterDesc += "\n**" + fighter.customForfeit + "**"
+                } else {
+                    fighterDesc += "\n**Fled from battle**"
+                }
+            } else if (!fighter.staticData.abilities || fighter.staticData.abilities.length < 1){
+                fighterDesc += "\n*Cannot Act*"
+            } else {
+                fighterDesc += "\n*Choosing next action...*"
+            }
+            if(fighter.team != null){
+                embed.addField(teamDict[fighter.team] + printFighter(fighter) + "\nLvl - " + fighter.staticData.level, fighterDesc, true)
+            } else {
+                embed.addField(fighter.staticData.name + "\nLvl - " + fighter.staticData.level, fighterDesc, true)
+            }
+        }
+    }
+    let logTypes = ["dialogue","combat","alerts","rewards",]
+    let typesC = {
+        "dialogue":"Dialogue",
+        "combat":"Combat",
+        "rewards":"Rewards",
+        "alerts":"Alerts"
+    }
+    for(type of logTypes){
+        if(session.session_data.battlelog[type].length > 0){
+            let lognum = 1
+            let log = ""
+            for(i in session.session_data.battlelog[type]){
+                let action = session.session_data.battlelog[type][i]
+                if(i == session.session_data.battlelog[type].length - 1 && action == "---"){
+                    session.session_data.battlelog[type].splice(i,1)
+                    break;
+                }
+                if((log + action).length > 1024){
+                    embed.addField(
+                        typesC[type] + " Log #" + lognum,
+                        "\n" + log//"```diff\n" + log + "```"
+                    )
+                    lognum++;
+                    log = ""
+                }
+                log += action + "\n"
+                console.log(type + ": " + log.length)
+            }
+            if(lognum == 1){
+                embed.addField(
+                    typesC[type] + " Log",
+                    "\n" + log//"```diff\n" + log + "```"
+                )
+            } else {
+                embed.addField(
+                    typesC[type] + " Log #" + lognum,
+                    "\n" + log//"```diff\n" + log + "```"
+                )
+            }
+        } else {
+            if(type == "combat"){
+                embed.addField(
+                    typesC[type],
+                    "\nWaiting for actions to be declared..."//"```diff\nWaiting for actions to be declared...```"
+                )
+            }
+        }
+    }
+    if(session.session_data.turn == 0){
+        session.session_data.logHistory = []
+        if(session.session_data.battlelog.dialogue != []){
+            session.session_data.logHistory[0] = {}
+            session.session_data.logHistory[0].dialogue = clone(session.session_data.battlelog.dialogue)
+            session.session_data.battlelog.dialogue = []
+        }
+    } else {
+        if(!session.session_data.logHistory[session.session_data.turn - 1]){
+            session.session_data.logHistory[session.session_data.turn - 1] = {}
+        }
+        for(type of logTypes){
+            if(session.session_data.battlelog[type].length > 0){
+                session.session_data.logHistory[session.session_data.turn - 1][type] = clone(session.session_data.battlelog[type])
+            }
+            session.session_data.battlelog[type] = []
+        }
+        fs.writeFile("logs/" + session.session_id + ".json", JSON.stringify(readableLog(session.session_data.logHistory), null, 4),function(){})
+    }
+    return [embed];
+
+}
+
+function populateCombatToQuestTransition(session){
+    const row1 = new MessageActionRow()
+    .addComponents(
+            new MessageButton()
+            .setCustomId('continueQuest_' + session.session_id)
+            .setLabel('Continue Quest')
+            .setStyle('PRIMARY')
+    )
+
+    return [row1]
+}
+
+function populateReturnFromCombat(session,getRankingStats){        
+    if(getRankingStats){
+        let row1;
+        if(session.session_data.fighters[0].alive){
+            row1 = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                .setCustomId('exitCombat_' + session.session_data.options.returnSession + "_" + session.session_data.fighters[0].liveData.stats.hp + "|" + session.session_data.fighters[0].staticData.lives)
+                .setLabel('Exit Combat Session')
+                .setStyle('PRIMARY')
+            )         
+        } else {
+            row1 = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                .setCustomId('exitCombat_' + session.session_data.options.returnSession + "_" + session.session_data.fighters[0].liveData.stats.hp + "|0")
+                .setLabel('Exit Combat Session')
+                .setStyle('PRIMARY')
+            )
+        }
+        if(session.session_data.turn > 0){
+            row1.addComponents(
+                new MessageButton()
+                .setCustomId('sendLogs_' + session.session_id)
+                .setLabel('History')
+                .setStyle('PRIMARY')
+            )
+        }
+        return [row1]
+    } else {
+        let row1 = new MessageActionRow()
+        .addComponents(
+                new MessageButton()
+                .setCustomId('exitCombat_' + session.session_data.options.returnSession)
+                .setLabel('Exit Combat Session')
+                .setStyle('PRIMARY')
+        )
+        return [row1]
+    }
+}
+
+function populateCombatControls(session){   
+    if(session.session_data.completed){
+        const row1 = new MessageActionRow()
+        if(session.session_data.turn > 0){
+            row1.addComponents(
+                new MessageButton()
+                .setCustomId('sendLogs_' + session.session_id)
+                .setLabel('History')
+                .setStyle('PRIMARY')
+            )
+        }
+
+        if(session.session_data.options.settlementBattle == undefined && session.session_data.options.freeExplore && session.session_data.fighters[0].alive){
+            row1.addComponents(
+                new MessageButton()
+                .setCustomId('continueExploration_NULL')
+                .setLabel('Continue Exploring')
+                .setStyle('SUCCESS')
+            )
+        }
+        return [row1]
+    }
+
+    let showName = session.user_ids.length = 1 || session.session_data.options.showAbilityNames
+    const row1 = new MessageActionRow()
+    for(var i = 0; i < 3; i++){
+        if(session.session_data.fighters[0].staticData.abilities[i]){
+            row1.addComponents(
+                new MessageButton()
+                .setCustomId('ability_' + session.session_id + '_' + i)
+                .setLabel(showName == true ? cropString(session.session_data.fighters[0].staticData.abilities[i].name,14) :'Ability ' + (parseInt(i) + 1))
+                .setStyle('SUCCESS'),
+            )
+        }
+        
+    }
+    
+    const row2 = new MessageActionRow()
+    for(var i = 3; i < 6; i++){
+        if(session.session_data.fighters[0].staticData.abilities[i]){
+            row2.addComponents(
+                new MessageButton()
+                .setCustomId('ability_' + session.session_id + '_' + i)
+                .setLabel(showName == true ? cropString(session.session_data.fighters[0].staticData.abilities[i].name,14) :'Ability ' + (parseInt(i) + 1))
+                .setStyle('SUCCESS'),
+            )
+        }
+        
+    }
+
+    let nonAbilityOptions = []
+    if(session.session_data.options.canFlee){
+        nonAbilityOptions.push({
+            label: "Flee from combat",
+            description: "Attempt to flee from combat",
+            value: "flee",
+        })
+    }
+
+    nonAbilityOptions.push({
+        label: "View Fighter",
+        description: "View your fighter's stats",
+        value: "fighter",
+    })
+
+    nonAbilityOptions.push({
+        label: "Empower",
+        description: "Empower your next ability based on your combo meter",
+        value: "empower",
+    })
+
+    nonAbilityOptions.push({
+        label: "Change Stance",
+        description: "Apply a buff while modifying your weaknesses and resistances",
+        value: "stance",
+    })
+
+    nonAbilityOptions.push({
+        label: "View Logs",
+        description: "View combat logs",
+        value: "logs",
+    })
+
+    const row4 = new MessageActionRow()
+
+    if(row2.components.length == 0){
+        row2.addComponents(
+            new MessageSelectMenu()
+                .setCustomId('nonAbilityAction_' + session.session_id)
+                .setPlaceholder('Non-ability Actions')
+                .addOptions(nonAbilityOptions),
+        )
+    } else {
+        row4.addComponents(
+            new MessageSelectMenu()
+                .setCustomId('nonAbilityAction_' + session.session_id)
+                .setPlaceholder('Non-ability Actions')
+                .addOptions(nonAbilityOptions),
+        )
+    }
+    
+    if(session.session_data.livingFighters > 2){
+        let selectionLabels = []
+        for(fighter of session.session_data.fighters){
+            if(fighter.alive){
+                if(session.user_ids.length == 1 && fighter.staticData.id != session.user_ids[0]){
+                    selectionLabels.push({
+                        label: "Target " + fighter.staticData.name,
+                        description: "Set " + fighter.staticData.name + " As Your Target",
+                        value: "" + fighter.index,
+                    })
+                }
+            }
+        }
+
+        const row3 = new MessageActionRow()
+        .addComponents(
+            new MessageSelectMenu()
+                .setCustomId('selectTarget_' + session.session_id)
+                .setPlaceholder('Select a Target')
+                .addOptions(selectionLabels),
+        )
+
+        if(row4.components.length == 0){
+            return [row3,row1,row2]
+        } else {
+            return [row3,row1,row2,row4]
+        }
+    } else {
+        if(row4.components.length == 0){
+            return [row1,row2]
+        } else {
+            return [row1,row2,row4]
+        }
+    }
+}
+
+function respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message){
+    if(message){
+        message.edit(responseObj)
+    } else {
+        interaction.update(responseObj)
+    }
+
+    callback(callbackObj)
+}
+
+function processEndOfTurn(error,session,interaction,callback,message){
+    let responded = false
+    let responseObj;
+    let callbackObj;
+    
+    if(session.session_data.completed){
+        if(session.session_data.options.progressiveCombat != false){
+            if(session.session_data.options.quest){
+                responseObj = {
+                    embeds:populateCombatWindow(session),
+                    components:populateCombatToQuestTransition(session)
+                }
+                callbackObj = {
+                    updateSession:session
+                }
+                respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+            } else if(session.session_data.options.lobby){
+                switch(session.type){
+                    case "combat":
+                            switch(session.session_data.options.fightType){
+                                case "pvp":
+                                    let updates = []
+                                    
+                                    for(var i = 0; i < session.session_data.fighters.length; i++){
+                                        let fighter = session.session_data.fighters[i]
+                                        if(!fighter.staticData.achievements){
+                                            fighter.staticData.achievements = {
+                                                kills:0,
+                                                abilitiesUsed:0,
+                                                livesLost:0,
+                                                strongestAttack:0,
+                                                tasksCompleted:0,
+                                                dungeonsCleared:0,
+                                                raidLeaderKills:0,
+                                                playerBattlesWon:0
+                                            }
+                                        } 
+
+                                        if(session.session_data.winners.includes(fighter.staticData.id)){
+                                            fighter.staticData.achievements.playerBattlesWon++
+                                            updates.push({
+                                                id:fighter.staticData.id,
+                                                path:"achievements",
+                                                value:fighter.staticData.achievements
+                                            })
+                                        }
+                                    }
+
+                                    responseObj = {
+                                        embeds:populateCombatWindow(session),
+                                        components:populateReturnFromCombat(session)
+                                    }
+                                    callbackObj = {
+                                        removeSession:session,
+                                        updatePlayer:updates
+                                    }
+                                    respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+                                    break;
+                            }
+                        break;
+                }
+            } else {
+                getTownDBData(session.server_id,function(town){
+                    let updates = []
+                    let townUpdates = []
+                    let now = new Date()
+
+                    for(var i = 0; i < session.session_data.fighters.length; i++){
+                        let fighter = session.session_data.fighters[i]
+                        if(session.user_ids.includes(fighter.staticData.id)){
+                            // Update actual player data here
+                            if(!fighter.staticData.achievements){
+                                fighter.staticData.achievements = {
+                                    kills:0,
+                                    abilitiesUsed:0,
+                                    livesLost:0,
+                                    strongestAttack:0,
+                                    tasksCompleted:0,
+                                    dungeonsCleared:0,
+                                    raidLeaderKills:0,
+                                    playerBattlesWon:0
+                                }
+                            } 
+
+                            fighter.staticData.lastEncounter = now.getTime()
+                            
+
+                            if(session.session_data.options.freeExplore){
+                                if(session.session_data.options.settlementBattle){
+                                    if(fighter.staticData.exploreRecord < fighter.staticData.exploreStreak){
+                                        fighter.staticData.exploreRecord = fighter.staticData.exploreStreak
+                                        session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + fighter.staticData.exploreStreak)
+                                    }
+                                    fighter.staticData.exploreStreak = 0
+                                    delete session.session_data.options.settlementBattle
+                                }
+                                if(fighter.staticData.exploreStreak == 6){
+                                    fighter.staticData.leaderEncounter = 25
+                                }
+
+                                if(fighter.staticData.exploreStreak >= 6){
+                                    fighter.staticData.leaderEncounter -= session.session_data.turn
+                                    if(fighter.staticData.leaderEncounter > 0){
+                                        session.session_data.battlelog.alerts.push("A settlement leader is approaching! (" + fighter.staticData.leaderEncounter + " turns)")
+                                    } else {
+                                        session.session_data.battlelog.alerts.push("A settlement leader is near by! Prepare for a tough fight!")
+                                    }
+                                }
+                            }
+
+                            if(session.session_data.winners.includes(fighter.staticData.id)){
+                                if(fighter.staticData.exploreStreak > 0){
+                                    let streakText = "Exploration Streak x" + fighter.staticData.exploreStreak + "!"
+                                    if(!fighter.staticData.exploreRecord){
+                                        fighter.staticData.exploreRecord = 0
+                                    }
+                                    if(fighter.staticData.exploreRecord > fighter.staticData.exploreStreak){
+                                        streakText += "\n(Record Streak: " + fighter.staticData.exploreRecord + ")" 
+                                    } else {
+                                        fighter.staticData.exploreRecord = fighter.staticData.exploreStreak
+                                        streakText += "\nNew Explore Streak Record!: " + fighter.staticData.exploreStreak
+                                    }
+                                    session.session_data.battlelog.alerts.push(streakText)
+                                    let result = parseReward({
+                                        type:"resource",
+                                        resource:"exp",
+                                        resourceName: "exp",
+                                        amount: Math.ceil(fighter.staticData.expCap * (0.02 + (0.01) * fighter.staticData.exploreStreak))
+                                    }, fighter.staticData)
+                                    fighter.staticData = result[0]
+                                    if(result[1].length > 0){
+                                        for(msg of result[1]){
+                                            session.session_data.battlelog.rewards.push(msg)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if(fighter.staticData.statGrowthTimer < now.getTime()){
+                                let growthMessage = fighter.staticData.name + "'s stats slightly grew!"
+                                if(fighter.records.timesBlocked < fighter.records.timesHit){
+                                    if(fighter.records.spattacks > fighter.records.attacks){
+                                        fighter.staticData.stats.spatk++
+                                        fighter.staticData.stats.spd++
+                                        growthMessage += "\n(+1 SPATK / +1 SPD)"
+                                    } else if(fighter.records.spattacks < fighter.records.attacks){
+                                        fighter.staticData.stats.atk++
+                                        fighter.staticData.stats.spd++
+                                        growthMessage += "\n(+1 ATK / +1 SPD)"
+                                    } else {
+                                        fighter.staticData.stats.hp++
+                                        fighter.staticData.stats.spd++
+                                        growthMessage += "\n(+1 HP / +1 SPD)"
+                                    }
+                                    session.session_data.battlelog.rewards.push(growthMessage)
+                                    fighter.staticData.statGrowthTimer = now.getTime() + 7700000
+                                } else if(fighter.records.timesBlocked < fighter.records.timesHit){
+                                    if(fighter.records.spguards > fighter.records.guards){
+                                        fighter.staticData.stats.spdef++
+                                        fighter.staticData.stats.hp++
+                                        growthMessage += "\n(+1 HP / +1 SPDEF)"
+                                    } else if(fighter.records.spguards < fighter.records.guards){
+                                        fighter.staticData.stats.def++
+                                        fighter.staticData.stats.hp++
+                                        growthMessage += "\n(+1 HP / +1 DEF)"
+                                    } else {
+                                        fighter.staticData.stats.hp++
+                                        fighter.staticData.stats.spd++
+                                        growthMessage += "\n(+1 HP / +1 SPD)"
+                                    }
+                                    session.session_data.battlelog.rewards.push(growthMessage)
+                                    fighter.staticData.statGrowthTimer = now.getTime() + 7700000
+                                }
+                            }
+
+                            if(town){
+                                if(town.raid){
+                                    let missions = town.raid.missions
+                                    let preTownPoints = town.points
+                                    for(x in missions){
+                                        let tier = missions[x]
+                                        for(m of tier){
+                                            if(!m.completers){
+                                                m.completers = {}
+                                            }
+                                            switch(x){
+                                                case "0":
+                                                    switch(m.type){
+                                                        case 0:
+                                                            if(fighter.records.attacks > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.attacks,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.attacks
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points++
+                                                                }
+                                                            }
+                                                            break;
+
+                                                        case 1:
+                                                            if(fighter.records.spattacks > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.spattacks,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.spattacks
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points++
+                                                                }
+                                                            }
+                                                            break;
+                                                            
+                                                        case 2:
+                                                            if(fighter.records.guards > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.guards,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.guards
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points++
+                                                                }
+                                                            }
+                                                            break;
+
+                                                        case 3:
+                                                            if(fighter.records.spguards > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.spguards,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.spguards
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points++
+                                                                }
+                                                            }
+                                                            break;
+
+                                                        case 4:
+                                                            if(fighter.records.statChanges > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.statChanges,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.statChanges
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points++
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                    break;
+
+                                                case "1":
+                                                    switch(m.type){
+                                                        case 0:
+                                                            if(fighter.records.weaponsLooted > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.weaponsLooted,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.weaponsLooted
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points += 2
+                                                                }
+                                                            }
+                                                            break;
+
+                                                        case 1:
+                                                            if(fighter.records.gearLooted > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.gearLooted,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.gearLooted
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points += 2
+                                                                }
+                                                            }
+                                                            break;
+                                                            
+                                                        case 2:
+                                                            if(fighter.records.raresDefeated > 0){
+                                                                if(!m.completers[fighter.staticData.id]){
+                                                                    m.completers[fighter.staticData.id] = {
+                                                                        times:0,
+                                                                        progression:[fighter.records.raresDefeated,raidPresets.missionGoalValues[x][m.type]]
+                                                                    }
+                                                                } else {
+                                                                    m.completers[fighter.staticData.id].progression[0] += fighter.records.raresDefeated
+                                                                }
+                                                                while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                                    m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                                    m.completers[fighter.staticData.id].times++
+                                                                    town.points += 2
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    if(session.session_data.options.raidMission){
+                                        switch(session.session_data.options.raidMission.missionLevel){
+                                            case 0:
+                                                if(session.user_ids.includes(session.session_data.winners[0])){
+                                                    let m = town.raid.missions[2][0]
+                                                    if(!m.completers){
+                                                        m.completers = {}
+                                                    }
+                                                    if(!m.completers[fighter.staticData.id]){
+                                                        m.completers[fighter.staticData.id] = {
+                                                            times:0,
+                                                            progression:[1,raidPresets.missionGoalValues[2][session.session_data.options.raidMission.type]]
+                                                        }
+                                                    } else {
+                                                        m.completers[fighter.staticData.id].progression[0] += 1
+                                                    }
+                                                    while(m.completers[fighter.staticData.id].progression[0] >= m.completers[fighter.staticData.id].progression[1]){
+                                                        m.completers[fighter.staticData.id].progression[0] -= m.completers[fighter.staticData.id].progression[1]
+                                                        m.completers[fighter.staticData.id].times++
+                                                        town.points += 3
+                                                    }
+                                                }
+                                                break;
+
+                                            case 1:
+                                                if(session.user_ids.includes(session.session_data.winners[0])){
+                                                    let m = town.raid.bossDefeats
+                                                    let bossGoldReward;
+                                                    if(!m){
+                                                        m = {}
+                                                    }
+                                                    if(!m[fighter.staticData.id]){
+                                                        m[fighter.staticData.id] = {
+                                                            times:1
+                                                        }
+                                                        result = parseReward(town.raid.leader.equipment, fighter.staticData)
+                                                        fighter.staticData = result[0]
+
+                                                        if(result[1].length > 0){
+                                                            for(msg of result[1]){
+                                                                session.session_data.battlelog.rewards.push(msg)
+                                                            }
+                                                        }
+
+                                                        result = parseReward({
+                                                            type:"resource",
+                                                            resource:"exp",
+                                                            resourceName: "experience",
+                                                            amount: fighter.staticData.expCap
+                                                        }, fighter.staticData)
+                                                        fighter.staticData = result[0]
+
+                                                        if(result[1].length > 0){
+                                                            for(msg of result[1]){
+                                                                session.session_data.battlelog.rewards.push(msg)
+                                                            }
+                                                        }
+
+                                                        bossGoldReward = 300
+                                                        town.points += 15
+                                                    } else {
+                                                        town.points += 4
+                                                        bossGoldReward = 100
+                                                        m[fighter.staticData.id].times += 1
+                                                    }
+                                                    result = parseReward({
+                                                        type:"resource",
+                                                        resource:"gold",
+                                                        resourceName: "gold",
+                                                        amount: bossGoldReward * town.level
+                                                    }, fighter.staticData)
+                                                    fighter.staticData = result[0]
+
+                                                    if(result[1].length > 0){
+                                                        for(msg of result[1]){
+                                                            session.session_data.battlelog.rewards.push(msg)
+                                                        }
+                                                    }
+                                                    town.raid.bossDefeats = m
+                                                    fighter.staticData.achievements.raidLeaderKills++
+                                                }
+                                                break;
+                                        }
+                                        
+                                    }
+
+                                    if(preTownPoints != town.points){
+                                        session.session_data.battlelog.alerts.push("✅ Town Militia Supported ✅")
+                                        session.session_data.battlelog.alerts.push(town.name + " gained " + (town.points - preTownPoints) + " point(s)")
+                                        session.session_data.battlelog.alerts.push("---")
+                                    }
+                                }
+
+                                if(session.session_data.options.encounterRewards){
+                                    if(session.user_ids.includes(session.session_data.winners[0])){
+                                        if(town.reputations[fighter.staticData.id] >= 10 * session.session_data.options.encounterRewards.val){
+                                            session.session_data.battlelog.rewards.push(fighter.staticData.name + "'s efforts to protect the town and it's people are greatly appreciated!")
+                                            session.session_data.battlelog.rewards.push(10 * session.session_data.options.encounterRewards.val + " town reputation has been exchanged for your reward")
+                                            session.session_data.battlelog.rewards.push("(" + town.reputations[fighter.staticData.id] + " reputation remaining)")
+                                            session.session_data.battlelog.rewards.push("---")
+                                            town.reputations[fighter.staticData.id] -= 10 * session.session_data.options.encounterRewards.val
+                                            if(town.reputations[fighter.staticData.id] <= 0){
+                                                town.reputations[fighter.staticData.id] = 0
+                                            }
+                                            townUpdates.push({
+                                                id:session.server_id,
+                                                path:"reputations/" + fighter.staticData.id,
+                                                value:town.reputations[fighter.staticData.id]
+                                            })
+
+                                            let result;
+
+                                            if(session.session_data.options.encounterRewards.type == "extTown"){
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"exp",
+                                                    resourceName: "experience",
+                                                    amount: Math.ceil(200 * session.session_data.options.encounterRewards.val)
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+
+                                                if(result[1].length > 0){
+                                                    for(msg of result[1]){
+                                                        session.session_data.battlelog.rewards.push(msg)
+                                                    }
+                                                }
+                                            }
+
+                                            if(session.session_data.options.encounterRewards.type == "intTown"){
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"gold",
+                                                    resourceName: "gold",
+                                                    amount: Math.ceil(100 * session.session_data.options.encounterRewards.val)
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+
+                                                if(result[1].length > 0){
+                                                    for(msg of result[1]){
+                                                        session.session_data.battlelog.rewards.push(msg)
+                                                    }
+                                                }
+                                            }
+
+                                            switch(Math.ceil(Math.random() * 3)){
+                                                case 1:
+                                                    let newData = {
+                                                        ref:{
+                                                            type: "rngEquipment",
+                                                            rngEquipment: {
+                                                                scaling: false,
+                                                                value:1,
+                                                                conStats:1,
+                                                                conValue:0.1,
+                                                                lockStatTypes: true,
+                                                                baseVal: 8 * session.session_data.options.encounterRewards.val,
+                                                                types: ["weapon","gear"]
+                                                            }
+                                                        }
+                                                    }
+                                    
+                                                    let player = fighter.staticData
+                                    
+                                                    let item = generateRNGEquipment(newData)
+                                                    fighter.staticData = givePlayerItem(item,player)
+                                                    let rewardsText = ""; 
+                                                    if(item.type == "weapon"){
+                                                        rewardsText += player.name + " received equipment: " + item.name + " 🗡️"
+                                                    } else {
+                                                        rewardsText += player.name + " received equipment: " + item.name + " 🛡️"
+                                                    }
+                                                    session.session_data.battlelog.rewards.push(rewardsText)
+                                                    break;
+
+                                                case 2:
+                                                    result = parseReward({
+                                                        type:"resource",
+                                                        resource:"abilitypoints",
+                                                        resourceName: "ability points",
+                                                        amount: Math.floor(session.session_data.options.encounterRewards.val * 6)
+                                                    }, fighter.staticData)
+                                                    fighter.staticData = result[0]
+
+                                                    if(result[1].length > 0){
+                                                        for(msg of result[1]){
+                                                            session.session_data.battlelog.rewards.push(msg)
+                                                        }
+                                                    }
+                                                    break;
+                                                
+                                                case 3:
+                                                    result = parseReward({
+                                                        type:"resource",
+                                                        resource:"statpoints",
+                                                        resourceName: "skill points",
+                                                        amount: Math.ceil(session.session_data.options.encounterRewards.val * 2)
+                                                    }, fighter.staticData)
+                                                    fighter.staticData = result[0]
+
+                                                    if(result[1].length > 0){
+                                                        for(msg of result[1]){
+                                                            session.session_data.battlelog.rewards.push(msg)
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                        } else {
+                                            session.session_data.battlelog.rewards.push("The townspeople lightly cheer and throw gold coins before dispersing...\n\nIncrease your reputation with the town by doing tasks to earn greater rewards\n")
+
+                                            let result = parseReward({
+                                                type:"resource",
+                                                resource:"gold",
+                                                resourceName: "gold",
+                                                amount: 25 + Math.floor(Math.random() * 76)
+                                            }, fighter.staticData)
+                                            fighter.staticData = result[0]
+                                            if(result[1].length > 0){
+                                                for(msg of result[1]){
+                                                    session.session_data.battlelog.rewards.push(msg)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }  
+
+                            fighter.staticData.achievements.kills += fighter.records.unitsDefeated
+                            fighter.staticData.achievements.abilitiesUsed += fighter.records.attacks
+                            fighter.staticData.achievements.abilitiesUsed += fighter.records.guards
+                            fighter.staticData.achievements.abilitiesUsed += fighter.records.statChanges
+                            if(fighter.staticData.achievements.strongestAttack < fighter.records.strongestStrike){
+                                fighter.staticData.achievements.strongestAttack = fighter.records.strongestStrike
+                            }
+                            
+
+                            let challengesCompleted = 0;
+                            let totalGoldReward = 0;
+                            let totalSPReward = 0
+                            if(fighter.staticData.challenges){
+                                for(var i = 0; i < fighter.staticData.challenges.length;i++){
+                                    let c = fighter.staticData.challenges[i]
+                                    let progressVal = 0;
+                                    switch(c.type){
+                                        case 0:
+                                            progressVal = fighter.records.unitsDefeated
+                                            break;
+
+                                        case 1:
+                                            progressVal = fighter.records.enemyDamageTaken
+                                            break;
+
+                                        case 2:
+                                            progressVal = fighter.records.baseDamageBlocked
+                                            break;
+
+                                        case 3:
+                                            progressVal = fighter.records.attackDamageDone
+                                            break;
+
+                                        case 4:
+                                            progressVal = fighter.records.timesFirstAttack
+                                            break;
+
+                                        case 5:
+                                            progressVal = fighter.records.criticalsLanded
+                                            break;
+
+                                        case 6:
+                                            progressVal = fighter.records.counterDamageDone
+                                            break;
+
+                                        case 7:
+                                            progressVal = fighter.records.completeBlocks
+                                            break;
+
+                                        case 8:
+                                            progressVal = fighter.records.timesStatsRaised
+                                            break;
+
+                                        case 9:
+                                            progressVal = fighter.records.timesStatsLowered
+                                            break;
+
+                                        case 10:
+                                            progressVal = fighter.records.timesAbilityRepeat
+                                            break;
+
+                                        case 11:
+                                            progressVal = fighter.records.empoweredAbilities
+                                            break;
+
+                                        case 12:
+                                            progressVal = fighter.records.stanceSwitches
+                                            break;
+
+                                        case 13:
+                                            progressVal = fighter.records.strongestStrike
+                                            break;
+
+                                        case 14:
+                                            progressVal = fighter.records.effectiveAttacks
+                                            break;
+
+                                        case 15:
+                                            progressVal = fighter.records.attacksResisted
+                                            break;
+                                    }
+
+                                    if(progressVal > 0){
+                                        if(c.type == 13){
+                                            c.progress = 0
+                                        }
+                                        c.progress += progressVal
+                                        if(c.goal <= c.progress){
+                                            challengesCompleted++
+                                            totalGoldReward += c.rank * 50
+                                            totalSPReward += c.rank * 10
+                                            session.session_data.battlelog.rewards.push("✅" + challengeDict[c.type].name + " - Rank " + c.rank + ": Complete! ✅")
+                                            fighter.staticData.challenges.splice(i,1)
+                                            i--
+                                        } else {
+                                            session.session_data.battlelog.alerts.push("Challenge Progress: " + challengeDict[c.type].name + ": " + Math.round(c.progress) + "/" + c.goal)
+                                        }
+                                    }
+                                }
+
+                                if(totalGoldReward > 0){
+                                    session.session_data.battlelog.rewards.push("---") 
+                                    let result = parseReward({
+                                        type:"resource",
+                                        resource:"gold",
+                                        resourceName: "gold",
+                                        amount: totalGoldReward * challengesCompleted
+                                    }, fighter.staticData)
+                                    fighter.staticData = result[0]
+                                    if(result[1].length > 0){
+                                        for(msg of result[1]){
+                                            session.session_data.battlelog.rewards.push(msg)
+                                        }
+                                    }
+
+                                    result = parseReward({
+                                        type:"resource",
+                                        resource:"abilitypoints",
+                                        resourceName: "ability points",
+                                        amount: totalSPReward * challengesCompleted
+                                    }, fighter.staticData)
+                                    fighter.staticData = result[0]
+                                    if(result[1].length > 0){
+                                        for(msg of result[1]){
+                                            session.session_data.battlelog.rewards.push(msg)
+                                        }
+                                    }
+                                }
+                            }
+
+                            updates.push({
+                                id:fighter.staticData.id,
+                                path:"",
+                                value:fighter.staticData
+                            })
+                        }
+                    }
+                    
+                    
+
+                    if(session.session_data.options.combatRewards){
+                        let rewards = session.session_data.options.combatRewards
+                        if(rewards.overwriteHallOwner){
+                            if(session.user_ids.includes(session.session_data.winners[0])){
+                                let newOwner = rewards.overwriteHallOwner
+                                if(session.session_data.fighters[1].staticData.prevID != session.session_data.winners[0]){
+                                    newOwner.id = "playerClone"
+                                    newOwner.name = "Shadow of " + newOwner.name
+                                    newOwner.prevID = session.session_data.winners[0]
+                                    townUpdates.push({
+                                        id:session.server_id,
+                                        path:"hallOwner",
+                                        value:newOwner
+                                    })
+                                    
+                                    townUpdates.push({
+                                        id:session.server_id,
+                                        path:"hallStart",
+                                        value:now.getTime()
+                                    })  
+                                }
+                            }
+                        }    
+                    }
+                    if(town.raid){
+                        townUpdates.push({
+                            id:session.server_id,
+                            path:"raid",
+                            value:town.raid
+                        })
+
+                        townUpdates.push({
+                            id:session.server_id,
+                            path:"points",
+                            value:town.points
+                        })
+                    }
+
+                    responseObj = {
+                        embeds:populateCombatWindow(session),
+                        components:populateCombatControls(session)
+                    }
+
+                    callbackObj = {
+                        removeSession:session,
+                        updatePlayer:updates,
+                        updateTown:townUpdates 
+                    }
+                    respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+                })
+            }
+        } else {
+            if(session.session_data.options.returnSession){
+                responseObj = {
+                    embeds:populateCombatWindow(session),
+                    components:populateReturnFromCombat(session,session.session_data.options.getRankingStats)
+                }
+
+                
+                callbackObj = {
+                    unHoldSession:session.session_data.options.returnSession,
+                    removeSession:session
+                }
+                respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+            } else {
+                responseObj = {
+                    embeds:populateCombatWindow(session),
+                    components:populateCombatControls(session)
+                }
+
+                callbackObj = {
+                    removeSession:session
+                }
+                respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+            }
+        }
+    } else {
+        if(error != ""){
+            interaction.reply({ content: error, ephemeral: true });
+            responded = true
+        } else {
+            responseObj = {
+                embeds:populateCombatWindow(session),
+                components:populateCombatControls(session)
+            }
+        }
+        callbackObj = {
+            updateSession:session
+        }
+
+        if(!responded){
+            respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
+        }
+    }
+}
+
+function cropString(string,limit){
+    if(string.length > limit){
+        string = string.slice(0,limit - 3) + "..."
+    }
+    return string
+}
+
+function readableLog(log){
+    let lines = []
+    let logTypes = ["dialogue","combat","alerts","rewards"]
+    for(i in log){
+        let turn = log[i]
+        lines.push("< TURN #" + (parseInt(i)+1) + " >")
+        for(type of logTypes){
+            if(turn[type]){
+                for(entry of turn[type]){
+                    lines.push(entry)
+                }
+            }
+        }
+    }
+    return lines
+}
 
 function getPassive(fighter, passiveID){
     if(fighter.passives){
@@ -14,6 +1384,328 @@ function getPassive(fighter, passiveID){
     } else {
         return null
     }
+}
+
+function handleStatChange(session,unit,amount,stat,log = "combat",set = false){
+    let msg;
+    if(set){    
+        unit.liveData.statChanges[stat] = amount
+        msg = unit.staticData.name + "'s " + stat + " multiplier set to x" +  statChangeStages[amount]
+    } else {
+        unit.liveData.statChanges[stat] += amount
+        if(unit.liveData.statChanges[stat] > 16){
+            unit.liveData.statChanges[stat] = 16
+            msg = unit.staticData.name + "'s " + stat + " is maxed!"
+        } else if(unit.liveData.statChanges[stat] < 0){
+            unit.liveData.statChanges[stat] = 0
+            msg = unit.staticData.name + "'s " + stat + " can't be lowered!"
+        } else {
+            msg = unit.staticData.name + "'s " + stat + (amount > 0 ? " increased!" : " decreased!") + " (x" + statChangeStages[unit.liveData.statChanges[stat]] + ")"
+        }
+    }
+    session.session_data.battlelog[log].push(msg)
+}
+
+function manageBossAction(boss,session){
+    let fighters = session.session_data.fighters
+    switch(boss.staticData.highestStat){
+        case "hp":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " lets out a deafening roar!")
+            for(f of fighters){
+                if(f.team != boss.team){
+                    handleStatChange(session,f,5,"atk","alerts",true)
+                    handleStatChange(session,f,5,"spatk","alerts",true)
+                }
+            }
+            break;
+
+        case "atk":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " shouts with rage!")
+            handleStatChange(session,boss,13,"atk","alerts",true)
+            handleStatChange(session,boss,13,"spd","alerts",true)
+            break;
+
+        case "def":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " hardens their resolve!")
+            handleStatChange(session,boss,16,"def","alerts",true)
+            break;
+
+        case "spatk":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " intensely focuses!")
+            handleStatChange(session,boss,13,"spatk","alerts",true)
+            handleStatChange(session,boss,13,"spd","alerts",true)
+            break;
+
+        case "spdef":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " clears their mind!")
+            handleStatChange(session,boss,16,"spdef","alerts",true)
+            break;
+
+        case "spd":
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " rushes into their opponents!")
+            for(f of fighters){
+                if(f.team != boss.team){
+                    handleStatChange(session,f,3,"def","alerts",true)
+                    handleStatChange(session,f,3,"spdef","alerts",true)
+                }
+            }
+            break;
+    }
+
+    switch(Math.floor(Math.random() * 3)){
+        case 0:
+            session.session_data.battlelog.alerts.push(boss.staticData.name + " summons a devout servant to their side!")
+            let stat = ["atk","spatk"][Math.floor(Math.random() * 2)]
+            let hunterUnit = {
+                name: boss.staticData.name + "'s Trusted",
+                id:Math.floor(Math.random() * 1000),
+                cpu:true,
+                faction:"-1",
+                race:"0",
+                combatStyle:"0",
+                exp:0,
+                abilitypoints:0,
+                statpoints:0,
+                lives:2,
+                abilities:[{
+                    "critical": 25,
+                    "damage_type": stat,
+                    "damage_val": 70,
+                    "name": boss.staticData.name + "'s Order",
+                    "speed": 2,
+                    "faction": -1,
+                    "action_type": "attack",
+                    "numHits": 1,
+                    "recoil": 0,
+                    "targetType": "1",
+                    "accuracy": 95
+                },{
+                    "action_type": "guard",
+                    "name": boss.staticData.name + "'s Veil",
+                    "guard_val": 100,
+                    "guard_type": "spdef",
+                    "success_level": "100",
+                    "counter_val": 0,
+                    "counter_type": "def",
+                    "speed": 3
+                }],
+                level:1,
+                totalExp:0,
+                passives:[],
+                stats:{
+                    "hp":10,
+                    "atk":1,
+                    "def":1,
+                    "spatk":1,
+                    "spdef":1,
+                    "spd":1
+                }
+            }
+
+            hunterUnit.stats[stat] = boss.staticData.level * 25;
+
+            let fighterData = prepCombatFighter(hunterUnit,session.session_data.fighters.length)
+            fighterData.team = boss.team 
+            session.session_data.battlelog.alerts.push(fighterData.staticData.name + " has entered combat!")
+            session.session_data.fighters.push(fighterData)
+            break;
+
+        case 1:
+            session.session_data.battlelog.alerts.push("Under pressure, " + boss.staticData.name + " lashes out wildly in an act of desperation!")
+            boss.liveData.stats.hp = Math.floor(boss.liveData.maxhp * 0.5)
+            for(f of fighters){
+                if(f.team != boss.team){
+                    f.liveData.stats.hp -= Math.floor(f.liveData.maxhp * 0.33)
+                    if(f.liveData.stats.hp < Math.floor(f.liveData.maxhp * 0.05)){
+                        f.liveData.stats.hp = Math.floor(f.liveData.maxhp * 0.05)
+                    }
+                }
+            }
+            break;
+
+        case 2:
+            session.session_data.battlelog.alerts.push("A surge of mysterious energy pulses from " + boss.staticData.name + "'s equipment!")
+            switch(Math.floor(Math.random() * 2)){
+                case 0:
+                    if(boss.weapon){
+                        boss.weapon.stats.baseAtkBoost += 10
+                        boss.weapon.stats.baseSpAtkBoost += 10
+                    } else {
+                        boss.gear.stats.baseAtkBoost += 10
+                        boss.gear.stats.baseSpAtkBoost += 10
+                    }
+
+                    session.session_data.battlelog.alerts.push(boss.staticData.name + "'s equipment has had it's offensive capabilities boosted!")
+                    break;
+
+                case 1:
+                    if(boss.weapon){
+                        boss.weapon.stats.baseDefBoost += 5
+                        boss.weapon.stats.baseSpDefBoost += 5
+                    } else {
+                        boss.gear.stats.baseDefBoost += 5
+                        boss.gear.stats.baseSpDefBoost += 5
+                    }
+
+                    session.session_data.battlelog.alerts.push(boss.staticData.name + "'s equipment has had it's defensive capabilities boosted!")
+                    break;
+            }
+            break;
+    }
+}
+
+function increaseComboMeter(unit,value){
+    if(unit.meter != undefined){
+        if(value > 0 && unit.staticData.stance == "spd" && unit.staticData.stances.spd.upgrades[2] > 0){
+            let buffData = getStanceBuffValues("spd",unit.staticData.stances,2)
+            if(Math.random() < buffData.val/100){
+                value *= 2
+            }
+        }
+        unit.meter += value
+        while(unit.meter > 30){
+            if(unit.staticData.meterRank < 3){
+                unit.staticData.meterRank++
+                unit.meter -= 30
+            } else {
+                unit.meter = 30
+            }
+        }
+    }
+}
+
+function manageCriticalPoint(session,pointHolder,attacker,point){
+    if(attacker.meter != undefined){
+        increaseComboMeter(attacker,10)
+    }
+    switch(point){
+        case "loot":
+            if(pointHolder.staticData.droptable){
+                let times = weightedRandom([
+                    {
+                        chance:30,
+                        obj:1
+                    },
+                    {
+                        chance:50,
+                        obj:2
+                    },
+                    {
+                        chance:20,
+                        obj:3
+                    }
+                ])
+                for(var i = 0; i < times; i++){
+                    let drop = weightedRandom(pointHolder.staticData.droptable)
+                    result = parseReward(drop,attacker.staticData,pointHolder)
+                    if(result[2]){
+                        switch(result[2].type){
+                            case "gear":
+                                attacker.records.gearLooted++
+                                break;
+
+                            case "weapon":
+                                attacker.records.weaponsLooted++
+                                break;
+                        }
+                    }
+                    attacker.staticData = result[0]
+                    if(result[1].length > 0){
+                        for(msg of result[1]){
+                            session.session_data.battlelog.rewards.push(msg)
+                        }
+                    }
+                }
+
+                drop = {
+                    type:"resource",
+                    resource:"exp",
+                    resourceName: "bonus experience",
+                    amount: Math.ceil(attacker.staticData.expCap * 0.1)
+                }      
+                result = parseReward(drop,attacker.staticData)
+                attacker.staticData = result[0]
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        session.session_data.battlelog.rewards.push(msg)
+                    }
+                }
+            } else {
+                let drop = {
+                    type:"resource",
+                    resource:"exp",
+                    resourceName: "bonus experience",
+                    amount: Math.ceil(attacker.staticData.expCap * 0.1)
+                }     
+                result = parseReward(drop,attacker.staticData)
+                attacker.staticData = result[0]
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        session.session_data.battlelog.rewards.push(msg)
+                    }
+                }
+
+                drop = {
+                    type:"resource",
+                    resource:"gold",
+                    resourceName: "gold",
+                    amount: Math.ceil(pointHolder.staticData.level * 10)
+                }     
+                result = parseReward(drop,attacker.staticData)
+                attacker.staticData = result[0]
+                if(result[1].length > 0){
+                    for(msg of result[1]){
+                        session.session_data.battlelog.rewards.push(msg)
+                    }
+                }
+            }
+            break;
+
+        case "weak":
+            let stats = ["atk","def","spdef","spatk","spd"]
+            let markedStats = [] 
+            let times = weightedRandom([
+                {
+                    chance:75,
+                    obj:2
+                },
+                {
+                    chance:20,
+                    obj:3
+                },
+                {
+                    chance:5,
+                    obj:4
+                }
+            ])
+            for(var i = 0; i < times; i++){
+                let highestVal = 0
+                let highest = ""
+                for(var s of stats){
+                    if(pointHolder.liveData.stats[s] * statChangeStages[pointHolder.liveData.statChanges[s]] > highestVal){
+                        highestVal = pointHolder.liveData.stats[s] * statChangeStages[pointHolder.liveData.statChanges[s]]
+                        highest = s
+                    }
+                }
+                markedStats.push(highest)
+                stats.splice(stats.indexOf(highest),1)
+            }
+            for(mS of markedStats){
+                handleStatChange(session,pointHolder,3,mS,"alerts",true)
+            }
+            session.session_data.battlelog.alerts.push("---")
+            break;
+    }
+}
+
+function printFighter(fighter,emojis = true){
+    let name = ""
+    if(fighter.staticData.region && emojis){
+        name = regionsEmojis[fighter.staticData.region] + fighter.staticData.name + regionsEmojis[fighter.staticData.region]
+    } else {
+        name = fighter.staticData.name
+    }
+    return name 
 }
 
 function eventComparator(e,data){
@@ -106,28 +1798,45 @@ function activateCombatTriggers(triggerName,session){
         for(t in session.session_data.options.triggers){
             if(t == triggerName){
                 let triggerData = session.session_data.options.triggers[t]
-                switch(triggerData.actionType){
-                    case 0:
-                        let unitData = weightedRandom(triggerData.data.units)
-                        let newUnit = clone(unitData.unit)
-                        if(!unitData.scaling){
-                            newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance)
-                            newUnit = simulateCPUSPAssign(newUnit,unitData.skillpoints)
-                        } else {
-                            switch(unitData.scaling){
-                                case "dungeon":
-                                    newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance * (session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8))
-                                    newUnit = simulateCPUSPAssign(newUnit,Math.ceil((session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8) * 60),unitData.scalar)
-                                    break;
+                let conditionsMet = true
+                if(triggerData.conditions){
+                    conditionsMet = false
+                    for(c in triggerData.conditions){
+                        switch(c){
+                            case "unitAlive":
+                                for(fighter of session.session_data.fighters){
+                                    if(triggerData.conditions[c].includes(fighter.staticData.id) && fighter.alive){
+                                        conditionsMet = true;
+                                    }
+                                }
+                                break;
+                        }    
+                    }
+                }
+                if(conditionsMet){
+                    switch(triggerData.actionType){
+                        case 0:
+                            let unitData = weightedRandom(triggerData.data.units)
+                            let newUnit = clone(unitData.unit)
+                            if(!unitData.scaling){
+                                newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance)
+                                newUnit = simulateCPUSPAssign(newUnit,unitData.skillpoints)
+                            } else {
+                                switch(unitData.scaling){
+                                    case "dungeon":
+                                        newUnit = simulateCPUAbilityAssign(newUnit,[],unitData.allowance * (session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8))
+                                        newUnit = simulateCPUSPAssign(newUnit,Math.ceil((session.linkedSession_data.dungeonRank + session.linkedSession_data.dangerValue/8) * 60),unitData.scalar)
+                                        break;
+                                }
                             }
-                        }
-                        let fighterData = prepCombatFighter(newUnit,session.session_data.fighters.length)
-                        if(unitData.alliance){
-                            fighterData.team = unitData.alliance
-                        }
-                        session.session_data.battlelog.alerts.push(fighterData.staticData.name + " has entered combat!")
-                        session.session_data.fighters.push(fighterData)
-                        break;
+                            let fighterData = prepCombatFighter(newUnit,session.session_data.fighters.length)
+                            if(unitData.alliance){
+                                fighterData.team = unitData.alliance
+                            }
+                            session.session_data.battlelog.alerts.push(fighterData.staticData.name + " has entered combat!")
+                            session.session_data.fighters.push(fighterData)
+                            break;
+                    }
                 }
             }
         }
@@ -164,8 +1873,10 @@ function activateCombatTriggers(triggerName,session){
 function checkActiveCombatants(session){
     let present = [];
     let presentTeams = []
+    session.session_data.livingFighters = 0
     for(fighter of session.session_data.fighters){
         if(!fighter.forfeit && fighter.alive){
+            session.session_data.livingFighters++
             if(!present.includes(fighter.index)){
                 present.push(fighter.index)
             }
@@ -203,6 +1914,43 @@ function checkActiveCombatants(session){
     }
 }
 
+function parseAbilityToOrder(ability,fighters,fighter){
+    let targets = []
+    if(ability.action_type == "attack"){
+        let fighterTarget = fighter.target
+        if(fighterTarget == -1){
+            let possibleTargets = []
+            for(f of fighters){
+                if(f.team != fighter.team){
+                    possibleTargets.push(f.index)
+                }
+            }
+            fighter.target = possibleTargets[Math.floor(Math.random() * possibleTargets.length)]
+        }
+        switch(parseInt(ability.targetType)){
+            case 1:
+                targets = [fighter.target]
+                break;
+            
+            case 2:
+                for(f in fighters){
+                    if(fighters[f].team != fighter.team){
+                        targets.push(f)
+                    }
+                }
+                break;
+            case 3:
+                for(f in fighters){
+                    if(fighters[f].index != fighter.index){
+                        targets.push(f)
+                    }
+                }
+                break;
+        }
+    }
+    return [targets,ability]
+}
+
 function getAbilityOrder(fighters){
     let actionCount = 0
     let abilityOrder = [
@@ -215,37 +1963,37 @@ function getAbilityOrder(fighters){
 
     for(fighter of fighters){
         if(fighter.staticData.abilities){
-            if(fighter.alive && fighter.choosenAbility != -2 && fighter.staticData.abilities.length > 0){
-                let choosenData = fighter.staticData.abilities[fighter.choosenAbility]
-                let targets = []
-                if(choosenData.action_type == "attack"){
-                    switch(parseInt(choosenData.targetType)){
-                        case 1:
-                            targets = [fighter.target]
-                            break;
-                        
-                        case 2:
-                            for(f in fighters){
-                                if(fighters[f].team != fighter.team){
-                                    targets.push(f)
-                                }
-                            }
-                            break;
-                        case 3:
-                            for(f in fighters){
-                                if(fighters[f].index != fighter.index){
-                                    targets.push(f)
-                                }
-                            }
-                            break;
+            if(fighter.stanceSwitch == undefined && fighter.alive && fighter.choosenAbility != -2 && fighter.staticData.abilities.length > 0){
+                let parseResult;
+                if(fighter.staticData.signature){
+                    let healthMulti = fighter.liveData.stats.hp/fighter.liveData.maxhp <= 0.25 ? 2 : 1
+                    if(Math.random() * 100 <= 10 + (fighter.staticData.level * 0.9 * healthMulti)){
+                        parseResult = parseAbilityToOrder(fighter.staticData.signature,fighters,fighter)
+                        let signatureAbility = clone(parseResult[1])
+                        signatureAbility.name = "Signature Ability: " + signatureAbility.name
+                        abilityOrder[parseResult[1].speed].push({
+                            index:fighter.index,
+                            ability:signatureAbility,
+                            targets:parseResult[0]
+                        })
                     }
                 }
-                abilityOrder[choosenData.speed].push({
+                parseResult = parseAbilityToOrder(fighter.staticData.abilities[fighter.choosenAbility],fighters,fighter)
+                abilityOrder[parseResult[1].speed].push({
                     index:fighter.index,
-                    ability:choosenData,
-                    targets:targets
+                    ability:clone(parseResult[1]),
+                    targets:parseResult[0]
                 })
                 actionCount++
+            } else if (fighter.stanceSwitch){
+                abilityOrder[1].push({
+                    index:fighter.index,
+                    ability:{
+                        "action_type":"stance",
+                        "stance":fighter.stanceSwitch
+                    }
+                })
+                delete fighter.stanceSwitch
             }
         }
     }
@@ -312,10 +2060,55 @@ function processMobRewards(mob,session){
             }
         }
     }
+
+    if(session.session_data.options.canPerfect){
+        let fighters = session.session_data.fighters
+        for(fighter of fighters){
+            if(fighter.team != mob.team && !fighter.staticData.cpu){
+                if(fighter.records.enemyDamageTaken == 0 && fighter.records.recoilDamageTaken == 0){
+                    session.session_data.battlelog.alerts.push("PERFECT KILL")
+                    if(fighter.meter != undefined){
+                        increaseComboMeter(fighter,15)
+                    }
+                    let drop = weightedRandom(standardDroptables.perfectClear)
+                    if(drop == "EXP"){
+                        drop = {
+                            type:"resource",
+                            resource:"exp",
+                            resourceName: "bonus experience",
+                            amount: Math.ceil(fighter.staticData.expCap * 0.075)
+                        }      
+                    } 
+                    result = parseReward(drop,fighter.staticData)
+                    if(result[2]){
+                        switch(result[2].type){
+                            case "gear":
+                                fighter.records.gearLooted++
+                                break;
+
+                            case "weapon":
+                                fighter.records.weaponsLooted++
+                                break;
+                        }
+                    }
+                    fighter.staticData = result[0]
+                    if(result[1].length > 0){
+                        for(msg of result[1]){
+                            session.session_data.battlelog.rewards.push(msg)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if(session.session_data.battlelog.rewards.length > 0){
+        session.session_data.battlelog.rewards.push("---")
+    }
 }
 
 function calculateAttackDamage(level,atkStat,defStat,baseDamage){
-    let levelMod = ((2 * level)/5) + 2
+    console.log(level,atkStat,defStat,baseDamage)
+    let levelMod = ((2 * level)/10) + 2
     let statMod = baseDamage * (atkStat/defStat)
     return Math.ceil((levelMod * statMod)/50)
 }
@@ -371,6 +2164,9 @@ function playerQuestScript(questData,session){
 
 
 module.exports = {
+    processEndOfTurn(error,session,interaction,callback,message){
+        processEndOfTurn(error,session,interaction,callback,message)
+    },
     populateCloseInteractionMessage(message,nonDismiss){
         const embed = new MessageEmbed()
 			.setColor('#00ff00')
@@ -398,7 +2194,7 @@ module.exports = {
         }
     
 
-        let displayText = "```diff\n"
+        let displayText = ""
         displayText += "Statpoints to spend: " + session.session_data.statpoints + "\n\n"
         for(statname in session.session_data.stats){
             if(session.session_data.stats[statname] < session.session_data.prevStats[statname]){
@@ -407,25 +2203,25 @@ module.exports = {
                 displayText += "+"
             } 
             displayText += statname.toLocaleUpperCase() + ": " + session.session_data.stats[statname] + "\n(" + statDescriptions[statname] + ")" 
-            let statpointsNeeded;
-            if(session.session_data.faction != -1){
-                if(statIncreaseRatios[session.session_data.faction][statname] > 0){
-                    statpointsNeeded = 1
-                } else {
-                    statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][statname]
-                }
-            } else {
-                statpointsNeeded = 1
-            }
+            let statpointsNeeded = session.session_data.editAmount;
+            // if(session.session_data.faction != -1){
+            //     if(statIncreaseRatios[session.session_data.faction][statname] > 0){
+            //         statpointsNeeded = 1
+            //     } else {
+            //         statpointsNeeded = 1/statIncreaseRatios[session.session_data.faction][statname]
+            //     }
+            // } else {
+            //     statpointsNeeded = 1
+            // }
             if(statname == session.session_data.editingStat){
                 if(session.session_data.faction != -1){
-                    displayText += " (-/+) " + statIncreaseRatios[session.session_data.faction][statname] + ": Refunds/Costs " + statpointsNeeded 
+                    displayText += " (-/+) " + session.session_data.editAmount + ": Refunds/Costs " + statpointsNeeded 
                 } else {
-                    displayText += " (-/+) 1: Refunds/Costs " + statpointsNeeded 
+                    displayText += " (-/+) " + session.session_data.editAmount + ": Refunds/Costs " + statpointsNeeded 
                 }
                 
                 if(statpointsNeeded > 1){
-                    displayText += + " statpoints"
+                    displayText += " statpoints"
                 } else {
                     displayText += " statpoint"
                 }
@@ -435,7 +2231,6 @@ module.exports = {
         }
         displayText += "Use the </> arrows to decrease/increase a stat\n"
         displayText += "Currently Modifying by value of: " + session.session_data.editAmount + " \n"
-        displayText += "\n```"
         embed.addField(
             "Modifying Stats",
             displayText
@@ -468,18 +2263,18 @@ module.exports = {
             if(session.session_data.prevStats[session.session_data.editingStat] <= session.session_data.stats[session.session_data.editingStat] - session.session_data.editAmount){
                 canDecrease = false;
             }
-            let statpointsNeeded;
+            let statpointsNeeded = session.session_data.editAmount;
             let stat = session.session_data.editingStat
 
-            if(session.session_data.faction != -1){
-                if(statIncreaseRatios[session.session_data.faction][stat] > 0){
-                    statpointsNeeded = session.session_data.editAmount
-                } else {
-                    statpointsNeeded = session.session_data.editAmount/statIncreaseRatios[session.session_data.faction][stat]
-                }
-            } else {
-                statpointsNeeded = session.session_data.editAmount
-            }
+            // if(session.session_data.faction != -1){
+            //     if(statIncreaseRatios[session.session_data.faction][stat] > 0){
+            //         statpointsNeeded = session.session_data.editAmount
+            //     } else {
+            //         statpointsNeeded = session.session_data.editAmount/statIncreaseRatios[session.session_data.faction][stat]
+            //     }
+            // } else {
+            //     statpointsNeeded = session.session_data.editAmount
+            // }
             if(session.session_data.statpoints >= statpointsNeeded){
                 canIncrease = false;
             }
@@ -538,237 +2333,10 @@ module.exports = {
         return [row1,row2,row3]
     },
     populateCombatControls(session){
-        const row1 = new MessageActionRow()
-        .addComponents(
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_0')
-                .setLabel('Ability 1')
-                .setStyle('SUCCESS'),
-
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_1')
-                .setLabel('Ability 2')
-                .setStyle('SUCCESS'),
-
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_2')
-                .setLabel('Ability 3')
-                .setStyle('SUCCESS')
-        );
-
-        if(session.session_data.options.canFlee){
-            row1.addComponents(
-                new MessageButton()
-                .setCustomId('flee_' + session.session_id)
-                .setLabel('Flee')
-                .setStyle('DANGER')
-            )
-        }
-        const row2 = new MessageActionRow()
-        .addComponents(
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_3')
-                .setLabel('Ability 4')
-                .setStyle('SUCCESS'),
-
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_4')
-                .setLabel('Ability 5')
-                .setStyle('SUCCESS'),
-
-                new MessageButton()
-                .setCustomId('ability_' + session.session_id + '_5')
-                .setLabel('Ability 6')
-                .setStyle('SUCCESS'),
-
-                new MessageButton()
-                .setCustomId('myAbilities_' + session.session_id)
-                .setLabel('My Fighter')
-                .setStyle('PRIMARY')
-        );
-
-        if(session.session_data.fighters.length > 2){
-            let selectionLabels = []
-            
-            for(fighter of session.session_data.fighters){
-                if(fighter.alive){
-                    selectionLabels.push({
-                        label: "Target " + fighter.staticData.name,
-                        description: "Set " + fighter.staticData.name + " As Your Target",
-                        value: "" + fighter.index,
-                    })
-                }
-            }
-
-            const row3 = new MessageActionRow()
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('selectTarget_' + session.session_id)
-                    .setPlaceholder('Select a Target')
-                    .addOptions(selectionLabels),
-            )
-            return [row1,row2,row3]
-        } else {
-            return [row1,row2]
-        }
-        
+        return populateCombatControls(session)
     },
     populateCombatWindow(session){
-        let fightData = session.session_data
-        let title = ""
-        if(session.session_data.options.quest){
-            title = session.session_data.options.quest.title
-        } else {
-            if(session.session_data.turn == 0){
-                title += "Waiting to begin"
-            } else {
-                if(session.session_data.completed){
-                    title += "Turn #" + session.session_data.turn  + " - Battle Completed"
-                } else {
-                    title += "Turn #" + session.session_data.turn 
-                }
-                
-            }
-
-            if(fightData.fighters.length < 3){
-                title += ": " + fightData.fighters[0].staticData.name + " vs " + fightData.fighters[1].staticData.name
-            } else {
-                title += ": Mult-Duel (" + fightData.fighters.length + " combatants)"
-            }
-        }
-        const embed = new MessageEmbed()
-			.setColor("#7289da")
-			.setTitle(title)
-
-        if(session.session_data.options.quest){
-            embed.addField("Story",session.session_data.options.quest.entryText)
-        }
-
-        for(fighter of fightData.fighters){
-            if(!fighter.hide){
-                if(!fighter.alive){
-                    fighter.hide = true
-                }
-                let emojiHealthbar = ""
-                let hpRatio = Math.floor((fighter.liveData.stats.hp / fighter.liveData.maxhp)*8) 
-
-                let teamDict = ["🟢","🔴​","🟠​","🟡","​🔵","🟣"]
-                let character = ""
-                
-                let defVal = fighter.liveData.stats.def * statChangeStages[fighter.liveData.statChanges.def]
-                let spdefVal = fighter.liveData.stats.spdef * statChangeStages[fighter.liveData.statChanges.spdef]
-                if(defVal > spdefVal * 1.25){
-                    character = "🟫"
-                } else if(spdefVal > +defVal * 1.25){
-                    character = "🟪"
-                } else {
-                    character = "🟩"
-                }
-
-                for(let i = 1; i <= hpRatio;i++){
-                    emojiHealthbar += character
-                }
-                for(let i = 1; i <= 8 - hpRatio;i++){
-                    emojiHealthbar += "🔲"
-                }
-                let hearts = ""
-                if(fighter.alive){
-                    for(var i = 0; i < fighter.staticData.lives;i++){
-                        hearts += "❤️"
-                    }
-                }
-                let fighterDesc = fighter.liveData.stats.hp + "/" + fighter.liveData.maxhp + " | " + hearts + "\n" + emojiHealthbar
-                if(!fighter.alive){
-                    fighterDesc += "\n💀 **DEAD** 💀"
-                } else if(session.session_data.winners.includes(fighter.staticData.id)){
-                    fighterDesc += "\n**Winner**"
-                } else if(fighter.choosenAbility > -1){
-                    if(fighter.staticData.cpu){
-                        switch(fighter.staticData.abilities[fighter.choosenAbility].action_type){
-                            case "attack":
-                                fighterDesc += "\n**Preparing to attack...**"
-                                break;
-                            
-                            case "guard":
-                                fighterDesc += "\n**Preparing to guard...**"
-                                break;
-
-                            case "stats":
-                                fighterDesc += "\n**Preparing to modify stats...**"
-                                break;
-                        }
-                    } else {
-                        fighterDesc += "\n**Ready**"
-                    }
-                } else if (fighter.forfeit){
-                    if(fighter.customForfeit){
-                        fighterDesc += "\n**" + fighter.customForfeit + "**"
-                    } else {
-                        fighterDesc += "\n**Fled from battle**"
-                    }
-                } else if (!fighter.staticData.abilities || fighter.staticData.abilities.length < 1){
-                    fighterDesc += "\n*Cannot Act*"
-                } else {
-                    fighterDesc += "\n*Choosing next action...*"
-                }
-                if(fighter.team != null){
-                    embed.addField(teamDict[fighter.team] + fighter.staticData.name + " - Lvl " + fighter.staticData.level, fighterDesc, true)
-                } else {
-                    embed.addField(fighter.staticData.name + " - Lvl " + fighter.staticData.level, fighterDesc, true)
-                }
-            }
-        }
-        if(session.session_data.battlelog.dialogue.length > 0){
-            let log = ""
-            for(action of session.session_data.battlelog.dialogue){
-                log += action += "\n"
-            }
-            embed.addField(
-                "Dialogue",
-                "```diff\n" + log + "```"
-            )
-        }
-        if(session.session_data.battlelog.alerts.length > 0){
-            let log = ""
-            for(action of session.session_data.battlelog.alerts){
-                log += action += "\n"
-            }
-            embed.addField(
-                "Alert Log",
-                "```diff\n" + log + "```"
-            )
-        }
-        if(session.session_data.battlelog.combat.length > 0){
-            let log = ""
-            for(action of session.session_data.battlelog.combat){
-                log += action += "\n"
-            }
-            embed.addField(
-                "Battle Log",
-                "```diff\n" + log + "```"
-            )
-        } else {
-            embed.addField(
-                "Battle Log",
-                "```diff\nWaiting for actions to be declared...```"
-            )
-        }
-        if(session.session_data.battlelog.rewards.length > 0){
-            let log = ""
-            for(action of session.session_data.battlelog.rewards){
-                log += action += "\n"
-            }
-            embed.addField(
-                "Reward Log",
-                "```diff\n" + log + "```"
-            )
-        }
-
-        session.session_data.battlelog.dialogue = []
-        session.session_data.battlelog.combat = []
-        session.session_data.battlelog.rewards = []
-        session.session_data.battlelog.alerts = []
-        return [embed];
+        return populateCombatWindow(session)
     },
     populateCombatData(fighters,options){
         let data = {
@@ -782,7 +2350,8 @@ module.exports = {
                 alerts:[]
             },
             completed:false,
-            winners:[]
+            winners:[],
+            livingFighters:0
         }
     
 
@@ -795,6 +2364,8 @@ module.exports = {
             data.fighters.push(fighterData)
             i++;
         }
+
+        data.livingFighters = i
 
         if(options.openingDialogue != undefined){
             data.battlelog.dialogue.push(data.options.dialogue[options.openingDialogue])
@@ -811,7 +2382,7 @@ module.exports = {
             let fighter = session.session_data.fighters[i]
             if(fighter.alive){
                 if(fighter.staticData.abilities){
-                    if(fighter.choosenAbility == -1 && fighter.staticData.abilities.length > 0){
+                    if(fighter.stanceSwitch == undefined && fighter.choosenAbility == -1 && fighter.staticData.abilities.length > 0){
                         simTurn = false
                         break;
                     }
@@ -878,19 +2449,122 @@ module.exports = {
                     }
                 }
             }
+            let stancemessages = [];
             for(timePeriod of schedule[0]){
                 for(action of timePeriod){
                     currentActionCount++
                     let actionCode;
                     let weaponPassives = session.session_data.fighters[action.index].weaponPassives;
-
-                    let gearPassives = session.session_data.fighters[action.index].gearPassives;               
+                    let gearPassives = session.session_data.fighters[action.index].gearPassives;        
                     switch(action.ability.action_type){
+                        case "stance":
+                            let swapper = session.session_data.fighters[action.index]
+                            if(swapper.alive){
+                                swapper.records.stanceSwitches++
+                                swapper.staticData.stance = action.ability.stance
+                                session.session_data.battlelog.combat.push(swapper.staticData.name + " has switched to a " + stanceDict[action.ability.stance] + " fighting stance!")
+                                if(swapper.staticData.stances[swapper.staticData.stance].upgrades[0] > 0){
+                                    let val = swapper.staticData.stances[swapper.staticData.stance].upgrades[0] * stanceBuffs[swapper.staticData.stance][0].val 
+                                    if(stanceBuffs[swapper.staticData.stance][0].baseval){
+                                        val += stanceBuffs[swapper.staticData.stance][0].baseval
+                                    }
+                                    switch(swapper.staticData.stance){
+                                        case "hp":
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                            if(!swapper.shieldVal){
+                                                swapper.shieldVal = 0
+                                            }
+                                            let shield = Math.floor(swapper.liveData.maxhp * (val/100))
+                                            swapper.shieldVal += shield
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " gained a shield that can absorb up to " + shield + " damage!")
+                                            break;
+
+                                        case "atk":
+                                            if(Math.random() < val/100){
+                                                session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                                for(var i = 0; i < fighters.length;i++){
+                                                    if(fighters[i].team != swapper.team){
+                                                        handleStatChange(session,fighters[i],6,"def",undefined,true)
+                                                    }
+                                                }
+                                            }
+                                            break;
+
+                                        case "def":
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                            handleStatChange(session,swapper,8 + swapper.staticData.stances[swapper.staticData.stance].upgrades[0],"def",undefined,true)
+                                            handleStatChange(session,swapper,6,"atk",undefined,true)
+                                            handleStatChange(session,swapper,6,"spatk",undefined,true)
+                                            break;
+
+                                        case "spatk":
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                            if(!swapper.clearMindStacks){
+                                                swapper.clearMindStacks = 0
+                                            }
+                                            swapper.clearMindStacks += val
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " is sharpening their mental! (" + swapper.clearMindStacks+ " bonus base damage)")
+                                            break;
+
+                                        case "spdef":
+                                            if(Math.random() < val/100){
+                                                session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                                for(var i = 0; i < fighters.length;i++){
+                                                    if(fighters[i].team != swapper.team){
+                                                        handleStatChange(session,fighters[i],7,"atk",undefined,true)
+                                                        handleStatChange(session,fighters[i],7,"spatk",undefined,true)
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        
+                                        case "spd":
+                                            session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
+                                            if(swapper.staticData.meterRank > 0){
+                                                handleStatChange(swapper,9 + (swapper.staticData.meterRank * 2),"spd",undefined,true)
+                                                let totalMeterVal = swapper.staticData.meterRank * 30 + swapper.meter
+                                                totalMeterVal -= Math.floor(totalMeterVal * (val / 100))
+                                                swapper.meter = totalMeterVal % 30
+                                                swapper.staticData.meterRank = Math.floor(totalMeterVal / 30)
+                                            } else {
+                                                handleStatChange(swapper,8,"spd",undefined,true)
+                                            }
+                                        }
+                                }
+                                    
+                            }
+                            break;
                         case "attack":
                             let attacker = session.session_data.fighters[action.index]                  
                             if(attacker.alive){
+                                if(attacker.empowered > 0){
+                                    attacker.records.empoweredAbilities++
+                                    session.session_data.battlelog.combat.push(attacker.staticData.name + " is empowered! (x" + attacker.empowered + ")")
+                                    action.ability.damage_val = Math.ceil(action.ability.damage_val * (1 + (attacker.empowered)))
+                                    
+                                    if(action.ability.accuracy * (1.25 + (0.25 * attacker.empowered)) <= 100){
+                                        action.ability.accuracy *= (1.25 + (0.25 * attacker.empowered))
+                                    } else {
+                                        if(action.ability.accuracy < 100){
+                                            action.ability.accuracy = 100
+                                        }
+                                    } 
+
+                                    if(action.ability.critical == 0){
+                                        action.ability.critical = 10
+                                    }
+                                    action.ability.critical *= 1 + (0.5 * attacker.empowered)
+
+                                    if(action.ability.recoil > 0){
+                                        action.ability.damage_val += Math.ceil((action.ability.recoil/5 * attacker.empowered)/3) * 5
+                                    }
+
+                                    attacker.empowered = false
+                                }
+                                
                                 if(first){
                                     attacker.records.timesFirstAttack++
+                                    stancemessages.concat(processStanceGrowth(attacker.staticData,"spd",5))
                                     first = false
                                 }
                                 if(action.targets.length > 1){
@@ -899,11 +2573,16 @@ module.exports = {
                                     actionCode = attacker.index + "_" + action.ability.name + "_" + action.ability.targetType + "_" + action.targets[0]
                                 }   
 
-                                let abilityUseNotif = attacker.staticData.name + " used " + action.ability.name + " on "
-                                
+                                if(attacker.staticData.stance == "spatk" && attacker.staticData.stances.spatk.upgrades[1] > 0){
+                                    attacker.nonDamaging = 0
+                                }
+
+                                let abilityUseNotif = attacker.staticData.name + " used **" + action.ability.name + "** on "
+                                let targetsHit = false
 
                                 for(i in action.targets){
                                     if(session.session_data.fighters[action.targets[i]].alive){
+                                        targetsHit = true
                                         abilityUseNotif += session.session_data.fighters[action.targets[i]].staticData.name
                                         if(i < action.targets.length - 2){
                                             abilityUseNotif += ", "
@@ -922,12 +2601,45 @@ module.exports = {
                                     }
                                 }
 
-                                session.session_data.battlelog.combat.push(abilityUseNotif)
-
+                                if(targetsHit){
+                                    session.session_data.battlelog.combat.push(abilityUseNotif)
+                                }
                                 
                                 let reactiveDamage = 0
 
                                 let bonusBaseDamage = rageBonus
+
+                                if(attacker.clearMindStacks){
+                                    bonusBaseDamage += clearMindStacks
+                                }
+
+                                if(attacker.weapon){
+                                    switch(action.ability.damage_type){
+                                        case "atk":
+                                            if(attacker.weapon.stats.baseAtkBoost)
+                                                bonusBaseDamage += attacker.weapon.stats.baseAtkBoost
+                                            break;
+
+                                        case "spatk":
+                                            if(attacker.weapon.stats.baseSpAtkBoost)
+                                                bonusBaseDamage += attacker.weapon.stats.baseSpAtkBoost
+                                            break;
+                                    }
+                                }
+
+                                if(attacker.gear){
+                                    switch(action.ability.damage_type){
+                                        case "atk":
+                                            if(attacker.gear.stats.baseAtkBoost)
+                                                bonusBaseDamage += attacker.gear.stats.baseAtkBoost
+                                            break;
+
+                                        case "spatk":
+                                            if(attacker.gear.stats.baseSpAtkBoost)
+                                                bonusBaseDamage += attacker.gear.stats.baseSpAtkBoost
+                                            break;
+                                    }
+                                }
 
                                 for(t of action.targets){
 
@@ -955,8 +2667,67 @@ module.exports = {
                                         }
 
                                         while(attackNum > 0){
+                                            console.log("test5")
                                             let attackBase = action.ability.damage_val + bonusBaseDamage
+                                            let critRoll = action.ability.critical
+                                            if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 1 && attacker.weapon.weaponStyle == 1){
+                                                if(action.ability.speed > 1){
+                                                    critRoll += (action.ability.speed/2) * 15
+                                                }
+                                            }
+                                            let passiveData = getPassive(attacker,7)
+                                            if(passiveData != null){
+                                                critRoll += Math.floor(action.ability.recoil/10) * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank])
+                                            }
+
+                                            if(weaponPassives[4] > 0){
+                                                if(attacker.lastAction == actionCode){
+                                                    critRoll += weaponPassives[4] * 12
+                                                }
+                                            }
+
+                                            let overcrit = false 
+
+                                            if(weaponPassives[6] > 0){
+                                                let speedDiff = ((attacker.liveData.stats.spd * statChangeStages[attacker.liveData.statChanges.spd])/(target.liveData.stats.spd * statChangeStages[target.liveData.statChanges.spd])) - 1
+                                                if(speedDiff > 0){
+                                                    critRoll += (weaponPassives[6] * 4) * (speedDiff * 10)
+                                                }     
+                                            }
+
+                                            let critMax = 90
+                                            let critMulti = 1;
+                                            if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 2 && attacker.weapon.weaponStyle == 2){
+                                                critMulti = 3
+                                            } else {
+                                                critMulti = 2
+                                            }
+
+                                            if(attacker.staticData.stance == "atk" && attacker.staticData.stances.atk.upgrades[2] > 0){
+                                                let buffData = getStanceBuffValues("atk",attacker.staticData.stances,2)
+                                                critMax = 100
+                                                critRoll += buffData.val
+                                            }
+
+                                            if(attacker.staticData.stance == "spatk" && attacker.staticData.stances.atk.upgrades[2] > 0){
+                                               critRoll -= 10
+                                            }
+
+                                            if(attacker.empowered > 0){
+                                                critRoll *= 2 
+                                            }
+
+                                            if(critRoll > critMax){
+                                                overcrit = true
+                                                critRoll = critMax
+                                            }
+
+                                            let crit = Math.floor(Math.random() * 100) < critRoll ? critMulti : 1
+                                            if(crit != 1){
+                                                attackBase *= critMulti
+                                            }
                                             
+                                                            
                                             if(currentActionCount == actionCount){
                                                 let passiveDataLast = getPassive(attacker,6)
                                                 if(passiveDataLast != null){
@@ -986,28 +2757,99 @@ module.exports = {
                                             }
                                            
                                             let hitConfirm = accCheck < (action.ability.accuracy - repeatPenal)
+                                            if(target.staticData.stance == "def" && target.staticData.stances.hp.upgrades[2] > 0){
+                                                let buffData = getStanceBuffValues("def",target.staticData.stances,2)
+                                                if(Math.random * 100 < buffData.val){
+                                                    hitConfirm = false
+                                                }
+                                            }
+                                            
+                                            let parry = false;
+                                            if(target.weaponPassives[7] > 0){
+                                                if(target.guardData == "none" && !target.hasActed){
+                                                    if(Math.random() * 100 < target.weaponPassives[7] * 10){
+                                                        hitConfirm = false
+                                                        parry = true
+                                                    }
+                                                }        
+                                            }
                                             if(hitConfirm){
+                                                if(crit != 1){
+                                                    if(!multiHit){
+                                                        session.session_data.battlelog.combat.push("A critical hit!")
+                                                    }
+                                                    critCount++
+                                                    
+                                                }
+                                                
+                                                if(attacker.lastAction == actionCode){
+                                                    attacker.records.timesAbilityRepeat++
+                                                }
                                                 hitCount++
+                                                
                                                 switch(action.ability.damage_type){
                                                     case "atk":
                                                         attacker.records.attacks++
+                                                        stancemessages.concat(processStanceGrowth(attacker.staticData,"atk",3))
                                                         break;
 
                                                     case "spatk":
                                                         attacker.records.spattacks++
+                                                        stancemessages.concat(processStanceGrowth(attacker.staticData,"spatk",3))
                                                         break;
+                                                }
+
+                                                let bonusGuardValue = 0
+
+                                                if(target.weapon){
+                                                    switch(action.ability.damage_type){
+                                                        case "atk":
+                                                            bonusGuardValue += target.weapon.stats.baseDefBoost
+                                                            break;
+                
+                                                        case "spatk":
+                                                            bonusGuardValue += target.weapon.stats.baseSpDefBoost
+                                                            break;
+                                                    }
+                                                }
+
+                                                if(target.gear){
+                                                    switch(action.ability.damage_type){
+                                                        case "atk":
+                                                            bonusGuardValue += target.gear.stats.baseDefBoost
+                                                            break;
+                
+                                                        case "spatk":
+                                                            bonusGuardValue += target.gear.stats.baseSpDefBoost
+                                                            break;
+                                                    }
                                                 }
                                                 
                                                 if(target.guardData != "none" && target.guardData != "fail" && ignoreBlock == false){
                                                     attackNum = 0
-                                                    let guardValue = target.guardData.guard_val
+                                                    let guardValue = target.guardData.guard_val 
+                                                    if(target.meter != undefined){
+                                                        increaseComboMeter(target,8)
+                                                    }
+                                                    if(gearPassives[6] > 0){
+                                                        let difference = (attacker.liveData.maxhp/target.liveData.maxhp) - 1
+                                                        if(difference > 0){
+                                                            if(difference > gearPassives[6] * 0.1){
+                                                                difference = gearPassives[6] * 0.1
+                                                            }
+                                                            guardValue *= difference;
+                                                        }
+                                                    }
+
                                                     switch(target.guardData.guard_type){
                                                         case "def":
                                                             target.records.guards++
+                                                            stancemessages.concat(processStanceGrowth(target.staticData,"def",3))
                                                             break;
     
                                                         case "spdef":
                                                             target.records.spguards++
+                                                            stancemessages.concat(processStanceGrowth(target.staticData,"spdef",3))
                                                             break;
                                                     }
                                                     let typeMatch = {
@@ -1020,12 +2862,17 @@ module.exports = {
                                                             mismatchVal += target.gearPassives[4] * 0.07
                                                         }
                                                         guardValue *= mismatchVal
+                                                        guardValue + bonusGuardValue
                                                         attackBase -= guardValue
                                                         target.records.baseDamageBlocked += guardValue
                                                         if(attackBase <= 0){
                                                             let healAmount = 0
                                                             if(target.gearPassives[1] > 0){
-                                                                healAmount = Math.ceil(Math.abs(attackBase) * (target.gearPassives[1] * 0.2))
+                                                                if(Math.random() < target.gearPassives[1] * .15){
+                                                                    let stats = ["def","spdef"]
+                                                                    let choosenStat = stats[Math.floor(Math.random() * stats.length)]
+                                                                    handleStatChange(session,attacker,-2,choosenStat)
+                                                                }
                                                             }
                                                             target.liveData.stats.hp += healAmount
                                                             if(target.liveData.stats.hp > target.liveData.maxhp){
@@ -1043,15 +2890,7 @@ module.exports = {
                                                                 if(Math.random() < target.gearPassives[5] * .05){
                                                                     let stats = ["atk","spatk","def","spdef","spd"]
                                                                     let choosenStat = stats[Math.floor(Math.random() * stats.length)]
-                                                                    target.liveData.statChanges[choosenStat] += 1
-                                                                    let msg;
-                                                                    if(target.liveData.statChanges[choosenStat] > 16){
-                                                                        target.liveData.statChanges[choosenStat] = 16
-                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
-                                                                    } else {
-                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[target.liveData.statChanges[effect.stat]] + ")."
-                                                                    }
-                                                                    session.session_data.battlelog.combat.push(msg)
+                                                                    handleStatChange(session,target,1,choosenStat)
                                                                 }
                                                             }
                                                         } else {
@@ -1060,12 +2899,17 @@ module.exports = {
                                                         }
                                                     } else {
                                                         let healAmount = 0 
+                                                        guardValue += bonusGuardValue
                                                         attackBase -= guardValue
                                                         target.records.baseDamageBlocked += guardValue
                                                         let notice;
                                                         if(attackBase <= 0){
                                                             if(target.gearPassives[1] > 0){
-                                                                healAmount = Math.ceil(Math.abs(attackBase) * (target.gearPassives[1] * 0.2))
+                                                                if(Math.random() < target.gearPassives[1] * .15){
+                                                                    let stats = ["def","spdef"]
+                                                                    let choosenStat = stats[Math.floor(Math.random() * stats.length)]
+                                                                    handleStatChange(session,attacker,-2,choosenStat)
+                                                                }
                                                             }
                                                             target.liveData.stats.hp += healAmount
                                                             if(target.liveData.stats.hp > target.liveData.maxhp){
@@ -1079,15 +2923,7 @@ module.exports = {
                                                                 if(Math.random() < target.gearPassives[5] * .05){
                                                                     let stats = ["atk","spatk","def","spdef","spd"]
                                                                     let choosenStat = stats[Math.floor(Math.random() * stats.length)]
-                                                                    target.liveData.statChanges[choosenStat] += 1
-                                                                    let msg;
-                                                                    if(target.liveData.statChanges[choosenStat] > 16){
-                                                                        target.liveData.statChanges[choosenStat] = 16
-                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
-                                                                    } else {
-                                                                        msg = target.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[target.liveData.statChanges[choosenStat]] + ")."
-                                                                    }
-                                                                    session.session_data.battlelog.combat.push(msg)
+                                                                    handleStatChange(session,target,1,choosenStat)
                                                                 }
                                                             }
                                                         } else {
@@ -1096,10 +2932,13 @@ module.exports = {
                                                         }
                                                         if(target.guardData.counter_val > 0){
                                                             let guard = target.guardData
+                                                            let targetStatValue = getFighterStat(target,guard.counter_type)
+                                                            let attackerStatValue = getFighterStat(attacker,guard.counter_type)
+
                                                             let counterDamage = Math.floor(calculateAttackDamage(
                                                                 target.staticData.level,
-                                                                target.staticData.stats[guard.counter_type] * statChangeStages[target.liveData.statChanges[guard.counter_type]],
-                                                                attacker.staticData.stats[guard.counter_type] * statChangeStages[attacker.liveData.statChanges[guard.counter_type]],
+                                                                targetStatValue,
+                                                                attackerStatValue,
                                                                 guard.counter_val
                                                             ))
 
@@ -1116,14 +2955,29 @@ module.exports = {
                                                                         counterDamage *= 2
                                                                     }
                                                                 }
-
-                                                                attacker.records.timesHit++
-                                                                attacker.liveData.stats.hp -= counterDamage;
+                                                                damageFighter(session,counterDamage,attacker)
+                                                                let hpRatio = Math.floor((attacker.liveData.stats.hp / attacker.liveData.maxhp)*8)
+                                                                if(attacker.staticData.lootPoint == hpRatio && !attacker.lootPointHit){
+                                                                    session.session_data.battlelog.alerts.push(attacker.staticData.name + "'s loot point has been hit!")
+                                                                    session.session_data.battlelog.alerts.push("---")
+                                                                    attacker.lootPointHit = true
+                                                                    manageCriticalPoint(session,attacker,target,"loot")
+                                                                }
+                                                                if(attacker.staticData.weakPoint == hpRatio && !attacker.weakPointHit){
+                                                                    session.session_data.battlelog.alerts.push(attacker.staticData.name + "'s weak point has been hit!")
+                                                                    session.session_data.battlelog.alerts.push("---")
+                                                                    attacker.weakPointHit = true
+                                                                    manageCriticalPoint(session,attacker,target,"weak")
+                                                                }
                                                                 attacker.records.enemyDamageTaken += counterDamage;
                                                                 target.records.counterDamageDone += counterDamage
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
                                                                 if(attacker.liveData.stats.hp <= 0){
                                                                     attacker.staticData.lives -= 1
+                                                                    if(attacker.meter != undefined){
+                                                                        attacker.staticData.meterRank = 0
+                                                                        attacker.meter = 0
+                                                                    }
                                                                     if(attacker.staticData.lives <= 0){
                                                                         attackNum = 0
                                                                         attacker.liveData.stats.hp = 0
@@ -1133,6 +2987,11 @@ module.exports = {
                                                                         attacker.choosenAbility = -2
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
                                                                         attacker.staticData.lives = 1
+                                                                        if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
+                                                                            attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
+                                                                            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
+                                                                        }
+                                                                        attacker.staticData.exploreStreak = 0
                                                                         attacker.records.livesLost++
                                                                         if(attacker.staticData.cpu){
                                                                             processMobRewards(attacker,session)
@@ -1148,6 +3007,11 @@ module.exports = {
                                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
                                                                         attacker.records.livesLost++
                                                                         attacker.liveData.stats.hp = attacker.liveData.maxhp
+
+                                                                        if(attacker.staticData.highestStat){
+                                                                            attackNum = 0
+                                                                            manageBossAction(attacker,session)
+                                                                        }
                                                                     }
 
                                                                     let passiveData = getPassive(attacker,3)
@@ -1155,9 +3019,9 @@ module.exports = {
                                                                         let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
                                                                         for(var i = 0; i < fighters.length;i++){
                                                                             if(fighters[i].index != attacker.index){
-                                                                                fighters[i].liveData.hp -= damage
-                                                                                if(fighters[i].liveData.hp < 1 && fighters[i].alive){
-                                                                                    fighters[i].liveData.hp = 1
+                                                                                damageFighter(session,damage,fighters[i])
+                                                                                if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
+                                                                                    fighters[i].liveData.stats.hp = 1
                                                                                 }
                                                                             }
                                                                         }
@@ -1177,86 +3041,79 @@ module.exports = {
                                                             session.session_data.battlelog.combat.push(notice +"!")
                                                         }
                                                     }
-                                                } else if (weaponPassives[2] > 0 && Math.random() < 0.05 * weaponPassives[2]) {
-                                                    let stats = ["atk","spatk","def","spdef","spd"]
-                                                    let choosenStat = stats[Math.floor(Math.random() * stats.length)]
-                                                    attacker.liveData.statChanges[choosenStat] += 1
-                                                    let msg;
-                                                    if(attacker.liveData.statChanges[choosenStat] > 16){
-                                                        attacker.liveData.statChanges[choosenStat] = 16
-                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
-                                                    } else {
-                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[attacker.liveData.statChanges[choosenStat]] + ")."
+                                                } else {
+                                                    if(attacker.meter != undefined){
+                                                        increaseComboMeter(attacker,5)
                                                     }
-                                                    session.session_data.battlelog.combat.push(msg)
+                                                    if (weaponPassives[2] > 0 && Math.random() < 0.05 * weaponPassives[2]) {
+                                                        let stats = ["atk","spatk","def","spdef","spd"]
+                                                        let choosenStat = stats[Math.floor(Math.random() * stats.length)]
+                                                        handleStatChange(session,attacker,1,choosenStat)
+                                                    }
+
+                                                    if (weaponPassives[8] > 0 && Math.random() < 0.08 * weaponPassives[8]) {
+                                                        handleStatChange(session,target,-1,"spd")
+                                                    }
+
+                                                    if(target.gearPassives[7] > 0 && Math.random() < 0.1 * target.gearPassives[7]){
+                                                        handleStatChange(session,attacker,-1,action.ability.damage_type)
+                                                    }
                                                 }
 
                                                 if(attacker.alive){
-                                                    let critRoll = action.ability.critical
-                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 1 && attacker.weapon.weaponStyle == 1){
-                                                        if(action.ability.speed > 1){
-                                                            critRoll += (action.ability.speed/2) * 15
-                                                        }
-                                                    }
-                                                    let passiveData = getPassive(attacker,7)
-                                                    if(passiveData != null){
-                                                        critRoll += Math.floor(action.ability.recoil/10) * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank])
-                                                    }
-
-                                                    if(weaponPassives[4] > 0){
-                                                        if(attacker.lastAction == actionCode){
-                                                            critRoll += weaponPassives[4] * 10
-                                                        }
-                                                    }
-                                                    let critMulti;
-                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 2 && attacker.weapon.weaponStyle == 2){
-                                                        critMulti = 3
-                                                    } else {
-                                                        critMulti = 2
-                                                    }
-                                                    let crit = Math.floor(Math.random() * 100) < critRoll ? critMulti : 1
                                                     let totalDamage;
 
                                                     if(!target.hasActed && weaponPassives[1] > 0){
                                                         attackBase += weaponPassives[1] * 4
                                                     }
 
-                                                    if(crit && weaponPassives[0] > 0){
+                                                    let attackStatVal = getFighterStat(attacker,action.ability.damage_type)
+                                                    if(attacker.staticData.stance == "spd" && attacker.staticData.stances.spd.upgrades[1] > 0){
+                                                        let buffData = getStanceBuffValues("spd",attacker.staticData.stances,1)
+                                                        attackStatVal += Math.ceil(getFighterStat(attacker,"spd") * (buffData.val/100))
+                                                    }
+
+                                                    let defendStat = action.ability.damage_type == "atk" ? "def" : "spdef"
+                                                    let defendStatVal = getFighterStat(target,defendStat)
+
+                                                    if(crit != 1 && weaponPassives[0] > 0){
                                                         totalDamage = calculateAttackDamage(
                                                             attacker.staticData.level,
-                                                            attacker.liveData.stats[action.ability.damage_type] * statChangeStages[attacker.liveData.statChanges[action.ability.damage_type]],
-                                                            ((100 - (weaponPassives[0] * 5))/100) * (target.liveData.stats[action.ability.damage_type == "atk" ? "def" : "spdef"] * statChangeStages[target.liveData.statChanges[action.ability.damage_type == "atk" ? "def" : "spdef"]]),
+                                                            attackStatVal,
+                                                            ((100 - (weaponPassives[0] * 5))/100) * defendStatVal,
                                                             attackBase
                                                         )
                                                     } else {
                                                         totalDamage = calculateAttackDamage(
                                                             attacker.staticData.level,
-                                                            attacker.liveData.stats[action.ability.damage_type] * statChangeStages[attacker.liveData.statChanges[action.ability.damage_type]],
-                                                            target.liveData.stats[action.ability.damage_type == "atk" ? "def" : "spdef"] * statChangeStages[target.liveData.statChanges[action.ability.damage_type == "atk" ? "def" : "spdef"]],
+                                                            attackStatVal,
+                                                            defendStatVal,
                                                             attackBase
                                                         )
                                                     }
 
                                                     let effectiveness = 1; 
-                                                    let sameType = parseInt(attacker.staticData.faction) == parseInt(action.ability.faction) ? 1.25 : 1
-                        
-                                                    if(action.ability.faction != -1){
-                                                        effectiveness = factionMatchups[action.ability.faction][target.staticData.faction]
-                                                        
+                                                    let sameType = attacker.staticData.stance == action.ability.stance && attacker.staticData.stance != "none" ? 1.25 : 1
+
+                                                    effectiveness = stanceMatchups[action.ability.stance][target.staticData.stance]
+                                                    
+                                                    if((multiHit && attackNum <= 1) || !multiHit){
                                                         switch(effectiveness){
-                                                            case 1.5:
-                                                                session.session_data.battlelog.combat.push("It had a powerful impact on " + target.staticData.name)
+                                                            case 2:
+                                                                attacker.records.effectiveAttacks++
+                                                                target.records.attacksEffected++
+                                                                session.session_data.battlelog.combat.push("It had a powerful impact on " + target.staticData.name + "'s stance")
                                                                 break;
                                                             
                                                             case 0.5:
-                                                                session.session_data.battlelog.combat.push("It had a weak impact on " + target.staticData.name)
+                                                                attacker.records.resistedAttacks++
+                                                                target.records.attacksResisted++
+                                                                session.session_data.battlelog.combat.push("It had a weak impact on " + target.staticData.name + "'s stance")
                                                                 break;
                                                         }
                                                     }
                                                     
-                                                    
-
-                                                    let finalDamage = Math.ceil(totalDamage * crit)
+                                                    let finalDamage = Math.ceil(totalDamage * effectiveness * sameType)
                                                     if(weaponPassives[5] > 0){
                                                         let physCheck = target.liveData.stats.def > target.liveData.stats.spdef && action.ability.damage_type == "atk"
                                                         let specCheck = target.liveData.stats.spdef > target.liveData.stats.def && action.ability.damage_type == "spatk"
@@ -1264,14 +3121,17 @@ module.exports = {
                                                             finalDamage = Math.ceil(finalDamage * (1 + weaponPassives[5] *.05))
                                                         } 
                                                     }
-                                                    if(finalDamage > 0){
-                                                        if(crit == 2){
-                                                            critCount++
-                                                            attacker.records.criticalsLanded++
-                                                            if(!multiHit){
-                                                                session.session_data.battlelog.combat.push("A critical hit!")
-                                                            }
 
+                                                    if(target.staticData.stance == "hp" && target.staticData.stances.hp.upgrades[1] > 0){
+                                                        let buffData = getStanceBuffValues("hp",target.staticData.stances,1)
+                                                        let ratio = 1 - (target.liveData.stats.hp / target.liveData.maxhp)
+                                                        let finalMulti = (buffData.val * (ratio))/100
+                                                        finalDamage = Math.ceil(finalDamage * (1 - finalMulti))
+                                                    }
+                                                    
+                                                    if(finalDamage > 0){
+                                                        if(crit != 1){
+                                                            attacker.records.criticalsLanded++
                                                             let passiveData = getPassive(target,4)
                                                             if(passiveData != null){
                                                                 let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
@@ -1285,54 +3145,92 @@ module.exports = {
                                                         }
 
                                                         finalDamage = Math.ceil(finalDamage)
-                                                        target.liveData.stats.hp -= finalDamage;
+
+                                                        if(target.staticData.stance == "spdef" && target.staticData.stances.spdef.upgrades[1] > 0){
+                                                            let buffData = getStanceBuffValues("spdef",target.staticData.stances,1)
+                                                            let resistAmount = 0
+                                                            for(f of session.session_data.fighters){
+                                                                if(f.team != target.team && f.alive){
+                                                                    resistAmount += buffData.val
+                                                                }
+                                                            }
+                                                            finalDamage = Math.ceil(finalDamage * (1 - resistAmount/100))
+                                                        }
+
+                                                        let hadShield = target.shieldVal > 0
+                                                        finalDamage = damageFighter(session,finalDamage,target,false,true)
+
+                                                        if(action.ability.damage_type == "atk"){
+                                                            if(target.staticData.stance == "def" && target.staticData.stances.hp.upgrades[1] > 0){
+                                                                let buffData = getStanceBuffValues("def",target.staticData.stances,1)
+                                                                if(Math.random * 100 < buffData.val){
+                                                                    handleStatChange(session,target,1,"def")
+                                                                }
+                                                            }
+                                                        }
+
+                                                        let hpRatio = Math.floor((target.liveData.stats.hp / target.liveData.maxhp)*8)
+                                                        if(target.staticData.lootPoint == hpRatio && !target.lootPointHit){
+                                                            session.session_data.battlelog.alerts.push(target.staticData.name + "'s loot point has been hit!")
+                                                            session.session_data.battlelog.alerts.push("---")
+                                                            target.lootPointHit = true
+                                                            manageCriticalPoint(session,target,attacker,"loot")
+                                                        }
+                                                        if(target.staticData.weakPoint == hpRatio && !target.weakPointHit){
+                                                            session.session_data.battlelog.alerts.push(target.staticData.name + "'s weak point has been hit!")
+                                                            session.session_data.battlelog.alerts.push("---")
+                                                            target.weakPointHit = true
+                                                            manageCriticalPoint(session,target,attacker,"weak")
+                                                        }
                                                         if(target.liveData.stats.hp <= target.liveData.maxhp * 0.8 && target.team != attacker.team){
                                                             target.currentTarget = attacker.discriminator
                                                         }
-                                                        target.records.timesHit++;
+                                                        target.lastAttacker = attacker
+                                                        target.hitThisTurn = true
+                                                        target.lastDamageTakenType = action.ability.damage_type
                                                         attacker.records.attackDamageDone += finalDamage
                                                         target.records.enemyDamageTaken += finalDamage
                                                         if(multiHit){
                                                             multiDamage += finalDamage
                                                             if(attackNum <= 1 || target.liveData.stats.hp <= 0){
-                                                                session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
-                                                                if(multiDamage > attacker.records.strongestStrike){
-                                                                    attacker.records.strongestStrike = multiDamage
+                                                                if(hadShield){
+                                                                    if(target.shieldVal > 0){
+                                                                        session.session_data.battlelog.combat.push(target.staticData.name + "'s shield absorbed damage from the hits! (" + target.shieldVal + " shield remaining)") 
+                                                                    } else {
+                                                                        session.session_data.battlelog.combat.push(target.staticData.name + "'s shield couldn't withstand the damage!") 
+                                                                    }
                                                                 }
-                                                                if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
-                                                                    for(var i = 0; i < hitCount; i++){
-                                                                        if(Math.random() <= 0.1){
-                                                                            let choosenStat = action.ability.damage_type
-                                                                            attacker.liveData.statChanges[choosenStat] += 1
-                                                                            let msg;
-                                                                            if(attacker.liveData.statChanges[choosenStat] > 16){
-                                                                                attacker.liveData.statChanges[choosenStat] = 16
-                                                                                msg = attacker.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
-                                                                            } else {
-                                                                                msg = attacker.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[attacker.liveData.statChanges[choosenStat]] + ")."
+                                                                if(finalDamage > 0){
+                                                                    session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
+                                                                    if(multiDamage > attacker.records.strongestStrike){
+                                                                        attacker.records.strongestStrike = multiDamage
+                                                                    }
+                                                                    if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
+                                                                        for(var i = 0; i < hitCount; i++){
+                                                                            if(Math.random() <= 0.1){
+                                                                                handleStatChange(session,attacker,1,action.ability.damage_type)
                                                                             }
-                                                                            session.session_data.battlelog.combat.push(msg)
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         } else {
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
-                                                            if(finalDamage > attacker.records.strongestStrike){
-                                                                attacker.records.strongestStrike = finalDamage
+                                                            if(hadShield){
+                                                                if(target.shieldVal > 0){
+                                                                    session.session_data.battlelog.combat.push(target.staticData.name + "'s shield absorbed the damage! (" + target.shieldVal + " shield remaining)") 
+                                                                } else {
+                                                                    session.session_data.battlelog.combat.push(target.staticData.name + "'s shield couldn't withstand the damage!") 
+                                                                }
                                                             }
-                                                            if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
-                                                                if(Math.random() <= 0.1){
-                                                                    let choosenStat = action.ability.damage_type
-                                                                    attacker.liveData.statChanges[choosenStat] += 1
-                                                                    let msg;
-                                                                    if(attacker.liveData.statChanges[choosenStat] > 16){
-                                                                        attacker.liveData.statChanges[choosenStat] = 16
-                                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier can't go higher!"
-                                                                    } else {
-                                                                        msg = attacker.staticData.name + "'s " + choosenStat + " multiplier increased by 1 stage (x" + statChangeStages[attacker.liveData.statChanges[choosenStat]] + ")."
+                                                            if(finalDamage > 0){
+                                                                session.session_data.battlelog.combat.push(target.staticData.name + " took " + finalDamage + " damage!")
+                                                                if(finalDamage > attacker.records.strongestStrike){
+                                                                    attacker.records.strongestStrike = finalDamage
+                                                                }
+                                                                if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 3 && attacker.weapon.weaponStyle == 3){
+                                                                    if(Math.random() <= 0.1){
+                                                                        handleStatChange(session,attacker,1,action.ability.damage_type)
                                                                     }
-                                                                    session.session_data.battlelog.combat.push(msg)
                                                                 }
                                                             }
                                                         }
@@ -1362,8 +3260,20 @@ module.exports = {
                                                     }
                                                     if(target.liveData.stats.hp <= 0){
                                                         target.staticData.lives -= 1
-
+                                                        if(target.meter != undefined){
+                                                            target.staticData.meterRank = 0
+                                                            target.meter = 0
+                                                        }
                                                         if(target.staticData.lives <= 0){
+                                                            if(attacker.staticData.stance == "spdef" && attacker.staticData.stances.spdef.upgrades[2] > 0){
+                                                                let buffData = getStanceBuffValues("spdef",attacker.staticData.stances,2)
+                                                                let gainedHealth = Math.ceil((buffData.val/100) * attacker.liveData.maxhp)
+                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " gained " + gainedHealth + " health!")
+                                                                attacker.liveData.stats.hp += gainedHealth
+                                                                if(attacker.liveData.stats.hp > attacker.liveData.stats.maxhp){
+                                                                    attacker.liveData.stats.hp = attacker.liveData.stats.maxhp  
+                                                                }
+                                                            }
                                                             attackNum = 0
                                                             target.liveData.stats.hp = 0
                                                             target.alive = false
@@ -1372,6 +3282,11 @@ module.exports = {
                                                             target.choosenAbility = -2
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " was defeated!")
                                                             target.staticData.lives = 1
+                                                            if(target.staticData.exploreRecord < target.staticData.exploreStreak){
+                                                                target.staticData.exploreRecord = target.staticData.exploreStreak
+                                                                session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + target.staticData.exploreStreak)
+                                                            }
+                                                            target.staticData.exploreStreak = 0
                                                             target.records.livesLost++
                                                             if(target.staticData.cpu){
                                                                 processMobRewards(target,session)
@@ -1387,6 +3302,11 @@ module.exports = {
                                                             session.session_data.battlelog.combat.push(target.staticData.name + " lost a life! (" + target.staticData.lives + " remaining)")
                                                             target.records.livesLost++
                                                             target.liveData.stats.hp = target.liveData.maxhp
+
+                                                            if(target.staticData.highestStat){
+                                                                attackNum = 0
+                                                                manageBossAction(target,session)
+                                                            }
                                                         }
 
                                                         let passiveData = getPassive(target,3)
@@ -1394,9 +3314,9 @@ module.exports = {
                                                             let damage = target.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
                                                             for(var i = 0; i < fighters.length;i++){
                                                                 if(fighters[i].index != target.index){
-                                                                    fighters[i].liveData.hp -= damage
-                                                                    if(fighters[i].liveData.hp < 1 && fighters[i].alive){
-                                                                        fighters[i].liveData.hp = 1
+                                                                    damageFighter(session,damage,fighters[i])
+                                                                    if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
+                                                                        fighters[i].liveData.stats.hp = 1
                                                                     }
                                                                 }
                                                             }
@@ -1404,13 +3324,36 @@ module.exports = {
                                                         }
                                                     }
 
-                                                    if(action.ability.recoil != 0 && finalDamage > 0){
-                                                        let recoilDamage = Math.ceil(action.ability.recoil/100 * finalDamage);
+                                                    let recoilVal = action.ability.recoil
+                                                    if(attacker.staticData.stance == "atk" && attacker.staticData.stances.atk.upgrades[2] > 0){
+                                                        if(overcrit){
+                                                            recoilVal += 5
+                                                        } else {
+                                                            recoilVal += 10
+                                                        }
+                                                    }
+                                                    
+                                                    if(attacker.staticData.stance == "spatk" && attacker.staticData.stances.spatk.upgrades[2] > 0){
+                                                        let buffData = getStanceBuffValues("spatk",attacker.staticData.stances,2)
+                                                        recoilVal -= buffData.val
+                                                    }
+
+                                                    if(recoilVal < 0){
+                                                        recoilVal = 0
+                                                    }
+
+                                                    if(recoilVal != 0 && finalDamage > 0 && attackNum == 1){
+                                                        let recoilDamage = Math.ceil(recoilVal/100 * attacker.liveData.maxhp);
                                                         session.session_data.battlelog.combat.push(attacker.staticData.name + " suffered from " + recoilDamage + " recoil damage!")
-                                                        attacker.liveData.stats.hp -= recoilDamage
+                                                        damageFighter(session,recoilDamage,attacker)
                                                         attacker.recoilDamageTaken += recoilDamage
-                                                        if(attacker.liveData.stats.hp <= 0){
+                                                        let recoilDeath = attacker.liveData.stats.hp <= 0
+                                                        if(recoilDeath){
                                                             attacker.staticData.lives -= 1
+                                                            if(attacker.meter != undefined){
+                                                                attacker.staticData.meterRank = 0
+                                                                attacker.meter = 0
+                                                            }
                                                             if(attacker.staticData.lives <= 0){
                                                                 attacker.liveData.stats.hp = 0
                                                                 attacker.alive = false
@@ -1418,6 +3361,11 @@ module.exports = {
                                                                 attacker.choosenAbility = -2
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
                                                                 attacker.staticData.lives = 1
+                                                                if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
+                                                                    attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
+                                                                    session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
+                                                                }
+                                                                attacker.staticData.exploreStreak = 0
                                                                 attacker.records.livesLost++
                                                                 if(attacker.staticData.cpu){
                                                                     processMobRewards(target,session)
@@ -1433,6 +3381,11 @@ module.exports = {
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
                                                                 attacker.records.livesLost++
                                                                 attacker.liveData.stats.hp = attacker.liveData.maxhp
+
+                                                                if(attacker.staticData.highestStat){
+                                                                    attackNum = 0
+                                                                    manageBossAction(attacker,session)
+                                                                }
                                                             }
 
                                                             let passiveData = getPassive(attacker,3)
@@ -1440,9 +3393,9 @@ module.exports = {
                                                                 let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
                                                                 for(var i = 0; i < fighters.length;i++){
                                                                     if(fighters[i].index != attacker.index){
-                                                                        fighters[i].liveData.hp -= damage
-                                                                        if(fighters[i].liveData.hp < 1 && fighters[i].alive){
-                                                                            fighters[i].liveData.hp = 1
+                                                                        damageFighter(session,damage,fighters[i])
+                                                                        if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
+                                                                            fighters[i].liveData.stats.hp = 1
                                                                         }
                                                                     }
                                                                 }
@@ -1456,14 +3409,19 @@ module.exports = {
                                                 if(hitCount > 0){
                                                     session.session_data.battlelog.combat.push(target.staticData.name + " took " + multiDamage + " total damage! (" + hitCount + " hits / " + critCount + " crits)")
                                                 } else {
-                                                    if(repeatPenal > 0){
-                                                        if((action.ability.accuracy - repeatPenal) <= 0){
-                                                            session.session_data.battlelog.combat.push(attacker.staticData.name + " has become too predictable so " + target.staticData.name + " was able to avoid their attack!")
-                                                        } else {
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
-                                                        }
+                                                    if(parry){
+                                                        session.session_data.battlelog.combat.push(target.staticData.name + " parried!")
+                                                        handleStatChange(session,target,-1,"spd")
                                                     } else {
-                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was unable to land their attack!")
+                                                        if(repeatPenal > 0){
+                                                            if((action.ability.accuracy - repeatPenal) <= 0){
+                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " has become too predictable so " + target.staticData.name + " was able to avoid their attack!")
+                                                            } else {
+                                                                session.session_data.battlelog.combat.push(target.staticData.name + " was able to avoid the repeated attack!")
+                                                            }
+                                                        } else {
+                                                            session.session_data.battlelog.combat.push(attacker.staticData.name + " was unable to land their attack!")
+                                                        }
                                                     }
                                                 }
                                                 attackNum = 0
@@ -1475,8 +3433,9 @@ module.exports = {
                                 }
 
                                 if(reactiveDamage > 0){
+                                    reactiveDamage = Math.ceil(reactiveDamage)
                                     if(attacker.alive){
-                                        attacker.liveData.stats.hp -= damage
+                                        damageFighter(session,damage,attacker)
                                         session.session_data.battlelog.combat.push("As a result of attacking, " + attacker.staticData.name + " endured " + reactiveDamage + " damage!")
                                         if(attacker.liveData.stats.hp < 1){
                                             attacker.liveData.stats.hp = 1
@@ -1491,13 +3450,132 @@ module.exports = {
                         case "guard":
                                 let defender = session.session_data.fighters[action.index]
                                 if(defender.alive){
+                                    if(defender.empowered > 0){
+                                        defender.records.empoweredAbilities++
+                                        session.session_data.battlelog.combat.push(defender.staticData.name + " is empowered! (x" + defender.empowered + ")")
+                                        action.ability.guard_val = Math.ceil(action.ability.guard_val * (1 + (defender.empowered)))
+                                    
+                                        action.ability.counter_val = action.ability.guard_val
+
+                                        defender.empowered = false
+                                    }
                                     actionCode = defender.index + "_" + action.ability.action_type
+                                    let typeMatch = {
+                                        "atk":"def",
+                                        "spatk":"spdef"
+                                    }
+                                    if(defender.hitThisTurn && action.ability.counter_val > 0 && action.ability.guard_type == typeMatch[defender.lastDamageTakenType]){
+                                        let chance = Math.floor(Math.random() * 100)
+                                        let successRoll = action.ability.success_level
+                                        if(gearPassives[2] > 0 && defender.lastAction == actionCode){
+                                            successRoll += gearPassives[2] * 5
+                                        }
+                                        let successCheck = chance < successRoll
+                                        if(successCheck){
+                                            if(defender.meter != undefined){
+                                                increaseComboMeter(defender,8)
+                                            }
+                                            let attacker = defender.lastAttacker
+                                            let guard = clone(action.ability)
+
+                                            let defenderStatVal = getFighterStat(defender,guard.counter_type)
+                                            let attackerStatVal = getFighterStat(attacker,guard.counter_type)
+
+                                            let counterDamage = Math.floor(calculateAttackDamage(
+                                                defender.staticData.level,
+                                                defenderStatVal,
+                                                attackerStatVal,
+                                                guard.counter_val
+                                            ))
+
+                                            if(counterDamage > 0){
+
+                                                session.session_data.battlelog.combat.push(defender.staticData.name + " counter attacked!")
+                                                if(defender.gearPassives[0] > 0){
+                                                    if(Math.random() < defender.gearPassives[0] * .1){
+                                                        counterDamage *= 2
+                                                    }
+                                                }
+                                                damageFighter(session,counterDamage,attacker)
+                                                let hpRatio = Math.floor((attacker.liveData.stats.hp / attacker.liveData.maxhp)*8)
+                                                if(attacker.staticData.lootPoint == hpRatio && !attacker.lootPointHit){
+                                                    session.session_data.battlelog.alerts.push(attacker.staticData.name + "'s loot point has been hit!")
+                                                    session.session_data.battlelog.alerts.push("---")
+                                                    attacker.lootPointHit = true
+                                                    manageCriticalPoint(session,attacker,defender,"loot")
+                                                }
+                                                if(attacker.staticData.weakPoint == hpRatio && !attacker.weakPointHit){
+                                                    session.session_data.battlelog.alerts.push(attacker.staticData.name + "'s weak point has been hit!")
+                                                    session.session_data.battlelog.alerts.push("---")
+                                                    attacker.weakPointHit = true
+                                                    manageCriticalPoint(session,attacker,defender,"weak")
+                                                }
+                                                attacker.records.enemyDamageTaken += counterDamage;
+                                                defender.records.counterDamageDone += counterDamage
+                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
+                                                if(attacker.liveData.stats.hp <= 0){
+                                                    attacker.staticData.lives -= 1
+                                                    if(attacker.meter != undefined){
+                                                        attacker.staticData.meterRank = 0
+                                                        attacker.meter = 0
+                                                    }
+                                                    if(attacker.staticData.lives <= 0){
+                                                        attackNum = 0
+                                                        attacker.liveData.stats.hp = 0
+                                                        attacker.alive = false
+                                                        defender.records.unitsDefeated++
+                                                        attacker.attacker = -1
+                                                        attacker.choosenAbility = -2
+                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
+                                                        attacker.staticData.lives = 1
+                                                        if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
+                                                            attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
+                                                            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
+                                                        }
+                                                        attacker.staticData.exploreStreak = 0
+                                                        attacker.records.livesLost++
+                                                        if(attacker.staticData.cpu){
+                                                            processMobRewards(attacker,session)
+                                                        }
+                                                        triggerCombatEvent({
+                                                            type:1,
+                                                            data:attacker
+                                                        },session)
+                                                        if(attacker.staticData.rareVar){
+                                                            defender.records.raresDefeated++
+                                                        }
+                                                    } else {
+                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
+                                                        attacker.records.livesLost++
+                                                        attacker.liveData.stats.hp = attacker.liveData.maxhp
+
+                                                        if(attacker.staticData.highestStat){
+                                                            attackNum = 0
+                                                            manageBossAction(attacker,session)
+                                                        }
+                                                    }
+
+                                                    let passiveData = getPassive(attacker,3)
+                                                    if(passiveData != null){
+                                                        let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+                                                        for(var i = 0; i < fighters.length;i++){
+                                                            if(fighters[i].index != attacker.index){
+                                                                damageFighter(session,damage,fighters[i])
+                                                                if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
+                                                                    fighters[i].liveData.stats.hp = 1
+                                                                }
+                                                            }
+                                                        }
+                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } 
                                     let repeatPenal = 1;
                                     if(defender.lastAction == actionCode){
                                         defender.repeats++
-                                        defender.records.timesAbilityRepeat++
                                         repeatPenal = Math.pow(2,defender.repeats)
-                                        
                                     } else {
                                         defender.repeats = 0
                                     }
@@ -1509,8 +3587,24 @@ module.exports = {
                                     }
                                     let successCheck = chance < successRoll
                                     if(successCheck){
-                                        session.session_data.battlelog.combat.push(defender.staticData.name + " used " + action.ability.name + " to defend themselves!")
-                                        defender.guardData = action.ability
+                                        if(defender.staticData.stance == "spatk" && defender.staticData.stances.spatk.upgrades[1] > 0){
+                                            if(!defender.nonDamaging){
+                                                defender.nonDamaging = 0
+                                            }
+                                            defender.nonDamaging++
+                                        }
+
+                                        if(defender.lastAction == actionCode){
+                                            defender.records.timesAbilityRepeat++
+                                        }
+                                        if(gearPassives[8] > 0 && Math.random() < gearPassives[8] * 0.07){
+                                            defender.guardData = clone(action.ability)
+                                            session.session_data.battlelog.combat.push(defender.staticData.name + " used **" + action.ability.name + "** to critically defend themselves!")
+                                            defender.guardData.guard_val *= 2
+                                        } else {
+                                            defender.guardData = clone(action.ability)
+                                            session.session_data.battlelog.combat.push(defender.staticData.name + " used **" + action.ability.name + "** to defend themselves!")
+                                        }
                                     } else {
                                         if(repeatPenal > 1){
                                             session.session_data.battlelog.combat.push(defender.staticData.name + " failed to prepare another block!")
@@ -1519,6 +3613,16 @@ module.exports = {
                                         }
                                         defender.guardData = "fail"
                                     }
+
+                                    if(defender.guardData != "fail"){
+                                        if(defender.staticData.stance == "hp" && defender.staticData.stances.hp.upgrades[2] > 0){
+                                            let buffData = getStanceBuffValues("hp",defender.staticData.stances,2)
+                                            let ratio = (defender.liveData.stats.hp / defender.liveData.maxhp)
+                                            let finalMulti = 1 + ((buffData.val * (ratio))/100)
+                                            defender.guardData.guard_val = Math.ceil(defender.guardData.guard_val * finalMulti)
+                                        }
+                                    }
+
                                     defender.target = -1
                                     defender.choosenAbility = -1
                                     defender.lastAction = actionCode
@@ -1528,80 +3632,147 @@ module.exports = {
                         case "stats":
                             let user = session.session_data.fighters[action.index]
                             if(user.alive){
-                                session.session_data.battlelog.combat.push(user.staticData.name + " used " + action.ability.name + "!")
-                                user.records.statChanges++
-                                for(effect of action.ability.effects){
-                                    let targets = []
-                                    switch(effect.target){
-                                        case "0":
-                                            targets = [action.index]
-                                            break;
+                                let able = true
 
-                                        case "1":
-                                            for(f in session.session_data.fighters){
-                                                if(session.session_data.fighters[f].team == user.team){
-                                                    targets.push(f)
-                                                }
-                                            }
-                                            break;
+                                // REMOVE ON WIPE
+                                if(!action.ability.focus){
+                                    action.ability.focus = 75
+                                }
 
-                                        case "2":
-                                            targets = [user.target]
-                                            break;
+                                if(user.hitThisTurn){
+                                    able = Math.random() * 100 <= action.ability.focus
+                                }
 
-                                        case "3":
-                                            for(f in session.session_data.fighters){
-                                                if(session.session_data.fighters[f].index != user.index){
-                                                    targets.push(f)
-                                                }
-                                            }
-                                            break;
+                                
+                                
+                                
 
-                                        case "4":
-                                            for(f in session.session_data.fighters){
-                                                if(session.session_data.fighters[f].team != user.team){
-                                                    targets.push(f)
-                                                }
-                                            }
-                                            break;
+                                if(able || user.empowered > 0){
+                                    if(user.staticData.stance == "spatk" && user.staticData.stances.spatk.upgrades[1] > 0){
+                                        if(!user.nonDamaging){
+                                            user.nonDamaging = 0
+                                        }
+                                        user.nonDamaging++
                                     }
-                                    if(targets.length > 1){
-                                        actionCode = user.index + "_" + action.ability.name + "_" + action.ability.targetType
-                                    } else {
-                                        actionCode = user.index + "_" + action.ability.name + "_" + action.ability.targetType + "_" + targets[0]
-                                    }   
-                                    for(t of targets){
-                                        let target = session.session_data.fighters[t]
-                                        
-                                        if(effect.value > 0){
-                                            if(user.team == target.team){
-                                                user.records.timesStatsRaised++
+                                    if(user.alive){
+                                        if(user.empowered > 0){
+                                            user.records.empoweredAbilities++
+                                            session.session_data.battlelog.combat.push(user.staticData.name + " is empowered! (x" + user.empowered + ")")
+                                            action.ability.speed = 4
+                                            for(e of action.ability.effects){
+                                                e.value = Math.ceil(e.value * (1 + (user.empowered)))
                                             }
-                                        } else {
-                                            if(user.team != target.team){
-                                                user.records.timesStatsLowered++
+                                            
+                                            user.empowered = false
+                                        }
+                                        if(user.meter != undefined){
+                                            increaseComboMeter(user,5)
+                                        }
+                                        session.session_data.battlelog.combat.push(user.staticData.name + " used **" + action.ability.name + "**!")
+                                        user.records.statChanges++
+                                        for(effect of action.ability.effects){
+                                            let targets = []
+                                            switch(parseInt(effect.target)){
+                                                case 0:
+                                                    targets = [action.index]
+                                                    break;
+
+                                                case 1:
+                                                    for(f in session.session_data.fighters){
+                                                        if(session.session_data.fighters[f].team == user.team){
+                                                            targets.push(f)
+                                                        }
+                                                    }
+                                                    break;
+
+                                                case 2:
+                                                    targets = [user.target]
+                                                    break;
+
+                                                case 3:
+                                                    for(f in session.session_data.fighters){
+                                                        if(session.session_data.fighters[f].index != user.index){
+                                                            targets.push(f)
+                                                        }
+                                                    }
+                                                    break;
+
+                                                case 4:
+                                                    for(f in session.session_data.fighters){
+                                                        if(session.session_data.fighters[f].team != user.team){
+                                                            targets.push(f)
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                            if(targets.length > 1){
+                                                actionCode = user.index + "_" + action.ability.name + "_" + action.ability.targetType
+                                            } else {
+                                                actionCode = user.index + "_" + action.ability.name + "_" + action.ability.targetType + "_" + targets[0]
+                                            }   
+                                            for(t of targets){
+                                                let target = session.session_data.fighters[t]
+                                                if(!target.alive){
+                                                    continue;
+                                                }
+
+                                                if(effect.value > 0){
+                                                    if(user.team == target.team){
+                                                        user.records.timesStatsRaised++
+                                                    }
+                                                } else {
+                                                    if(user.team != target.team){
+                                                        user.records.timesStatsLowered++
+                                                    }
+                                                }
+                                                
+                                                if(target.team != user.team && effect.value < 0){
+                                                    if(weaponPassives[9] > 0 && Math.random() < 0.06 * weaponPassives[9]){
+                                                        let modPrev = target.liveData.statChanges[effect.stat]
+                                                        let modPost = target.liveData.statChanges[effect.stat] + effect.value
+                                                        if(modPost < 0){
+                                                            modPost = 0
+                                                        }
+                                                        let difference = Math.floor(target.liveData.stats[effect.stat] * statChangeStages[modPrev]) - (target.liveData.stats[effect.stat] * statChangeStages[modPost])
+                                                        if(difference > target.maxhp * 0.05){
+                                                            difference = Math.floor(target.maxhp * 0.5)
+                                                        }
+                                                        session.session_data.battlelog.combat.push(target.staticData.name + " sustained " + difference + " damage!")
+                                                        damageFighter(session,difference,target)
+
+                                                        if(target.liveData.stats.hp <= 0){
+                                                            target.liveData.stats.hp = 1;
+                                                        }
+                                                    }
+
+                                                    if(target.gearPassives[9] > 0 && Math.random() < 0.07 * target.gearPassives[9]){
+                                                        target.liveData.stats.hp += Math.floor(target.liveData.maxhp * 0.05)
+
+                                                        if(target.liveData.stats.hp > target.liveData.maxhp){
+                                                            target.liveData.stats.hp = target.liveData.maxhp;
+                                                        }
+                                                        session.session_data.battlelog.combat.push(target.staticData.name + " healed " + Math.floor(target.liveData.maxhp * 0.05) + " health!")
+                                                        
+                                                    }
+                                                }
+
+                                                handleStatChange(session,target,effect.value,effect.stat)
                                             }
                                         }
-                                        target.liveData.statChanges[effect.stat] += effect.value
-                                        let msg;
-                                        if(target.liveData.statChanges[effect.stat] > 16){
-                                            target.liveData.statChanges[effect.stat] = 16
-                                            msg = target.staticData.name + "'s " + effect.stat + " multiplier can't go higher!"
-                                        } else if(target.liveData.statChanges[effect.stat] < 0){
-                                            target.liveData.statChanges[effect.stat] = 0
-                                            msg = target.staticData.name + "'s " + effect.stat + " multiplier can't go lower!"
-                                        } else {
-                                            msg = target.staticData.name + "'s " + effect.stat + " multiplier " +  (effect.value > 0 ? "increased" : "decreased") + " by " + effect.value + " stage" + (effect.value > 1 ? "s" : "") + " (x" + statChangeStages[target.liveData.statChanges[effect.stat]] + ")."
-                                        }
-                                        session.session_data.battlelog.combat.push(msg)
+                                        user.lastAction = actionCode
+                                        user.target = -1
+                                        user.choosenAbility = -1
+                                        session.session_data.battlelog.combat.push("---")
                                     }
+                                } else {
+                                    session.session_data.battlelog.combat.push(user.staticData.name + " lost focus and was unable to use " + action.ability.name + "!")
                                 }
                                 user.lastAction = actionCode
                                 user.target = -1
                                 user.choosenAbility = -1
                                 session.session_data.battlelog.combat.push("---")
+                                break;
                             }
-                            break;
                     }
                     session.session_data.fighters[action.index].hasActed = true
                 }
@@ -1610,22 +3781,24 @@ module.exports = {
                 let passiveData = getPassive(f,0)
                 let regeneratedHealth = 0 
                 if(passiveData != null){
-                    f.liveData.hp += f.records.timesHit * passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]
+                    f.liveData.stats.hp += f.records.timesHit * passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]
                     regeneratedHealth += f.records.timesHit * passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]
-                    if(f.liveData.hp > f.liveData.maxhp){
-                        f.liveData.hp = f.liveData.maxhp
+                    if(f.liveData.stats.hp > f.liveData.maxhp){
+                        f.liveData.stats.hp = f.liveData.maxhp
                     }
                 }
                 if(f.liveData.healing > 0){
-                    f.liveData.hp += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
+                    f.liveData.stats.hp += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
                     regeneratedHealth += Math.ceil(f.liveData.maxhp * (f.liveData.healing/100))
-                    if(f.liveData.hp > f.liveData.maxhp){
-                        f.liveData.hp = f.liveData.maxhp
+                    if(f.liveData.stats.hp > f.liveData.maxhp){
+                        f.liveData.stats.hp = f.liveData.maxhp
                     }
                 }
                 if(regeneratedHealth > 0){
                     session.session_data.battlelog.combat.push(f.staticData.name + " regenerated " + regeneratedHealth + " health!")
                 }
+                delete f.lastAttacker
+                f.hitThisTurn = false;
             }
             triggerCombatEvent({
                 type:0
@@ -1633,6 +3806,9 @@ module.exports = {
             triggerCombatEvent({
                 type:3
             },session)
+            for(m of stancemessages){
+                session.session_data.battlelog.alerts.push(m)
+            }
             session.session_data.turn++
             checkActiveCombatants(session)
             if(!session.session_data.completed){
@@ -1827,7 +4003,7 @@ module.exports = {
                 let speedRank,survivalRank,skillRank
 
                 let totalTime = (now.getTime() - session.session_data.dungeonStart)/1000
-                if(totalTime <= 90){
+                if(totalTime <= 60){
                     speedRank = ranks[0]
                 } else {
                     let i = 1
@@ -1891,11 +4067,11 @@ module.exports = {
                         type: "rngEquipment",
                         rngEquipment: {
                             scaling: false,
-                            value:1.25,
+                            value:1,
+                            conStats:1,
                             conValue:0.25,
                             lockStatTypes: true,
-                            baseVal: (30 + (session.session_data.bonus ? 10 : 0)) * session.session_data.dungeonRank,
-                            weaponType:session.session_data.player.combatStyle,
+                            baseVal: (10 + (session.session_data.bonus ? 5 : 0)) * session.session_data.dungeonRank,
                             types: ["weapon","gear"]
                         }
                     }
@@ -1905,13 +4081,44 @@ module.exports = {
 
                 let item = generateRNGEquipment(newData)
                 player = givePlayerItem(item,player)
-                rewardsText += player.name + " received equipment: " + item.name
+                if(item.type == "weapon"){
+                    rewardsText += player.name + " received equipment: " + item.name + " 🗡️"
+                } else {
+                    rewardsText += player.name + " received equipment: " + item.name + " 🛡️"
+                }
+                
+
+                
+                let expAmount = 0;
+                let goldAmount = 0; 
+                let SPAmount = 0;
+                let scalarDiff = (session.session_data.dungeonRank + 1) - Math.ceil(player.level/10)  
+                if(scalarDiff >= 0){
+                    if(scalarDiff == 0){
+                       scalarDiff = 1     
+                    }       
+                    let expRatio = Math.pow(scalarDiff,1.17609125906)
+
+                    expAmount = Math.ceil((player.expCap * expRatio) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                    goldAmount = Math.ceil((400 * session.session_data.dungeonRank) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                    SPAmount = Math.ceil(10 * session.session_data.dungeonRank * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                } else {
+                    expAmount = 750
+                    goldAmount = 150
+                    SPAmount = 2 * session.session_data.dungeonRank
+                }
+
+                if(session.session_data.bonus){
+                    expAmount = Math.ceil(expAmount * 1.5)
+                    goldAmount = Math.ceil(goldAmount * 1.5)
+                    goldAmount = Math.ceil(SPAmount * 1.5)
+                }
 
                 let result = parseReward({
                     type:"resource",
                     resource:"abilitypoints",
                     resourceName: "ability points",
-                    amount: session.session_data.dungeonRank * (5 + (session.session_data.bonus ? 1 : 0))
+                    amount: SPAmount
                 }, player)
                 player = result[0]
 
@@ -1919,15 +4126,6 @@ module.exports = {
                     for(msg of result[1]){
                         rewardsText += "\n" + msg
                     }
-                }
-
-                let expAmount = Math.floor((player.expCap *0.5) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
-                if(expAmount < 500){
-                    expAmount = 500
-                }
-
-                if(session.session_data.bonus){
-                    expAmount = Math.ceil(expAmount * 2)
                 }
 
                 result = parseReward({
@@ -1944,7 +4142,7 @@ module.exports = {
                     }
                 }
 
-                let goldAmount = Math.ceil((10 * session.session_data.dungeonRank) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                
                 
                 if(session.session_data.bonus){
                     goldAmount = Math.ceil(goldAmount * 2)
@@ -2016,571 +4214,694 @@ module.exports = {
         }
     },
     populateCombatToQuestTransition(session){
-        const row1 = new MessageActionRow()
-        .addComponents(
-                new MessageButton()
-                .setCustomId('continueQuest_' + session.session_id)
-                .setLabel('Continue Quest')
-                .setStyle('PRIMARY')
-        )
-
-        return [row1]
+        return populateCombatToQuestTransition(session)
     },
     populateAbilityCreatorWindow(session){
         const embed = new MessageEmbed()
-        let valueTranslate = {
-            "faction":{
-                "-1":"None",
-                "0":"Assailment",
-                "1":"Attainment",
-                "2":"Spontaneity",
-                "3":"Sovereignty",
-                "4":"Persecution",
-                "5":"Aberration",
-            },
-            "success_level":{
-                "25":"Very Low",
-                "50":"Low",
-                "100":"Normal",
-                "200":"High",
-                "400":"Very High"
-            },
-            "targetType":{
-                "1":"One Target",
-                "2":"All Enemies",
-                "3":"Everyone Else"
-            },
-            "statchangetarget":{
-                "0":"User",
-                "1":"All Allies",
-                "2":"A Target",
-                "3":"All",
-                "4":"All Enemies"
-            }
-        }
-
-        let ability = session.session_data.ability
-        let cost = Math.ceil(calculateAbilityCost(
-            session.session_data.ability,
-            abilityWeights.weapon[session.session_data.weapon],
-            abilityWeights.race[session.session_data.race]
-         )/3)
-        let displayText = ""
-        displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
-        displayText += "Current Ability point cost: " + cost + "\n\n"
-        displayText += "Current Level: " + session.session_data.level + "\n"
-        displayText += "Level Requirement: " + Math.ceil(cost/3) + "\n\n"
-        
-        let weaponModifierText = ""
-        for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
-            weaponModifierText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
-        }
-        if(weaponModifierText != ""){
-            displayText += "Character Weapon Type Modifiers:" + weaponModifierText + "\n\n"
-        }
-        
-        let raceModifierText = ""
-        for(mod in abilityWeights.race[session.session_data.race][session.session_data.ability.action_type]){
-            raceModifierText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
-        }
-        if(raceModifierText != ""){
-            displayText += "Character Race Modifiers:" + raceModifierText + "\n\n"
-        }
-
-        displayText += "__**" + ability.name + "**__\n\n"
-        displayText += createAbilityDescription(ability)
-        displayText += "\n\nCurrently Editing: " + session.session_data.editingAttribute
-
-        let subAttributes = ["statchangestat","statchangevalue","statchangetarget"]
-        let description;
-        let attributeVal;
-        if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
-            let subatt = session.session_data.editingAttribute.split("|")[0]
-            let index = session.session_data.editingAttribute.split("|")[1]
-            switch(subatt){
-                case "statchangestat":
-                    attributeVal = session.session_data.ability.effects[index].stat
-                    description = "Stat changed by effect #" + (parseInt(index) + 1) + " of this ability"
-                    break;
-
-                case "statchangetarget":
-                    attributeVal = session.session_data.ability.effects[index].target
-                    description = "Target of effect #" + (parseInt(index) + 1) + " of this ability"
-                    break;
-
-                case "statchangevalue":
-                    attributeVal = session.session_data.ability.effects[index].value
-                    description = "Value stat change of effect #" + (parseInt(index) + 1)    + " of this ability"
-                    break;
-            }
-            displayText += "\n" + description 
-            displayText += "\nCurrent Value: " + 
-            (
-                valueTranslate[session.session_data.editingAttribute.split("|")[0]] != undefined ? 
-                valueTranslate[session.session_data.editingAttribute.split("|")[0]][attributeVal] 
-                : 
-                attributeVal
+        if(session.session_data.temp){
+            let ability = session.session_data.ability
+            let abilityCost = Math.ceil(calculateAbilityCost(
+                session.session_data.ability,
+                abilityWeights.weapon[session.session_data.weapon],
+                abilityWeights.race[session.session_data.race]
+            ))
+            let isNeg = abilityCost <= 0
+            let cost = Math.ceil(Math.pow(abilityCost,2)/450)
+            let displayText = "Learn " + ability.name + " for " + cost + " ability points?\n\n"
+            displayText += "__**" + ability.name + "**__\n\n"
+            displayText += createAbilityDescription(ability)
+            embed.addField(
+                "Creating Ability: " + session.session_data.ability.name,
+                displayText
             )
-        } else {
-            attributeVal = session.session_data.ability[session.session_data.editingAttribute]
-            switch(session.session_data.editingAttribute){
-                case "action_type":
-                    if(!session.session_data.permissions.stats){
-                        description = "This changes an ability either a guard or an attack"
-                    } else {
-                        description = "This changes an ability either a guard, stat changer, or an attack"
-                    }
-                    break;
-            
-                case "critical":
-                    description = "This value affects the chance this ability has to land a critical hit"
-                    break;
-
-                case "damage_type":
-                    description = "This changes the type of damage dealt by the ability"
-                    break;
-
-                case "damage_val":
-                    description = "This value changes the amount of damage done by this ability"
-                    break;
-
-                case "speed":
-                    description = "This changes the order in which this ability is executed during a turn"
-                    break;
-
-                case "faction":
-                    description = "This changes the allignement of the attack, modifying what it's effective/less effective against"
-                    break;
-
-                case "accuracy":
-                    description = "This value changes an attacks chance to hit. Once over 100, it improves repeated useability"
-                    break;
-
-                case "guard_val":
-                    description = "This value changes the strength of protection provided by this ability"
-                    break;
-
-                case "success_level":
-                    description = "This changes the rate of success this ability will have when used"
-                    break;
-
-                case "counter_val":
-                    description = "This value changes the amount of damage done by the counter attack this ability triggers"
-                    break;
-
-                case "counter_type":
-                    description = "This changes the type of damage the counter attack of this ability will do"
-                    break;
-
-                case "counter_type":
-                    description = "This changes the type of damage this guard is most effective at blocking"
-                    break;
-
-                case "numHits":
-                    description = "This value changes the number of times this ability will attack"
-                    break;
-
-                case "targetType":
-                    description = "This changes the targets that this attack has"
-                    break;
-
-                case "recoil":
-                    description = "This value changes the percentage of damage the user will take based on damage done"
-                    break;
-
-                case "statChangeCount":
-                    description = "This value changes the number of stats that the ability changes"
-                    break;
+        } else{
+            let valueTranslate = {
+                "faction":{
+                    "-1":"None",
+                    "0":"Assailment",
+                    "1":"Attainment",
+                    "2":"Spontaneity",
+                    "3":"Sovereignty",
+                    "4":"Persecution",
+                    "5":"Aberration",
+                },
+                "success_level":{
+                    "25":"Very Low",
+                    "50":"Low",
+                    "100":"Normal",
+                    "200":"High",
+                    "400":"Very High"
+                },
+                "targetType":{
+                    "1":"One Target",
+                    "2":"All Enemies",
+                    "3":"Everyone Else"
+                },
+                "statchangetarget":{
+                    "0":"User",
+                    "1":"All Allies",
+                    "2":"One Target",
+                    "3":"All",
+                    "4":"All Enemies"
+                }
             }
-            displayText += "\n" + description 
-            displayText += "\nCurrent Value: " + 
-            (
-                valueTranslate[session.session_data.editingAttribute] != undefined ? 
-                valueTranslate[session.session_data.editingAttribute][attributeVal] 
-                : 
-                attributeVal
-            )
 
-            
+            let ability = session.session_data.ability
+            let abilityCost = Math.ceil(calculateAbilityCost(
+                session.session_data.ability,
+                abilityWeights.weapon[session.session_data.weapon],
+                abilityWeights.race[session.session_data.race]
+            ))
+            let isNeg = abilityCost <= 0
+            let cost = Math.ceil(Math.pow(abilityCost,2)/450)
+            let levelReq = Math.ceil(cost/3)
+            if(levelReq > 100){
+                levelReq = 100
+            }
+            let displayText = ""
+            displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
+            if(isNeg){
+                displayText += "Ability does not have enough value\n\n"
+            } else {
+                displayText += "Current Ability point cost: " + cost + "\n\n"
+                if(session.session_data.level < 100){
+                    displayText += "Current Level: " + session.session_data.level + "\n"
+                    displayText += "Level Requirement: " + levelReq + "\n\n"
+                }
+                
+                
+                let weaponModifierText = ""
+                for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
+                    weaponModifierText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
+                }
+                if(weaponModifierText != ""){
+                    displayText += "Character Weapon Type Modifiers:" + weaponModifierText + "\n\n"
+                }
+                
+                let raceModifierText = ""
+                for(mod in abilityWeights.race[session.session_data.race][session.session_data.ability.action_type]){
+                    raceModifierText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
+                }
+                if(raceModifierText != ""){
+                    displayText += "Character Race Modifiers:" + raceModifierText + "\n\n"
+                }
+            }
+
+            displayText += "__**" + ability.name + "**__\n\n"
+            displayText += createAbilityDescription(ability)
+            displayText += "\n\nCurrently Editing: " + session.session_data.editingAttribute
+
+            let subAttributes = ["statchangestat","statchangevalue","statchangetarget"]
+            let description;
+            let attributeVal;
+            if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
+                let subatt = session.session_data.editingAttribute.split("|")[0]
+                let index = session.session_data.editingAttribute.split("|")[1]
+                switch(subatt){
+                    case "statchangestat":
+                        attributeVal = session.session_data.ability.effects[index].stat
+                        description = "Stat changed by effect #" + (parseInt(index) + 1) + " of this ability"
+                        break;
+
+                    case "statchangetarget":
+                        attributeVal = session.session_data.ability.effects[index].target
+                        description = "Target of effect #" + (parseInt(index) + 1) + " of this ability"
+                        break;
+
+                    case "statchangevalue":
+                        attributeVal = session.session_data.ability.effects[index].value
+                        description = "Value stat change of effect #" + (parseInt(index) + 1)    + " of this ability"
+                        break;
+                }
+                displayText += "\n" + description 
+                displayText += "\nCurrent Value: " + 
+                (
+                    valueTranslate[session.session_data.editingAttribute.split("|")[0]] != undefined ? 
+                    valueTranslate[session.session_data.editingAttribute.split("|")[0]][attributeVal] 
+                    : 
+                    attributeVal
+                )
+            } else {
+                attributeVal = session.session_data.ability[session.session_data.editingAttribute]
+                switch(session.session_data.editingAttribute){
+                    case "action_type":
+                        if(!session.session_data.permissions.stats){
+                            description = "This changes an ability either a guard or an attack"
+                        } else {
+                            description = "This changes an ability either a guard, stat changer, or an attack"
+                        }
+                        break;
+                
+                    case "critical":
+                        description = "This value affects the chance this ability has to land a critical hit"
+                        break;
+
+                    case "damage_type":
+                        description = "This changes the type of damage dealt by the ability"
+                        break;
+
+                    case "damage_val":
+                        description = "This value changes the amount of damage done by this ability"
+                        break;
+
+                    case "speed":
+                        description = "This changes the order in which this ability is executed during a turn"
+                        break;
+
+                    case "faction":
+                        description = "This changes the allignement of the attack, modifying what it's effective/less effective against"
+                        break;
+
+                    case "accuracy":
+                        description = "This value changes an attacks chance to hit. Once over 100, it improves repeated useability"
+                        break;
+
+                    case "guard_val":
+                        description = "This value changes the strength of protection provided by this ability"
+                        break;
+
+                    case "success_level":
+                        description = "This changes the rate of success this ability will have when used"
+                        break;
+
+                    case "counter_val":
+                        description = "This value changes the amount of damage done by the counter attack this ability triggers"
+                        break;
+
+                    case "counter_type":
+                        description = "This changes the type of damage the counter attack of this ability will do"
+                        break;
+
+                    case "guard_type":
+                        description = "This changes the type of damage this guard is most effective at blocking"
+                        break;
+
+                    case "numHits":
+                        description = "This value changes the number of times this ability will attack"
+                        break;
+
+                    case "targetType":
+                        description = "This changes the targets that this attack has"
+                        break;
+
+                    case "recoil":
+                        description = "This value changes the percentage of damage the user will take based on their maximum health"
+                        break;
+
+                    case "statChangeCount":
+                        description = "This value changes the number of stats that the ability changes"
+                        break;
+
+                    case "focus":
+                        description = "This value changes the ability fails if damaged before using it"
+                        break;
+                }
+                displayText += "\n" + description 
+                displayText += "\nCurrent Value: " + 
+                (
+                    valueTranslate[session.session_data.editingAttribute] != undefined ? 
+                    valueTranslate[session.session_data.editingAttribute][attributeVal] 
+                    : 
+                    attributeVal
+                )
+
+                
+            }
+            embed.addField(
+                "Creating Ability: " + session.session_data.ability.name,
+                displayText
+            )
         }
-        embed.addField(
-            "Creating Ability: " + session.session_data.ability.name,
-            displayText
-        )
         return [embed]
     },
-    populateAbilityCreatorButtons(session){
-        let selectionLabels = []
-
-        for(abilityStat in session.session_data.ability){
-            let noShow = ["effects","name","faction"]
-            let description = "test"
-            switch(abilityStat){
-                case "action_type":
-                    if(!session.session_data.permissions.stats){
-                        description = "This changes an ability either a guard or an attack"
-                    } else {
-                        description = "This changes an ability either a guard, stat changer, or an attack"
-                    }
-                    break;
-            
-                case "critical":
-                    description = "This value affects the chance this ability has to land a critical hit"
-                    break;
-    
-                case "damage_type":
-                    description = "This changes the type of damage dealt by the ability"
-                    break;
-    
-                case "damage_val":
-                    description = "This value changes the amount of damage done by this ability"
-                    break;
-    
-                case "speed":
-                    description = "This changes the order in which this ability is executed during a turn"
-                    break;
-    
-                case "faction":
-                    description = "This changes the allignement of the attack, modifying what it's effective/less effective against"
-                    break;
-    
-                case "accuracy":
-                    description = "This value changes an attacks chance to hit. Once over 100, it improves repeated useability"
-                    break;
-    
-                case "guard_val":
-                    description = "This value changes the strength of protection provided by this ability"
-                    break;
-    
-                case "success_level":
-                    description = "This changes the rate of success this ability will have when used"
-                    break;
-    
-                case "counter_val":
-                    description = "This value changes the amount of damage done by the counter attack this ability triggers"
-                    break;
-    
-                case "counter_type":
-                    description = "This changes the type of damage the counter attack of this ability will do"
-                    break;
-
-                case "counter_type":
-                    description = "This changes the type of damage this guard is most effective at blocking"
-                    break;
-    
-                case "numHits":
-                    description = "This value changes the number of times this ability will attack"
-                    break;
-    
-                case "targetType":
-                    description = "This changes the targets that this attack has"
-                    break;
-    
-                case "recoil":
-                    description = "This value changes the percentage of damage the user will take based on damage done"
-                    break;
-
-                case "statChangeCount":
-                    description = "This value changes the number of stats that the ability changes"
-                    break;
+    populateStanceManagerWindow(session){
+        const embed = new MessageEmbed()
+        let rankNumerals = {
+            "0":0,
+            "1":"I",
+            "2":"II",
+            "3":"III",
+            "4":"IV",
+            "5":"V"
+        }
+        let stanceText = ""
+        let stanceData = session.session_data.player.stances[session.session_data.viewingStance]
+        stanceText += "Viewing Stance: " + stanceDict[session.session_data.viewingStance]
+        stanceText += "\nTo Next Upgrade Unlock: " +  (100 - stanceData.points) + "%"
+        let upgradeText = ""
+        for(upgrade in stanceData.upgrades){
+            let buffData = stanceBuffs[session.session_data.viewingStance][upgrade]
+            let upgradeRank = session.session_data.player.stances[session.session_data.viewingStance].upgrades[upgrade]
+            if(upgradeRank > 0){
+                upgradeText += "\n\n**" + buffData.name + "** - Rank: " + rankNumerals[upgradeRank]
+                upgradeText += "\n" + buffData.description.replace("X",buffData.val * upgradeRank) 
             }
-            if(session.session_data.permissions.faction && abilityStat == "faction"){
-                abilityStat = false
-            }
-            if((session.session_data.ability.action_type == "guard" && abilityStat == "speed")){
-                abilityStat = false
-            }
-            if(noShow.includes(abilityStat)){
-                abilityStat = false
-            }
-            
-            if(abilityStat != false){
-                selectionLabels.push({
-                    label: abilityStat,
-                    description: description,
-                    value: abilityStat,
+        }
+        if(upgradeText == ""){
+            stanceText += "\n\nNo Upgrades Unlocked For This Stance"
+        } else {
+            stanceText += "\n\nUpgrades:" + upgradeText
+        }
+        embed.addField(session.session_data.player.name + "'s Stances",stanceText)
+        return [embed]
+    },
+    populateStanceManagerControls(session){
+        let stanceOptions = []
+        for(stance in session.session_data.player.stances){
+            if(session.session_data.player.stance != stance){
+                stanceOptions.push({
+                    label: stanceDict[stance] + " Stance",
+                    description: "View " + stanceDict[stance] + " stance info",
+                    value: stance,
                 })
             }
         }
-
-        if(session.session_data.ability.action_type == "stats"){
-            for(i in session.session_data.ability.effects){
-                selectionLabels.push({
-                    label: "Stat Change #" + (1+parseInt(i)) + "'s Stat",
-                    description: "Stat changed by stat change #" + (1+parseInt(i)),
-                    value: "statchangestat|" + i,
-                })
-
-                selectionLabels.push({
-                    label: "Stat Change #" + (1+parseInt(i)) + "'s Value",
-                    description: "Value of change caused by stat change #" + (1+parseInt(i)),
-                    value: "statchangevalue|" + i,
-                })
-
-                selectionLabels.push({
-                    label: "Stat Change #" + (1+parseInt(i)) + "'s Target",
-                    description: "Target of stat change #" + (1+parseInt(i)),
-                    value: "statchangetarget|" + i,
-                })
-            }
-        }
-
-        const row1 = new MessageActionRow()
-            .addComponents(
-                new MessageSelectMenu()
-                    .setCustomId('selectAttribute_' + session.session_id)
-                    .setPlaceholder('Select an Ability Attribute To Change')
-                    .addOptions(selectionLabels),
-            );
-        
-        let cost = Math.ceil(calculateAbilityCost(
-            session.session_data.ability,
-            abilityWeights.weapon[session.session_data.weapon],
-            abilityWeights.race[session.session_data.race]
-        )/3)
+        const row = new MessageActionRow()
+        row.addComponents(
+            new MessageSelectMenu()
+                .setCustomId('selectStance_' + session.session_id)
+                .setPlaceholder('Select a Stance')
+                .addOptions(stanceOptions),
+        )
         const row2 = new MessageActionRow()
+        row2.addComponents(
+            new MessageButton()
+                .setCustomId('cancel_' + session.session_id + "_1")
+                .setLabel('Close')
+                .setStyle('PRIMARY')
+        )
+        if(stanceOptions.length > 0){
+            return [row,row2]
+        } else {
+            return [row2]
+        }
+        
+    },
+    populateAbilityCreatorButtons(session){
+        if(session.session_data.temp){
+            const row = new MessageActionRow()
             .addComponents(
                 new MessageButton()
                 .setCustomId('addAbility_' + session.session_id)
                 .setLabel('Add Ability')
-                .setStyle('PRIMARY')
-                .setDisabled(cost > session.session_data.abilitypoints || cost <= 0 || session.session_data.level < Math.ceil(cost/3)),
-        
+                .setStyle('PRIMARY'),
+
                 new MessageButton()
-                .setCustomId('cancel_' + session.session_id)
+                .setCustomId('addAbilityCancel_' + session.session_id)
                 .setLabel('Cancel')
                 .setStyle('DANGER')
             )
+            return [row]
+        } else {
+            let selectionLabels = []
 
-
-
-        let valueTranslate = {
-            "faction":{
-                "-1":"None",
-                "0":"Assailment",
-                "1":"Attainment",
-                "2":"Spontaneity",
-                "3":"Sovereignty",
-                "4":"Persecution",
-                "5":"Aberration",
-            },
-            "success_level":{
-                "25":"Very Low",
-                "50":"Low",
-                "100":"Normal",
-                "200":"High",
-                "400":"Very High"
-            },
-            "targetType":{
-                "1":"One Target",
-                "2":"All Enemies",
-                "3":"Everyone Else"
-            },
-            "statchangetarget":{
-                "0":"User",
-                "1":"One Target",
-                "2":"All Enemies",
-                "3":"All",
-                "4":"All Allies"
-            }
-        }
-        
-
-        let AttributeType = ""
-        let AttributeValues = []
-        switch(session.session_data.editingAttribute.split("|")[0]){
-            case "action_type":
-                AttributeType = "values";
-                AttributeValues = ["attack","guard","stats"]
-                break;
-        
-            case "critical":
-                AttributeType = "upgrades"
-                AttributeValues = [0,100,5]
-                break;
-
-            case "damage_type":
-                AttributeType = "values"
-                AttributeValues = ["atk","spatk"]
-                break;
-
-            case "damage_val":
-                AttributeType = "upgrades"
-                AttributeValues = [10,100,5]
-                break;
-
-            case "speed":
-                AttributeType = "values"
-                AttributeValues = [0,1,2,4]
-                break;
-
-            case "faction":
-                AttributeType = "values"
-                AttributeValues = ["-1","0","1","2","3","4","5"]
-                break;
-
-            case "accuracy":
-                AttributeType = "upgrades"
-                AttributeValues = [10,130,10]
-                break;
-
-            case "guard_val":
-                AttributeType = "upgrades"
-                AttributeValues = [10,100,5]
-                break;
-
-            case "success_level":
-                AttributeType = "values"
-                AttributeValues = ["25","50","100","200","400"]
-                break;
-
-            case "counter_val":
-                AttributeType = "upgrades"
-                AttributeValues = [0,100,5]
-                break;
-
-            case "counter_type":
-                AttributeType = "values"
-                AttributeValues = ["def","spdef"]
-                break;
-
-            case "guard_type":
-                AttributeType = "values"
-                AttributeValues = ["def","spdef"]
-                break;
-
-            case "numHits":
-                AttributeType = "upgrades"
-                AttributeValues = [1,5,1]
-                break;
-
-            case "targetType":
-                AttributeType = "values"
-                AttributeValues = ["1","2","3"]
-                break;
-
-            case "recoil":
-                AttributeType = "upgrades"
-                AttributeValues = [0,100,5]
-                break;
-
-            case "statChangeCount":
-                AttributeType = "upgrades"
-                AttributeValues = [1,3,1]
-                break;
-
-            case "statchangetarget":
-                AttributeType = "values"
-                AttributeValues = ["0","1","2","3","4"]
-                break;
-
-            case "statchangevalue":
-                AttributeType = "upgrades"
-                AttributeValues = [-16,16,1]
-                break;
-
-            case "statchangestat":
-                AttributeType = "values"
-                AttributeValues = ["atk","spatk","def","spdef","spd"]
-                break;
+            for(abilityStat in session.session_data.ability){
+                let noShow = ["effects","name","faction"]
+                let description = "test"
+                switch(abilityStat){
+                    case "action_type":
+                        if(!session.session_data.permissions.stats){
+                            description = "This changes an ability either a guard or an attack"
+                        } else {
+                            description = "This changes an ability either a guard, stat changer, or an attack"
+                        }
+                        break;
                 
-        }
-        const row3 = new MessageActionRow()
-
-        let returnArray = []
-
-        let subAttributes = ["statchangestat","statchangevalue","statchangetarget"]
-
-        let attributeVal; 
+                    case "critical":
+                        description = "This value affects the chance this ability has to land a critical hit"
+                        break;
         
-        if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
-            let subatt = session.session_data.editingAttribute.split("|")[0]
-            let index = session.session_data.editingAttribute.split("|")[1]
-            switch(subatt){
-                case "statchangestat":
-                    attributeVal = session.session_data.ability.effects[index].stat
+                    case "damage_type":
+                        description = "This changes the type of damage dealt by the ability"
+                        break;
+        
+                    case "damage_val":
+                        description = "This value changes the amount of damage done by this ability"
+                        break;
+        
+                    case "speed":
+                        description = "This changes the order in which this ability is executed during a turn"
+                        break;
+        
+                    case "faction":
+                        description = "This changes the alignment of the attack, modifying what it's effective/less effective against"
+                        break;
+        
+                    case "accuracy":
+                        description = "This value changes an attacks chance to hit. Once over 100, it improves repeated useability"
+                        break;
+        
+                    case "guard_val":
+                        description = "This value changes the strength of protection provided by this ability"
+                        break;
+
+                    case "success_level":
+                        description = "This changes the rate of success this ability will have when used"
+                        break;
+        
+                    case "counter_val":
+                        description = "This value changes the amount of damage done by the counter attack this ability triggers"
+                        break;
+        
+                    case "counter_type":
+                        description = "This changes the type of damage the counter attack of this ability will do"
+                        break;
+
+                    case "guard_type":
+                        description = "This changes the type of damage this guard is most effective at blocking"
+                        break;
+        
+                    case "numHits":
+                        description = "This value changes the number of times this ability will attack"
+                        break;
+        
+                    case "targetType":
+                        description = "This changes the targets that this attack has"
+                        break;
+        
+                    case "recoil":
+                        description = "This value changes the percentage of damage the user will take based on their maximum health"
+                        break;
+
+                    case "statChangeCount":
+                        description = "This value changes the number of stats that the ability changes"
+                        break;
+
+                    case "focus":
+                        description = "This value changes the ability fails if damaged before using it"
+                        break;
+                }
+                if(session.session_data.permissions.faction && abilityStat == "faction"){
+                    abilityStat = false
+                }
+                if((session.session_data.ability.action_type == "guard" && abilityStat == "speed")){
+                    abilityStat = false
+                }
+                if(noShow.includes(abilityStat)){
+                    abilityStat = false
+                }
+                
+                if(abilityStat != false){
+                    selectionLabels.push({
+                        label: abilityStat,
+                        description: description,
+                        value: abilityStat,
+                    })
+                }
+            }
+
+            let abilityCost = Math.ceil(calculateAbilityCost(
+                session.session_data.ability,
+                abilityWeights.weapon[session.session_data.weapon],
+                abilityWeights.race[session.session_data.race]
+            ))
+            let isNeg = abilityCost <= 0
+            let cost = Math.ceil(Math.pow(abilityCost,2)/450)
+            let levelReq = Math.ceil(cost/3)
+            if(levelReq > 100){
+                levelReq = 100
+            }
+
+            if(session.session_data.ability.action_type == "stats"){
+                for(i in session.session_data.ability.effects){
+                    selectionLabels.push({
+                        label: "Stat Change #" + (1+parseInt(i)) + "'s Stat",
+                        description: "Stat changed by stat change #" + (1+parseInt(i)),
+                        value: "statchangestat|" + i,
+                    })
+
+                    selectionLabels.push({
+                        label: "Stat Change #" + (1+parseInt(i)) + "'s Value",
+                        description: "Value of change caused by stat change #" + (1+parseInt(i)),
+                        value: "statchangevalue|" + i,
+                    })
+
+                    selectionLabels.push({
+                        label: "Stat Change #" + (1+parseInt(i)) + "'s Target",
+                        description: "Target of stat change #" + (1+parseInt(i)),
+                        value: "statchangetarget|" + i,
+                    })
+                }
+            }
+
+            const row1 = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('selectAttribute_' + session.session_id)
+                        .setPlaceholder('Select an Ability Attribute To Change')
+                        .addOptions(selectionLabels),
+                );
+            
+            
+            const row2 = new MessageActionRow()
+                .addComponents(
+                    new MessageButton()
+                    .setCustomId('addAbility_' + session.session_id)
+                    .setLabel('Add Ability')
+                    .setStyle('PRIMARY')
+                    .setDisabled(cost > session.session_data.abilitypoints || isNeg || session.session_data.level < levelReq),
+            
+                    new MessageButton()
+                    .setCustomId('cancel_' + session.session_id)
+                    .setLabel('Cancel')
+                    .setStyle('DANGER')
+                )
+
+
+
+            let valueTranslate = {
+                "faction":{
+                    "-1":"None",
+                    "0":"Assailment",
+                    "1":"Attainment",
+                    "2":"Spontaneity",
+                    "3":"Sovereignty",
+                    "4":"Persecution"   ,
+                    "5":"Aberration",
+                },
+                "success_level":{
+                    "25":"Very Low",
+                    "50":"Low",
+                    "100":"Normal",
+                    "200":"High",
+                    "400":"Very High"
+                },
+                "targetType":{
+                    "1":"One Target",
+                    "2":"All Enemies",
+                    "3":"Everyone Else"
+                },
+                "statchangetarget":{
+                    "0":"User",
+                    "1":"All Allies",
+                    "2":"One Target",
+                    "3":"All",
+                    "4":"All Enemies"
+                }
+            }
+            
+
+            let AttributeType = ""
+            let AttributeValues = []
+            switch(session.session_data.editingAttribute.split("|")[0]){
+                case "action_type":
+                    AttributeType = "values";
+                    AttributeValues = ["attack","guard","stats"]
+                    break;
+            
+                case "critical":
+                    AttributeType = "upgrades"
+                    AttributeValues = [0,80,5]
+                    break;
+
+                case "damage_type":
+                    AttributeType = "values"
+                    AttributeValues = ["atk","spatk"]
+                    break;
+
+                case "damage_val":
+                    AttributeType = "upgrades"
+                    AttributeValues = [10,100,5]
+                    break;
+
+                case "speed":
+                    AttributeType = "values"
+                    AttributeValues = [0,1,2,4]
+                    break;
+
+                case "faction":
+                    AttributeType = "values"
+                    AttributeValues = ["-1","0","1","2","3","4","5"]
+                    break;
+
+                case "accuracy":
+                    AttributeType = "upgrades"
+                    AttributeValues = [10,130,10]
+                    break;
+
+                case "guard_val":
+                    AttributeType = "upgrades"
+                    AttributeValues = [10,100,5]
+                    break;
+
+                case "success_level":
+                    AttributeType = "values"
+                    AttributeValues = ["25","50","100","200","400"]
+                    break;
+
+                case "counter_val":
+                    AttributeType = "upgrades"
+                    AttributeValues = [0,100,5]
+                    break;
+
+                case "counter_type":
+                    AttributeType = "values"
+                    AttributeValues = ["def","spdef"]
+                    break;
+
+                case "guard_type":
+                    AttributeType = "values"
+                    AttributeValues = ["def","spdef"]
+                    break;
+
+                case "numHits":
+                    AttributeType = "upgrades"
+                    AttributeValues = [1,5,1]
+                    break;
+
+                case "targetType":
+                    AttributeType = "values"
+                    AttributeValues = ["1","2","3"]
+                    break;
+
+                case "recoil":
+                    AttributeType = "upgrades"
+                    AttributeValues = [0,100,5]
+                    break;
+
+                case "statChangeCount":
+                    AttributeType = "upgrades"
+                    AttributeValues = [1,3,1]
                     break;
 
                 case "statchangetarget":
-                    attributeVal = session.session_data.ability.effects[index].target
+                    AttributeType = "values"
+                    AttributeValues = ["0","1","2","3","4"]
                     break;
 
                 case "statchangevalue":
-                    attributeVal = session.session_data.ability.effects[index].value
+                    AttributeType = "upgrades"
+                    AttributeValues = [-4,4,1]
+                    break;
+
+                case "focus":
+                    AttributeType = "upgrades"
+                    AttributeValues = [60,100,5]
+                    break;
+
+                case "statchangestat":
+                    AttributeType = "values"
+                    AttributeValues = ["atk","spatk","def","spdef","spd"]
+                    break;
+                    
+            }
+            const row3 = new MessageActionRow()
+
+            let returnArray = []
+
+            let subAttributes = ["statchangestat","statchangevalue","statchangetarget"]
+
+            let attributeVal; 
+            
+            if(subAttributes.includes(session.session_data.editingAttribute.split("|")[0])){
+                let subatt = session.session_data.editingAttribute.split("|")[0]
+                let index = session.session_data.editingAttribute.split("|")[1]
+                switch(subatt){
+                    case "statchangestat":
+                        attributeVal = session.session_data.ability.effects[index].stat
+                        break;
+
+                    case "statchangetarget":
+                        attributeVal = session.session_data.ability.effects[index].target
+                        break;
+
+                    case "statchangevalue":
+                        attributeVal = session.session_data.ability.effects[index].value
+                        break;
+                }
+            } else {
+                attributeVal = session.session_data.ability[session.session_data.editingAttribute]
+            }
+
+            
+
+            let AttributeLabels = []
+
+            if(valueTranslate[session.session_data.editingAttribute.split("|")[0]]){
+                for(i in AttributeValues){
+                    AttributeLabels[i] = valueTranslate[session.session_data.editingAttribute.split("|")[0]][AttributeValues[i]]
+                }
+            }
+
+            switch(AttributeType){
+                case "upgrades":
+                    row3.addComponents(
+                        new MessageButton()
+                        .setCustomId('changeAtt_' + session.session_id + "_decrease|" + AttributeValues[2])
+                        .setLabel('<')
+                        .setStyle('DANGER')
+                        .setDisabled(!(attributeVal - AttributeValues[2] >= AttributeValues[0])),
+
+                        new MessageButton()
+                        .setCustomId('changeAtt_' + session.session_id + "_increase|" + AttributeValues[2])
+                        .setLabel('>')
+                        .setStyle('SUCCESS')
+                        .setDisabled(!(attributeVal + AttributeValues[2] <= AttributeValues[1])),
+                    );
+                    returnArray = [row1,row3,row2]
+                    break;
+
+                case "values":
+                    if(AttributeValues.length > 5){
+                        const row4 = new MessageActionRow()
+                        for(var i = 0; i < 4; i++){
+                            let value = AttributeValues[i]
+                            row3.addComponents(
+                                new MessageButton()
+                                .setCustomId('setAtt_' + session.session_id + '_' + value)
+                                .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
+                                .setStyle('PRIMARY')
+                                .setDisabled(attributeVal == value)
+                            )
+                        }
+                        for(var i = 4; i < AttributeValues.length; i++){
+                            let value = AttributeValues[i]
+                            row4.addComponents(
+                                new MessageButton()
+                                .setCustomId('setAtt_' + session.session_id + '_' + value)
+                                .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
+                                .setStyle('PRIMARY')
+                                .setDisabled(attributeVal == value)
+                            )
+                        }
+                        returnArray = [row1,row4,row3,row2]
+                    } else {
+                        for(var i = 0; i < AttributeValues.length; i++){
+                            let value = AttributeValues[i]
+                            row3.addComponents(
+                                new MessageButton()
+                                .setCustomId('setAtt_' + session.session_id + '_' + value)
+                                .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
+                                .setStyle('PRIMARY')
+                                .setDisabled(attributeVal == value)
+                            )
+                        }
+                        returnArray =[row1,row3,row2]
+                    }          
                     break;
             }
-        } else {
-            attributeVal = session.session_data.ability[session.session_data.editingAttribute]
+            return returnArray;
         }
-
-        
-
-        let AttributeLabels = []
-
-        if(valueTranslate[session.session_data.editingAttribute.split("|")[0]]){
-            for(i in AttributeValues){
-                AttributeLabels[i] = valueTranslate[session.session_data.editingAttribute.split("|")[0]][AttributeValues[i]]
-            }
-        }
-
-        switch(AttributeType){
-            case "upgrades":
-                row3.addComponents(
-                    new MessageButton()
-                    .setCustomId('changeAtt_' + session.session_id + "_decrease|" + AttributeValues[2])
-                    .setLabel('<')
-                    .setStyle('DANGER')
-                    .setDisabled(!(attributeVal - AttributeValues[2] >= AttributeValues[0])),
-
-                    new MessageButton()
-                    .setCustomId('changeAtt_' + session.session_id + "_increase|" + AttributeValues[2])
-                    .setLabel('>')
-                    .setStyle('SUCCESS')
-                    .setDisabled(!(attributeVal + AttributeValues[2] <= AttributeValues[1])),
-                );
-                returnArray = [row1,row3,row2]
-                break;
-
-            case "values":
-                if(AttributeValues.length > 5){
-                    const row4 = new MessageActionRow()
-                    for(var i = 0; i < 4; i++){
-                        let value = AttributeValues[i]
-                        row3.addComponents(
-                            new MessageButton()
-                            .setCustomId('setAtt_' + session.session_id + '_' + value)
-                            .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
-                            .setStyle('PRIMARY')
-                            .setDisabled(attributeVal == value)
-                        )
-                    }
-                    for(var i = 4; i < AttributeValues.length; i++){
-                        let value = AttributeValues[i]
-                        row4.addComponents(
-                            new MessageButton()
-                            .setCustomId('setAtt_' + session.session_id + '_' + value)
-                            .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
-                            .setStyle('PRIMARY')
-                            .setDisabled(attributeVal == value)
-                        )
-                    }
-                    returnArray = [row1,row4,row3,row2]
-                } else {
-                    for(var i = 0; i < AttributeValues.length; i++){
-                        let value = AttributeValues[i]
-                        row3.addComponents(
-                            new MessageButton()
-                            .setCustomId('setAtt_' + session.session_id + '_' + value)
-                            .setLabel("" + (AttributeLabels[i] != undefined ? AttributeLabels[i] : value))
-                            .setStyle('PRIMARY')
-                            .setDisabled(attributeVal == value)
-                        )
-                    }
-                    returnArray =[row1,row3,row2]
-                }          
-                break;
-        }
-        return returnArray;
     },
     calculateAbilityCost(ability){
         return calculateAbilityCost(ability)
@@ -2660,43 +4981,12 @@ module.exports = {
         return [row1,row2]
     },
     populateReturnFromCombat(session,getRankingStats){
-        if(getRankingStats){
-            let row1;
-            if(session.session_data.fighters[0].alive){
-                row1 = new MessageActionRow()
-                .addComponents(
-                    new MessageButton()
-                    .setCustomId('exitCombat_' + session.session_data.options.returnSession + "_" + session.session_data.fighters[0].liveData.stats.hp + "|" + session.session_data.fighters[0].staticData.lives)
-                    .setLabel('Exit Combat Session')
-                    .setStyle('PRIMARY')
-                )         
-            } else {
-                row1 = new MessageActionRow()
-                .addComponents(
-                    new MessageButton()
-                    .setCustomId('exitCombat_' + session.session_data.options.returnSession + "_" + session.session_data.fighters[0].liveData.stats.hp + "|0")
-                    .setLabel('Exit Combat Session')
-                    .setStyle('PRIMARY')
-                )
-            }
-            
-            return [row1]
-        } else {
-            let row1 = new MessageActionRow()
-            .addComponents(
-                    new MessageButton()
-                    .setCustomId('exitCombat_' + session.session_data.options.returnSession)
-                    .setLabel('Exit Combat Session')
-                    .setStyle('PRIMARY')
-            )
-            return [row1]
-        }
-        
+        return populateReturnFromCombat(session,getRankingStats)
     },
     populateTownVisitWindow(session){
         const embed = new MessageEmbed()
         embed.setColor("#7289da")
-        embed.setTitle(session.session_data.town.name + "'s Town - Lvl " + session.session_data.town.level)
+        embed.setTitle(regionsEmojis[session.session_data.town.regions[1]] + regionsEmojis[session.session_data.town.regions[0]] + "" + session.session_data.town.name + "'s Town" + regionsEmojis[session.session_data.town.regions[0]] + regionsEmojis[session.session_data.town.regions[1]] + "\nLvl - " + session.session_data.town.level)
         
         let now = new Date();
         switch(session.session_data.location){
@@ -2788,7 +5078,7 @@ module.exports = {
                 } else {
                     taskText += "Choose a task you would like to work on from the drop down\n"
                 }
-                taskText += "New tasks will be available in " + msToTime(session.session_data.town.taskRestock - now)
+                taskText += "New tasks will be available in " + msToTime(session.session_data.town.taskRestock - now) + "\n\nNote: Tasks do not factor in stats from equipment and boosters"
                 embed.addField("Task Hall - Task Completion:",taskText)
                 break;
 
@@ -2810,19 +5100,42 @@ module.exports = {
                 break;
 
             case "training":
-                if(session.session_data.temp && session.session_data.temp.viewingAbilities){
-                    let trainingMessage = "```diff\nAn instructor comes over and begins to asses your gear\n\n'I should be able to teach you a new trick or two, interested?'```"
-                    trainingMessage += "\nListing Resets In: " + msToTime(session.session_data.town.trainingRestock - now.getTime()) + "\n"                    
-                    
-                    trainingMessage += "\nYour gold: " + session.session_data.player.gold
-
-                    if(session.session_data.temp.resultMessage){
-                        trainingMessage += "\n" + session.session_data.temp.resultMessage + "\n"
+                if(session.session_data.temp && (session.session_data.temp.viewingAbilities || session.session_data.temp.selectedItem != undefined)){
+                    let trainingListings = "\nYour gold: " + session.session_data.player.gold +"\n\n"
+                
+                    trainingListings += "Listing Resets In: " + msToTime(session.session_data.town.trainingRestock - now.getTime()) + "):\n\n**__Abilities To Teach__**"
+                    for(let i in session.session_data.town.availableAbilities){
+                        let ab = session.session_data.town.availableAbilities[i]
+                        if(session.session_data.temp){
+                            if(session.session_data.temp.selectedItem == i){
+                                trainingListings += "\n\->" + ab[0].name + " - Price: " + ab[1] + " Gold"
+                            } else {
+                                trainingListings += "\n" + ab[0].name + " - Price: " + ab[1] + " Gold"
+                            }
+                        } else {
+                            trainingListings += "\n" + ab[0].name + " - Price: " + ab[1] + " Gold"
+                        }
+                        trainingListings += "\n"
                     }
-                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
 
-                    for(ability of session.session_data.town.availableAbilities){
-                        embed.addField("**" + ability[0].name + "** (Costs " + ability[1] + " Gold)","```" + createAbilityDescription(ability[0]) + "```")
+                    if(session.session_data.temp){
+                        if(session.session_data.temp.resultMessage){
+                            trainingListings += "\n" + session.session_data.temp.resultMessage
+                        }
+                    }
+
+                    trainingListings += "\n"
+
+                    if(session.session_data.player.abilities.length == 6){
+                        trainingListings += "\nYou can not learn a new ability because you have no free ablity slot!\nManage your abilites by using `/ablities manage`"
+                    }
+                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingListings)
+                    if(session.session_data.temp){
+                        if(session.session_data.temp.selectedItem > -1){
+                            let item = session.session_data.town.availableAbilities[session.session_data.temp.selectedItem]
+                            let selectedListing = "(Price: " + item[1] + "):\n```diff\n" + createAbilityDescription(item[0]) + "```"
+                            embed.addField("Selected Ability: " + item[0].name,selectedListing)  
+                        }
                     }
                 } else {
                     let trainingMessage = "```diff\nA cheerful person greets you as you walk into to the training hall\n\n'Welcome traveler! Here you can prepare for battle with combat lessons or learn new/upgraded abilities from a combat master! What would you like to do today?'```\nNote: For tutorial lessons, your abilities and stats will be temporarily modified"
@@ -2843,35 +5156,36 @@ module.exports = {
                     } else {
                         shopListings += "\n" + item[0].name + " - Price: " + item[1] + " Gold"
                     }
-                    
+                    shopListings += "\n"
                 }
+
                 shopListings += "\nYour gold: " + session.session_data.player.gold
                 if(session.session_data.temp){
                     if(session.session_data.temp.resultMessage){
                         shopListings += "\n\n" + session.session_data.temp.resultMessage + "\n"
                     }
                 }
+
                 embed.addField("Market - Equipment Shop:",shopListings)
                 if(session.session_data.temp){
                     if(session.session_data.temp.selectedItem > -1){
                         let item = session.session_data.town.listings[session.session_data.temp.selectedItem]
-                        let selectedListing = "(Price: " + item[1] + "):\n```diff\n" + printEquipmentDisplay(item[0]) + "```"
-                        embed.addField("Selected Item:",selectedListing)
+                        let selectedListing = printEquipmentDisplay(item[0])
+                        embed.addField("Selected Item: (Price: " + item[1] + "):",selectedListing,true)
                         if(session.session_data.player.inventory){
                             let yourListing = null
                             if(item[0].type == "weapon" && session.session_data.player.weapon != undefined){
-                                yourListing = "```diff\n" + printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.weapon]) + "```"
+                                yourListing = printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.weapon])
                             }
                             if(item[0].type == "gear" && session.session_data.player.gear != undefined){
-                                yourListing = "```diff\n" + printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.gear]) + "```"
+                                yourListing = printEquipmentDisplay(session.session_data.player.inventory[session.session_data.player.gear])
                             }   
                             if(yourListing != null){
-                                embed.addField("Your current " + item[0].type + ":",yourListing)
+                                embed.addField("Your current " + item[0].type + ":",yourListing,true)
                             }
                         }   
                     }
                 }
-                
                 break;
 
             case "tavern":
@@ -2942,6 +5256,7 @@ module.exports = {
                     
                 )
                 break;
+            
             case "defense":
                 let raidData = session.session_data.town.raid
                 let missions = raidPresets.missions
@@ -2984,7 +5299,9 @@ module.exports = {
                             }
                             if(mission.completers[session.session_data.player.id]){
                                 let progress = mission.completers[session.session_data.player.id]
-                                missionText += "\nYou progression towards completion: " + progress.progression[0] + "/" + progress.progression[1] + "\n"
+                                if(progress.progression[0] >= 1 && progress.progression[1] > 1){
+                                    missionText += "\nYou progression towards completion: " + progress.progression[0] + "/" + progress.progression[1] + "\n"
+                                }
                             } else {
                                 missionText += "\n"
                             }
@@ -2997,7 +5314,7 @@ module.exports = {
                     missionText += "\n"
                 }
                 if(missionsComplete){
-                    missionText += "**Retaliation Mission Avaliable (5 town points) - Confront Raid Leader**"
+                    missionText += "**Retaliation Mission Avaliable (15 town points on personal first clear, 4 otherwise) - Confront Raid Leader**"
                     if(raidData.bossDefeats){
                         let count = 0
                         for(player in raidData.bossDefeats){
@@ -3012,17 +5329,158 @@ module.exports = {
                         missionText += " - ❌ Incomplete"
                     }
                 } else {
-                    missionText += "**Retaliation Mission Unavaliable (5 town points)** - *All other missions must be completed at least once to unlock*"
+                    missionText += "**Retaliation Mission Unavaliable** - *All other missions must be completed at least once to unlock*"
                 }
                 embed.addField("Militia Hall - Raid Defense Effort:",report)
                 embed.addField("Militia Hall - Raid Missions:",missionText)
                 break;
-        }
+                
+            case "armory":
+                let armoryText = ""
+                if(session.session_data.temp){
+                    let shopListings = ""
+                    let townLevel = session.session_data.town.level
+                    switch(session.session_data.temp.upgradeType){
+                        case "0":
+                            shopListings = "Availiable Ability Upgrades (Listing Resets In: " + msToTime(session.session_data.town.marketRestock - now.getTime()) + "):\n"
+                            if(session.session_data.temp.abilitySelection){
+                                let ability = session.session_data.player.abilities[session.session_data.temp.abilitySelection]
+                            
+                                let termDict = {
+                                    "attack":"Attack",
+                                    "guard":"Guard",
+                                    "stats":"Stat"
+                                }
+                                shopListings += "\n" + termDict[ability.action_type] + " Upgrades:"
+                                for(i in session.session_data.town.armorylistings.ability){
+                                    let upgrade = session.session_data.town.armorylistings.ability[i]
+                                    if(upgrade.type == ability.action_type){
+                                        shopListings += "\n"
+                                        if(session.session_data.temp){
+                                            if(session.session_data.temp.upgradeOption == i){
+                                                shopListings += "\->"
+                                            } 
+                                        }
+                                        shopListings += "**Option #" + (parseInt(i)+1)
+                                        let postAbility = clone(ability)
+                                        let prevCost = Math.ceil(Math.pow(calculateAbilityCost(ability),2)/450)
+                                        let valueSets;
+                                        switch(ability.action_type){
+                                            case "attack":
+                                                valueSets = {
+                                                    "critical":[[0,80,5],"inc"],
+                                                    "damage_val":[[10,100,5],"inc"],
+                                                    "numHits":[[1,5,1],"inc"],
+                                                    "recoil":[[0,100,5],"inc",-1],
+                                                    "accuracy":[[60,130,10],"inc"],
+                                                    "speed":[[0,1,2,4],"val"]
+                                                }
+                                                break;
+                
+                                            case "guard":
+                                                valueSets = {
+                                                    "guard_val":[[10,200,5],"inc"],
+                                                    "counter_val":[[0,200,5],"inc"],
+                                                    "success_level":[[100,200,400],"val"]
+                                                }
+                                                break;
+                
+                                            case "stats":
+                                                valueSets = {
+                                                    "speed":[[0,1,2,4],"val"],
+                                                    "focus":[[60,100,5],"inc"]
+                                                }
+                                                break;
+                                        }
+                                        let upgradeValues = valueSets[upgrade.stat]
+                                        switch(upgradeValues[1]){
+                                            case "inc":
+                                                if(upgradeValues[2] == -1){
+                                                    postAbility[upgrade.stat] -= upgradeValues[0][2]
+                                                } else {
+                                                    postAbility[upgrade.stat] += upgradeValues[0][2]
+                                                }
+                                                break;
+                
+                                            case "val":
+                                                let index = upgradeValues[0].indexOf(parseInt(ability[upgrade.stat]))
+                                                if(upgradeValues[2] == -1){
+                                                    postAbility[upgrade.stat] = upgradeValues[0][index - 1]
+                                                } else {
+                                                    postAbility[upgrade.stat] = upgradeValues[0][index + 1]
+                                                }
+                                                break
+                                        }
+                                        let postCost = Math.ceil(Math.pow(calculateAbilityCost(postAbility),2)/450)
+                                        let upgradeCost = (postCost - prevCost) * 100
+                                        shopListings += " (Costs " + upgradeCost + " gold):**"
+                                        shopListings += "\nImprove " + upgrade.stat + "\n"
+                                    }
+                                }
+                                
+                            } else {
+                                shopListings += "\nSelect an ability to view availible upgrades\n"
+                            }
+                            break;
+
+                        case "1":
+                            shopListings = "Availiable Equipment Upgrades (Listing Resets In: " + msToTime(session.session_data.town.marketRestock - now.getTime()) + "):\n"
+                            let upgradeTypeDict = {
+                                "hp":"HP",
+                                "atk":"ATK",
+                                "def":"DEF",
+                                "spatk":"SPATK",
+                                "spdef":"SPDEF",
+                                "spd":"SPD",
+                                "baseAtk":"ATK Ability Base Damage",
+                                "baseSpAtk":"SPATK Ability Base Damage",
+                                "baseDef":"Passive DEF Guard Value",
+                                "baseSpDef":"Passive SPDEF Guard Value",
+                            }
+
+                            for(i in session.session_data.town.armorylistings.equipment){
+                                let upgrade = session.session_data.town.armorylistings.equipment[i]
+                                let upgradeCost;
+                                if(upgrade.pow){
+                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 500)
+                                } else {
+                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 50)
+                                }
+                                 
+                                let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
+                                    shopListings += "\n"
+                                    if(session.session_data.temp){
+                                        if(session.session_data.temp.upgradeOption == i){
+                                            shopListings += "\->"
+                                        } 
+                                    }
+                                    shopListings += "**Option #" + (parseInt(i)+1) + "**: "
+                                shopListings += "\n +" + upgradeValue + " " + upgradeTypeDict[upgrade.stat] + " - Price: " + upgradeCost + " Gold\n"
+                            }
+                            break;
+                    }
+                    armoryText += shopListings
+                    if(session.session_data.temp.result){
+                        armoryText += "\n" + session.session_data.temp.result + "\n"
+                    }
+                    armoryText += "\nYour Gold: " + session.session_data.player.gold
+                } else {
+                    armoryText = "Select the type of upgrades you would like to view"
+                }
+                embed.addField("Armory - Upgrade Hub:",armoryText)
+                break;
+            }
         return [embed]
     },
     populateTownVisitControls(session){
         let now = new Date()
         let selectionLabels = []
+
+        selectionLabels.push({
+            label: "End Session",
+            description: "Finish your visit to this server's town",
+            value: "end",
+        })
 
         for(location of innateFacilities){
             selectionLabels.push({
@@ -3044,12 +5502,6 @@ module.exports = {
         }
         
 
-        selectionLabels.push({
-            label: "End Session",
-            description: "Finish your visit to this server's town",
-            value: "end",
-        })
-
         const travel = new MessageActionRow()
         .addComponents(
             new MessageSelectMenu()
@@ -3068,6 +5520,274 @@ module.exports = {
         switch(session.session_data.location){
             case null:
                 return [travel]
+
+            case "armory":
+                let typeList = [
+                    {
+                        label: "Abiltiy Upgrades",
+                        description: "View upgrades availiable for your abilities",
+                        value: "0"
+                    },
+                    {
+                        label: "Equipment Upgrades",
+                        description: "View upgrades availiable for your equipment",
+                        value: "1"
+                    }
+                ]
+
+                let typePlaceholder = 'Armory Upgrades'
+                let upgradeType;
+                if(session.session_data.temp){
+                    switch(session.session_data.temp.upgradeType){
+                        case "0":
+                            upgradeType = "Ability"
+                            typePlaceholder = "Abiltiy Upgrades"
+                            break;
+
+                        case "1":
+                            upgradeType = "Equipment"
+                            typePlaceholder = "Equipment Upgrades"
+                            break;
+                    }
+                }
+                const upgradeTypes = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                    .setCustomId('selectArmoryType_' + session.session_id)
+                    .setPlaceholder(typePlaceholder)
+                    .addOptions(typeList)
+                )
+                if(session.session_data.temp){
+
+                    const upgradeButtons = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                            .setCustomId('applyUpgrades_' + session.session_id)
+                            .setLabel('Apply Upgrades')
+                            .setStyle('SUCCESS'),
+                        new MessageButton()
+                            .setCustomId('previewSelected' + upgradeType + '_' + session.session_id)
+                            .setLabel('Show Selected ' + upgradeType)
+                            .setStyle('PRIMARY')
+                    );
+                
+                    let optionLabels = []
+                    let townLevel = session.session_data.town.level
+                    const upgradeOptions = new MessageActionRow()
+                    const targetSelection = new MessageActionRow()
+                    switch(session.session_data.temp.upgradeType){
+                        case "0":
+                            if(session.session_data.temp.abilitySelection){
+                                for(i in session.session_data.town.armorylistings.ability){
+                                    let upgrade = session.session_data.town.armorylistings.ability[i]
+                                    let ability = session.session_data.player.abilities[session.session_data.temp.abilitySelection]
+                                    if(upgrade.type == ability.action_type){
+                                        let postAbility = clone(ability)
+                                        let prevCost = Math.ceil(Math.pow(calculateAbilityCost(ability),2)/450)
+                                        let valueSets;
+                                        switch(ability.action_type){
+                                            case "attack":
+                                                valueSets = {
+                                                    "critical":[[0,80,5],"inc"],
+                                                    "damage_val":[[10,100,5],"inc"],
+                                                    "numHits":[[1,5,1],"inc"],
+                                                    "recoil":[[0,100,5],"inc",-1],
+                                                    "accuracy":[[60,130,10],"inc"],
+                                                    "speed":[[0,1,2,4],"val"]
+                                                }
+                                                break;
+
+                                            case "guard":
+                                                valueSets = {
+                                                    "guard_val":[[10,200,5],"inc"],
+                                                    "counter_val":[[0,200,5],"inc"],
+                                                    "success_level":[[100,200,400],"val"]
+                                                }
+                                                break;
+
+                                            case "stats":
+                                                valueSets = {
+                                                    "speed":[[0,1,2,4],"val"],
+                                                    "focus":[[60,100,5],"inc"]
+                                                }
+                                                break;
+                                        }
+                                        let upgradeValues = valueSets[upgrade.stat]
+                                        let maxed = false
+                                        switch(upgradeValues[1]){
+                                            case "inc":
+                                                if(upgradeValues[2] == -1){
+                                                    if(ability[upgrade.stat] > upgradeValues[0][0]){
+                                                        postAbility[upgrade.stat] -= upgradeValues[0][2]
+                                                    } else {
+                                                        maxed = true
+                                                    }
+                                                } else {
+                                                    if(ability[upgrade.stat] < upgradeValues[0][1]){
+                                                        postAbility[upgrade.stat] += upgradeValues[0][2]
+                                                    } else {
+                                                        maxed = true
+                                                    }
+                                                }
+                                                break;
+
+                                            case "val":
+                                                let index = upgradeValues[0].indexOf(parseInt(ability[upgrade.stat]))
+                                                if(upgradeValues[2] == -1){
+                                                    if(index > 0){
+                                                        postAbility[upgrade.stat] = upgradeValues[0][index - 1]
+                                                    } else {
+                                                        maxed = true
+                                                    }
+                                                } else {
+                                                    if(index < upgradeValues[0].length - 1){
+                                                        postAbility[upgrade.stat] = upgradeValues[0][index + 1]
+                                                    } else {
+                                                        maxed = true
+                                                    }
+                                                }
+                                                break
+                                        }
+                                        let postCost = Math.ceil(Math.pow(calculateAbilityCost(postAbility),2)/450)
+                                        let upgradeCost = (postCost - prevCost) * 100
+                                        if(!maxed){
+                                            optionLabels.push({
+                                                label:"Option #" + (parseInt(i) + 1),
+                                                description:"Improve " + upgrade.stat + ": (" + ability[upgrade.stat] + " -> " + postAbility[upgrade.stat] + ") - Price: " + upgradeCost + " Gold",
+                                                value:i
+                                            })
+                                        }
+                                    }
+                                }
+
+                                if(session.session_data.temp.abilitySelection){
+                                    let optionText = 'Select Option'
+                                    if(session.session_data.temp.upgradeOption){
+                                        optionText = optionLabels[session.session_data.temp.upgradeOption].label;
+                                    }
+                                    
+
+                                    upgradeOptions.addComponents(
+                                        new MessageSelectMenu()
+                                        .setCustomId('selectUpgradeOption_' + session.session_id)
+                                        .setPlaceholder(optionText)
+                                        .addOptions(optionLabels)
+                                    )
+                                }
+                            }
+
+                            let currentAbilitySelection = 'Select Ability To Upgrade'
+                            if(session.session_data.temp.abilitySelection){
+                                currentAbilitySelection = "Upgrade " + session.session_data.player.abilities[session.session_data.temp.abilitySelection].name
+                            }
+
+                            let abilityList = []
+                            for(var i in session.session_data.player.abilities){
+                                let a = session.session_data.player.abilities[i]
+                                abilityList.push({
+                                    label:"Select " + a.name,
+                                    description:"Select " + a.name + " to be upgraded",
+                                    value:i
+                                })
+                            }
+
+                            targetSelection.addComponents(
+                                new MessageSelectMenu()
+                                .setCustomId('selectUpgradeAbility_' + session.session_id)
+                                .setPlaceholder(currentAbilitySelection)
+                                .addOptions(abilityList)
+                            )
+                            break;
+
+                        case "1":
+                            let upgradeTypeDict = {
+                                "hp":"HP",
+                                "atk":"ATK",
+                                "def":"DEF",
+                                "spatk":"SPATK",
+                                "spdef":"SPDEF",
+                                "spd":"SPD",
+                                "baseAtk":"ATK Ability Base Damage",
+                                "baseSpAtk":"SPATK Ability Base Damage",
+                                "baseDef":"Passive DEF Guard Value",
+                                "baseSpDef":"Passive SPDEF Guard Value",
+                            }
+
+                            for(i in session.session_data.town.armorylistings.equipment){
+                                let upgrade = session.session_data.town.armorylistings.equipment[i]
+                                let upgradeCost;
+                                if(upgrade.pow){
+                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 500)
+                                } else {
+                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 50)
+                                }
+                                let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
+                                optionLabels.push({
+                                    label:"Option #" + (parseInt(i) + 1),
+                                    description:"+" + upgradeValue + " " + upgradeTypeDict[upgrade.stat] + " - Price: " + upgradeCost + " Gold",
+                                    value:i
+                                })
+                            }
+
+                            let optionText = 'Select Option'
+                            if(session.session_data.temp.upgradeOption){
+                                optionText = optionLabels[session.session_data.temp.upgradeOption].label;
+                            }
+                            
+        
+                            upgradeOptions.addComponents(
+                                new MessageSelectMenu()
+                                .setCustomId('selectUpgradeOption_' + session.session_id)
+                                .setPlaceholder(optionText)
+                                .addOptions(optionLabels)
+                            )
+
+                            let equipmentList = [
+                                {
+                                    label: "Upgrade Equipped Armor",
+                                    description: "Apply upgrades to currently equipped armor",
+                                    value: "0"
+                                },
+                                {
+                                    label: "Upgrade Equipped Weapon",
+                                    description: "Apply upgrades to currently equipped weapon",
+                                    value: "1"
+                                }
+                            ]
+                            
+                            let currentEquipmentSelection = 'Select Equipment To Upgrade'
+                            if(session.session_data.temp.equipmentSelection){
+                                switch(session.session_data.temp.equipmentSelection){
+                                    case "0":
+                                        currentEquipmentSelection = "Upgrade Equipped Armor"
+                                        break;
+        
+                                    case "1":
+                                        currentEquipmentSelection = "Upgrade Equipped Weapon"
+                                        break;
+                                }
+                                
+                            }
+        
+                            targetSelection.addComponents(
+                                new MessageSelectMenu()
+                                .setCustomId('selectUpgradeEquipment_' + session.session_id)
+                                .setPlaceholder(currentEquipmentSelection)
+                                .addOptions(equipmentList)
+                            )
+                            break;
+                    }
+
+                    if(upgradeOptions.components.length > 0){
+                        return [upgradeTypes,upgradeButtons,upgradeOptions,targetSelection,travel]
+                    } else {
+                        return [upgradeTypes,upgradeButtons,targetSelection,travel]
+                    }
+                } else {
+                    return [upgradeTypes,travel]
+                }
+
+                
 
             case "tasks":
                 
@@ -3134,28 +5854,51 @@ module.exports = {
                 break;
 
             case "training":
-                if(session.session_data.temp && session.session_data.temp.viewingAbilities){
+                if(session.session_data.temp && (session.session_data.temp.viewingAbilities || session.session_data.temp.selectedItem != undefined)){
                     let abilityOptions = [{
                         label: "Return to training options",
                         description:"View training lessons",
                         value: "practiceLessons",
                     }]
+
+                    
                     for(a in session.session_data.town.availableAbilities){
                         let ability = session.session_data.town.availableAbilities[a]
                         abilityOptions.push({
                             label:ability[0].name,
-                            description:"Learn " + ability[0].name + " (Cost " + ability[1] + " Gold)",
+                            description:"View " + ability[0].name + " (" + ability[1] + " Gold)",
                             value:a
                         })
                     }
+    
                     const trainingChoice = new MessageActionRow()
                     .addComponents(
                         new MessageSelectMenu()
-                            .setCustomId('learnTrainingAbility_' + session.session_id)
+                            .setCustomId('selectListing_' + session.session_id)
                             .setPlaceholder('What would you like to do')
                             .addOptions(abilityOptions),                 
                     );
-                    return [help,trainingChoice,travel]
+    
+                    if(session.session_data.temp){
+                        if(session.session_data.temp.selectedItem > -1){
+                            if(session.session_data.player.abilities.length < 6){
+                                const purchaseOption = new MessageActionRow()
+                                .addComponents(
+                                    new MessageButton()
+                                    .setCustomId('learnTrainingAbility_' + session.session_id)
+                                    .setLabel("Learn " + session.session_data.town.availableAbilities[session.session_data.temp.selectedItem][0].name + " For " + session.session_data.town.availableAbilities[session.session_data.temp.selectedItem][1] + " Gold")
+                                    .setStyle('SUCCESS')
+                                    .setDisabled(session.session_data.player.gold < session.session_data.town.availableAbilities[session.session_data.temp.selectedItem][1])
+                                )
+                                return [help,purchaseOption,trainingChoice,travel]
+                            }
+                        } else {
+                            return [help,trainingChoice,travel]
+                        }
+                    } else {
+                        return [help,trainingChoice,travel]
+                    }
+                
                 } else {
                     let trainingOptions = [
                         {
@@ -3201,7 +5944,7 @@ module.exports = {
                         }
                     ]
                 
-                    const trainingChoice= new MessageActionRow()
+                    const trainingChoice = new MessageActionRow()
                     .addComponents(
                         new MessageSelectMenu()
                             .setCustomId('trainingOption_' + session.session_id)
@@ -3332,7 +6075,7 @@ module.exports = {
                     let pluralCheck = i > 1 ? "Slices" : "Slice"
                     menu.push({
                         label: i + " " + pluralCheck + " of cake",
-                        description: "Increase Lives by " + i + " - " + (15 * i) + " gold",
+                        description: "Increase Lives by " + i + " - " + (1000 * i) + " gold",
                         value: "lives_" + i,
                     })
                 }
@@ -3366,7 +6109,6 @@ module.exports = {
                     .addOptions(leaderboardPages),
                 )
                 return [pages,travel]
-                
             default:
                 return [travel]
         }
@@ -3557,12 +6299,10 @@ module.exports = {
             return [embed]
         } else {
             let item = session.session_data.inventory[session.session_data.selected];
-            let data = "```diff\n"
-            data += printEquipmentDisplay(item) + " "+"```"
+            let data = printEquipmentDisplay(item)
             embed.addField("Selected Item",data,true)
             if(session.session_data.player[item.type] >= 0 && session.session_data.player[item.type] != null && session.session_data.player[item.type] != session.session_data.selected){
-                data = "```diff\n"
-                data += printEquipmentDisplay(session.session_data.inventory[session.session_data.player[item.type]]) + " "+"```"
+                data = printEquipmentDisplay(session.session_data.inventory[session.session_data.player[item.type]])
                 embed.addField("Equipped",data,true)
             }
             return [embed]
@@ -3574,7 +6314,7 @@ module.exports = {
         embed.setTitle(session.session_data.temp.currentTask.name)
         embed.addField("Task Details",session.session_data.temp.currentTask.description)
         let promptText = ""
-        promptText += session.session_data.temp.currentTask.taskPrompt
+        promptText += session.session_data.temp.currentTask.taskPrompt + "\n\n"
         for(s in session.session_data.temp.currentTask.solutionMap){
             let statSol = session.session_data.temp.currentTask.solutionMap[s]
             promptText += "**" + statSol.solution + "**\n" + statSol.solutionDesc + "\n\n"
@@ -3663,6 +6403,20 @@ module.exports = {
                 + "\n\nIf you would like to set out on a dungeon adventure, please select a dungeon level from the dropdown below"
                 embed.addField("Dungeon Conformation",message)
                 return [embed]
+
+            case "duelRequest":
+                embed.setColor("#7289da")
+                embed.setTitle("⚔️ " + session.session_data.lifeCount + "❤️ - Duel Challenge ⚔️")
+                message = "<@" + session.user_ids[0] + "> has challenged you to a duel!"
+                message += "\n\n**Combat Tips**"
+                message += "\n\n- When a duelist runs out of health, they will lose 1 ❤️"
+                message += "\n\n- If you have ❤️s left after losing your health, you will heal to full"
+                message += "\n\n- Once you run out of ❤️s, you lose the battle"
+                message += "\n\n- Repeating attacks makes them less likely to land"
+                message += "\n\n- Repeated guards have a increased chance of failing"
+                message += "\n\n- During combat, click 'My FIghter' to learn more about your abilities"
+                embed.addField(" - - - ",message)
+                return[embed]
         }
     },
     populateConformationControls(session){
@@ -3727,82 +6481,173 @@ module.exports = {
                     .setStyle('DANGER')
                 )
                 return [actions, actions2]
-            
+        
+            case "duelRequest":
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('duelResponse_' + session.session_id + "_0")
+                    .setLabel('Accept')
+                    .setStyle('SUCCESS')
+                )
+        
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('duelResponse_' + session.session_id + "_1")
+                    .setLabel('Decline')
+                    .setStyle('DANGER')
+                )
+                return [actions]
         }
     },
     populateManageAbilityControls(session){
         let actions = new MessageActionRow()
         let actions2 = new MessageActionRow()
         let actions3 = new MessageActionRow()
-        actions3.addComponents(
-            new MessageButton()
-            .setCustomId('closeAbilityManage_' + session.session_id)
-            .setLabel('Close Window')
-            .setStyle('DANGER')
-        )
-
-        let abilityList = []
-
-        for(let i = 0; i < session.session_data.player.abilities.length; i++){
-            let ability = session.session_data.player.abilities[i]
-            abilityList.push({
-                label: ability.name,
-                description: "Remove " + ability.name,
-                value: i.toString(),
-            })
+        let actions4 = new MessageActionRow()
+        if(!session.session_data.noEdit){
+            actions.addComponents(
+                new MessageButton()
+                .setCustomId('closeAbilityManage_' + session.session_id)
+                .setLabel('Close Window')
+                .setStyle('DANGER')
+            )
         }
 
-        actions.addComponents(
-            new MessageSelectMenu()
-                .setCustomId('removeAbility_' + session.session_id)
-                .setPlaceholder('Select an ability to remove')
-                .addOptions(abilityList),
-                
-        );
-
-        if(session.session_data.player.abilityMemory && session.session_data.player.abilityMemory.length > 0){
-            let memoryList = []
-
-            for(let i = 0; i < session.session_data.player.abilityMemory.length; i++){
-                let ability = session.session_data.player.abilityMemory[i]
-                memoryList.push({
+        let removeAbilityList = []
+        let selectAbilityList = []
+        for(let i = 0; i < session.session_data.player.abilities.length; i++){
+            let ability = session.session_data.player.abilities[i]
+           
+            if(!session.session_data.noEdit){
+                removeAbilityList.push({
                     label: ability.name,
-                    description: "Add " + ability.name,
+                    description: "Remove " + ability.name,
                     value: i.toString(),
                 })
             }
 
-            actions2.addComponents(
+            selectAbilityList.push({
+                label: ability.name,
+                description: "Select " + ability.name,
+                value: i.toString(),
+            })
+        }
+
+        actions2.addComponents(
+            new MessageSelectMenu()
+                .setCustomId('viewAbility_' + session.session_id)
+                .setPlaceholder('Select an ability to view')
+                .addOptions(selectAbilityList),
+                
+        );
+
+        if(!session.session_data.noEdit){
+            if(session.session_data.temp && session.session_data.temp.selected != undefined){
+                let cost = calculateAbilityCost(session.session_data.player.abilities[session.session_data.temp.selected])
+                let pointReturn = Math.ceil(Math.ceil(Math.pow(cost,2)/450)/10)
+                actions.addComponents(
+                    new MessageButton()
+                    .setCustomId('refundAbility_' + session.session_id)
+                    .setLabel('Refund Selected Ability (' + pointReturn + " ability points)")
+                    .setStyle('DANGER')
+                )
+            }
+
+            actions3.addComponents(
                 new MessageSelectMenu()
-                    .setCustomId('rememberAbility_' + session.session_id)
-                    .setPlaceholder('Select an ability to remember')
-                    .addOptions(memoryList),
+                    .setCustomId('removeAbility_' + session.session_id)
+                    .setPlaceholder('Select an ability to remove')
+                    .addOptions(removeAbilityList),
                     
             );
-            return [actions,actions2,actions3]
+
+            if(session.session_data.player.abilityMemory && session.session_data.player.abilityMemory.length > 0){
+                let memoryList = []
+
+                for(let i = 0; i < session.session_data.player.abilityMemory.length; i++){
+                    let ability = session.session_data.player.abilityMemory[i]
+                    memoryList.push({
+                        label: ability.name,
+                        description: "Add " + ability.name,
+                        value: i.toString(),
+                    })
+                }
+
+                
+                actions4.addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('rememberAbility_' + session.session_id)
+                        .setPlaceholder('Select an ability to remember')
+                        .addOptions(memoryList),
+                        
+                );
+                
+                return [actions,actions2,actions3,actions4]
+            } else {
+                return [actions,actions2,actions3]
+            }
+        }
+        if(actions.components.length > 0){
+            return [actions,actions2]
         } else {
-            return [actions,actions3]
+            return [actions2]
         }
     },
     populateManegeAbilityWindow(session){
         const embed = new MessageEmbed()
         .setColor("#7289da")
-        .setTitle("Your Abilities")
+
+        if(session.session_data.noEdit){
+            embed.setTitle(session.session_data.player.name)
+            
+
+            let fighter = session.session_data.fighter
+            let statsString = "**Health: **" + fighter.liveData.stats.hp + "/" + fighter.liveData.maxhp + "\n"
+            let stats = ["atk","def","spatk","spdef","spd"]
+            statsString += ""
+            for(s of stats){
+                
+                statsString += "**" + s + ": ** " + getFighterStat(fighter,s) +"\n"
+            }
+            embed.addField(
+                "Stats",
+                statsString
+            ,true)
+        } else {
+            embed.setTitle("Your Abilities")
+        }
+
+        if(session.session_data.temp){
+            if(session.session_data.temp.returnMessage){
+                embed.addField("Ability Refunded",session.session_data.temp.returnMessage)
+            }
+        }
+        
 
         let player = session.session_data.player
 
-        for(var i = 0; i < 6;i++){
+        let abilityString = ""
+        for(var i = 0; i < player.abilities.length;i++){
             let abilityData = player.abilities[i]
-            if(abilityData != undefined){
-                embed.addField(
-                    "Ability #" + (i+1) + " - " + abilityData.name,
-                    "```diff\n" + createAbilityDescription(abilityData) + "```"
-                ,true)
+            if(session.session_data.temp && session.session_data.temp.selected == parseInt(i)){
+                abilityString += ">> " + abilityData.name + " <<\n"
             } else {
+                abilityString += abilityData.name + "\n"
+            }
+            
+        }
+        embed.addField(
+            "Abilities",
+            abilityString
+        ,true)
+        
+        if(session.session_data.temp){
+            if(session.session_data.temp.selected != undefined){
+                let selectedAbility = player.abilities[session.session_data.temp.selected]
                 embed.addField(
-                    "Ability #" + (i+1) + " - No Ability In This Slot",
-                    "```diff\n---```"
-                ,true)
+                    "Selected Ability: " + selectedAbility.name,
+                    "```" + createAbilityDescription(selectedAbility) + "```"
+                )
             }
         }
         return [embed]

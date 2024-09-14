@@ -16,7 +16,12 @@ module.exports = {
                 id:session.user_ids[0],
                 path:"abilities",
                 value:session.session_data.player.abilities
-            }            
+            },
+            {
+                id:session.user_ids[0],
+                path:"abilitypoints",
+                value:session.session_data.player.abilitypoints
+            }                        
         ]
 
         

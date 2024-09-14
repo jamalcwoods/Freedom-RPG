@@ -13,10 +13,10 @@ module.exports = {
         
         if(session.type == "townVisit"){
             if(interaction.values[0].split("_")[0] == "lives"){
-                if(session.session_data.player.gold >= parseInt(interaction.values[0].split("_")[1]) * 15){
+                if(session.session_data.player.gold >= parseInt(interaction.values[0].split("_")[1]) * 1000){
                     session.session_data.player.lives += parseInt(interaction.values[0].split("_")[1])
 
-                    session.session_data.player.gold -= parseInt(interaction.values[0].split("_")[1]) * 15
+                    session.session_data.player.gold -= parseInt(interaction.values[0].split("_")[1]) * 1000
                 } else {
                     interaction.reply({ content: "You can not afford this purchase!", ephemeral: true });
                 }

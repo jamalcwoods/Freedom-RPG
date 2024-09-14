@@ -16,6 +16,12 @@ module.exports = {
                 }
                 session.session_data.player.abilityMemory.push(session.session_data.player.abilities[parseInt(interaction.values[0])])
                 session.session_data.player.abilities.splice(parseInt(interaction.values[0]),1)
+                
+                if(session.session_data.temp){
+                    if(session.session_data.temp.selected > parseInt(interaction.values[0])){
+                        session.session_data.temp.selected--
+                    }   
+                }
                 interaction.update({
                     content:" ",
                     embeds:populateManegeAbilityWindow(session),

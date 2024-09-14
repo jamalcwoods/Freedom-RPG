@@ -22,7 +22,7 @@ function toggleShadows(ctx,toggle){
     }
 }
 
-function drawAbilityBox(ctx,ability,x,y){
+function drawAbilityBox(ctx,ability,x,y,signature){
     toggleShadows(ctx,true);
     ctx.fillStyle = '#7289DA';
     ctx.strokeRect(x, y, 250, 175);
@@ -34,7 +34,11 @@ function drawAbilityBox(ctx,ability,x,y){
     if(ability != undefined){
         ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "left"
-        ctx.fillText(ability.name,x + 5,y+30)
+        if(signature){
+            ctx.fillText(ability.name + "(S)",x + 5,y+30)    
+        } else {
+            ctx.fillText(ability.name,x + 5,y+30)
+        }
         let speedText;
         switch(ability.action_type){
             case "attack":
@@ -343,13 +347,24 @@ function makeCard(player,avatar,page,callback){
                 ctx.fill();
         
                 ctx.fillStyle = "#000000"
-        
-                drawAbilityBox(ctx,player.abilities[0],450,25);
-                drawAbilityBox(ctx,player.abilities[1],450,225);
-                drawAbilityBox(ctx,player.abilities[2],800,25);
-                drawAbilityBox(ctx,player.abilities[3],800,225);
-                drawAbilityBox(ctx,player.abilities[4],1150,25);
-                drawAbilityBox(ctx,player.abilities[5],1150,225);
+                
+                if(player.signature){
+                    drawAbilityBox(ctx,player.abilities[4],490,225);
+                    drawAbilityBox(ctx,player.signature,755,225,true);
+                    drawAbilityBox(ctx,player.abilities[5],1020,225);
+
+                    drawAbilityBox(ctx,player.abilities[0],365,25);
+                    drawAbilityBox(ctx,player.abilities[1],630,25);
+                    drawAbilityBox(ctx,player.abilities[2],895,25);
+                    drawAbilityBox(ctx,player.abilities[3],1160,25);   
+                } else {
+                    drawAbilityBox(ctx,player.abilities[0],450,25);
+                    drawAbilityBox(ctx,player.abilities[1],450,225);
+                    drawAbilityBox(ctx,player.abilities[2],800,25);
+                    drawAbilityBox(ctx,player.abilities[3],800,225);
+                    drawAbilityBox(ctx,player.abilities[4],1150,25);
+                    drawAbilityBox(ctx,player.abilities[5],1150,225);
+                }
         
                 toggleShadows(ctx,true)
                 ctx.fillStyle = '#7289DA';
@@ -479,14 +494,11 @@ function makeCard(player,avatar,page,callback){
                 ctx.drawImage(images["race" + player.race], 128, 495,64,64);
                 ctx.fillText(weaponText,240, 490)
                 ctx.drawImage(images["weapon" + player.combatStyle], 208, 495,64,64);
-                if(player.faction != -1){
-                    ctx.drawImage(images.icon, 168, 345,64,64);
-                }
                 
                 
         
                 const fs = require('fs')
-                let path = __dirname + '/' + player.id + '.png'
+                let path = __dirname + '/profiles/' + player.id + '.png'
                 const out = fs.createWriteStream(path)
                 const stream = canvas.createPNGStream()
                 stream.pipe(out)
@@ -555,7 +567,7 @@ function makeCard(player,avatar,page,callback){
                 ctx.fillText(score,720,585)
             
                 const fs = require('fs')
-                let path = __dirname + '/' + player.id + '.png'
+                let path = __dirname + '/profiles/' + player.id + '.png'
                 const out = fs.createWriteStream(path)
                 const stream = canvas.createPNGStream()
                 stream.pipe(out)

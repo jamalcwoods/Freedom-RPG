@@ -1,6 +1,7 @@
 const { stat } = require("fs");
 const { off } = require("process");
-const { factionTypes, staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank, passiveDescriptions } = require("./data.json");
+const { staticItems, templates, baseAbilities, regionExpeditionNote, equipmentPerkDescriptions, nameBank, passiveDescriptions } = require("./data.json");
+
 
 function parseReward(drop,player,mob){
     let messages = []
@@ -26,12 +27,12 @@ function parseReward(drop,player,mob){
     switch(drop.type){
         case "weapon":
             player = givePlayerItem(drop,player)
-            messages.push(player.name + " recieved: " + drop.name + "!")
+            messages.push(player.name + " received: " + drop.name + "🗡️")
             break;
 
         case "gear":
             player = givePlayerItem(drop,player)
-            messages.push(player.name + " received: " + drop.name + "!")
+            messages.push(player.name + " received: " + drop.name + "🛡️")
             break;
 
         case "loot":
@@ -40,9 +41,10 @@ function parseReward(drop,player,mob){
             break;
 
         case "resource":
-            messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + "!")
+            let emoji = ""
             switch(drop.resource){
                 case "exp":
+                    emoji = "✨"
                     player.exp += drop.amount;
                     player.totalExp += drop.amount
                     let prevLevel = player.level
@@ -52,20 +54,34 @@ function parseReward(drop,player,mob){
                         player = result[0]
                         statIncreases = result[1]
                     }
+                    messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
                     if(player.level > prevLevel){
                         messages.push(player.name + " is now level " + player.level + "!")
+                        messages.push(player.name + " earned " + player.level * 50 + " gold💰")
                         let statMessage = ""
                         for(s in statIncreases){
                             if(statIncreases[s] != 0){
-                                statMessage += "(" + s.toUpperCase() + " +" + statIncreases[s] + ")\n"
+                                statMessage += "\n(" + s.toUpperCase() + " +" + statIncreases[s] + ")"
                             }
                         }
                         messages.push(statMessage)
                     }
                     break;
 
-                default:
-                    player[drop.resource] += drop.amount
+                case "gold":
+                    emoji = "💰"
+                    player.gold += drop.amount
+                    messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
+                    break;
+                case "abilitypoints":
+                    emoji = "💪"
+                    player.abilitypoints += drop.amount
+                    messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
+                    break;
+                case "statpoints":
+                    emoji = "⬆️"
+                    player.statpoints += drop.amount
+                    messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
                     break;
             }
             break;
@@ -104,46 +120,41 @@ function calculateEffectCost(e){
     let Eval = 0;
     switch(parseInt(e.target)){
         case 0:
-            Eval = 1;
+            Eval = 1.25;
             break;
 
          case 1:
-            Eval = 1.5;
+            Eval = 1.75;
             break;
 
         case 2:
-            Eval = -1.5;
+            Eval = 1.25;
             break;
 
         case 3:
-            Eval = -2;
+            Eval = 2;
             break;
 
         case 4:
-            Eval = -3;
+            Eval = 3;
             break;
     }
     if(e.stat == "spd"){
-        Eval *= 0.75
-    } else if(["atk","spatk"].includes(e.stat)){
         Eval *= 0.9
     }
-    let allyTargets = ["0","1"]
-    let enemyTargets = ["2","3"]
-    if(e.value > 0){
-        if(enemyTargets.includes(e.target)){
-            Eval *= (0.2 * e.value)
-        } else {
-            Eval *=  e.value
-        }
-    } else {
-        if(allyTargets.includes(e.target)){
-            Eval *= (0.2 * e.value)
-        } else {
-            Eval *=  e.value
+    let allyTargets = [0,1]
+    Eval *= Math.pow(Math.abs(e.value),1.4)
+    if(allyTargets.includes(parseInt(e.target))){
+        if(e.value < 0){
+            Eval *= -1
         }
     }
-    return Eval * 30;
+    if(4 == parseInt(e.target)){
+        if(e.value > 0){
+            Eval *= -1
+        }
+    }
+    return Eval * 50;
 }
 
 function calculateAbilityCost(ability,weapon,race){
@@ -175,52 +186,64 @@ function calculateAbilityCost(ability,weapon,race){
     let value = 0
     switch(ability.action_type){
         case "attack":
-            value = Math.pow(1.5,ability.damage_val/10) * 10 * weights.damage_val
+            value = Math.pow(ability.damage_val/4,2) * weights.damage_val
             value *= {
                 0:0.8,
                 1:1,
-                2:1.5,
-                4:2.5
+                2:2,
+                4:8
             }[ability.speed] * weights.speed
 
             if(ability.numHits > 1){
-                value *=  Math.pow(1.8,ability.numHits) * weights.numHits
-            } else {
-                value *= ability.numHits * weights.numHits
+                value *=  Math.pow(ability.numHits,1.46) * weights.numHits
             }
 
-            value *= 1 + ((ability.critical * weights.critical)/75)
 
-            value *= 1 - (0.9 * ((ability.recoil * weights.recoil)/100))
+            if(ability.critical > 0){
+                value *= Math.pow(Math.ceil((ability.critical* weights.critical)/5),0.27) 
+            }
+
+            value *= 1 - (0.9025 * ((ability.recoil * weights.recoil)/100))
 
             value *= {
                 1:1,
-                2:3.5,
+                2:5,
                 3:3
             }[ability.targetType]
 
             if(ability.accuracy <= 100){
                 value *= (ability.accuracy/100) * weights.accuracy
-            } else {
-                value *= (((ability.accuracy - 90)/10) * 0.45) * weights.accuracy
+            } else if(ability.accuracy > 100){
+                value *= Math.pow((ability.accuracy-100)/5,0.56) * weights.accuracy
             }
-            break
+            break 
         case "guard":
-            value = (Math.pow(1.375,ability.guard_val/10) * 10) * weights.guard_val + Math.pow(1.4,ability.counter_val/10) * 10 * weights.counter_val
-            value *= 1 + 0.45 * (Math.log(parseInt(Math.ceil(ability.success_level * weights.success_level))/25)/Math.log(2) - 2)
+            value = Math.pow(ability.guard_val/6,2) * weights.guard_val + Math.pow(ability.counter_val/5,2) * weights.counter_val
+            if(ability.success_level > 100){
+                value *= {
+                    "200":2,
+                    "400":5
+                }[ability.success_level]
+            } else {
+                value *= ability.success_level/100
+            }
             break;
-
         case "stats":
+            if(!ability.focus){
+                ability.focus = 75
+            }
             value = 0;
             for(e of ability.effects){
                 value += calculateEffectCost(e) * weights.effectStrength
             }
             value *= {
-                0:0.9,
+                0:0.8,
                 1:1,
-                2:1.2,
-                4:1.6
+                2:2,
+                4:4
             }[ability.speed] * weights.speed
+            value *= [1,1.2,1.5][ability.effects.length - 1]
+            value *= Math.pow((ability.focus/75),4.81884167931)
             break;
     }
     return Math.ceil(value);
@@ -258,10 +281,11 @@ function clone(obj){
 
 function levelPlayer(player,statIncreases){
     player.level++;
-    player.statpoints += 1;
+    player.statpoints += 2;
     player.abilitypoints += 2;
+    player.gold += player.level * 50;
     player.exp -= player.expCap
-    player.expCap = player.level * 100
+    player.expCap = Math.floor(player.level * (47.5 + player.level * 2.5))
     let stats = ["hp","atk","def","spatk","spdef","spd"]
     if(statIncreases == undefined){
         statIncreases = {
@@ -273,7 +297,7 @@ function levelPlayer(player,statIncreases){
             "spd":0
         }
     }
-    for(var i = 0;i < 2; i++){
+    for(var i = 0;i < 6; i++){
         let stat = stats[Math.floor(Math.random() * stats.length)]
         player.stats[stat] += 1
         statIncreases[stat]++
@@ -308,6 +332,64 @@ function formatTown(town){
     return town
 }
 
+function addAbilityScalingNames(name,ability,stats,type,useNormals = true){
+        let statFields = arrayShuffle(stats)
+        let typeBank = nameBank.ability[type]
+        let validStats = []
+        for(var i = 0 ;i < 2;i++){
+            let highestScalarVal = -1;
+            let highestStatVal = 0
+            let highestStat = "";
+            for(s of statFields){
+                let statVal = ability[s]
+                let bankData = typeBank[s]
+                if(statVal != bankData.base){
+                    for(var x in bankData.scalar){
+                        let scalarVal = bankData.scalar[x]
+                        let flag;
+                        if(x < bankData.scalar.length - 1){
+                            flag = statVal >= scalarVal && statVal < bankData.scalar[parseInt(x)+1]
+                        } else {
+                            flag = statVal == scalarVal
+                        }
+                        if(flag){
+                            if(bankData.scalarWeights[x] > highestScalarVal){
+                                highestStat = s
+                                highestScalarVal = bankData.scalarWeights[x]
+                                highestStatVal = scalarVal
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if(highestStat != ""){
+                validStats.push([highestStat,highestStatVal])
+                statFields.splice(statFields.indexOf(highestStat),1)
+            }
+        }
+
+        let choices;
+        let adding = 1
+        for(let i = 0; i < adding; i++){
+            if(validStats.length == 0){
+                if(useNormals){
+                    choices = ["Normal","Basic","Simple"] 
+                } else {
+                    choices = []
+                }
+            } else {
+                adding = validStats.length
+                choices = typeBank[validStats[i][0]][validStats[i][1]]
+            }
+
+            if(choices.length > 0){
+                name += " " + choices[Math.floor(Math.random() * choices.length)]
+            }
+        }
+        return name
+}
+
 function generateAbilityName(ability){
     let name = ""
     switch(ability.action_type){
@@ -315,48 +397,18 @@ function generateAbilityName(ability){
             let starts = [""]
             switch(parseInt(ability.targetType)){
                 case 2:
-                    starts = ["Extensive "]
+                    starts = ["Extensive"]
                     break;
                 
                 case 3:
-                    starts = ["Explosive "]
+                    starts = ["Widespread"]
                     break;
             }
             name = starts[Math.floor(Math.random() * starts.length)]
+            
+            name = addAbilityScalingNames(name,ability,["critical","recoil","accuracy","speed"],ability.action_type)
 
-            let statsAttack = arrayShuffle(["critical","recoil","accuracy","speed"])
-            let primeStatAttack;
-            let primeIndexAttack;
-            let primeRatingAttack = -1;
-            for(s of statsAttack){
-                if(ability[s] != nameBank.ability.attack[s].base){
-                    let value = ability[s]
-                    let scalarRating = -1;
-                    let scalarIndex;
-                    for(var i = 0;i < nameBank.ability.attack[s].scalar.length; i++){
-                        if(value >= nameBank.ability.attack[s].scalar[i]){
-                            scalarRating = nameBank.ability.attack[s].scalarWeights[i]
-                            scalarIndex = i
-                        } else {
-                            break;
-                        }
-                    }
-                    if(scalarRating > primeRatingAttack){
-                        primeRatingAttack = scalarRating
-                        primeIndexAttack = scalarIndex
-                        primeStatAttack = s
-                    }
-                }
-            }
-            let listAttack;
-            if(primeRatingAttack == -1){
-                listAttack = ["Normal","Basic","Simple"]
-            } else {
-               listAttack = nameBank.ability.attack[primeStatAttack][nameBank.ability.attack[primeStatAttack].scalar[primeIndexAttack]]
-            }
-
-            name += listAttack[Math.floor(Math.random() * listAttack.length)]
-            let damageMilestones = [10,20,40,60,80,100]
+            let damageMilestones = [10,20,40,60,80,101]
             for(i in damageMilestones){
                 let val = damageMilestones[i]
                 if(ability.damage_val < val){
@@ -368,10 +420,17 @@ function generateAbilityName(ability){
             let endings = [""];
             switch(ability.numHits){
                 case 2:
+                    let ESendings = ["s","ch","x","z"]
+                    if(ESendings.includes(name.slice(-2))){
+                        endings = ["es"]
+                    } else {
+                        endings = ["s"]
+                    }
                 case 3:
-                    endings = ["s"]
+                    endings = [" Combo"]
                     break;    
                 case 4:
+                    endings = [" Barrage"," Volley"]
                 case 5:
                     endings = [" Flurry"," Frenzy"," Storm"]
                     break;
@@ -396,48 +455,16 @@ function generateAbilityName(ability){
                 list = nameBank.ability.stats.stat.neg[primeEffect.stat]
             }
             name += list[Math.floor(Math.random() * list.length)]
+
+            name = addAbilityScalingNames(name,ability,["focus","speed"],ability.action_type,false)
+
             let targetList = nameBank.ability.stats.target[primeEffect.target]
             name += " " + targetList[Math.floor(Math.random() * targetList.length)]
             break;
 
         case "guard":
-
-            let statsGuard = arrayShuffle(["counter_val","success_level"])
-            let primeStatGuard;
-            let primeIndexGuard;
-            let primeRatingGuard = -1;
-            for(s of statsGuard){
-                if(ability[s] != nameBank.ability.guard[s].base){
-                    let value = ability[s]
-                    let scalarRating = -1;
-                    let scalarIndex;
-                    for(var i = 0;i < nameBank.ability.guard[s].scalar.length; i++){
-                        if(parseInt(value) >= nameBank.ability.guard[s].scalar[i]){
-                            scalarRating = nameBank.ability.guard[s].scalarWeights[i]
-                            scalarIndex = i
-                        } else {
-                            break;
-                        }
-                    }
-                    if(scalarRating > primeRatingGuard){
-                        primeRatingGuard = scalarRating
-                        primeIndexGuard = scalarIndex
-                        primeStatGuard = s
-                    }
-                }
-            }
-            let listGuard;
-        
-            if(primeRatingGuard == -1){
-                listGuard = ["Normal","Basic","Simple"]
-            } else {
-                listGuard = nameBank.ability.guard[primeStatGuard][nameBank.ability.guard[primeStatGuard].scalar[primeIndexGuard]]
-            }
-
-            if(listGuard != undefined){
-                name += listGuard[Math.floor(Math.random() * listGuard.length)]
-            }
-            let guardMilestones = [10,20,40,60,80,100]
+            name = addAbilityScalingNames(name,ability,["counter_val","success_level"],ability.action_type)
+            let guardMilestones = [10,40,80,120,160,201]
             for(i in guardMilestones){
                 let val = guardMilestones[i]
                 if(ability.guard_val < val){
@@ -533,7 +560,7 @@ function generateEquipmentName(equipment){
 function generateRNGEquipment(dropData,SP){
     let rngSet = dropData.ref.rngEquipment
     let equipmentData = clone(templates.emptyEquipmentData)
-    let perkChance = 0.5
+
     if(rngSet.weaponType){
         equipmentData.weaponStyle = rngSet.weaponType
         equipmentData.type = "weapon"
@@ -544,89 +571,150 @@ function generateRNGEquipment(dropData,SP){
         }
     }
 
-    if(rngSet.perkChance){
-        perkChance = rngSet.perkChance
-    }
-    
-
-    let val = rngSet.baseVal
+    let val;
     if(rngSet.scaling){
-        val = SP * 6
-    }
-
-    val = Math.ceil(val * rngSet.value)
-
-    let conVal;
-    if(!rngSet.conValue){
-        conVal = 1 - rngSet.value
+        val = SP
     } else {
-        conVal = -Math.ceil(val * rngSet.conValue)
+        val = rngSet.baseVal
     }
-    
-    val += Math.ceil((Math.abs(conVal) / 2))
-    
-    let valMax = val;
-    let conValMax = Math.abs(conVal)
 
-    while(val > 0 || conVal < 0){
-        let attributeArray = []
-        let current = null;
-        if(val > 6){
-            if(Math.random() < perkChance){
-                current = ["perk"]
+    conVal = Math.ceil(Math.pow(val * rngSet.conValue,0.9)) * 6
+    val = Math.ceil(Math.pow(val * rngSet.value,0.9)) * 6
+
+    console.log("Value: " + val)
+    let conStats = rngSet.conStats
+
+    let attributes = []
+
+    if(rngSet.forceStats){
+        for(s of rngSet.forceStats){
+            if(s[1] == true && s[1] != 1){
+                attributes.push(s[0])
             }
-        } 
-        if(current == null){
-            if(rngSet.lockStatTypes){
-                switch(equipmentData.type){
-                    case "weapon":
-                        attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd"])
-                        break;
-
-                    case "gear":
-                        attributeArray = attributeArray.concat(["stat_def","stat_spdef","stat_hp"])
-                        break;
-                }
-            } else {
-                attributeArray = attributeArray.concat(["stat_atk","stat_spatk","stat_spd","stat_def","stat_spdef","stat_hp"])
-            }
-            attributeArray = arrayShuffle(attributeArray)
-            current = attributeArray[0].split("_")
-        }
-
-    
-        
-        switch(current[0]){
-            case "stat":
-                if(conVal < 0){
-                    let amount = Math.ceil(Math.random() * Math.abs(conVal))
-                    while(amount > Math.ceil(conValMax * 0.25)){
-                        amount = Math.ceil(Math.random() * Math.abs(conVal))
-                    }
-                    conVal += amount
-                    equipmentData.stats[current[1]] -= amount;     
-                } else if(val > 0){
-                    let amount = Math.ceil(Math.random() * val)
-                    while(amount > Math.ceil(valMax * 0.25)){
-                        amount = Math.ceil(Math.random() * val)
-                    }
-                    val -= amount
-                    equipmentData.stats[current[1]] += amount;     
-                }
-                break;
-            
-            case "perk":
-                let index = Math.floor(Math.random() * 6)
-                if(equipmentData.typePerks[index] < 5){
-                    val -= 6
-                    equipmentData.typePerks[index]++
-                }
-                break;
         }
     }
+
+    if(rngSet.lockStatTypes){
+        switch(equipmentData.type){
+            case "weapon":
+                attributes = attributes.concat(["atk","spatk","spd","baseAtkBoost","baseSpAtkBoost"])
+                break;
+
+            case "gear":
+                attributes = attributes.concat(["def","spdef","hp","baseDefBoost","baseSpDefBoost"])
+                break;
+        }
+    } else {
+        attributes = attributes.concat(["atk","spatk","spd","def","spdef","hp","baseAtkBoost","baseSpAtkBoost","baseDefBoost","baseSpDefBoost"])
+    }
+
+    let equipGenStatMultis = {
+        hp: 0.25,
+        atk: 0.8,
+        def: 0.7,
+        spatk: 0.8,
+        spdef: 0.7,
+        spd: 1,
+        baseAtkBoost: 0.05,
+        baseSpAtkBoost: 0.05,
+        baseDefBoost: 0.02,
+        baseSpDefBoost: 0.02
+    }
+
+    for(let i = 0;i < conStats;i++){
+        let index = Math.floor(Math.random() * attributes.length)
+        let stat = attributes[index]
+        equipmentData.stats[stat] = Math.ceil(conVal / conStats * equipGenStatMultis[stat]) * -1
+        attributes.splice(index,1)
+    }
+
+    let perkMax = weightedRandom([
+        {
+            chance:33,
+            obj:0
+        },
+        {
+            chance:28,
+            obj:1
+        },
+        {
+            chance:22.5,
+            obj:2
+        },
+        {
+            chance:12.5,
+            obj:3
+        },
+        {
+            chance:4,
+            obj:4
+        },
+    ])
+
+    let perkVal,statVal;
+
+    if(perkMax > 0 && val >= 15){
+        perkVal = Math.floor(val * (0.2 + 0.6 * Math.random()))
+        statVal = val - perkVal
+        perkVal = Math.ceil(perkVal/15)
+    } else {
+        perkVal = 0
+        statVal = val;
+    }
+
+    if(perkVal < perkMax){
+        perkMax = perkVal
+    }
+
+    if(perkVal > perkMax * 5){
+        statVal += (perkVal - perkMax * 5) * 15
+        perkVal = (perkMax * 5)
+    }
+
+    let usedIndexes = []
+
+    for(var x = 0;x < perkMax;x++){
+        let index = Math.floor(equipmentData.typePerks.length * Math.random())
+        while(equipmentData.typePerks[index] > 0){
+            index = Math.floor(equipmentData.typePerks.length * Math.random())
+        }
+        usedIndexes.push(index)
+        equipmentData.typePerks[index] = 1
+        perkVal--
+    }
+
+    while(perkVal > 0){
+        let index = usedIndexes[Math.floor(usedIndexes.length * Math.random())]
+        while(equipmentData.typePerks[index] == 0 || equipmentData.typePerks[index] == 5){
+            index = usedIndexes[Math.floor(usedIndexes.length * Math.random())]
+        }
+        equipmentData.typePerks[index]++
+        perkVal--
+    }
+
+    let maxStatVal = statVal
+    while(statVal > 0){
+        let amount = Math.ceil(maxStatVal * 0.15)
+        if(amount > statVal){
+            amount = statVal
+        }
+        let index = Math.floor(Math.random() * attributes.length)
+        let stat = attributes[index]
+        equipmentData.stats[stat] += amount * equipGenStatMultis[stat]
+        statVal -= amount 
+    }
+
+    for(s in equipmentData.stats){
+        equipmentData.stats[s] = Math.round(equipmentData.stats[s])
+    }
+
+    equipmentData.stats.baseAtkBoost *= 5
+    equipmentData.stats.baseSpAtkBoost *= 5
+    equipmentData.stats.baseDefBoost *= 5
+    equipmentData.stats.baseSpDefBoost *= 5
     equipmentData.name = generateEquipmentName(equipmentData)
     return equipmentData
-}   
+}
 
 function stringShuffle(string) {
     var a = string.split(""),
@@ -690,305 +778,252 @@ function givePlayerItem(item,player){
     return player;
 }
 
-function generateRNGAbility(abilityData,abilityBase){
+function modifyStat(stat,ability,int){
+    switch(stat[2]){
+        case "inc":
+            if(stat[4]){
+                ability[stat[0]] -= stat[1][2] * int * Math.floor(Math.random() * (stat[1][1]/stat[1][2]))
+            } else {
+                ability[stat[0]] += stat[1][2] * int * Math.floor(Math.random() * (stat[1][1]/stat[1][2]))
+            }
+            if(ability[stat[0]] > stat[1][1]){
+                ability[stat[0]] = stat[1][1]
+            }
+            if(ability[stat[0]] < stat[1][0]){
+                ability[stat[0]] = stat[1][0]
+            }
+            break;
+
+        case "val":
+            if(int > 0){
+                if(stat[1].indexOf(ability[stat[0]]) < stat[1].length - 1){
+                    let newIndex = stat[1].indexOf(ability[stat[0]]) + Math.floor(Math.random() * stat[1].length)
+                    if(newIndex > stat[1].length - 1){
+                        ability[stat[0]] = stat[1][stat[1].length - 1]
+                    } else {
+                        ability[stat[0]] = stat[1][newIndex]
+                    }
+                }
+            } else {
+                if(stat[1].indexOf(ability[stat[0]]) > 0){
+                    let newIndex = stat[1].indexOf(ability[stat[0]]) - Math.floor(Math.random() * stat[1].length)
+                    if(newIndex < 0){
+                        ability[stat[0]] = stat[1][0]
+                    } else {
+                        ability[stat[0]] = stat[1][newIndex]
+                    }
+                }
+            }
+            break;
+    }
+}
+
+function upgradeEffect(effect){
+    let effectValues = [
+        ["target",["4","3","2","0","1"],"val",30],
+        ["value",[-4,4,1],"inc",70]
+    ]
+    let stat = effectValues[Math.floor(Math.random() * effectValues.length)]
+    if(stat[0] == "target"){
+        if(effect.value < 0){
+            stat[1] = stat[1].reverse()
+        }
+    }
+    modifyStat(stat,effect,1)
+}
+
+function downgradeEffect(effect){
+    let effectValues = [
+        ["target",["4","3","2","0","1"],"val",30],
+        ["value",[-4,4,1],"inc",70]
+    ]
+    let stat = effectValues[Math.floor(Math.random() * effectValues.length)]
+    if(stat[0] == "target"){
+        if(effect.value < 0){
+            stat[1] = stat[1].reverse()
+        }
+    }
+    modifyStat(stat,effect,-1)
+}
+
+function upgradeAbility(typeValues,ability,limit){
+    while(calculateAbilityCost(ability) < limit){
+        //console.log("increasing",ability.action_type)
+        let targetStat;
+        let changeMade = false;
+        if(ability.action_type == "stats"){
+            if(Math.random() < 0.5){
+                if(Math.random() < 0.5 && ability.effects.length < 3){
+                    let stats = ["atk","spatk","def","spdef","spd"]
+                    let newEffect = {
+                        target: "0",
+                        stat: "",
+                        value: 1
+                    }
+                    for(e of ability.effects){
+                        stats.splice(stats.indexOf(e.stat),1)
+                    }
+                    newEffect.stat = stats[Math.floor(Math.random() * stats.length)]
+                    ability.effects.push(newEffect)
+                    ability.statChangeCount = ability.effects.length
+                    changeMade = true
+                } else {
+                    let index = Math.floor(Math.random() * ability.effects.length)
+                    if(calculateEffectCost(ability.effects[index]) < 0 && ability.effects.length > 1){
+                        ability.effects.splice(index,1)
+                        ability.statChangeCount = ability.effects.length
+                    } else {
+                        upgradeEffect(ability.effects[index])
+                    }
+                    changeMade = true
+                }
+            }
+        }
+        if(!changeMade){
+            let valueList = []
+            for(value of typeValues){
+                let max;
+                if(value[2] == "val"){
+                    max = value[1][value[1].length - 1]
+                } else {
+                    max = value[1][1]
+                }
+
+                if(ability[value[0]] != max){
+                    valueList.push({
+                        chance:value[3],
+                        obj:value
+                    })
+                }
+            }
+            if(valueList.length > 0){
+                targetStat = weightedRandom(valueList)
+                modifyStat(targetStat,ability,1)
+                changeMade = true
+            }
+        }
+    }
+}
+
+function downgradeAbility(typeValues,ability,limit){
+    while(calculateAbilityCost(ability) > limit){
+        //console.log("decreasing",ability.action_type)
+        let targetStat;
+        let changeMade = false;
+        if(ability.action_type == "stats"){
+            if(Math.random() < 0.5){
+                if(Math.random() < 0.5 && ability.effects.length < 3){
+                    let stats = ["atk","spatk","def","spdef","spd"]
+                    let newEffect = {
+                        target: "0",
+                        stat: "",
+                        value: -1
+                    }
+                    for(e of ability.effects){
+                        stats.splice(stats.indexOf(e.stat),1)
+                    }
+                    newEffect.stat = stats[Math.floor(Math.random() * stats.length)]
+                    ability.effects.push(newEffect)
+                    changeMade = true
+                } else {
+                    let index = Math.floor(Math.random() * ability.effects.length)
+                    if(calculateEffectCost(ability.effects[index]) > 0 && ability.effects.length > 1){
+                        ability.effects.splice(index,1)
+                        ability.statChangeCount = ability.effects.length
+                    } else {
+                        downgradeEffect(ability.effects[index])
+                    }
+                    changeMade = true
+                }
+            }
+        }
+        if(!changeMade){
+            let valueList = []
+            for(value of typeValues){
+                if(ability[value[0]] != value[1][0]){
+                    valueList.push({
+                        chance:value[3],
+                        obj:value
+                    })
+                }
+            }
+            if(valueList.length > 0){
+                targetStat = weightedRandom(valueList)
+                modifyStat(targetStat,ability,-1)
+                changeMade = true;
+            }
+        }
+    }
+}
+
+function generateRNGAbility(abilityData,forcedFields){
     let actionType = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
     if(abilityData.forceType){
         actionType = abilityData.forceType
     }
     let typeValues;
     let newAbility;
-
+    let finalVal = abilityData.baseVal
+    let cost;
     switch(actionType){
         case "attack":
             typeValues = [
-                ["critical",[0,100,5],"inc"],
-                ["damage_val",[10,100,5],"inc"],
-                ["numHits",[1,5,1],"inc"],
-                ["recoil",[0,100,5],"inc",true],
-                ["targetType",["1","2","3"],"val"],
-                ["accuracy",[10,130,10],"inc"],
-                ["speed",[0,1,2,4],"val"]
+                ["critical",[0,80,5],"inc",12],
+                ["damage_val",[10,100,5],"inc",35],
+                ["numHits",[1,5,1],"inc",5],
+                ["recoil",[0,100,5],"inc",12,true],
+                ["targetType",["1","2","3"],"val",12],
+                ["accuracy",[60,130,10],"inc",12],
+                ["speed",[0,1,2,4],"val",12]
             ]
             newAbility = clone(templates.attack)
-            newAbility.damage_val = 10
             newAbility.damage_type = ["atk","spatk"][Math.floor(Math.random() * 2)]
-            newAbility.speed = 1
+            newAbility.damage_val = 10
+            cost = calculateAbilityCost(newAbility)
             break;
 
         case "guard":
             typeValues = [
-                ["guard_val",[10,100,5],"inc"],
-                ["counter_val",[0,100,5],"inc"],
-                ["success_level",["25","50","100","200","400"],"val"]
+                ["guard_val",[10,200,5],"inc",30],
+                ["counter_val",[0,200,5],"inc",30],
+                ["success_level",["100","200","400"],"val",40]
             ]
             newAbility = clone(templates.guard)
-            newAbility.guard_val = 10
             newAbility.guard_type = ["def","spdef"][Math.floor(Math.random() * 2)]
             newAbility.counter_type = newAbility.guard_type
-            newAbility.speed = 3
-            newAbility.success_level = "100"
+            newAbility.guard_val = 10
+            cost = calculateAbilityCost(newAbility)
             break;
 
         case "stats":
+            typeValues = [
+                ["speed",[0,1,2,4],"val",30],
+                ["focus",[60,100,5],"inc",70]
+            ]
             newAbility = clone(templates.stats)
-            newAbility.statChangeCount = Math.ceil(Math.random() * 3)
-            newAbility.effects = []
-            newAbility.speed = [0,1,2,4][Math.floor(Math.random() * 4)]
-            for(var i = 0;i < newAbility.statChangeCount; i++){
-                let newEffect = clone(templates.stats.effects[0])
-                newEffect.value = 0;
-                newEffect.target = "0"
-                newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                if(newAbility.effects.length > 1){
-                    let repeatStat 
-                    do{
-                        repeatStat = false
-                        for(var x = 0;x < newAbility.effects.length; x++){
-                            if(newAbility.effects[x].stat == newEffect.stat){
-                                repeatStat = true
-                                newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                                break;
-                            }
-                        }
-                    }while(repeatStat)
-                }
-                newAbility.effects.push(newEffect)
-            }
+            newAbility.effects[0].stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
+            cost = calculateAbilityCost(newAbility)
             break;
     }
 
-    let cost = calculateAbilityCost(newAbility)
-
-    while(cost <= abilityData.baseVal){
-        if(newAbility.action_type == "stats"){
-            if(abilityData.conSteps > 0){
-                let hasNegative = false;
-                for(e of newAbility.effects){
-                    if(calculateEffectCost(e) < 0){
-                        hasNegative = true
-                        break;
-                    }
-                }
-                if(!hasNegative && newAbility.effects.length < 3){
-                    let newEffect = clone(templates.stats.effects[0])
-                    newEffect.target = ["0","1","2","3","4"][Math.floor(Math.random() * 5)]
-                    if(["0","1"].includes(newEffect.target)){
-                        newEffect.value = -1
-                    } else {
-                        newEffect.value = 1
-                    }
-                    newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                    if(newAbility.effects.length > 1){
-                        newEffect.value = 0
-                        let repeatStat 
-                        do{
-                            repeatStat = false
-                            for(var x = 0;x < newAbility.effects.length; x++){
-                                if(newAbility.effects[x].stat == newEffect.stat){
-                                    repeatStat = true
-                                    newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                                    break;
-                                }
-                            }
-                        }while(repeatStat)
-                    }
-                    newAbility.effects.push(newEffect)
-                    abilityData.conSteps--
-                } else {
-                    let currentEffect = newAbility.effects[Math.floor(Math.random() * newAbility.effects.length)]
-                    if(["0","1"].includes(currentEffect.target)){
-                        currentEffect.value -= 1
-                        if(currentEffect.value < -4){
-                            currentEffect.value = -4;
-                        } else {
-                            abilityData.conSteps--
-                        }
-                    } else {
-                        currentEffect.value += 1
-                        if(currentEffect.value > 4){
-                            currentEffect.value = 4;
-                        } else {
-                            abilityData.conSteps--
-                        }
-                    }
-                }
-            } else {
-                let currentEffect;
-                switch(Math.floor(Math.random() * 3)){
-                    case 0:
-                        currentEffect = newAbility.effects[Math.floor(Math.random() * newAbility.effects.length)]
-                        if(["0","1"].includes(currentEffect.target)){
-                            currentEffect.value += 1
-                            if(currentEffect.value > 4){
-                                currentEffect.value = 4;
-                            }
-                        } else {
-                            currentEffect.value -= 1
-                            if(currentEffect.value < -4){
-                                currentEffect.value = -4;
-                            }
-                        }
-                        break;
-
-                    case 1:
-                        currentEffect = newAbility.effects[Math.floor(Math.random() * newAbility.effects.length)]
-                        if(calculateEffectCost(currentEffect) > 0){
-                            if(["0","1"].includes(currentEffect.target)){
-                                if(currentEffect.target == "0"){
-                                    currentEffect.target = "1"
-                                }
-                            } else {
-                                if(currentEffect.target != "4"){
-                                    currentEffect.target = "" + (parseInt(currentEffect.target) + 1)
-                                }
-                            }
-                        }
-                        break;
-
-                    case 2:
-                        if(newAbility.effects.length < 3){
-                            let newEffect = clone(templates.stats.effects[0])
-                            newEffect.target = ["0","1","2","3","4"][Math.floor(Math.random() * 5)]
-                            if(["0","1"].includes(newEffect.target)){
-                                newEffect.value = (1  + Math.floor(Math.random() * 2))
-                            } else {
-                                newEffect.value = -(1  + Math.floor(Math.random() * 2))
-                            }
-                            newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                            if(newAbility.effects.length > 1){
-                                newEffect.value = 0
-                                let repeatStat;
-                                do{
-                                    repeatStat = false
-                                    for(var x = 0;x < newAbility.effects.length; x++){
-                                        if(newAbility.effects[x].stat == newEffect.stat){
-                                            repeatStat = true
-                                            newEffect.stat = ["atk","spatk","def","spdef","spd"][Math.floor(Math.random() * 5)]
-                                            break;
-                                        }
-                                    }
-                                }while(repeatStat)
-                            }
-                            newAbility.effects.push(newEffect)
-                        } 
-                        break;
-                }
-            }
-            cost = calculateAbilityCost(newAbility)
-        } else {
-            let targetStat = typeValues[Math.floor(Math.random() * typeValues.length)]
-
-            switch(targetStat[2]){
-                case "inc":
-                    if(abilityData.conSteps > 0){
-                        if(targetStat[3]){
-                            newAbility[targetStat[0]] += targetStat[1][2]
-                        } else {
-                            newAbility[targetStat[0]] -= targetStat[1][2]
-                        }
-                        abilityData.conSteps -= 1
-                    } else {
-                        if(targetStat[3]){
-                            newAbility[targetStat[0]] -= targetStat[1][2] * Math.ceil(Math.random() * 5)
-                        } else {
-                            newAbility[targetStat[0]] += targetStat[1][2] * Math.ceil(Math.random() * 5)
-                        }
-                    }
-                    if(newAbility[targetStat[0]] > targetStat[1][1]){
-                        newAbility[targetStat[0]] = targetStat[1][1]
-                    }
-                    if(newAbility[targetStat[0]] < targetStat[1][0]){
-                        newAbility[targetStat[0]] = targetStat[1][0]
-                    }
-                    break;
-
-                case "val":
-                    if(abilityData.conSteps == 0){
-                        if(targetStat[1].indexOf(newAbility[targetStat[0]]) < targetStat[1].length - 1){
-                            newAbility[targetStat[0]] = targetStat[1][targetStat[1].indexOf(newAbility[targetStat[0]]) + 1]
-                        }
-                    } else {
-                        if(targetStat[1].indexOf(newAbility[targetStat[0]]) > 0){
-                            newAbility[targetStat[0]] = targetStat[1][targetStat[1].indexOf(newAbility[targetStat[0]]) - 1]
-                            abilityData.conSteps -= 1
-                        }
-                    }
-                    break;
-            }
-            lastChange = [targetStat[0],newAbility[targetStat[0]]]
-            if(abilityData.forceStats != false){
-                for(s of abilityData.forceStats){
-                    newAbility[s[0]] = s[1] 
-                }
-            }
-            cost = calculateAbilityCost(newAbility)
-        }
-    }
-    let limit = 5
-    if(cost > abilityData.baseVal){
-        if(newAbility.action_type != "stats"){
-            while(cost > abilityData.baseVal && limit > 0){
-                let targetStat = typeValues[Math.floor(Math.random() * typeValues.length)]
-                while(targetStat[2] == "val"){
-                    targetStat = typeValues[Math.floor(Math.random() * typeValues.length)]
-                }
-                if(targetStat[3]){
-                    newAbility[targetStat[0]] += targetStat[1][2]
-                } else {
-                    newAbility[targetStat[0]] -= targetStat[1][2]
-                }
-                if(newAbility[targetStat[0]] < targetStat[1][0]){
-                    newAbility[targetStat[0]] = targetStat[1][0]
-                }
-                lastChange = [targetStat[0],newAbility[targetStat[0]]]
-                cost = calculateAbilityCost(newAbility)
-                limit -= 1
-            }
-        } else {
-            while(cost > abilityData.baseVal && cost < 0){
-                if(Math.random() > 0.25){
-                    let currentEffect = newAbility.effects[Math.floor(Math.random() * newAbility.effects.length)]
-                    if(["0","1"].includes(currentEffect.target)){
-                        currentEffect.value -= 1
-                        if(currentEffect.value < -4){
-                            currentEffect.value = -4;
-                        }
-                    } else {
-                        currentEffect.value += 1
-                        if(currentEffect.value > 4){
-                            currentEffect.value = 4;
-                        }
-                    }
-                    cost = calculateAbilityCost(newAbility)
-                } else {
-                    currentEffect = newAbility.effects[Math.floor(Math.random() * newAbility.effects.length)]
-                    if(calculateEffectCost(currentEffect) > 0){
-                        if(["0","1"].includes(currentEffect.target)){
-                            if(currentEffect.target == "1"){
-                                currentEffect.target = "0"
-                            }
-                        } else {
-                            if(currentEffect.target != "2"){
-                                currentEffect.target = "" + (parseInt(currentEffect.target) - 1)
-                            }
-                        }
-                    }
-                    break;
+    if(forcedFields != undefined){
+        for(field in forcedFields){
+            for(i in typeValues){
+                if(typeValues[i][0] == field){
+                    typeValues.splice(i,1)
+                    newAbility[field] = forcedFields[field]        
                 }
             }
         }
-    }
-
-    if(newAbility.action_type == "stats"){
-        for(let i = 0; i < newAbility.effects.length; i ++){
-            if(newAbility.effects[i].value == 0){
-                newAbility.effects.splice(i,1)
-                i--
-            }
-        }
-        newAbility.statChangeCount = newAbility.effects.length
     }
     
+    while(cost < finalVal * 0.95 || cost > finalVal * 1.05){
+        upgradeAbility(typeValues,newAbility,finalVal)
+        downgradeAbility(typeValues,newAbility,finalVal)
+        cost = calculateAbilityCost(newAbility)
+    }
+
+    //console.log(newAbility)
     newAbility.name = generateAbilityName(newAbility)
     return newAbility
 }
@@ -1016,9 +1051,6 @@ function createAbilityDescription(ability){
     let additionals = [];
     switch(ability.action_type){
         case "attack":
-            if(parseInt(ability.faction) != -1){
-                desc += "-Alignment : " + factionTypes[ability.faction].name +"-\n"
-            }
             desc += "The user attacks " + {
                 "1":"it's target",
                 "2":"all enemies",
@@ -1027,14 +1059,13 @@ function createAbilityDescription(ability){
             if(ability.numHits != 1){
                 desc += " " + ability.numHits + " times"
             }
-            desc += " with a base damage of " + ability.damage_val + ", "
-            desc += "increased by users " + ability.damage_type + " stat and decreased by target's " + (ability.damage_type == "atk" ? "def" : "spdef") + " stat. "
-            dditionals = []
+            desc += " using their " + ability.damage_type + " stat with a base damage of " + ability.damage_val + ". "
+            additionals = []
             if(ability.critical > 0){
                 additionals.push(" has a " + ability.critical + "% chance to critically hit")
             }
             if(ability.recoil > 0){
-                additionals.push(" deals " + ability.recoil + "% of damage dealt as recoil to the user")
+                additionals.push(" deals " + ability.recoil + "% of user's maximum health as damage to the user")
             }
             if(ability.speed != 1){
                 let speedRating = ""
@@ -1067,28 +1098,35 @@ function createAbilityDescription(ability){
             desc += "The user lowers the base damage of an incoming " + {
                 "def":"atk",
                 "spdef":"spatk"
-            }[ability.guard_type] + " based ability by " + ability.guard_val + ". This value is halved if the attack is " + {
+            }[ability.guard_type] + " attack by " + ability.guard_val + " (If attack uses " + {
                 "def":"spatk",
                 "spdef":"atk"
-            }[ability.guard_type] + " based."
+            }[ability.guard_type] + " stat, " + ability.guard_val/2 + ")."
             if(ability.counter_val > 0){
-                desc += " If the incoming attack is " + {
+                desc += " If the attack was " + {
                     "def":"atk",
                     "spdef":"spatk"
-                }[ability.guard_type] + " based, the user will counter attack with a base damage of " + ability.counter_val + " scaling with the user's " + ability.counter_type + " stat against the attacker's " + ability.counter_type + " stat."
+                }[ability.guard_type] + " based, they use their " + ability.counter_type + " stat to counter attack with a base damage of " + ability.counter_val + "."
 
             }
             if(ability.success_level != 100){
                 if(ability.success_level > 100){
-                    let count = Math.log(ability.success_level/25)/Math.log(2) - 2
-                    desc += " Additionally, this ability becomes unreliable after " + count + " consecutive guard abilit" + (count > 1 ? "ies have" : "y has") + " been used."
+                    desc += {
+                        "200":" Additionally, this ability becomes unreliable after 1 consecutive guard ability has been used.",
+                        "400":" Additionally, this ability becomes unreliable after 2 consecutive guard abilities has been used."
+                    }[ability.success_level]
                 } else {
-                    desc += " Additionally, this ability has it's rate of success decreased by " + (100 - ability.success_level) + "%."
+                    desc += " Additionally, this ability has it's chance of success decreased by " + (100 - ability.success_level) + "%."
                 }
             }
             break;
 
         case "stats":
+            // REMOVE ON WIPE
+            if(!ability.focus){
+                ability.focus = 75
+            }
+
             desc += "The user "
             for(i in ability.effects){
                 let effect = ability.effects[i]
@@ -1128,6 +1166,9 @@ function createAbilityDescription(ability){
                 }
             }
             desc += ". "
+            if(ability.focus < 100){
+                desc += "If the user is damaged before using this ability, it has a " + (100 - ability.focus) + "% chance to fail. "
+            }
             if(ability.speed != 1){
                 let speedRating = ""
                 switch(parseInt(ability.speed)){
@@ -1181,6 +1222,9 @@ module.exports = {
     formatTown(town){
         return formatTown(town)
     },
+    generateEquipmentName(item){
+        return generateEquipmentName(item)
+    },
     msToTime(s){
         return msToTime(s)
     },
@@ -1188,6 +1232,14 @@ module.exports = {
         return calculateAbilityCost(ability,weapon,race)
     },
     prepCombatFighter(fighter,index){
+
+        for(ability of fighter.abilities){
+            delete ability.faction
+            if(ability.stance == undefined){
+                ability.stance = "none"
+            }
+        }
+
         let fighterStats = clone(fighter.stats)
         let fWeapon = null;
         let fGear = null;
@@ -1287,7 +1339,13 @@ module.exports = {
                 timesFirstAttack:0,
                 timesAbilityRepeat:0,
                 livesLost:0,
-                strongestStrike:0
+                strongestStrike:0,
+                empoweredAbilities:0,
+                stanceSwitches:0,
+                resistedAttacks:0,
+                attacksResisted:0,
+                effectiveAttacks:0,
+                attacksEffected:0
             },
             choosenAbility:-1,
             target:-1,
@@ -1295,6 +1353,14 @@ module.exports = {
             hasActed:false,
             lastAction:"",
             guardData:"none"
+        }
+        if(!fighterData.staticData.cpu){
+            if(!fighterData.staticData.meterRank){
+                fighterData.staticData.meterRank = 0
+            }
+            fighterData.meter = 0
+            fighterData.staticData.meterRank
+            fighterData.empowered = false
         }
         if(fighter.passives){
             fighterData.passives = fighter.passives
@@ -1305,16 +1371,22 @@ module.exports = {
             if(gear){
                 fighterData.gearPassives = gear.typePerks
             } else {
-                fighterData.gearPassives = [0,0,0,0,0,0]
+                fighterData.gearPassives = [0,0,0,0,0,0,0,0,0,0]
             }
             if(weapon){
                 fighterData.weaponPassives = weapon.typePerks
             } else {
-                fighterData.weaponPassives = [0,0,0,0,0,0]
+                fighterData.weaponPassives = [0,0,0,0,0,0,0,0,0,0]
             }
         } else {
-            fighterData.weaponPassives = [0,0,0,0,0,0]
-            fighterData.gearPassives = [0,0,0,0,0,0]
+            fighterData.weaponPassives = [0,0,0,0,0,0,0,0,0,0]
+            fighterData.gearPassives = [0,0,0,0,0,0,0,0,0,0]
+        }
+        while(fighterData.weaponPassives.length < 10){
+            fighterData.weaponPassives.push(0)
+        }
+        while(fighterData.gearPassives.length < 10){
+            fighterData.gearPassives.push(0)
         }
         if(fighter.boosters){
             let now = new Date();
@@ -1353,6 +1425,28 @@ module.exports = {
                 }
             }
         }
+
+        if(fighterData.staticData.weakPoint){
+            if(fighterData.staticData.weakPoint == true){
+                fighterData.staticData.weakPoint = 1 + Math.floor(Math.random() * 6)   
+            }
+            fighterData.weakPointHit = false
+        }
+
+        if(fighterData.staticData.lootPoint){
+            if(fighterData.staticData.lootPoint == true){
+                fighterData.staticData.lootPoint = 1 + Math.floor(Math.random() * 6)   
+            }
+            fighterData.lootPointHit = false
+        }
+
+        if(fighterData.staticData.stances == undefined){
+            fighterData.staticData.stances = clone(templates.emptyPlayerData.stances)
+        }
+        delete fighterData.staticData.faction
+        if(fighterData.staticData.stance == undefined){
+            fighterData.staticData.stance = "none"
+        }
         return fighterData
     },
     weightedRandom(choices){
@@ -1372,10 +1466,54 @@ module.exports = {
                 if(fighter.staticData.abilities){
                     if(fighter.staticData.abilities.length > 0){
                         let selectAbility = true
+                        let stanceOptions = []
+                        for(stance in fighter.staticData.stances){
+                            if(fighter.staticData.stances[stance].active && fighter.staticData.stance != stance){
+                                stanceOptions.push({
+                                    "action_type":"stance",
+                                    "stance":stance
+                                })
+                            }
+                        }
+                        if(stanceOptions.length > 0){
+                            if(Math.random() < 0.25){
+                                selectAbility = false
+                                fighter.stanceSwitch = stanceOptions[Math.floor(Math.random() * stanceOptions.length)].stance
+                            }
+                        }
+                        let canRethink = true;
                         while(selectAbility){
                             let nextAction;
+                            let abilityTypes = []
+                            for(ability of fighter.staticData.abilities){
+                                if(!abilityTypes.includes(ability.action_type)){
+                                    abilityTypes.push(ability.action_type)
+                                }
+                            }
+                            
                             fighter.choosenAbility = (Math.floor(Math.random() * fighter.staticData.abilities.length)).toString()
                             let abilityData = fighter.staticData.abilities[fighter.choosenAbility]
+                    
+                            if(abilityTypes.length >= 2){
+                                if(fighter.typeHistory == undefined){
+                                    fighter.typeHistory = []
+                                }
+
+                                for(type of fighter.typeHistory){
+                                    abilityTypes.splice(abilityTypes.indexOf(type),1)
+                                }
+                                
+                                while(!abilityTypes.includes(abilityData.action_type)){
+                                    fighter.choosenAbility = (Math.floor(Math.random() * fighter.staticData.abilities.length)).toString()
+                                    abilityData = fighter.staticData.abilities[fighter.choosenAbility]
+                                }
+
+                                if(abilityTypes.length == 1){
+                                    canRethink = false
+                                    delete fighter.typeHistory
+                                }
+                            }
+
                             switch(abilityData.action_type){
                                 case "attack":
                                     if(fighters.length == 2){
@@ -1404,7 +1542,6 @@ module.exports = {
                                 
                                 case "stats":
                                     let highestStatVal = 0
-                                    let highestTargetType = "-1"
                                     let forAlly = false;
                                     for(effect of abilityData.effects){
                                         if(Math.abs(effect.value) > highestStatVal){
@@ -1463,10 +1600,15 @@ module.exports = {
                                     nextAction = fighter.index + "_" + abilityData.name + "_" + fighters[fighter.target]
                                     break;
                             }
-                            if(nextAction == fighter.lastAction && fighter.staticData.intelligence){
+                            if(nextAction == fighter.lastAction && fighter.staticData.intelligence && canRethink){
                                 selectAbility = fighter.staticData.intelligence.reuse < Math.random()
                             } else {
-                                selectAbility = false
+                                selectAbility = false                                 
+                                if(fighter.typeHistory){
+                                    fighter.typeHistory.push(abilityData.action_type)
+                                } else {
+                                    fighter.typeHistory = [abilityData.action_type]
+                                }
                             }
                         }
                     }
@@ -1479,74 +1621,102 @@ module.exports = {
     },
     printEquipmentDisplay(item){
         let zeroStats = true;
-        let data = ""
-        data += item.name + "\n"
+        let data = "**__" + item.name + "__**\n\n"
+        let rankNumerals = {
+            "0":0,
+            "1":"I",
+            "2":"II",
+            "3":"III",
+            "4":"IV",
+            "5":"V"
+        }
+        let statDict = {
+            "hp": "HP",
+            "atk": "ATK",
+            "def": "DEF",
+            "spatk": "SPATK",
+            "spdef": "SPDEF",
+            "spd": "SPD",
+            "baseAtkBoost": "ATK ABILITY BASE DMG",
+            "baseSpAtkBoost": "SPATK ABILITY BASE DMG",
+            "baseDefBoost": "DEF ABILITY GUARD VALUE",
+            "baseSpDefBoost": "SPDEF ABILITY GUARD VALUE"
+        }
         switch(item.type){
             case "weapon":
                 data += "Type: " + [
-                    "\nMelee - Class Synergy: Physical Attacks have higher chance of succeeding when used in succession",
-                    "Ranged - Class Synergy: Gain up to 30% critical chance based on ability speed priority",
-                    "Spell-Casting - Class Synergy: Critical Special Attacks have a 3x damage multiplier",
-                    "Rune-Based - Class Synergy: Attack hits have a 15% to increase the used offensive stat by 1 stage"
-                ][item.weaponStyle] +"\n\n"
-                for(s in item.stats){
+                    "Melee\nClass Synergy:\n> **Physical Attacks have higher chance of succeeding when used in succession**",
+                    "Ranged\nClass Synergy:\n> **Gain up to 30% critical chance based on ability speed priority**",
+                    "Spell-Casting\nClass Synergy:\n> **Critical Special Attacks have a 3x damage multiplier**",
+                    "Rune-Based\nClass Synergy:\n> **Attack hits have a 15% to increase the used offensive stat by 1 stage**"
+                ][item.weaponStyle]
+                for(s in statDict){
                     let val = item.stats[s]
                     if(s == "hp"){
                         val *= 2
                     }
                     if(val > 0){
+                        if(zeroStats){
+                            data += "\n```diff\n"
+                        }
                         zeroStats = false
-                        data += "+" + val + " " + s + "\n"
+                        data += "+" + val + " " + statDict[s] + "\n"
                     } else if (val < 0){
+                        if(zeroStats){
+                            data += "\n```diff\n"
+                        }
                         zeroStats = false
-                        data += val + " " + s + "\n"
+                        data += val + " " + statDict[s] + "\n"
                     }
                 }
-                data += "\n"
+                if(!zeroStats){
+                    data += "```\n"
+                } else {
+                    data += "\n\n"
+                }
                 let noWeaponPerks = true
                 for(p in item.typePerks){
                     let val = item.typePerks[p]
                     if(val > 0){
                         noWeaponPerks = false;
-                        data += "\n> " + equipmentPerkDescriptions.weapon[p][0].replace("X",equipmentPerkDescriptions.weapon[p][1] * val) + "\n"
+                        data += equipmentPerkDescriptions.weapon[p][2] + " " + rankNumerals[val] + "\n> " + equipmentPerkDescriptions.weapon[p][0].replace("X",equipmentPerkDescriptions.weapon[p][1] * val) + "\n\n"
                     }
-                }
-                if(zeroStats){
-                    data += "---No Stat Changes---\n"
-                }
-                if(noWeaponPerks){
-                    data += "---No Weapon Perks---\n"
                 }
                 break;
 
             case "gear":
-                data += "Type: Gear\n\n"
-                for(s in item.stats){
+                data += "Type: Gear"
+                for(s in statDict){
                     let val = item.stats[s]
                     if(s == "hp"){
                         val *= 2
                     }
                     if(val > 0){
+                        if(zeroStats){
+                            data += "\n```diff\n"
+                        }
                         zeroStats = false
-                        data += "+" + val + " " + s + "\n"
+                        data += "+" + val + " " + statDict[s] + "\n"
                     } else if (val < 0){
+                        if(zeroStats){
+                            data += "\n```diff\n"
+                        }
                         zeroStats = false
-                        data += val + " " + s + "\n"
+                        data += val + " " + statDict[s] + "\n"
                     }
+                }
+                if(!zeroStats){
+                    data += "```\n"
+                } else {
+                    data += "\n"
                 }
                 let nogearPerks = true
                 for(p in item.typePerks){
                     let val = item.typePerks[p]
                     if(val > 0){
                         nogearPerks = false;
-                        data += "\n> " + equipmentPerkDescriptions.gear[p][0].replace("X",equipmentPerkDescriptions.gear[p][1] * val) + "\n"
+                        data += equipmentPerkDescriptions.gear[p][2] + " " + rankNumerals[val] + "\n> " + equipmentPerkDescriptions.gear[p][0].replace("X",equipmentPerkDescriptions.gear[p][1] * val) + "\n\n"
                     }
-                }
-                if(zeroStats){
-                    data += "---No Stat Changes---\n"
-                }
-                if(nogearPerks){
-                    data += "---No Gear Perks---\n"
                 }
                 break;
 
@@ -1608,31 +1778,54 @@ module.exports = {
             }
         }
         
-        
+        let reps = 0
 
-        while(allowance > 0 && unit.abilities.length < 6){
-            let lastType; 
-            if(unit.abilities.length > 0){
-                lastType = unit.abilities[unit.abilities.length - 1].action_type
-            } else {
-                unit.abilities = []
-                lastType = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
+        while(allowance > 0 && unit.abilities.length < 6 && reps < 30){
+            let forceType;
+            let abilityTypes = []
+            for(ability of unit.abilities){
+                if(!abilityTypes.includes(ability.action_type)){
+                    abilityTypes.push(ability.action_type)
+                }
             }
-            if(allowance >= 2 && Math.random() < 0.5){
-                let forceTypeOverride = lastType
-                while(forceTypeOverride == lastType){
-                    forceTypeOverride = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
-                }
+            if(!abilityTypes.includes("attack")){
+                forceType = "attack"
+            } else {
+                forceType = ["attack","guard","stats"][Math.floor(Math.random() * 3)]
+            }
+            if(allowance >= 2 && Math.random() < 0.75){
                 let rngValue = Math.ceil(Math.random() * allowance)
-                let negRngValue = Math.ceil(Math.random() * Math.ceil(allowance * 0.25))
-                rngValue += negRngValue
                 let newData = {
-                    baseVal: 25 * rngValue,
-                    conSteps: negRngValue,
-                    forceType: forceTypeOverride,
-                    forceStats: false
+                    baseVal: Math.ceil(100 * (rngValue/3 + 1.125)),
+                    forceType: forceType
                 }
-                let ability = generateRNGAbility(newData)
+                let ability = generateRNGAbility(newData,{
+                    "accuracy": weightedRandom([
+                        {
+                            chance:25,
+                            obj:110
+                        },
+                        {
+                            chance:25,
+                            obj:80
+                        },
+                        {
+                            chance:25,
+                            obj:100
+                        }
+                    ]),
+                    "speed": weightedRandom([
+                        {
+                            chance:75,
+                            obj:1
+                        },
+                        {
+                            chance:25,
+                            obj:2
+                        }
+                    ]),
+                    "targetType":"1"
+                })
                 allowance -= rngValue
                 unit.abilities.push(ability)
             } else {
@@ -1644,13 +1837,14 @@ module.exports = {
                         let x = Math.floor(Math.random() * catalouge.length)
                         chosen = catalouge[x]
                         catalouge.splice(x,1)
-                    } while(chosen.ability.action_type == lastType && catalouge.length > 0)
-                    if(!(catalouge.length == 0 && chosen.ability.action_type == lastType)){
+                    } while(chosen.ability.action_type != forceType && catalouge.length > 0)
+                    if(!(catalouge.length == 0 && chosen.ability.action_type == forceType)){
                         unit.abilities.push(chosen.ability)
                         allowance -= chosen.allowanceCost
                     }
                 }
             }
+            reps++
         }
         return unit
     },
@@ -1661,7 +1855,7 @@ module.exports = {
         let pointsMax = points
         while(Math.floor(points) > 0){
             for(var i = 0; i < stats.length; i++){
-                let toSpend = Math.ceil((Math.random() * 0.25) * points) 
+                let toSpend = Math.ceil((Math.random() * 0.20) * points) 
                 if(unitScalar){
                     toSpend = Math.ceil(toSpend * unitScalar[stats[i]])
                 }
@@ -1683,10 +1877,10 @@ module.exports = {
             }
         }
         if(unit.level == 0){
-            if(Math.floor(statTotal/6) < 1){
+            if(Math.floor(statTotal/8) < 1){
                 unit.level = 1
             } else {
-                unit.level = Math.floor(statTotal/6)
+                unit.level = Math.floor(statTotal/8)
             }
         }
         return unit
@@ -1697,8 +1891,8 @@ module.exports = {
     generateRNGEquipment(dropData,SP){
         return generateRNGEquipment(dropData,SP)
     },
-    generateRNGAbility(abilityData,abilityBase){
-        return generateRNGAbility(abilityData,abilityBase)
+    generateRNGAbility(abilityData,forcedFields){
+        return generateRNGAbility(abilityData,forcedFields)
     },
     runExpeditionStep(data,wasActive,town,player){
         data.status.lastCheckIn++
@@ -1791,8 +1985,8 @@ module.exports = {
                                 scaling: false,
                                 value:1,
                                 conValue:0,
-                                lockStatTypes: true,
-                                baseVal: 20 * val,
+                                lockStatTypes: false,
+                                baseVal: 5 * val,
                                 types: ["weapon","gear"]
                             }
                         }

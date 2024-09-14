@@ -1,1 +1,31 @@
-[]
+[
+    {
+        "type": "stats",
+        "session_id": 80230,
+        "user_ids": [
+            "163809334852190208"
+        ],
+        "session_data": {
+            "statpoints": 14,
+            "level": 8,
+            "stats": {
+                "atk": 15,
+                "def": 17,
+                "hp": 29,
+                "spatk": 16,
+                "spd": 19,
+                "spdef": 18
+            },
+            "prevStats": {
+                "atk": 15,
+                "def": 17,
+                "hp": 29,
+                "spatk": 16,
+                "spd": 19,
+                "spdef": 18
+            },
+            "editAmount": 1,
+            "editingStat": "none"
+        }
+    }
+]

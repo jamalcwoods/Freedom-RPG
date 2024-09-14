@@ -14,6 +14,8 @@ module.exports = {
         let playerData = componentConfig.playerData
         let townData = componentConfig.townData
 
+        playerData.exploreStreak = 0
+
         let newSession = {
             type:"townVisit",
             session_id: Math.floor(Math.random() * 100000),
@@ -24,6 +26,13 @@ module.exports = {
                 location:null
             }
         }
+
+        let updates = []
+        updates.push({
+            id:playerData.id,
+            path:"exploreStreak",
+            value:0
+        })
         
         interaction.reply({
                 content: " ",
@@ -31,7 +40,8 @@ module.exports = {
                 components: populateTownVisitControls(newSession)
         })
         callback({
-            addSession:newSession
+            addSession:newSession,
+            updatePlayer:updates
         })
 	}
 };

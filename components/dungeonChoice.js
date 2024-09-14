@@ -74,18 +74,21 @@ module.exports = {
                         break;
 
                     default:
-                        let eventRank = session.session_data.dungeonRank + session.session_data.dangerValue/8
+                        let eventRank = session.session_data.dungeonRank + session.session_data.dangerValue/4
                         let eventReq = choiceVal.split("|")
-                        let playerRoll = Math.floor(session.session_data.player.stats[eventReq[0]] * 0.25 + (Math.random() * session.session_data.player.stats[eventReq[0]] * 0.75))
-                        let eventRoll = Math.floor(2.5 + Math.floor(Math.random() * (parseInt(eventReq[1]) * 0.1666) * (10 * eventRank)))
+                        let max = session.session_data.player.stats[eventReq[0]] * parseInt(choiceVal.split("|")[1])
+                        let roll = (Math.random() * max * 0.9)
+                        let min = (max * 0.1)
+                        let playerRoll = Math.floor(roll + min)
+                        let eventRoll = Math.ceil(Math.floor(Math.random() * (10 * eventRank)))
                         pass = playerRoll >= eventRoll
                         if(!pass){
                             session.session_data.dangerValue++
                             session.session_data.rankStats.failedChecks++
                         }
                         session.session_data.eventResult = {
-                            proll:[playerRoll,session.session_data.player.stats[eventReq[0]]],
-                            eroll:[eventRoll,10 + Math.ceil((parseInt(eventReq[1]) * 0.1666) * (10 * eventRank))],
+                            proll:[playerRoll,max],
+                            eroll:[eventRoll,Math.ceil(8 * eventRank)],
                         } 
                 }
             }
@@ -121,6 +124,7 @@ module.exports = {
                         }
 
                         let fighters = [clone(session.session_data.player)]
+
                         for(var i = 0; i < enemies.length; i++){
                             fighters.push(enemies[i])
                         }
@@ -177,7 +181,6 @@ module.exports = {
                             }),
                             linkedSession_data:session.session_data
                         }
-
                         
                         
                         newSession.session_data.fighters[0].staticData.lives = session.session_data.rankStats.currentLives  
@@ -192,6 +195,7 @@ module.exports = {
                             components:populateCombatControls(newSession),
                             embeds:populateCombatWindow(newSession)
                         })
+                        
                         callback({
                             updateSession:session,
                             addSession:newSession

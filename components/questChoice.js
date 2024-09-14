@@ -83,6 +83,7 @@ function runQuestSequence(interaction,session,callback){
                             components:populateCombatControls(newSession),
                             embeds:populateCombatWindow(newSession)
                         })
+                        
                         callback({
                             updateSession:session,
                             addSession:newSession

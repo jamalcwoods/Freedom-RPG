@@ -1,6 +1,7 @@
 // const { SlashCommandBuilder } = require('@discordjs/builders');
 // const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 
+const { stat } = require("fs")
 const { populateAbilityCreatorWindow, populateAbilityCreatorButtons } = require("../sessionTools.js")
 
 module.exports = {
@@ -39,9 +40,14 @@ module.exports = {
 
             if(session.session_data.editingAttribute == "statChangeCount"){
                 while(session.session_data.ability.effects.length < session.session_data.ability[session.session_data.editingAttribute]){
+                    let stats = ["atk","spatk","def","spdef","spd"]
+                    for(e of session.session_data.ability.effects){
+                        stats.splice(stats.indexOf(e.stat),1)
+                    }
+                    let newStat = stats[Math.floor(Math.random() * stats.length)]
                     session.session_data.ability.effects.push({
                         "target":"0",
-                        "stat":"atk",
+                        "stat":newStat,
                         "value":1
                     })
                 }

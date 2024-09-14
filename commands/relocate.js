@@ -118,7 +118,7 @@ module.exports = {
         } else {
             let playerSession;
             for(session of sessions){
-                if(session.user_ids.includes(playerData.id) && !session.session_data.onHold){
+                if(session.user_ids.includes(playerData.id) && !session.session_data.onHold && !session.session_data.noRelocate){
                     playerSession = session
                     break;
                 }

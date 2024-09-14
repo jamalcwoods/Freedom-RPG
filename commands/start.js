@@ -19,7 +19,7 @@ module.exports = {
             getPotentialData(function(potential){
                 let bonus = 0
                 let userPotential = potential[interaction.user.id]
-                if(userPotential && userPotential.count > 15){
+                if(userPotential && userPotential.count > 25){
                     bonus = userPotential.count
                 }
                 let newSession = {
@@ -33,10 +33,10 @@ module.exports = {
                         player:clone(templates.emptyPlayerData)
                     }
                 }
-                if(bonus >= 15){
+                if(bonus >= 25){
                     newSession.session_data.player.level = 5
                     newSession.session_data.player.abilitypoints = bonus
-                    newSession.session_data.player.statpoints = 15
+                    newSession.session_data.player.statpoints = bonus
                 }
                 newSession.session_data.player.id = interaction.user.id
                 newSession.session_data.player.name = interaction.user.username

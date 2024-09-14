@@ -19,10 +19,11 @@ module.exports = {
                     if(session.session_data.options.fightType == "pve"){
                         for(enemy of session.session_data.fighters){
                             if(enemy.team != fighter.team || enemy.team == null){
-                                if(enemy.liveData.spd > fighter.liveData.spd){
+                                if(enemy.liveData.stats.spd > fighter.liveData.stats.spd){
                                     if(Math.random() > 0.5){
                                         success = false;
                                         session.session_data.battlelog.combat.push(fighter.staticData.name + " was unable to escape!")
+                                        session.session_data.battlelog.combat.push("---")
                                         break;
                                     }
                                 }
@@ -30,8 +31,16 @@ module.exports = {
                         }
                     }
                     if(success){
+                        fighter.staticData.exploreStreak = 0 
                         fighter.forfeit = true;
+                        if(fighter.meter != undefined){
+                            fighter.staticData.meterRank = 0
+                        }
                         session.session_data.battlelog.combat.push(fighter.staticData.name + " fled from battle!")
+                        if(fighter.staticData.exploreRecord < fighter.staticData.exploreStreak){
+                            fighter.staticData.exploreRecord = fighter.staticData.exploreStreak
+                            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + fighter.staticData.exploreStreak)
+                        }
                         handlePlayerFlee(session)
                     } else {
                         fighter.choosenAbility = -2

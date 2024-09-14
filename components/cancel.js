@@ -10,8 +10,13 @@ module.exports = {
     },
     async execute(interaction,componentConfig,callback){
         let session = componentConfig.session
-
-        interaction.update(populateCloseInteractionMessage("Interaction Canceled"))
+        console.log()
+        if(componentConfig.args && componentConfig.args[0] == '1'){
+            interaction.update(populateCloseInteractionMessage("Interaction Canceled",true))
+        } else {
+            interaction.update(populateCloseInteractionMessage("Interaction Canceled"))
+        }
+        
         
         callback({
             removeSession:session

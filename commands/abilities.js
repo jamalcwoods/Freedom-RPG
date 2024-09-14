@@ -82,7 +82,7 @@ module.exports = {
                 interaction.reply({
                     content:" ",
                     embeds:populateManegeAbilityWindow(newSession),
-                    components:populateManageAbilityControls(newSession) 
+                    components:populateManageAbilityControls(newSession)
                 })
         
                 callback({

@@ -43,8 +43,9 @@ for(creature of inData.creatures){
             type:"rngEquipment",
             rngEquipment:{
             scaling:true,
-            value:0.5,
-            conValue:0.6,
+            value:1,
+            conStats:1,
+            conValue:0.2,
             lockStatTypes: true,
             types:["weapon"]
             }
@@ -58,8 +59,9 @@ for(creature of inData.creatures){
             type:"rngEquipment",
             rngEquipment:{
             scaling:true,
-            value:0.5,
-            conValue:0.6,
+            value:1,
+            conStats:1,
+            conValue:0.2,
             lockStatTypes: true,
             types:["gear"]
             }

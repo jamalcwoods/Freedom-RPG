@@ -29,9 +29,15 @@ module.exports = {
         
                     session.session_data.inventory.splice(i,1)
                     i--
-                    session.session_data.sellReward.gold += 10
-                    session.session_data.sellReward.rep += 3
+                    session.session_data.sellReward.gold += 50
+                    session.session_data.sellReward.rep += 10
                 }
+            }
+            
+            session.session_data.selected = null
+
+            while(Math.ceil(session.session_data.inventory.length/5) < session.session_data.page){
+                session.session_data.page--
             }
 
             interaction.update({

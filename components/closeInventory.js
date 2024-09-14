@@ -16,10 +16,17 @@ module.exports = {
 
             session.session_data.player.inventory = session.session_data.inventory
             
+            let townUpdates = []
+
             let rewardsText = ""
             if(session.session_data.sellReward.rep > 0){
                 rewardsText += session.session_data.player.name + " earned " + session.session_data.sellReward.rep + " reputation for the town of " + town.name + "\n"
                 applyTownReputation(town,session.session_data.player.id,session.session_data.sellReward.rep) 
+                townUpdates.push({
+                    id:town.id,
+                    path:"reputations",
+                    value:town.reputations
+                })
             }
             
             if(session.session_data.sellReward.gold > 0){
@@ -43,11 +50,7 @@ module.exports = {
                 }
             ]
 
-            let townUpdates = [{
-                id:town.id,
-                path:"reputations",
-                value:town.reputations
-            }]
+            
     
             const embed = new MessageEmbed()
 			.setColor('#00ff00')

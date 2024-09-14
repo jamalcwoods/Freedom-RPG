@@ -10,9 +10,15 @@ module.exports = {
     },
     execute(interaction,componentConfig,callback){
         let session = componentConfig.session
-        session.session_data.temp = {
-            selectedItem:parseInt(interaction.values[0])
+
+        if(isNaN(parseInt(interaction.values[0]))){
+            delete session.session_data.temp
+        } else {
+            session.session_data.temp = {
+                selectedItem:parseInt(interaction.values[0])
+            }
         }
+        
 
         interaction.update({
             content: " ",

@@ -24,8 +24,8 @@ module.exports = {
             embed.setTitle(playerData.name + "'s Challenges (" + playerData.challenges.length + "/5)")
             for(c of playerData.challenges){
                 embed.addField(
-                    challengeDict[c.type].name + " - Rank " + c.rank + " (" + c.rank * 15 + " gold)",
-                    challengeDict[c.type].description.replace("X",c.progress + "/" + c.goal)
+                    challengeDict[c.type].name + " - Rank " + c.rank + " (" + c.rank * 50 + " gold / " + c.rank * 10 + " Ability Points)",
+                    challengeDict[c.type].description.replace("X",c.progress + "/" + c.goal),
                 )
             }
             if(playerData.challenges.length < 5){   
@@ -37,11 +37,21 @@ module.exports = {
             embed.addField("No New Challenges","You will receive a new challenge in " + msToTime(playerData.challengeTimer - now.getTime()))
         }
         
-        interaction.reply({
+
+        if(componentConfig.forceUpdateInteraction){
+            interaction.update({
                 content: " ",
                 embeds: [embed],
                 ephemeral: false,
-        })
+            })
+        } else {
+            interaction.reply({
+                content: " ",
+                embeds: [embed],
+                ephemeral: false,
+            })
+        }
+        
         
         callback({})
         

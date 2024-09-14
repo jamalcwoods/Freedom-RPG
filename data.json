@@ -74,42 +74,76 @@
           [
             "Sword",
             "Hammer",
-            "Axe"
+            "Axe",
+            "Scythe",
+            "Dagger",
+            "Spear"
           ],
           [
             "Bow",
             "Crossbow",
-            "Launcher"
+            "Launcher",
+            "Throwing Knives",
+            "Slingshot",
+            "Blowgun"
           ],
           [
             "Staff",
             "Scepter",
-            "Wand"
+            "Wand",
+            "Spell Book",
+            "Vambrace",
+            "Rod"
           ],
           [
             "Aura",
             "Essence",
-            "Energy"
+            "Energy",
+            "Ambience",
+            "Spirit",
+            "Soul"
           ]
         ],
         "perkTags": [
           [
-            "Battering"
+            "Battering",
+            "Bashing"
           ],
           [
-            "Ambushing"
+            "Ambushing",
+            "Assaulting"
           ],
           [
-            "Prospering"
+            "Prospering",
+            "Thriving"
           ],
           [
-            "Terrifying"
+            "Terrifying",
+            "Intimidating"
           ],
           [
-            "Raiding"
+            "Raiding",
+            "Invasive"
           ],
           [
-            "Inspiring"
+            "Inspiring",
+            "Uplifting"
+          ],
+          [
+            "Cut-throat",
+            "Exterminating"
+          ],
+          [
+            "Cultivated",
+            "Refined"
+          ],
+          [
+            "Crippling",
+            "Harmful"
+          ],
+          [
+            "Profane",
+            "Vulgar"
           ]
         ]
       },
@@ -118,26 +152,52 @@
           "Uniform",
           "Armor",
           "Outfit",
-          "Clothing"
+          "Clothing",
+          "Plating",
+          "Garb",
+          "Cloak",
+          "Guise"
         ],
         "perkTags": [
           [
-            "Exploiting"
+            "Exploiting",
+            "Shady"
           ],
           [
-            "Belittling"
+            "Belittling",
+            "Deprecating"
           ],
           [
-            "Preserving"
+            "Preserving",
+            "Confining"
           ],
           [
-            "Looming"
+            "Looming",
+            "Keen"
           ],
           [
-            "Adapting"
+            "Pliant",
+            "Supple"
           ],
           [
-            "Emboldening"
+            "Emboldening",
+            "Rallying"
+          ],
+          [
+            "Crushing",
+            "Oppressive"
+          ],
+          [
+            "Adaptive",
+            "Robust"
+          ],
+          [
+            "Lucky",
+            "Favored"
+          ],
+          [
+            "Reconciling",
+            "Mediating"
           ]
         ]
       },
@@ -190,47 +250,71 @@
       "statNegTags": {
         "atk": [
           "Flimsy",
-          "Dull"
+          "Dull",
+          "Tacky",
+          "Feeble"
         ],
         "def": [
           "Worn",
-          "Shabby"
+          "Shabby",
+          "Jaded",
+          "Ragged"
         ],
         "spatk": [
           "Suppressed",
-          "Diluted"
+          "Diluted",
+          "Ruined",
+          "Haunted"
         ],
         "spdef": [
           "Malleable",
-          "Frail"
+          "Frail",
+          "Muted",
+          "Frangible"
         ],
         "spd": [
           "Heavy",
-          "Cumbersome"
+          "Cumbersome",
+          "Bulky",
+          "Weighted"
         ],
         "hp": [
           "Risky",
-          "Delicate"
+          "Delicate",
+          "Frail",
+          "Slender"
         ]
       },
       "statsubTags": {
         "atk": [
-          "Combat"
+          "Combat",
+          "Battle",
+          "Skirmish"
         ],
         "def": [
-          "Protection"
-        ],
-        "spatk": [
-          "Spell"
-        ],
-        "spdef": [
+          "Protection",
+          "Aegis",
           "Guard"
         ],
+        "spatk": [
+          "Spell",
+          "Sorcery",
+          "Enchanted"
+        ],
+        "spdef": [
+          "Guard",
+          "Defender",
+          "Ward"
+        ],
         "spd": [
-          "Swift"
+          "Swift",
+          "Rapid",
+          "Nimble"
         ],
         "hp": [
-          "Brave"
+          "Brave",
+          "Heroic",
+          "Spirited"
         ]
       }
     },
@@ -239,57 +323,73 @@
         "title": {
           "atk": {
             "10": [
-              "Jab"
+              "Jab",
+              "Slap"
             ],
             "20": [
-              "Strike"
+              "Strike",
+              "Force"
             ],
             "40": [
-              "Assault"
+              "Assault",
+              "Beating"
             ],
             "60": [
-              "Endeavor"
+              "Endeavor",
+              "Bashing"
             ],
             "80": [
-              "Collision"
+              "Collision",
+              "Crash"
             ],
             "100": [
-              "Impact"
+              "Impact",
+              "Climax"
             ]
           },
           "spatk": {
             "10": [
-              "Spark"
-            ],
-            "20": [
-              "Burst"
-            ],
-            "40": [
-              "Blast"
-            ],
-            "60": [
-              "Surge"
-            ],
-            "80": [
+              "Jolt",
               "Flare"
             ],
+            "20": [
+              "Burst",
+              "Spark"
+            ],
+            "40": [
+              "Bolt",
+              "Beam"
+            ],
+            "60": [
+              "Surge",
+              "Blast"
+            ],
+            "80": [
+              "Torrent",
+              "Volley"
+            ],
             "100": [
-              "Eruption"
+              "Eruption",
+              "Outburst"
             ]
           }
         },
         "critical": {
           "10": [
-            "Seeking"
+            "Risky",
+            "Dicey"
           ],
           "25": [
-            "Precise"
+            "Seeking",
+            "Pursuing"
           ],
           "50": [
-            "Honed"
+            "Honed",
+            "Keen"
           ],
           "75": [
-            "Hunter"
+            "Critical",
+            "True"
           ],
           "base": 0,
           "scalarWeights": [
@@ -307,16 +407,20 @@
         },
         "recoil": {
           "10": [
-            "Careless"
+            "Careless",
+            "Sloppy"
           ],
           "25": [
-            "Reckless"
+            "Reckless",
+            "Brash"
           ],
           "50": [
-            "Fearless"
+            "Fearless",
+            "Bold"
           ],
           "75": [
-            "Desperate"
+            "Desperate",
+            "Frantic"
           ],
           "base": 0,
           "scalarWeights": [
@@ -334,16 +438,20 @@
         },
         "accuracy": {
           "10": [
-            "Aimless"
+            "Aimless",
+            "Blind"
           ],
           "80": [
-            "Wild"
+            "Wild",
+            "Careless"
           ],
           "110": [
-            "Focused"
+            "Focused",
+            "Aimed"
           ],
           "130": [
-            "Flawless"
+            "Flawless",
+            "Immaculate"
           ],
           "base": 100,
           "scalarWeights": [
@@ -362,14 +470,18 @@
         "speed": {
           "0": [
             "Slacking",
-            "Lagging"
+            "Lagging",
+            "Lazy"
           ],
           "2": [
             "Quick",
-            "Hasty"
+            "Hasty",
+            "Swift"
           ],
           "4": [
-            "Blinding"
+            "Instant",
+            "Immediate",
+            "Urgent"
           ],
           "base": 1,
           "scalar": [
@@ -388,54 +500,69 @@
         "title": {
           "def": {
             "10": [
-              "Reflex"
-            ],
-            "20": [
-              "Guard"
+              "Guard",
+              "Brace"
             ],
             "40": [
-              "Defense"
-            ],
-            "60": [
-              "Barrier"
+              "Defense",
+              "Block"
             ],
             "80": [
-              "Protection"
+              "Endurance",
+              "Barrier"
             ],
-            "100": [
-              "Fortification"
+            "120": [
+              "Protection",
+              "Shelter"
+            ],
+            "160": [
+              "Garrison",
+              "Blockade"
+            ],
+            "201": [
+              "Fortification",
+              "Stronghold"
             ]
           },
           "spdef": {
             "10": [
-              "Sense"
-            ],
-            "20": [
-              "Focus"
+              "Sense",
+              "Wit"
             ],
             "40": [
-              "Perception"
-            ],
-            "60": [
-              "Meditation"
+              "Focus",
+              "Center"
             ],
             "80": [
-              "Concentration"
+              "Perception",
+              "Awareness"
             ],
-            "100": [
-              "Spirit"
+            "120": [
+              "Meditation",
+              "Reflection"
+            ],
+            "160": [
+              "Concentration",
+              "Convergence"
+            ],
+            "201": [
+              "Rejection",
+              "Dismissal"
             ]
           }
         },
         "counter_val": {
-          "10": [
-            "Retaliating"
+          "25": [
+            "Retaliating",
+            "Reversing"
           ],
-          "50": [
-            "Advancing"
+          "100": [
+            "Advancing",
+            "Intrusive"
           ],
-          "80": [
-            "Vengeful"
+          "200": [
+            "Vengeful",
+            "Hostile"
           ],
           "base": 0,
           "scalarWeights": [
@@ -444,23 +571,27 @@
             2
           ],
           "scalar": [
-            10,
-            30,
-            60
+            25,
+            100,
+            200
           ]
         },
         "success_level": {
           "25": [
-            "Burdening"
+            "Burdening",
+            "Strained"
           ],
           "50": [
-            "Rushed"
+            "Rushed",
+            "Hurried"
           ],
           "200": [
-            "Effortless"
+            "Effortless",
+            "Fluent"
           ],
           "400": [
-            "Instinct"
+            "Instinct",
+            "Reflex"
           ],
           "base": 100,
           "scalarWeights": [
@@ -480,54 +611,122 @@
       "stats": {
         "target": {
           "0": [
-            "Stance"
+            "Posture",
+            "Pose"
           ],
           "1": [
-            "Cheer"
+            "Cheer",
+            "Comfort"
           ],
           "2": [
-            "Signal"
+            "Signal",
+            "Gesture"
           ],
           "3": [
-            "Outburst"
+            "Display",
+            "Swagger"
           ],
           "4": [
-            "Roar"
+            "Roar",
+            "Shout"
+          ]
+        },
+        "speed": {
+          "0": [
+            "Slacking",
+            "Lagging",
+            "Lazy"
+          ],
+          "2": [
+            "Quick",
+            "Hasty",
+            "Swift"
+          ],
+          "4": [
+            "Instant",
+            "Immediate",
+            "Urgent"
+          ],
+          "base": 1,
+          "scalar": [
+            0,
+            2,
+            4
+          ],
+          "scalarWeights": [
+            2,
+            1,
+            3
+          ]
+        },
+        "focus": {
+          "60": [
+            "Sudden",
+            "Abrupt"
+          ],
+          "85": [
+            "Clever",
+            "Slick"
+          ],
+          "100": [
+            "Prepared",
+            "Practiced"
+          ],
+          "base": 75,
+          "scalarWeights": [
+            2,
+            1,
+            2
+          ],
+          "scalar": [
+            60,
+            85,
+            100
           ]
         },
         "stat": {
           "pos": {
             "atk": [
-              "Encouraging"
+              "Encouraging",
+              "Motivating"
             ],
             "spatk": [
-              "Stimulating"
+              "Stimulating",
+              "Inspiring"
             ],
             "def": [
-              "Toughening"
+              "Toughening",
+              "Solidifying"
             ],
             "spdef": [
-              "Safeguarding"
+              "Safeguarding",
+              "Warding"
             ],
             "spd": [
-              "Enabling"
+              "Enabling",
+              "Turbulent"
             ]
           },
           "neg": {
             "atk": [
-              "Weakening"
+              "Weakening",
+              "Hindering"
             ],
             "spatk": [
-              "Disrupting"
+              "Disrupting",
+              "Disorienting"
             ],
             "def": [
-              "Exposing"
+              "Exposing",
+              "Opposing"
             ],
             "spdef": [
-              "Irritating"
+              "Irritating",
+              "Disturbing"
             ],
             "spd": [
-              "Debilitating"
+              "Debilitating",
+              "Crippling"
             ]
           }
         }
@@ -627,44 +826,14 @@
       }
     }
   },
-  "factionTypes": [
-    {
-      "name": "Hand of Assailment",
-      "quote": "Freedom is worth chaos",
-      "description": "Character can grow aggressively faster, mostly in the atk stat, but suffers from slower hp growth",
-      "value": "0"
-    },
-    {
-      "name": "Hand of Attainment",
-      "quote": "To trust, is to fully understand",
-      "description": "Character can grow aggressively faster, mostly in the spatk stat, but suffers from slower hp growth",
-      "value": "1"
-    },
-    {
-      "name": "Hand of Spontaneity",
-      "quote": "The inferior wait for tomorrow. The wise use today",
-      "description": "Character can grow aggressively faster, mostly in the spd stat, but suffers from slower def and spdef growth",
-      "value": "2"
-    },
-    {
-      "name": "Hand of Sovereignty",
-      "quote": "The living fear true power",
-      "description": "Character can grow defensively faster, mostly in the def stat, but suffers from slower speed growth",
-      "value": "3"
-    },
-    {
-      "name": "Hand of Persecution",
-      "quote": "Fear pulses through impure hearts",
-      "description": "Character can grow defensively faster, mostly in the spdef stat, but suffers from slower speed growth",
-      "value": "4"
-    },
-    {
-      "name": "Hand of Aberration",
-      "quote": "Balance the knowledge of oblivion",
-      "description": "Character can grow defensively faster , mostly in the hp stat, but suffers from slower atk and spatk growth",
-      "value": "5"
-    }
-  ],
+  "stanceTypes": {
+    "hp": {},
+    "atk": {},
+    "def": {},
+    "spatk": {},
+    "spdef": {},
+    "spd": {}
+  },
   "statChangeStages": [
     0.2,
     0.3,
@@ -693,7 +862,7 @@
               "name": "Dungeon Dweller",
               "id": "dweller",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -731,7 +900,7 @@
               "name": "Reckless Goblin",
               "id": "goblin1",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -763,7 +932,7 @@
               "name": "Reckless Goblin",
               "id": "goblin2",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -801,7 +970,7 @@
               "name": "Crypt Summoner",
               "id": "summoner",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -820,43 +989,11 @@
               "reuse": 0.8
             },
             {
-              "hp": 0.6,
-              "atk": 0.6,
-              "def": 0.6,
-              "spatk": 0.6,
-              "spdef": 0.6,
-              "spd": 0.6
-            }
-          ],
-          [
-            {
-              "name": "Lesser Wraith",
-              "id": "summoned",
-              "cpu": true,
-              "faction": "-1",
-              "lives": 1,
-              "abilities": [],
-              "level": 0,
-              "stats": {
-                "hp": 10,
-                "atk": 5,
-                "def": 5,
-                "spatk": 5,
-                "spdef": 5,
-                "spd": 5
-              }
-            },
-            [],
-            3,
-            {
-              "reuse": 0.8
-            },
-            {
-              "hp": 0.6,
-              "atk": 0.8,
-              "def": 0.6,
-              "spatk": 0.8,
-              "spdef": 0.6,
+              "hp": 0.8,
+              "atk": 0.4,
+              "def": 1,
+              "spatk": 0.4,
+              "spdef": 1,
               "spd": 0.6
             }
           ]
@@ -865,13 +1002,18 @@
           {
             "type": 3,
             "data": {
-              "count": 2
+              "count": 3
             },
             "result": "spawnWraith"
           }
         ],
         "triggers": {
           "spawnWraith": {
+            "conditions": {
+              "unitAlive": [
+                "summoner"
+              ]
+            },
             "actionType": 0,
             "data": {
               "units": [
@@ -882,7 +1024,7 @@
                       "name": "Summoned Wraith",
                       "id": "summoned",
                       "cpu": true,
-                      "faction": "-1",
+                      "stance": "none",
                       "lives": 1,
                       "abilities": [],
                       "level": 0,
@@ -899,12 +1041,12 @@
                     "allowance": 3,
                     "scaling": "dungeon",
                     "scalar": {
-                      "hp": 0.6,
-                      "atk": 0.8,
-                      "def": 0.6,
-                      "spatk": 0.8,
-                      "spdef": 0.6,
-                      "spd": 0.6
+                      "hp": 0.3,
+                      "atk": 0.4,
+                      "def": 0.3,
+                      "spatk": 0.4,
+                      "spdef": 0.3,
+                      "spd": 0.3
                     }
                   }
                 }
@@ -920,7 +1062,7 @@
               "name": "Pesky Spirit",
               "id": "spirit1",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -952,7 +1094,7 @@
               "name": "Pesky Spirit",
               "id": "spirit2",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -984,7 +1126,7 @@
               "name": "Pesky Spirit",
               "id": "spirit3",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1022,7 +1164,7 @@
               "name": "Dungeon Ravenger",
               "id": "ravenger",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1060,7 +1202,7 @@
               "name": "Dungeon Golem",
               "id": "golem",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1098,7 +1240,7 @@
               "name": "Crypt Mage",
               "id": "mage",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1136,7 +1278,7 @@
               "name": "Crypt Rouge",
               "id": "rouge",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1174,7 +1316,7 @@
               "name": "Wandering Ogre",
               "id": "ogre",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1212,7 +1354,7 @@
               "name": "Undead Knight",
               "id": "knight",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1250,7 +1392,7 @@
               "name": "Crypt Sentry",
               "id": "sentry",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1288,7 +1430,7 @@
               "name": "Crypt Dragon",
               "id": "dragon",
               "cpu": true,
-              "faction": "-1",
+              "stance": "none",
               "lives": 1,
               "abilities": [],
               "level": 0,
@@ -1893,6 +2035,14 @@
     "Mountains",
     "Forest"
   ],
+  "regionsEmojis": {
+    "Swamp": "🛖",
+    "Tundra": "❄️",
+    "Desert": "🌵",
+    "Islands": "🏝️",
+    "Mountains": "⛰️",
+    "Forest": "🌲"
+  },
   "challengeDict": [
     {
       "name": "Take out the trash",
@@ -1946,90 +2096,175 @@
     },
     {
       "name": "Do over!",
-      "description": "Successfully use an attack on the same target twice in a row in combat X times",
+      "description": "Successfully use an ability twice in a row in combat X times",
+      "baseGoal": 4
+    },
+    {
+      "name": "This is the ultimate!",
+      "description": "Empower an ability with X times",
+      "baseGoal": 3
+    },
+    {
+      "name": "Cha cha real smooth",
+      "description": "Change your combat stance X times",
+      "baseGoal": 3
+    },
+    {
+      "name": "One tapped",
+      "description": "Deal X or more damage with a single attack",
+      "baseGoal": 25
+    },
+    {
+      "name": "I did my research!",
+      "description": "Land X highly effective attacks on enemy stances",
+      "baseGoal": 3
+    },
+    {
+      "name": "Expecting something?",
+      "description": "Resist X attacks with your stance",
       "baseGoal": 3
     }
   ],
-  "passiveDescriptions":[
+  "passiveDescriptions": [
     {
-      "name":"Abnormal Regeneration",
-      "description":"For each time you have been damaged gain X health at the end of a turn",
-      "scalar":{
-        "stat1":[3,6,9,12,15]
+      "name": "Abnormal Regeneration",
+      "description": "For each time you have been damaged gain X health at the end of a turn",
+      "scalar": {
+        "stat1": [
+          3,
+          6,
+          9,
+          12,
+          15
+        ]
       },
-      "id":0
+      "id": 0
     },
     {
-      "name":"Volatile Radiance",
-      "description":"When damaged by a special attack, the attacker loses X% of their maximum health. This damage is non-lethal",
-      "scalar":{
-        "stat1":[2,4,6,8,10]
+      "name": "Volatile Radiance",
+      "description": "When damaged by a special attack, the attacker loses X% of their maximum health. This damage is non-lethal",
+      "scalar": {
+        "stat1": [
+          2,
+          4,
+          6,
+          8,
+          10
+        ]
       },
-      "id":1
+      "id": 1
     },
     {
-      "name":"Harsh Exterior",
-      "description":"When damaged by a physical attack, the attacker loses X% of their maximum health. This damage is non-lethal",
-      "scalar":{
-        "stat1":[2,4,6,8,10]
+      "name": "Harsh Exterior",
+      "description": "When damaged by a physical attack, the attacker loses X% of their maximum health. This damage is non-lethal",
+      "scalar": {
+        "stat1": [
+          2,
+          4,
+          6,
+          8,
+          10
+        ]
       },
-      "id":2
+      "id": 2
     },
     {
-      "name":"Unstable Composition",
-      "description":"Upon losing a life, all other combatants lose X% of the users maximum health. This damage is non-lethal",
-      "scalar":{
-        "stat1":[2,4,6,8,10]
+      "name": "Unstable Composition",
+      "description": "Upon losing a life, all other combatants lose X% of the users maximum health. This damage is non-lethal",
+      "scalar": {
+        "stat1": [
+          2,
+          4,
+          6,
+          8,
+          10
+        ]
       },
-      "id":3
+      "id": 3
     },
     {
-      "name":"Sensitive Backlash",
-      "description":"Upon taking damage from a critical hit, the attacker loses X% of their maximum health. This damage is non-lethal",
-      "scalar":{
-        "stat1":[4,8,12,16,20]
+      "name": "Sensitive Backlash",
+      "description": "Upon taking damage from a critical hit, the attacker loses X% of their maximum health. This damage is non-lethal",
+      "scalar": {
+        "stat1": [
+          4,
+          8,
+          12,
+          16,
+          20
+        ]
       },
-      "id":4
+      "id": 4
     },
     {
-      "name":"Raging Demon",
-      "description":"For each time you have been damaged, your attacks have their base power increased by X",
-      "scalar":{
-        "stat1":[1,1.5,2,2.5,3]
+      "name": "Raging Demon",
+      "description": "For each time you have been damaged, your attacks have their base power increased by X",
+      "scalar": {
+        "stat1": [
+          1,
+          1.5,
+          2,
+          2.5,
+          3
+        ]
       },
-      "id":5
+      "id": 5
     },
     {
-      "name":"Inevitable Decimator",
-      "description":"If an attack is the last action of the round, it's base power is multiplied by X",
-      "scalar":{
-        "stat1":[1.15,1.30,1.45,1.60,1.75]
+      "name": "Inevitable Decimator",
+      "description": "If an attack is the last action of the round, it's base power is multiplied by X",
+      "scalar": {
+        "stat1": [
+          1.15,
+          1.3,
+          1.45,
+          1.6,
+          1.75
+        ]
       },
-      "id":6
+      "id": 6
     },
     {
-      "name":"Reckless Opportunist",
-      "description":"For every 10% of recoil damage taken, attacks have X% more critical chance",
-      "scalar":{
-        "stat1":[5,7.5,10,12.5,15]
+      "name": "Reckless Opportunist",
+      "description": "For every 10% of recoil damage taken, attacks have X% more critical chance",
+      "scalar": {
+        "stat1": [
+          5,
+          7.5,
+          10,
+          12.5,
+          15
+        ]
       },
-      "id":7
+      "id": 7
     },
     {
-      "name":"Giant Slayer",
-      "description":"Deal X% more damage for every 5% more maximum health a target has",
-      "scalar":{
-        "stat1":[1,2,3,4,5]
+      "name": "Giant Slayer",
+      "description": "Deal X% more damage for every 5% more maximum health a target has",
+      "scalar": {
+        "stat1": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
       },
-      "id":8
+      "id": 8
     },
     {
-      "name":"Rage Point",
-      "description":"Once under X% of maximum health, ignore target's block ability",
-      "scalar":{
-        "stat1":[15,20,25,30,35]
+      "name": "Rage Point",
+      "description": "Once under X% of maximum health, ignore target's block ability",
+      "scalar": {
+        "stat1": [
+          15,
+          20,
+          25,
+          30,
+          35
+        ]
       },
-      "id":9
+      "id": 9
     }
   ],
   "equipmentPerkDescriptions": {
@@ -2056,25 +2291,45 @@
       ],
       [
         "Repeating an attack on the same target increases the attack’s critical chance by X%",
-        10,
+        12,
         "Precise Pursuit"
       ],
       [
         "If the target’s active defensive stat is their largest defensive stat, deal X% more total damage",
         5,
         "Titan Toppler"
+      ],
+      [
+        "Abilities gain X% critical chance for every 10% more speed the user has than a target (Up to 100%)",
+        4,
+        "Rapid Razor"
+      ],
+      [
+        "When attacked before using an non-guard ability, have a X% chance to parry. Parrying blocks an attack, but lowers your speed by 1 stage when activated",
+        10,
+        "Wise Warrior"
+      ],
+      [
+        "Attacks that aren't guarded against have a X% chance to lower the target’s speed",
+        8,
+        "Crippling Combatant"
+      ],
+      [
+        "When a target's stats are lowered by an ability there is a X% chance they take damage based on the change in the stat (Capped at 5% of their maximum health, cannot be lethal)",
+        6,
+        "Insulting Imposer"
       ]
     ],
     "gear": [
       [
         "Counter attacks have a X% chance to critically hit",
         10,
-        "Calculated Counter"
+        "Counter Calculator"
       ],
       [
-        "If an attack’s base damage is less than your guard’s power, heal X% of the difference",
-        20,
-        "Rumbler's Respite"
+        "If an attack is completely blocked, X% chance to lower the attacker's def or spdef by 2 stages",
+        15,
+        "Fracturing Foundation"
       ],
       [
         "After successfully using a guard, your next guard has +X% chance of succeeding",
@@ -2095,45 +2350,420 @@
         "X% chance to increase a random stat by one stage when completely blocking an attack",
         5,
         "Motivating Marcher"
+      ],
+      [
+        "When attacking a guarding enemy, their guard loses up to X% of its base guard value based on the difference between the defender and the attacker’s max hp",
+        10,
+        "Crushing Crusader"
+      ],
+      [
+        "When attacked while not guarding, the attacker’s offensive stat has a X% chance to be lowered by 1 stage",
+        10,
+        "Adapting Adversary"
+      ],
+      [
+        "%X chance to critically guard, doubling guard value of a block",
+        7,
+        "Dire Defender"
+      ],
+      [
+        "%X chance to gain 5% of max hp when ever stats are lowered by an ability",
+        7,
+        "Rapid Reconciler"
       ]
     ]
   },
-  "tavernOptions":[{
+  "tavernOptions": [
+    {
       "label": "Tavern Special",
-      "description": "Random 2 Stage booster for 30 minutes - 50 gold",
-      "value": "random_2_50_0.5"
-  },{
+      "description": "Random 2 Stage booster for 30 minutes - 75 gold",
+      "value": "random_2_75_0.5"
+    },
+    {
       "label": "Assassin's Asparagus",
-      "description": "1 Stage Speed booster for 1 hour - 50 gold",
-      "value": "speed_1_50_1"
-  },{
+      "description": "1 Stage Speed booster for 1 hour - 75 gold",
+      "value": "speed_1_75_1"
+    },
+    {
       "label": "Berserker's Beef",
-      "description": "1 Stage Attack booster for 1 hour - 50 gold",
-      "value": "attack_1_50_1"
-  },{
+      "description": "1 Stage Attack booster for 1 hour - 75 gold",
+      "value": "attack_1_75_1"
+    },
+    {
       "label": "Caster's Cornbread",
-      "description": "1 Stage Special Attack booster for 1 hour - 50 gold",
-      "value": "spattack_1_50_1"
-  },{
+      "description": "1 Stage Special Attack booster for 1 hour - 75 gold",
+      "value": "spattack_1_75_1"
+    },
+    {
       "label": "Defender's Dumplings",
-      "description": "1 Stage Defense booster for 1 hour - 50 gold",
-      "value": "defense_1_50_1"
-  },{
+      "description": "1 Stage Defense booster for 1 hour - 75 gold",
+      "value": "defense_1_75_1"
+    },
+    {
       "label": "Enforcer's Empanada's",
-      "description": "1 Stage Special Defense booster for 1 hour - 50 gold",
-      "value": "spdefense_1_50_1"
-  },{
+      "description": "1 Stage Special Defense booster for 1 hour - 75 gold",
+      "value": "spdefense_1_75_1"
+    },
+    {
       "label": "Frontliner's Flapjacks",
-      "description": "5% Health Regeneration for 1 hour - 50 gold",
-      "value": "healing_5_50_1"
-  }],
-  "scoreModifiers":{
-    "kills":50,
-    "livesLost":-100,
-    "tasksCompleted":25,
-    "dungeonsCleared":250,
-    "raidLeaderKills":500,
-    "playerBattlesWon":100
+      "description": "5% Health Regeneration for 1 hour - 75 gold",
+      "value": "healing_5_75_1"
+    }
+  ],
+  "scoreModifiers": {
+    "kills": 50,
+    "livesLost": -100,
+    "tasksCompleted": 25,
+    "dungeonsCleared": 250,
+    "raidLeaderKills": 500,
+    "playerBattlesWon": 100
+  },
+  "standardDroptables": {
+    "settlementLeader": [
+      {
+        "chance": 50,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.2,
+              "lockStatTypes": false,
+              "types": [
+                "weapon"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "chance": 50,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.2,
+              "lockStatTypes": false,
+              "types": [
+                "gear"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "baseWild": [
+      {
+        "chance": 40,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 45
+        }
+      },
+      {
+        "chance": 15,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 55
+        }
+      },
+      {
+        "chance": 10,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 80
+        }
+      },
+      {
+        "chance": 5,
+        "obj": {
+          "nothing": true
+        }
+      },
+      {
+        "chance": 15,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.15,
+              "lockStatTypes": true,
+              "types": [
+                "weapon"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "chance": 15,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.15,
+              "lockStatTypes": true,
+              "types": [
+                "gear"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "basicWild": [
+      {
+        "chance": 40,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 15
+        }
+      },
+      {
+        "chance": 27.5,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 25
+        }
+      },
+      {
+        "chance": 17.5,
+        "obj": {
+          "type": "resource",
+          "resource": "gold",
+          "resourceName": "gold",
+          "amount": 50
+        }
+      },
+      {
+        "chance": 5,
+        "obj": {
+          "nothing": true
+        }
+      },
+      {
+        "chance": 4,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.15,
+              "lockStatTypes": true,
+              "types": [
+                "weapon"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "chance": 6,
+        "obj": {
+          "ref": {
+            "type": "rngEquipment",
+            "rngEquipment": {
+              "scaling": true,
+              "value": 1,
+              "conStats":1,
+              "conValue": 0.15,
+              "lockStatTypes": true,
+              "types": [
+                "gear"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "perfectClear": [
+      {
+        "chance": 30,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 2
+        }
+      },
+      {
+        "chance": 30,
+        "obj": {
+          "type": "resource",
+          "resource": "statpoints",
+          "resourceName": "skill points",
+          "amount": 2
+        }
+      },
+      {
+        "chance": 30,
+        "obj": "EXP"
+      },
+      {
+        "chance": 5,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 5
+        }
+      },
+      {
+        "chance": 5,
+        "obj": {
+          "type": "resource",
+          "resource": "statpoints",
+          "resourceName": "skill points",
+          "amount": 5
+        }
+      }
+    ]
+  },
+  "stanceBuffs": {
+    "hp": [
+      {
+        "name": "Quick Thinking",
+        "description": "Switching to this stance applies a shield that absorbs damage equal to X% of your max health for the remainder of the turn",
+        "val": 3
+      },
+      {
+        "name": "Tension",
+        "description": "While in this stance, reduce damage taken from attack abilities by up to X%, scaling with how much of maximum health you are missing",
+        "val": 7
+      },
+      {
+        "name": "Confidence",
+        "description": "While in this stance, increase the guard value of abilities used by up to X%, scaling with how much of your maximum health you have remaining",
+        "val": 10
+      }
+    ],
+    "atk": [
+      {
+        "name": "Fierce Figure",
+        "description": "Switching to this stance has a X% chance to set all enemy def multipliers to 0.8x",
+        "val": 15
+      },
+      {
+        "name": "Rage",
+        "description": "While in this stance, while using an attack ability, your atk stat is increased by X% for each time you have taken damage from an ability while in this stance",
+        "val": 3
+      },
+      {
+        "name": "Recklessness",
+        "description": "While in this stance, abilities have their chance to critical hit increased by X% (chance max increased to 100%), but successful critical hits deal 10% recoil damage. If an ability's crit chance would go over 100%, recoil damage is only 5%",
+        "val": 5
+      }
+    ],
+    "def": [
+      {
+        "name": "Bold Move",
+        "description": "Switching to this stance sets your def multiplier to Xx, but sets your atk and spatk multipliers to 0.8x",
+        "val": 0.5,
+        "baseval": 1
+      },
+      {
+        "name": "Stamina",
+        "description": "While in this stance, taking damage from an atk based ability has a X% chance to increase your def multiplier by 1 stage",
+        "val": 9
+      },
+      {
+        "name": "Fortuity",
+        "description": "While in this stance, incoming spatk based abilities have a X% chance to miss",
+        "val": 3
+      }
+    ],
+    "spatk": [
+      {
+        "name": "Clear Mind",
+        "description": "Switching to this stance increases the base damage of abilities you use during this fight by X. This stacks infinitely",
+        "val": 2
+      },
+      {
+        "name": "Focus",
+        "description": "While in this stance, your spatk stat is increased by X% for each non-damaging ability you use, resets when dealing damage with an ability",
+        "val": 4
+      },
+      {
+        "name": "Finesse",
+        "description": "While in this stance, reduce recoil damage taken from abilities by X%, but all abilities have their critical chance reduced by 10%",
+        "val": 10
+      }
+    ],
+    "spdef": [
+      {
+        "name": "Stoic Form",
+        "description": "Switching to this stance has a X% chance to set all enemy atk and spatk multipliers to 0.9x",
+        "val": 20
+      },
+      {
+        "name": "Supremacy",
+        "description": "While in this stance, reduce damage taken from abilities by X% for every active enemy in combat",
+        "val": 2
+      },
+      {
+        "name": "Dominance",
+        "description": "While in this stance, defeating an enemy with an attack restores your health by X% of your maximum health",
+        "val": 2
+      }
+    ],
+    "spd": [
+      {
+        "name": "Full Throttle",
+        "description": "Switching to this stance consumes X% of you combo meter to set your spd multiplier equal to your meter rank x1.5. If your meter rank is 0, your spd multiplier is set to x1",
+        "val": -18,
+        "baseval": 100
+      },
+      {
+        "name": "Haste",
+        "description": "While in this stance, damaging abilities additionally use X% of your spd stat when calculating damage",
+        "val": 5
+      },
+      {
+        "name": "Flow",
+        "description": "While in this stance, there is a X% chance that your combo meter gain is doubled",
+        "val": 18
+      }
+    ]
+  },
+  "stanceDesc": {
+    "hp": "Resist: (Basic) - Vulnerable: (Adapting)",
+    "atk": "Resist: (Adapting) - Vulnerable: (Cunning/Daring)",
+    "def": "Resist: (Daring/Basic)",
+    "spatk": "Resist: (Adapting) - Vulnerable: (Raiding/Dominating)",
+    "spdef": "Resist: (Dominating/Basic)",
+    "spd": "Resist: (Advancing) - Vulnerable: (Cunning/Raiding)"
+  },
+  "stanceDict": {
+    "hp": "Adapting",
+    "atk": "Raiding",
+    "def": "Daring",
+    "spatk": "Cunning",
+    "spdef": "Dominating",
+    "spd": "Advancing",
+    "none": "Basic"
   },
   "templates": {
     "attack": {
@@ -2142,7 +2772,7 @@
       "damage_val": 40,
       "name": "Basic Attack",
       "speed": 1,
-      "faction": -1,
+      "stance": "none",
       "action_type": "attack",
       "numHits": 1,
       "recoil": 0,
@@ -2154,7 +2784,7 @@
       "name": "Basic Guard",
       "guard_val": 40,
       "guard_type": "def",
-      "success_level": 100,
+      "success_level": "100",
       "counter_val": 0,
       "counter_type": "def",
       "speed": 3
@@ -2170,12 +2800,13 @@
           "value": 1
         }
       ],
-      "speed": 1
+      "speed": 1,
+      "focus": 75
     },
     "emptyPlayerData": {
       "name": "",
       "id": "",
-      "faction": -1,
+      "stance": "none",
       "race": "",
       "gold": 0,
       "combatStyle": "",
@@ -2183,14 +2814,76 @@
       "expCap": 100,
       "statpoints": 0,
       "abilitypoints": 0,
+      "stances": {
+        "hp": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        },
+        "atk": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        },
+        "def": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        },
+        "spatk": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        },
+        "spdef": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        },
+        "spd": {
+          "active": false,
+          "points": 0,
+          "upgrades": [
+            0,
+            0,
+            0
+          ],
+          "surgeTimer": 0
+        }
+      },
       "abilities": [
         {
           "critical": 0,
           "damage_type": "atk",
-          "damage_val": 20,
+          "damage_val": 35,
           "name": "Starter Attack",
           "speed": 1,
-          "faction": -1,
+          "stance": "none",
           "action_type": "attack",
           "numHits": 1,
           "recoil": 0,
@@ -2229,6 +2922,7 @@
       "level": 1,
       "totalExp": 0,
       "lives": 3,
+      "ascends": 0,
       "stats": {
         "hp": 20,
         "atk": 10,
@@ -2237,7 +2931,7 @@
         "spdef": 10,
         "spd": 10
       },
-      "statGrowthTimer":0,
+      "statGrowthTimer": 0,
       "presenceTimer": 0,
       "dailyTimer": 0,
       "dailyCount": 0,
@@ -2264,19 +2958,19 @@
       "gear": null,
       "abilityPermissions": {
         "stats": false,
-        "faction": false
+        "stance": false
       },
-      "achievements":{
-        "kills":0,
-        "abilitiesUsed":0,
-        "livesLost":0,
-        "strongestAttack":0,
-        "tasksCompleted":0,
-        "dungeonsCleared":0,
-        "raidLeaderKills":0,
-        "playerBattlesWon":0
+      "achievements": {
+        "kills": 0,
+        "abilitiesUsed": 0,
+        "livesLost": 0,
+        "strongestAttack": 0,
+        "tasksCompleted": 0,
+        "dungeonsCleared": 0,
+        "raidLeaderKills": 0,
+        "playerBattlesWon": 0
       },
-      "tutorial":0
+      "tutorial": 0
     },
     "emptyTownData": {
       "name": "",
@@ -2312,12 +3006,20 @@
         "def": 0,
         "spatk": 0,
         "spdef": 0,
-        "spd": 0
+        "spd": 0,
+        "baseAtkBoost": 0,
+        "baseSpAtkBoost": 0,
+        "baseDefBoost": 0,
+        "baseSpDefBoost": 0
       },
       "name": "Test Equipment",
       "type": "weapon",
       "weaponStyle": 0,
       "typePerks": [
+        0,
+        0,
+        0,
+        0,
         0,
         0,
         0,
@@ -2335,7 +3037,7 @@
       "intelligence": {
         "reuse": 0.5
       },
-      "faction": "-1",
+      "stance": "none",
       "race": "0",
       "combatStyle": "0",
       "exp": 0,
@@ -2364,7 +3066,7 @@
       "suggestedSolutionPrompt": "The cattle are numerous and very spread out. It might be easier to stop the cattle with something other than your physical body.",
       "expReward": 0.5,
       "goldReward": 0.5,
-      "repReward": 1.0588235294117647,
+      "repReward": 3,
       "solutionMap": {
         "hp": {
           "solution": "Carry them all back",
@@ -2406,11 +3108,11 @@
       "suggestedSolutionPrompt": "Physical strength would be helpful in taking care of the many tasks need for construction",
       "expReward": 0.5,
       "goldReward": 0.5,
-      "repReward": 1.0588235294117647,
+      "repReward": 3,
       "solutionMap": {
         "hp": {
           "solution": "Work tirelessly",
-          "solutionDesc": "Use you perseverance to work nonstop on rebuilding the house.",
+          "solutionDesc": "Use your perseverance to work nonstop on rebuilding the house.",
           "multi": 1
         },
         "atk": {
@@ -2448,7 +3150,7 @@
       "suggestedSolutionPrompt": "The storm seems to be supernatural in nature, think of ways you can protect and shelter others without using magic.",
       "expReward": 0.5,
       "goldReward": 0.5,
-      "repReward": 1.05882352941176474117647,
+      "repReward": 3,
       "solutionMap": {
         "hp": {
           "solution": "Bring groups to safety",
@@ -2485,7 +3187,7 @@
   ],
   "innateFacilities": [
     {
-      "description": "Facility to learn mechanics or new/upgrade abilities",
+      "description": "Facility to learn mechanics or new abilities",
       "name": "Training Hall",
       "value": "training"
     },
@@ -2493,6 +3195,11 @@
       "description": "Facility to assign jobs and view town upgrade progress",
       "name": "Meeting Hall",
       "value": "jobs"
+    },
+    {
+      "description": "Facility to upgrade existing abilities or equipement",
+      "name": "Armory Hall",
+      "value": "armory"
     },
     {
       "description": "Facility to fight against raiding forces",
@@ -2525,34 +3232,34 @@
       "value": "records"
     }
   ],
-  "helpMessages":{
-    "training":{
-      "title":"Training Hall",
-      "info":"In this facility you can learn the basics of combat encounters by completing the various training lessons. Additionally you can also spend gold to learn new combat abilities that reset daily. These abilities are unique to this town and become better as a town’s level increases.\n\nTo learn more about town level, it’s recommended you visit the Meeting Hall."
+  "helpMessages": {
+    "training": {
+      "title": "Training Hall",
+      "info": "In this facility you can learn the basics of combat encounters by completing the various training lessons. Additionally you can also spend gold to learn new combat abilities that reset daily. These abilities are unique to this town and become better as a town’s level increases.\n\nTo learn more about town level, it’s recommended you visit the Meeting Hall."
     },
-    "jobs":{
-      "title":"Meeting Hall",
-      "info":"In this facility you can view the town’s progression towards the next level. You can also assign yourself a different job to help the town gain resources needed to level up. Once the point threshold is reached, resources are maxed, and the respective dungeon level is cleared, the town will level up.\n\nWhile a town’s resources are maxed it will generate town points over time in exchange for a small portion of resources. Additionally, failing to defend your town from the daily raid will result in a loss of town points. To learn about raids, it’s recommended you visit the Militia Hall"
+    "jobs": {
+      "title": "Meeting Hall",
+      "info": "In this facility you can view the town’s progression towards the next level. You can also assign yourself a different job to help the town gain resources needed to level up. Once the point threshold is reached, resources are maxed, and the respective dungeon level is cleared, the town will level up.\n\nWhile a town’s resources are maxed it will generate town points over time in exchange for a small portion of resources. Additionally, failing to defend your town from the daily raid will result in a loss of town points. To learn about raids, it’s recommended you visit the Militia Hall"
     },
-    "defense":{
-      "title":"Militia Hall",
-      "info":"In this facility you can learn about the current raiding forces that are attacking the town. To stop the forces you must defeat their leader and in order to challenge them the Simple, Normal, and Challenging Missions must be completed. You don’t have to do these missions alone, anyone in this discord server can help towards completing these missions so that the raid leader becomes available to challenge.\n\nOnce a raid leader is defeated, expeditions and dungeon runs from the town will become more rewarding. To learn more about expeditions and dungeons, it’s recommended you visit the Adventurer’s Hall."
+    "defense": {
+      "title": "Militia Hall",
+      "info": "In this facility you can learn about the current raiding forces that are attacking the town. To stop the forces you must defeat their leader and in order to challenge them the Simple, Normal, and Challenging Missions must be completed. You don’t have to do these missions alone, anyone in this discord server can help towards completing these missions so that the raid leader becomes available to challenge.\n\nOnce a raid leader is defeated, expeditions and dungeon runs from the town will become more rewarding. To learn more about expeditions and dungeons, it’s recommended you visit the Adventurer’s Hall."
     },
-    "adventure":{
-      "title":"Adventure Hall",
-      "info":"In this facility you may embark on expeditions or dungeon runs. During an expedition you won’t be able to perform any commands, but your character will automatically earn rewards that can be claimed when you decide to end the expedition.\n\nDuring a dungeon run you will face combat challenges alongside situations that will test your character’s stats. After completing a run, you will earn rewards based on your performance. To learn about ways to increase your stats, it’s recommended you visit the Task Hall."
+    "adventure": {
+      "title": "Adventure Hall",
+      "info": "In this facility you may embark on expeditions or dungeon runs. During an expedition you won’t be able to perform any commands, but your character will automatically earn rewards that can be claimed when you decide to end the expedition.\n\nDuring a dungeon run you will face combat challenges alongside situations that will test your character’s stats. After completing a run, you will earn rewards based on your performance. To learn about ways to increase your stats, it’s recommended you visit the Task Hall."
     },
-    "tasks":{
-      "title":"Task Hall",
-      "info":"In this facility you can complete tasks for the people of the town. Each task has a solution that corresponds to a particular stat. Not every solution is as effective depending on the task so choose wisely.\n\nAfter completing a task you will be rewarded with gold, experience and occasionally your stats will increase. To learn about ways to spend gold, it’s recommended you visit the Tavern."  
+    "tasks": {
+      "title": "Task Hall",
+      "info": "In this facility you can complete tasks for the people of the town. Each task has a solution that corresponds to a particular stat. Not every solution is as effective depending on the task so choose wisely.\n\nAfter completing a task you will be rewarded with gold, experience and occasionally your stats will increase. To learn about ways to spend gold, it’s recommended you visit the Tavern."
     },
-    "tavern":{
-      "title":"Tavern",
-      "info":"In this facility you can spend gold on meals that increase your stats for a set period of time. Additionally you can purchase more lives to give you extra chances in combat. To learn about ways to increase your stats for longer periods of time, it’s recommended you visit the Market."    
+    "tavern": {
+      "title": "Tavern",
+      "info": "In this facility you can spend gold on meals that increase your stats for a set period of time. Additionally you can purchase more lives to give you extra chances in combat. To learn about ways to increase your stats for longer periods of time, it’s recommended you visit the Market."
     },
-    "market":{
-      "title":"Market",
-      "info":"In this facility you can spend gold to purchase weapons and gear that can increase your stats and provide passive benefits. Similarly to the training hall, the equipment purchased here is unique to this town and improves as the town level increases.\n\nOnce a piece of equipment has been purchased, you can equip it by viewing it in your inventory using the /inventory command."
+    "market": {
+      "title": "Market",
+      "info": "In this facility you can spend gold to purchase weapons and gear that can increase your stats and provide passive benefits. Similarly to the training hall, the equipment purchased here is unique to this town and improves as the town level increases.\n\nOnce a piece of equipment has been purchased, you can equip it by viewing it in your inventory using the /inventory command."
     }
   },
   "acquiredFacilities": [
@@ -2604,12 +3311,6 @@
       [
         1
       ]
-    ],
-    "goldRewards": [
-      5,
-      15,
-      30,
-      50
     ]
   },
   "raidBossNames": [
@@ -3582,54 +4283,69 @@
     "Urog",
     "Yotul"
   ],
-  "factionMatchups": {
-    "0": {
-      "0": 0.5,
-      "1": 1,
-      "2": 1,
-      "3": 1,
-      "4": 0.5,
-      "5": 1.5
+  "stanceMatchups": {
+    "hp": {
+      "none": 1,
+      "hp": 2,
+      "atk": 0.5,
+      "def": 1,
+      "spatk": 0.5,
+      "spdef": 1,
+      "spd": 1
     },
-    "1": {
-      "0": 1,
-      "1": 0.5,
-      "2": 1,
-      "3": 0.5,
-      "4": 1,
-      "5": 1.5
+    "atk": {
+      "none": 2,
+      "hp": 1,
+      "atk": 1,
+      "def": 1,
+      "spatk": 2,
+      "spdef": 1,
+      "spd": 2
     },
-    "2": {
-      "0": 1,
-      "1": 1,
-      "2": 1.5,
-      "3": 0.5,
-      "4": 0.5,
-      "5": 1
+    "def": {
+      "none": 1,
+      "hp": 1,
+      "atk": 2,
+      "def": 0.5,
+      "spatk": 1,
+      "spdef": 1,
+      "spd": 1
     },
-    "3": {
-      "0": 1,
-      "1": 1.5,
-      "2": 0.5,
-      "3": 1,
-      "4": 1.5,
-      "5": 1
+    "spatk": {
+      "none": 2,
+      "hp": 1,
+      "atk": 2,
+      "def": 1,
+      "spatk": 1,
+      "spdef": 1,
+      "spd": 2
     },
-    "4": {
-      "0": 1.5,
-      "1": 1,
-      "2": 0.5,
-      "3": 1.5,
-      "4": 1,
-      "5": 1
+    "spdef": {
+      "none": 1,
+      "hp": 1,
+      "atk": 1,
+      "def": 1,
+      "spatk": 2,
+      "spdef": 0.5,
+      "spd": 1
     },
-    "5": {
-      "0": 0.5,
-      "1": 0.5,
-      "2": 1,
-      "3": 1,
-      "4": 1,
-      "5": 1.5
+    "spd": {
+      "none": 2,
+      "hp": 1,
+      "atk": 1,
+      "def": 1,
+      "spatk": 1,
+      "spdef": 1,
+      "spd": 0.5
+    },
+    "none": {
+      "none": 1,
+      "hp": 0.5,
+      "atk": 1,
+      "def": 0.5,
+      "spatk": 1,
+      "spdef": 0.5,
+      "spd": 1
     }
   },
   "quests": [
@@ -3683,25 +4399,25 @@
             "options": [
               {
                 "name": "A Melee Weapon - Up Close and Personal",
-                "description": "Affinity towards abilities with +critical chance/-protection value",
+                "description": "Preffers abilities with +critical chance/-protection value",
                 "value": "0",
                 "lineValue": "1"
               },
               {
                 "name": "A Projectile Weapon - Flurry From Afar",
-                "description": "Affinity towards abilities with +speed priority/-counter value",
+                "description": "Preffers abilities with +speed priority/-counter value",
                 "value": "1",
                 "lineValue": "1"
               },
               {
                 "name": "A Spell-Casting Accessory - Mastery of Mythical Forces",
-                "description": "Affinity towards abilities with +damage value/-accuracy",
+                "description": "Preffers abilities with +damage value/-accuracy",
                 "value": "2",
                 "lineValue": "1"
               },
               {
                 "name": "Elemental Manipulation - One With Nature",
-                "description": "Affinity towards abilities with +guard reliability/-buff effects",
+                "description": "Preffers abilities with +guard reliability/-buff effects",
                 "value": "3",
                 "lineValue": "1"
               }
@@ -3728,25 +4444,25 @@
             "options": [
               {
                 "name": "Something Creature-Like: - Mechanical, but Meager",
-                "description": "Affinity towards abilities with +accuracy/-guard reliability",
+                "description": "Preffers abilities with +accuracy/-guard reliability",
                 "value": "0",
                 "lineValue": "2"
               },
               {
                 "name": "Something Human-Like - Flexible, but Flawed",
-                "description": "Affinity towards abilities with +counter value/-critical chance",
+                "description": "Preffers abilities with +counter value/-critical chance",
                 "value": "1",
                 "lineValue": "2"
               },
               {
                 "name": "Something Beast-Like - Sturdy, but Sluggish",
-                "description": "Affinity towards abilities with +protection value/-speed priority",
+                "description": "Preffers abilities with +protection value/-speed priority",
                 "value": "2",
                 "lineValue": "2"
               },
               {
                 "name": "Something Mystical - Fantastical, but Frail",
-                "description": "Affinity towards abilities with +buff effect/-damage value",
+                "description": "Preffers abilities with +buff effect/-damage value",
                 "value": "3",
                 "lineValue": "2"
               }
@@ -3776,6 +4492,10 @@
   ],
   "creatures": [
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Frog",
       "atk": 1,
       "spatk": 1,
@@ -3784,81 +4504,17 @@
       "spdef": 1,
       "hp": 1.05,
       "normTag": "Muddy",
-      "rareTag": "Energetic",
+      "rareTag": "Acidic",
       "innateAbilities": [
         0
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 0
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Wolf",
       "atk": 1.15,
       "spatk": 1,
@@ -3871,77 +4527,13 @@
       "innateAbilities": [
         1
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 1
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Meerkat",
       "atk": 1,
       "spatk": 1,
@@ -3954,77 +4546,13 @@
       "innateAbilities": [
         2
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 2
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Jellyfish",
       "atk": 1,
       "spatk": 1.15,
@@ -4037,77 +4565,13 @@
       "innateAbilities": [
         3
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 3
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Eagle",
       "atk": 1,
       "spatk": 1,
@@ -4120,77 +4584,13 @@
       "innateAbilities": [
         4
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 4
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Rat",
       "atk": 1,
       "spatk": 1,
@@ -4200,80 +4600,14 @@
       "hp": 0.85,
       "normTag": "Filthy",
       "rareTag": "Sneaky",
-      "innateAbilities": [
-        5
-      ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "ability": "Frantic Bite",
+      "id": 5
     },
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Eel",
       "atk": 0.85,
       "spatk": 1,
@@ -4286,77 +4620,13 @@
       "innateAbilities": [
         6
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 6
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Seal",
       "atk": 1.05,
       "spatk": 1,
@@ -4369,77 +4639,13 @@
       "innateAbilities": [
         7
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 7
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Snake",
       "atk": 0.85,
       "spatk": 1,
@@ -4449,80 +4655,14 @@
       "hp": 1,
       "normTag": "Slithering",
       "rareTag": "Predatory",
-      "innateAbilities": [
-        8
-      ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "ability": "Debilitating Bite",
+      "id": 8
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Squid",
       "atk": 0.85,
       "spatk": 1.15,
@@ -4535,77 +4675,13 @@
       "innateAbilities": [
         9
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 9
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Rabbit",
       "atk": 0.85,
       "spatk": 1,
@@ -4618,77 +4694,13 @@
       "innateAbilities": [
         10
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 10
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Dragonfly",
       "atk": 0.85,
       "spatk": 1,
@@ -4701,77 +4713,13 @@
       "innateAbilities": [
         11
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 11
     },
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Duck",
       "atk": 1,
       "spatk": 1,
@@ -4784,77 +4732,13 @@
       "innateAbilities": [
         12
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 12
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Penguin",
       "atk": 1.15,
       "spatk": 1,
@@ -4867,77 +4751,13 @@
       "innateAbilities": [
         13
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 13
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Lizard",
       "atk": 1,
       "spatk": 1,
@@ -4950,77 +4770,13 @@
       "innateAbilities": [
         14
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 14
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Dolphin",
       "atk": 1,
       "spatk": 1.15,
@@ -5033,77 +4789,13 @@
       "innateAbilities": [
         15
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 15
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Deer",
       "atk": 1,
       "spatk": 1,
@@ -5114,79 +4806,15 @@
       "normTag": "Meddling",
       "rareTag": "Finicky",
       "innateAbilities": [
-        16
+        25
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 16
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Squirrel",
       "atk": 1,
       "spatk": 1,
@@ -5199,77 +4827,13 @@
       "innateAbilities": [
         17
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 17
     },
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Crocodile",
       "atk": 1,
       "spatk": 0.85,
@@ -5282,77 +4846,13 @@
       "innateAbilities": [
         18
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 18
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Leopard",
       "atk": 1.15,
       "spatk": 0.85,
@@ -5365,77 +4865,13 @@
       "innateAbilities": [
         19
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 19
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Coyote",
       "atk": 1,
       "spatk": 0.85,
@@ -5445,80 +4881,14 @@
       "hp": 1,
       "normTag": "Nocturnal",
       "rareTag": "Howling",
-      "innateAbilities": [
-        20
-      ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "ability": "Hunting Howl",
+      "id": 20
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Crab",
       "atk": 1,
       "spatk": 1.05,
@@ -5531,77 +4901,13 @@
       "innateAbilities": [
         21
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 21
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Lion",
       "atk": 1,
       "spatk": 0.85,
@@ -5610,81 +4916,17 @@
       "spdef": 1.15,
       "hp": 1,
       "normTag": "Prideful",
-      "rareTag": "Backstabbing",
+      "rareTag": "Assertive",
       "innateAbilities": [
         22
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 22
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Horse",
       "atk": 1,
       "spatk": 0.85,
@@ -5697,77 +4939,13 @@
       "innateAbilities": [
         23
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 23
     },
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Beetle",
       "atk": 1,
       "spatk": 1,
@@ -5780,77 +4958,13 @@
       "innateAbilities": [
         24
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 24
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Bear",
       "atk": 1.15,
       "spatk": 1,
@@ -5863,77 +4977,13 @@
       "innateAbilities": [
         25
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 25
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Scorpion",
       "atk": 1,
       "spatk": 1,
@@ -5943,80 +4993,14 @@
       "hp": 1,
       "normTag": "Great",
       "rareTag": "Deadly",
-      "innateAbilities": [
-        26
-      ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "ability": "Dire Strike",
+      "id": 26
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Parrot",
       "atk": 1,
       "spatk": 1.15,
@@ -6029,77 +5013,13 @@
       "innateAbilities": [
         27
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 27
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Goat",
       "atk": 1,
       "spatk": 1,
@@ -6112,77 +5032,13 @@
       "innateAbilities": [
         28
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 28
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Bat",
       "atk": 1,
       "spatk": 1,
@@ -6195,77 +5051,13 @@
       "innateAbilities": [
         29
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 29
     },
     {
+      "region": "Swamp",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Turtle",
       "atk": 1,
       "spatk": 1,
@@ -6278,77 +5070,13 @@
       "innateAbilities": [
         30
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 30
     },
     {
+      "region": "Tundra",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Ox",
       "atk": 1.15,
       "spatk": 1,
@@ -6361,77 +5089,13 @@
       "innateAbilities": [
         31
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 31
     },
     {
+      "region": "Desert",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Camel",
       "atk": 1,
       "spatk": 1,
@@ -6444,77 +5108,13 @@
       "innateAbilities": [
         32
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 32
     },
     {
+      "region": "Islands",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Whale",
       "atk": 1,
       "spatk": 1.15,
@@ -6527,77 +5127,13 @@
       "innateAbilities": [
         33
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 33
     },
     {
+      "region": "Mountains",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Panda",
       "atk": 1,
       "spatk": 1,
@@ -6610,77 +5146,13 @@
       "innateAbilities": [
         34
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "id": 34
     },
     {
+      "region": "Forest",
+      "encounterTags": [
+        "wild"
+      ],
       "Name": "Fox",
       "atk": 1,
       "spatk": 1,
@@ -6690,78 +5162,434 @@
       "hp": 1,
       "normTag": "Crafty",
       "rareTag": "Cunning",
-      "innateAbilities": [
-        35
+      "ability": "Tactical Take Down",
+      "id": 35
+    },
+    {
+      "region": "Swamp",
+      "encounterTags": [
+        "base",
+        "wild"
       ],
-      "droptable": [
-        {
-          "chance": 38,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 5
-          }
-        },
-        {
-          "chance": 18,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 10
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "type": "resource",
-            "resource": "gold",
-            "resourceName": "gold",
-            "amount": 15
-          }
-        },
-        {
-          "chance": 20,
-          "obj": {
-            "nothing": true
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "weapon"
-                ]
-              }
-            }
-          }
-        },
-        {
-          "chance": 8,
-          "obj": {
-            "ref": {
-              "type": "rngEquipment",
-              "rngEquipment": {
-                "scaling": true,
-                "value": 0.5,
-                "conValue": 0.6,
-                "lockStatTypes": true,
-                "types": [
-                  "gear"
-                ]
-              }
-            }
-          }
-        }
-      ]
+      "Name": "Wanderer",
+      "atk": 0.8,
+      "spatk": 0.8,
+      "spd": 0.8,
+      "def": 0.8,
+      "spdef": 0.8,
+      "hp": 1.75,
+      "normTag": "Lost",
+      "rareTag": "Assimilated",
+      "innateAbilities": [
+        78
+      ],
+      "id": 36
+    },
+    {
+      "region": "Swamp",
+      "encounterTags": "base",
+      "Name": "Shaman",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 0.9,
+      "def": 1.2,
+      "spdef": 1.2,
+      "hp": 1.5,
+      "normTag": "Insane",
+      "rareTag": "Demented",
+      "innateAbilities": [
+        70
+      ],
+      "id": 37
+    },
+    {
+      "region": "Swamp",
+      "encounterTags": "base",
+      "Name": "Conjurer",
+      "atk": 1.2,
+      "spatk": 1.2,
+      "spd": 0.9,
+      "def": 1,
+      "spdef": 1,
+      "hp": 1.5,
+      "normTag": "Haunted",
+      "rareTag": "Virulent",
+      "innateAbilities": [
+        79
+      ],
+      "id": 38
+    },
+    {
+      "region": "Swamp",
+      "encounterTags": "base",
+      "Name": "Soothsayer",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 1,
+      "def": 1,
+      "spdef": 1,
+      "hp": 2,
+      "normTag": "Dwelling",
+      "rareTag": "Abyssal",
+      "innateAbilities": [
+        80
+      ],
+      "id": 39
+    },
+    {
+      "region": "Tundra",
+      "encounterTags": [
+        "base",
+        "wild"
+      ],
+      "Name": "Deserter",
+      "atk": 1.75,
+      "spatk": 0.8,
+      "spd": 0.8,
+      "def": 0.8,
+      "spdef": 0.8,
+      "hp": 0.8,
+      "normTag": "Chilled",
+      "rareTag": "Frostbitten",
+      "innateAbilities": [
+        81
+      ],
+      "id": 40
+    },
+    {
+      "region": "Tundra",
+      "encounterTags": "base",
+      "Name": "Raider",
+      "atk": 1.5,
+      "spatk": 0.9,
+      "spd": 1,
+      "def": 1.1,
+      "spdef": 1.1,
+      "hp": 0.9,
+      "normTag": "Enraged",
+      "rareTag": "Brutal",
+      "innateAbilities": [
+        82
+      ],
+      "id": 41
+    },
+    {
+      "region": "Tundra",
+      "encounterTags": "base",
+      "Name": "Ranger",
+      "atk": 1.5,
+      "spatk": 0.9,
+      "spd": 1.3,
+      "def": 1,
+      "spdef": 1,
+      "hp": 0.9,
+      "normTag": "Trained",
+      "rareTag": "Stalking",
+      "innateAbilities": [
+        83
+      ],
+      "id": 42
+    },
+    {
+      "region": "Tundra",
+      "encounterTags": "base",
+      "Name": "Gladiator",
+      "atk": 2,
+      "spatk": 1,
+      "spd": 1,
+      "def": 1,
+      "spdef": 1,
+      "hp": 1,
+      "normTag": "Defiant",
+      "rareTag": "Conquering",
+      "innateAbilities": [
+        71
+      ],
+      "id": 43
+    },
+    {
+      "region": "Desert",
+      "encounterTags": [
+        "base",
+        "wild"
+      ],
+      "Name": "Thief",
+      "atk": 0.8,
+      "spatk": 0.8,
+      "spd": 0.8,
+      "def": 1.75,
+      "spdef": 0.8,
+      "hp": 0.8,
+      "normTag": "Crafty",
+      "rareTag": "Adept",
+      "innateAbilities": [
+        72
+      ],
+      "id": 44
+    },
+    {
+      "region": "Desert",
+      "encounterTags": "base",
+      "Name": "Commando",
+      "atk": 1.1,
+      "spatk": 1.1,
+      "spd": 0.9,
+      "def": 1.5,
+      "spdef": 0.9,
+      "hp": 1,
+      "normTag": "Scavenging",
+      "rareTag": "Plundering",
+      "innateAbilities": [
+        84
+      ],
+      "id": 45
+    },
+    {
+      "region": "Desert",
+      "encounterTags": "base",
+      "Name": "Marauder",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 0.9,
+      "def": 1.5,
+      "spdef": 0.9,
+      "hp": 1.3,
+      "normTag": "Cut-throat",
+      "rareTag": "Savage",
+      "innateAbilities": [
+        85
+      ],
+      "id": 46
+    },
+    {
+      "region": "Desert",
+      "encounterTags": "base",
+      "Name": "Overlord",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 1,
+      "def": 2,
+      "spdef": 1,
+      "hp": 1,
+      "normTag": "Devious",
+      "rareTag": "Barbarous",
+      "innateAbilities": [
+        86
+      ],
+      "id": 47
+    },
+    {
+      "region": "Islands",
+      "encounterTags": [
+        "base",
+        "wild"
+      ],
+      "Name": "Nomad",
+      "atk": 0.8,
+      "spatk": 1.75,
+      "spd": 0.8,
+      "def": 0.8,
+      "spdef": 0.8,
+      "hp": 0.8,
+      "normTag": "Tranquil",
+      "rareTag": "Wise",
+      "innateAbilities": [
+        87
+      ],
+      "id": 48
+    },
+    {
+      "region": "Islands",
+      "encounterTags": "base",
+      "Name": "Monk",
+      "atk": 0.9,
+      "spatk": 1.5,
+      "spd": 1.3,
+      "def": 1,
+      "spdef": 1,
+      "hp": 0.9,
+      "normTag": "Resolute",
+      "rareTag": "Guided",
+      "innateAbilities": [
+        73
+      ],
+      "id": 49
+    },
+    {
+      "region": "Islands",
+      "encounterTags": "base",
+      "Name": "Warden",
+      "atk": 0.9,
+      "spatk": 1.5,
+      "spd": 1,
+      "def": 1.1,
+      "spdef": 1.1,
+      "hp": 0.9,
+      "normTag": "Ancient",
+      "rareTag": "Vengeful",
+      "innateAbilities": [
+        74
+      ],
+      "id": 50
+    },
+    {
+      "region": "Islands",
+      "encounterTags": "base",
+      "Name": "Spiritualist",
+      "atk": 1,
+      "spatk": 2,
+      "spd": 1,
+      "def": 1,
+      "spdef": 1,
+      "hp": 1,
+      "normTag": "Enlightened",
+      "rareTag": "Superior",
+      "innateAbilities": [
+        88
+      ],
+      "id": 51
+    },
+    {
+      "region": "Mountains",
+      "encounterTags": [
+        "base",
+        "wild"
+      ],
+      "Name": "Scout",
+      "atk": 0.8,
+      "spatk": 0.8,
+      "spd": 0.8,
+      "def": 0.8,
+      "spdef": 1.75,
+      "hp": 0.8,
+      "normTag": "Ambitious",
+      "rareTag": "Veteran",
+      "innateAbilities": [
+        89
+      ],
+      "id": 52
+    },
+    {
+      "region": "Mountains",
+      "encounterTags": "base",
+      "Name": "Knight",
+      "atk": 1.1,
+      "spatk": 1.1,
+      "spd": 0.9,
+      "def": 0.9,
+      "spdef": 1.5,
+      "hp": 1,
+      "normTag": "Rugged",
+      "rareTag": "Hulky",
+      "innateAbilities": [
+        90
+      ],
+      "id": 53
+    },
+    {
+      "region": "Mountains",
+      "encounterTags": "base",
+      "Name": "Guardian",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 0.9,
+      "def": 0.9,
+      "spdef": 1.5,
+      "hp": 1.3,
+      "normTag": "Warding",
+      "rareTag": "Overseeing",
+      "innateAbilities": [
+        75
+      ],
+      "id": 54
+    },
+    {
+      "region": "Mountains",
+      "encounterTags": "base",
+      "Name": "Titan",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 1,
+      "def": 1,
+      "spdef": 2,
+      "hp": 1,
+      "normTag": "Dominating",
+      "rareTag": "Imperial",
+      "innateAbilities": [
+        91
+      ],
+      "id": 55
+    },
+    {
+      "region": "Forest",
+      "encounterTags": [
+        "base",
+        "wild"
+      ],
+      "Name": "Defender",
+      "atk": 0.8,
+      "spatk": 0.8,
+      "spd": 1.75,
+      "def": 0.8,
+      "spdef": 0.8,
+      "hp": 0.8,
+      "normTag": "Enchanted",
+      "rareTag": "Chosen",
+      "innateAbilities": [
+        92
+      ],
+      "id": 56
+    },
+    {
+      "region": "Forest",
+      "encounterTags": "base",
+      "Name": "Survivalist",
+      "atk": 1.2,
+      "spatk": 1.2,
+      "spd": 1.5,
+      "def": 1,
+      "spdef": 1,
+      "hp": 0.9,
+      "normTag": "Adapting",
+      "rareTag": "Harmonic",
+      "innateAbilities": [
+        76
+      ],
+      "id": 57
+    },
+    {
+      "region": "Forest",
+      "encounterTags": "base",
+      "Name": "Preservationist",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 1.5,
+      "def": 1.2,
+      "spdef": 1.2,
+      "hp": 0.9,
+      "normTag": "Loyal",
+      "rareTag": "Adamant",
+      "innateAbilities": [
+        77
+      ],
+      "id": 58
+    },
+    {
+      "region": "Forest",
+      "encounterTags": "base",
+      "Name": "Evolutionist",
+      "atk": 1,
+      "spatk": 1,
+      "spd": 2,
+      "def": 1,
+      "spdef": 1,
+      "hp": 1,
+      "normTag": "Weaving",
+      "rareTag": "Gaia",
+      "innateAbilities": [
+        93
+      ],
+      "id": 59
     }
   ],
   "baseAbilities": [
@@ -6770,10 +5598,10 @@
       "ability": {
         "critical": 50,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 20,
         "name": "Sudden Hop",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 80,
         "numHits": 1,
@@ -6803,14 +5631,14 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 20,
         "name": "Burrowing Strike",
         "speed": 4,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 90,
+        "accuracy": 85,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 60,
         "targetType": 1
       },
       "id": 2,
@@ -6821,14 +5649,14 @@
       "ability": {
         "critical": 50,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 20,
         "name": "Lurking Sting",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 25,
         "targetType": 1
       },
       "id": 3,
@@ -6837,12 +5665,12 @@
     {
       "allowanceCost": 4,
       "ability": {
-        "critical": 50,
+        "critical": 35,
         "damage_type": "atk",
-        "damage_val": 35,
+        "damage_val": 20,
         "name": "Prideful Pursuit",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 120,
         "numHits": 1,
@@ -6855,14 +5683,14 @@
     {
       "allowanceCost": 4,
       "ability": {
-        "critical": 20,
+        "critical": 10,
         "damage_type": "atk",
         "damage_val": 20,
-        "name": "Frantic Bite",
-        "speed": 2,
-        "faction": -1,
+        "name": "Frantic Bites",
+        "speed": 1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 110,
+        "accuracy": 100,
         "numHits": 2,
         "recoil": 0,
         "targetType": 1
@@ -6890,10 +5718,10 @@
       "ability": {
         "critical": 15,
         "damage_type": "atk",
-        "damage_val": 20,
+        "damage_val": 10,
         "name": "Sucker Slap",
         "speed": 4,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -6911,7 +5739,7 @@
         "damage_val": 15,
         "name": "Rapid Fangs",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 2,
@@ -6954,14 +5782,14 @@
     {
       "allowanceCost": 4,
       "ability": {
-        "critical": 70,
+        "critical": 100,
         "damage_type": "spatk",
-        "damage_val": 30,
+        "damage_val": 25,
         "name": "Disturbing Buzz",
-        "speed": 2,
-        "faction": -1,
+        "speed": 1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 110,
+        "accuracy": 100,
         "numHits": 1,
         "recoil": 0,
         "targetType": 1
@@ -6972,12 +5800,12 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 40,
+        "critical": 75,
         "damage_type": "atk",
         "damage_val": 10,
         "name": "Rapid Pecks",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 80,
         "numHits": 3,
@@ -6992,14 +5820,14 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 15,
         "name": "Sliding Assault",
         "speed": 4,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 90,
         "numHits": 1,
-        "recoil": 10,
+        "recoil": 30,
         "targetType": 1
       },
       "id": 13,
@@ -7010,12 +5838,12 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 60,
+        "damage_val": 50,
         "name": "Crooked Claws",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 90,
+        "accuracy": 80,
         "numHits": 1,
         "recoil": 0,
         "targetType": 1
@@ -7026,12 +5854,12 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 0,
+        "critical": 100,
         "damage_type": "spatk",
-        "damage_val": 20,
+        "damage_val": 10,
         "name": "Irritating Echoes",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7064,7 +5892,7 @@
         "damage_val": 10,
         "name": "Scurrying Scratches",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 90,
         "numHits": 4,
@@ -7079,10 +5907,10 @@
       "ability": {
         "critical": 10,
         "damage_type": "atk",
-        "damage_val": 30,
+        "damage_val": 20,
         "name": "Sudden Snap",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7100,11 +5928,11 @@
         "damage_val": 30,
         "name": "Preying Pounce",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 60,
         "targetType": 1
       },
       "id": 19,
@@ -7113,12 +5941,12 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 20,
+        "critical": 55,
         "damage_type": "spatk",
         "damage_val": 10,
         "name": "Harrowing Howls",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 3,
@@ -7133,7 +5961,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Tough Shell",
-        "guard_val": 40,
+        "guard_val": 35,
         "guard_type": "def",
         "success_level": 200,
         "counter_val": 0,
@@ -7147,11 +5975,11 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Prideful Stance",
+        "name": "Prideful Posture",
         "guard_val": 40,
         "guard_type": "def",
         "success_level": 100,
-        "counter_val": 20,
+        "counter_val": 10,
         "counter_type": "def",
         "speed": 3
       },
@@ -7166,7 +5994,7 @@
         "damage_val": 40,
         "name": "Reckless Rush",
         "speed": 4,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7183,7 +6011,7 @@
         "name": "Shell Brace",
         "guard_val": 30,
         "guard_type": "def",
-        "success_level": 300,
+        "success_level": 200,
         "counter_val": 0,
         "counter_type": "def",
         "speed": 3
@@ -7196,7 +6024,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Ignorant Thrash",
-        "guard_val": 40,
+        "guard_val": 25,
         "guard_type": "def",
         "success_level": 90,
         "counter_val": 30,
@@ -7211,12 +6039,12 @@
       "ability": {
         "critical": 80,
         "damage_type": "atk",
-        "damage_val": 20,
-        "name": "Dire Strike",
+        "damage_val": 15,
+        "name": "Dire Strikes",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 110,
+        "accuracy": 100,
         "numHits": 2,
         "recoil": 0,
         "targetType": 1
@@ -7229,12 +6057,12 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 20,
+        "damage_val": 15,
         "name": "Rapid Chatter",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 90,
+        "accuracy": 100,
         "numHits": 3,
         "recoil": 0,
         "targetType": 1
@@ -7245,16 +6073,16 @@
     {
       "allowanceCost": 5,
       "ability": {
-        "critical": 50,
+        "critical": 60,
         "damage_type": "atk",
-        "damage_val": 60,
+        "damage_val": 65,
         "name": "Head Charge",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 40,
+        "recoil": 80,
         "targetType": 1
       },
       "id": 28,
@@ -7265,14 +6093,14 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 25,
-        "name": "Delirous Fluttering",
+        "damage_val": 20,
+        "name": "Delirious Fluttering",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 90,
+        "accuracy": 80,
         "numHits": 1,
-        "recoil": 10,
+        "recoil": 30,
         "targetType": 2
       },
       "id": 29,
@@ -7297,8 +6125,8 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Unflinching Stance",
-        "guard_val": 30,
+        "name": "Unflinching Posture",
+        "guard_val": 25,
         "guard_type": "def",
         "success_level": 200,
         "counter_val": 10,
@@ -7315,7 +6143,7 @@
         "name": "Lasting Endurance",
         "guard_val": 30,
         "guard_type": "def",
-        "success_level": 300,
+        "success_level": 200,
         "counter_val": 0,
         "counter_type": "def",
         "speed": 3
@@ -7326,14 +6154,14 @@
     {
       "allowanceCost": 5,
       "ability": {
-        "critical": 50,
+        "critical": 30,
         "damage_type": "spatk",
-        "damage_val": 50,
+        "damage_val": 35,
         "name": "Spout Shot",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 110,
+        "accuracy": 100,
         "numHits": 1,
         "recoil": 0,
         "targetType": 1
@@ -7346,12 +6174,12 @@
       "ability": {
         "critical": 30,
         "damage_type": "atk",
-        "damage_val": 25,
+        "damage_val": 15,
         "name": "Rolling Tackle",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 70,
+        "accuracy": 90,
         "numHits": 3,
         "recoil": 10,
         "targetType": 1
@@ -7362,16 +6190,16 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 30,
+        "critical": 35,
         "damage_type": "atk",
         "damage_val": 40,
         "name": "Tactical Takedown",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 10,
+        "recoil": 60,
         "targetType": 1
       },
       "id": 35,
@@ -7382,10 +6210,10 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 40,
+        "damage_val": 25,
         "name": "Standard Strike",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 90,
         "numHits": 1,
@@ -7400,12 +6228,12 @@
       "ability": {
         "critical": 0,
         "damage_type": "atk",
-        "damage_val": 55,
+        "damage_val": 50,
         "name": "Brutal Blow",
-        "speed": 1,
-        "faction": -1,
+        "speed": 0,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 80,
+        "accuracy": 60,
         "numHits": 1,
         "recoil": 0,
         "targetType": 1
@@ -7418,10 +6246,10 @@
       "ability": {
         "critical": 10,
         "damage_type": "atk",
-        "damage_val": 20,
+        "damage_val": 15,
         "name": "Agile Attack",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7436,12 +6264,12 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 40,
+        "damage_val": 35,
         "name": "Rune Pulse",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
-        "accuracy": 100,
+        "accuracy": 95,
         "numHits": 1,
         "recoil": 0,
         "targetType": 1
@@ -7454,14 +6282,14 @@
       "ability": {
         "critical": 0,
         "damage_type": "spatk",
-        "damage_val": 55,
+        "damage_val": 50,
         "name": "Malevolent Burst",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 80,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 45,
         "targetType": 1
       },
       "id": 40,
@@ -7472,10 +6300,10 @@
       "ability": {
         "critical": 10,
         "damage_type": "spatk",
-        "damage_val": 20,
+        "damage_val": 15,
         "name": "Fleeting Sparks",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7490,14 +6318,14 @@
       "ability": {
         "critical": 20,
         "damage_type": "atk",
-        "damage_val": 40,
+        "damage_val": 30,
         "name": "Precision Strike",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 10,
         "targetType": 1
       },
       "id": 42,
@@ -7506,12 +6334,12 @@
     {
       "allowanceCost": 4,
       "ability": {
-        "critical": 0,
+        "critical": 10,
         "damage_type": "atk",
         "damage_val": 10,
         "name": "Beat Down",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 90,
         "numHits": 6,
@@ -7524,12 +6352,12 @@
     {
       "allowanceCost": 3,
       "ability": {
-        "critical": 10,
+        "critical": 20,
         "damage_type": "spatk",
-        "damage_val": 30,
+        "damage_val": 20,
         "name": "Spirit Rush",
         "speed": 2,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7546,12 +6374,12 @@
         "damage_type": "spatk",
         "damage_val": 20,
         "name": "Elemental Surge",
-        "speed": 1,
-        "faction": -1,
+        "speed": 0,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
-        "recoil": 0,
+        "recoil": 30,
         "targetType": 2
       },
       "id": 45,
@@ -7561,8 +6389,8 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Resist Stance",
-        "guard_val": 20,
+        "name": "Resist Posture",
+        "guard_val": 25,
         "guard_type": "def",
         "success_level": 200,
         "counter_val": 0,
@@ -7576,7 +6404,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Counter Stance",
+        "name": "Counter Posture",
         "guard_val": 20,
         "guard_type": "def",
         "success_level": 90,
@@ -7592,9 +6420,9 @@
       "ability": {
         "action_type": "guard",
         "name": "Light Guard",
-        "guard_val": 10,
+        "guard_val": 15,
         "guard_type": "def",
-        "success_level": 200,
+        "success_level": 400,
         "counter_val": 0,
         "counter_type": "def",
         "speed": 3
@@ -7607,7 +6435,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Shielding Aura",
-        "guard_val": 20,
+        "guard_val": 25,
         "guard_type": "spdef",
         "success_level": 200,
         "counter_val": 0,
@@ -7655,7 +6483,7 @@
         "guard_val": 30,
         "guard_type": "def",
         "success_level": 90,
-        "counter_val": 50,
+        "counter_val": 35,
         "counter_type": "def",
         "speed": 3
       },
@@ -7667,7 +6495,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Battle Hardened",
-        "guard_val": 60,
+        "guard_val": 50,
         "guard_type": "def",
         "success_level": 100,
         "counter_val": 0,
@@ -7685,7 +6513,7 @@
         "guard_val": 40,
         "guard_type": "spdef",
         "success_level": 90,
-        "counter_val": 40,
+        "counter_val": 30,
         "counter_type": "spdef",
         "speed": 3
       },
@@ -7697,7 +6525,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Protecting Aura",
-        "guard_val": 60,
+        "guard_val": 50,
         "guard_type": "spdef",
         "success_level": 100,
         "counter_val": 0,
@@ -7712,7 +6540,7 @@
       "ability": {
         "action_type": "guard",
         "name": "Heightened Senses",
-        "guard_val": 10,
+        "guard_val": 30,
         "guard_type": "def",
         "success_level": 200,
         "counter_val": 0,
@@ -7726,7 +6554,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Defensive Stance",
+        "name": "Defensive Posture",
         "guard_val": 30,
         "guard_type": "def",
         "success_level": 100,
@@ -7745,7 +6573,7 @@
         "damage_val": 20,
         "name": "Light Attack",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7763,7 +6591,7 @@
         "damage_val": 20,
         "name": "Harmful Outcry",
         "speed": 1,
-        "faction": -1,
+        "stance": "none",
         "action_type": "attack",
         "accuracy": 100,
         "numHits": 1,
@@ -7777,16 +6605,17 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "stats",
-        "name": "Battle Stance",
+        "name": "Battle Posture",
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "0",
+            "target": 0,
             "stat": "atk",
             "value": 1
           }
         ],
-        "speed": 0
+        "speed": 0,
+        "focus": 70
       },
       "id": 60,
       "wildUse": 1
@@ -7799,12 +6628,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "0",
+            "target": 0,
             "stat": "spatk",
             "value": 1
           }
         ],
-        "speed": 0
+        "speed": 0,
+        "focus": 70
       },
       "id": 61,
       "wildUse": 1
@@ -7817,12 +6647,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "0",
+            "target": 0,
             "stat": "spd",
             "value": 1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 70
       },
       "id": 62,
       "wildUse": 1
@@ -7835,12 +6666,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "2",
+            "target": 2,
             "stat": "atk",
             "value": -1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 75
       },
       "id": 63,
       "wildUse": 1
@@ -7853,12 +6685,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "2",
+            "target": 2,
             "stat": "spatk",
             "value": -1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 75
       },
       "id": 64,
       "wildUse": 1
@@ -7871,12 +6704,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "2",
+            "target": 2,
             "stat": "def",
             "value": -1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 75
       },
       "id": 65,
       "wildUse": 1
@@ -7889,12 +6723,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "2",
+            "target": 2,
             "stat": "spdef",
             "value": -1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 75
       },
       "id": 66,
       "wildUse": 1
@@ -7907,12 +6742,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "2",
+            "target": 2,
             "stat": "spd",
             "value": -1
           }
         ],
-        "speed": 1
+        "speed": 1,
+        "focus": 70
       },
       "id": 67,
       "wildUse": 1
@@ -7925,12 +6761,13 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "0",
+            "target": 0,
             "stat": "def",
             "value": 1
           }
         ],
-        "speed": 2
+        "speed": 2,
+        "focus": 65
       },
       "id": 68,
       "wildUse": 1
@@ -7943,15 +6780,424 @@
         "statChangeCount": 1,
         "effects": [
           {
-            "target": "0",
+            "target": 0,
             "stat": "spdef",
             "value": 1
           }
         ],
-        "speed": 2
+        "speed": 2,
+        "focus": 65
       },
       "id": 69,
       "wildUse": 1
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Darkened Veil",
+        "guard_val": 60,
+        "guard_type": "spdef",
+        "success_level": 100,
+        "counter_val": 0,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 70,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Enduring Fury",
+        "guard_val": 35,
+        "guard_type": "def",
+        "success_level": 100,
+        "counter_val": 40,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 71,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Clever Parry",
+        "guard_val": 20,
+        "guard_type": "def",
+        "success_level": 200,
+        "counter_val": 30,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 72,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Steady Eye",
+        "guard_val": 40,
+        "guard_type": "def",
+        "success_level": 200,
+        "counter_val": 0,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 73,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Ancient Protection",
+        "guard_val": 40,
+        "guard_type": "spdef",
+        "success_level": 200,
+        "counter_val": 0,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 74,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Watcher's Sense",
+        "guard_val": 70,
+        "guard_type": "def",
+        "success_level": 70,
+        "counter_val": 0,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 75,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Nature's Protection",
+        "guard_val": 70,
+        "guard_type": "spdef",
+        "success_level": 70,
+        "counter_val": 0,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 76,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 4,
+      "ability": {
+        "action_type": "guard",
+        "name": "Caregiver's Veil",
+        "guard_val": 35,
+        "guard_type": "spdef",
+        "success_level": 100,
+        "counter_val": 40,
+        "counter_type": "def",
+        "speed": 3
+      },
+      "id": 77,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "spatk",
+        "damage_val": 50,
+        "name": "Defiled Chant",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 95,
+        "numHits": 1,
+        "recoil": 20,
+        "targetType": 1
+      },
+      "id": 78,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 40,
+        "damage_type": "atk",
+        "damage_val": 45,
+        "name": "Spirit's Vengeance",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 80,
+        "numHits": 1,
+        "recoil": 35,
+        "targetType": 1
+      },
+      "id": 79,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "spatk",
+        "damage_val": 30,
+        "name": "Miasmic Rupture",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 30,
+        "targetType": 3
+      },
+      "id": 80,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 10,
+        "damage_type": "atk",
+        "damage_val": 40,
+        "name": "Bitter Bash",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 81,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 20,
+        "damage_type": "atk",
+        "damage_val": 30,
+        "name": "Trampling Rush",
+        "speed": 2,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 30,
+        "targetType": 1
+      },
+      "id": 82,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "atk",
+        "damage_val": 35,
+        "name": "Keen Bolt",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 110,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 83,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 40,
+        "damage_type": "atk",
+        "damage_val": 15,
+        "name": "Pilfering Slashes",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 3,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 84,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 90,
+        "damage_type": "atk",
+        "damage_val": 30,
+        "name": "Relentless Strike",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 85,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "atk",
+        "damage_val": 70,
+        "name": "Decimator's Risk",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 90,
+        "numHits": 1,
+        "recoil": 60,
+        "targetType": 1
+      },
+      "id": 86,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "spatk",
+        "damage_val": 20,
+        "name": "Pacifying Pulse",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 2
+      },
+      "id": 87,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 15,
+        "damage_type": "spatk",
+        "damage_val": 40,
+        "name": "Essence Projection",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 90,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 88,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "atk",
+        "damage_val": 20,
+        "name": "Hurried Shove",
+        "speed": 4,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 100,
+        "numHits": 1,
+        "recoil": 40,
+        "targetType": 1
+      },
+      "id": 89,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 30,
+        "damage_type": "atk",
+        "damage_val": 40,
+        "name": "Divine Blade",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 75,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 90,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 20,
+        "damage_type": "spatk",
+        "damage_val": 20,
+        "name": "Titan's Roar",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 75,
+        "numHits": 1,
+        "recoil": 10,
+        "targetType": 2
+      },
+      "id": 91,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 10,
+        "damage_type": "atk",
+        "damage_val": 15,
+        "name": "Graceful Strikes",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 110,
+        "numHits": 3,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 92,
+      "wildUse": 0
+    },
+    {
+      "allowanceCost": 5,
+      "ability": {
+        "critical": 0,
+        "damage_type": "spatk",
+        "damage_val": 50,
+        "name": "Nature's Revenge",
+        "speed": 1,
+        "stance": "none",
+        "action_type": "attack",
+        "accuracy": 80,
+        "numHits": 1,
+        "recoil": 0,
+        "targetType": 1
+      },
+      "id": 93,
+      "wildUse": 0
     }
   ],
   "staticItems": [

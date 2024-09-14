@@ -1,6 +1,6 @@
 // const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
-const { createAbilityDescription } = require('../tools.js');
+const { populateManegeAbilityWindow, populateManageAbilityControls } = require("../sessionTools.js")
 const { statChangeStages } = require("../data.json")
 
 
@@ -22,42 +22,29 @@ module.exports = {
             }
         }
 
-        const embed = new MessageEmbed()
-        .setColor("#7289da")
-        .setTitle("Your Status")
-
-        
-        for(var i = 0; i < 6;i++){
-            let abilityData = playerData.staticData.abilities[i]
-            if(abilityData != undefined){
-                embed.addField(
-                    "Ability #" + (i+1) + " - " + abilityData.name,
-                    "```diff\n" + createAbilityDescription(abilityData) + "```"
-                ,true)
-            } else {
-                embed.addField(
-                    "Ability #" + (i+1) + " - No Ability In This Slot",
-                    "```diff\n---```"
-                ,true)
+        let newSession = {
+            type:"manageAbilities",
+            session_id: Math.floor(Math.random() * 100000),
+            user_ids:[playerData.staticData.id],
+            session_data:{
+                fighter:playerData,
+                player:playerData.staticData,
+                noEdit:true,
+                subSession:session.session_id,
+                removeOnUpdate:true,
+                noRelocate:true
             }
         }
-        embed.addField(
-            "Current Fighter Stats",
-            "```diff\nLives: " + playerData.staticData.lives +
-            "\nHP: " + playerData.liveData.stats.hp + "/" + playerData.liveData.maxhp +
-            "\nATK: " + Math.floor(playerData.liveData.stats.atk * statChangeStages[playerData.liveData.statChanges.atk]) +
-            "\nSPATK: " + Math.floor(playerData.liveData.stats.spatk * statChangeStages[playerData.liveData.statChanges.spatk]) +
-            "\nDEF: " + Math.floor(playerData.liveData.stats.def * statChangeStages[playerData.liveData.statChanges.def]) +
-            "\nSPDEF: " + Math.floor(playerData.liveData.stats.spdef * statChangeStages[playerData.liveData.statChanges.spdef]) +
-            "\nSPD: " + Math.floor(playerData.liveData.stats.spd * statChangeStages[playerData.liveData.statChanges.spd]) + "```"
-        ,true)
-
+    
         interaction.reply({
             content:" ",
-            ephemeral:true,
-            embeds:[embed]   
+            embeds:populateManegeAbilityWindow(newSession),
+            components:populateManageAbilityControls(newSession),
+            ephemeral:true
         })
 
-        callback({})
+        callback({
+            addSession: newSession
+        })
     }
 }

@@ -85,7 +85,7 @@ module.exports = {
                         }
                     }
         
-                    enemy = clone(simulateCPUAbilityAssign(enemy,[],5))
+                    enemy = clone(simulateCPUAbilityAssign(enemy,[],5 + Math.floor(session.session_data.town.level * 1.25)))
         
                     fighters = [
                         session.session_data.player,
@@ -166,18 +166,18 @@ module.exports = {
                             exp:0,
                             abilitypoints:0,
                             statpoints:0,
-                            lives:1,
+                            lives:3,
                             abilities:[],
                             level:0,
                             totalExp:0,
                             passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
-                                "hp":100,
-                                "atk":100,
-                                "def":100,
-                                "spatk":100,
-                                "spdef":100,
-                                "spd":100
+                                "hp":200,
+                                "atk":75,
+                                "def":1000,
+                                "spatk":75,
+                                "spdef":1000,
+                                "spd":10
                             }
                         }
                         
@@ -185,12 +185,12 @@ module.exports = {
                             "atk": 0.5,
                             "spatk": 0.5,
                             "spd": 0.7,
-                            "def": 1,
-                            "spdef": 1,
+                            "def": 2,
+                            "spdef": 2,
                             "hp": 2,
                         }
 
-                        largeEnemy = simulateCPUAbilityAssign(largeEnemy,[],8)
+                        largeEnemy = simulateCPUAbilityAssign(largeEnemy,[],8 + Math.floor(session.session_data.town.level * 1.25))
                         largeEnemy = simulateCPUSPAssign(largeEnemy,session.session_data.town.level * 60,scalar)
                         
                         fighters = [
@@ -241,7 +241,7 @@ module.exports = {
                             exp:0,
                             abilitypoints:0,
                             statpoints:0,
-                            lives:1,
+                            lives:3,
                             abilities:[
                                 {
                                     "action_type": "stats",
@@ -302,11 +302,11 @@ module.exports = {
                             totalExp:0,
                             passives:getRandomPassive(clone(session.session_data.town.raid.leader.unit)),
                             stats:{
-                                "hp":50,
+                                "hp":75,
                                 "atk":0,
-                                "def":50,
+                                "def":40,
                                 "spatk":0,
-                                "spdef":50,
+                                "spdef":40,
                                 "spd":1
                             }
                         }
@@ -314,10 +314,10 @@ module.exports = {
                         let beaconScalar = {
                             "atk": 0,
                             "spatk": 0,
-                            "spd": 0,
-                            "def": 0,
-                            "spdef": 0,
-                            "hp": 0,
+                            "spd": 1,
+                            "def": 1.75,
+                            "spdef": 1.75,
+                            "hp": 1,
                         }
         
                         let rallyEnemy = {
@@ -330,7 +330,7 @@ module.exports = {
                             exp:0,
                             abilitypoints:0,
                             statpoints:0,
-                            lives:1,
+                            lives:2,
                             abilities:[],
                             level:0,
                             totalExp:0,
@@ -345,15 +345,14 @@ module.exports = {
                             }
                         }
             
-                        rallyEnemy = simulateCPUAbilityAssign(rallyEnemy,[],7)
+                        rallyEnemy = simulateCPUAbilityAssign(rallyEnemy,[],7 + Math.floor(session.session_data.town.level * 1.25))
             
                         fighters = [
                             session.session_data.player,
-                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 60),
-                            simulateCPUSPAssign(clone(rallyPoint),session.session_data.town.level * 60,beaconScalar),
-                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 60)
+                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 50),
+                            simulateCPUSPAssign(clone(rallyPoint),session.session_data.town.level * 80,beaconScalar),
+                            simulateCPUSPAssign(clone(rallyEnemy),session.session_data.town.level * 50)
                         ]
-            
         
                         newSession = {
                             type:"combat",
@@ -433,7 +432,7 @@ module.exports = {
                 
                 break;
         }
-        
+
         runEnemyCombatAI(newSession.session_data.fighters)
         interaction.update({
             content:" ",

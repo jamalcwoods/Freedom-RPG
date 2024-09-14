@@ -1,74 +1,159 @@
 const fs = require('fs');
 let inData = require('./data.json')
 
+let creatureData = [
+  {
+    "Region": "Swamp",
+    "Name": "Frog"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Wolf"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Meerkat"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Jellyfish"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Eagle"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Rat"
+  },
+  {
+    "Region": "Swamp",
+    "Name": "Eel"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Seal"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Snake"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Squid"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Rabbit"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Dragonfly"
+  },
+  {
+    "Region": "Swamp",
+    "Name": "Duck"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Penguin"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Lizard"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Dolphin"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Deer"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Squirrel"
+  },
+  {
+    "Region": "Swamp",
+    "Name": "Crocodile"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Leopard"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Coyote"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Crab"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Lion"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Horse"
+  },
+  {
+    "Region": "Swamp",
+    "Name": "Beetle"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Bear"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Scorpion"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Parrot"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Goat"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Bat"
+  },
+  {
+    "Region": "Swamp",
+    "Name": "Turtle"
+  },
+  {
+    "Region": "Tundra",
+    "Name": "Ox"
+  },
+  {
+    "Region": "Desert",
+    "Name": "Camel"
+  },
+  {
+    "Region": "Islands",
+    "Name": "Whale"
+  },
+  {
+    "Region": "Mountains",
+    "Name": "Panda"
+  },
+  {
+    "Region": "Forest",
+    "Name": "Fox"
+  }
+ ]
+
 for(creature of inData.creatures){
-  creature.droptable = [
-    {
-      chance:34,
-      obj:{
-          ref:{
-          type:"staticItemID",
-          staticItemID:0
-        }
-      }
-    },
-    {
-      chance:18,
-      obj:{
-        ref:{
-          type:"staticItemID",
-          staticItemID:1
-        }
-      }
-    },
-    {
-      chance:8,
-      obj:{
-        ref:{
-          type:"staticItemID",
-          staticItemID:2
-        }
-      }
-    },
-    {
-      chance:20,
-      obj:{
-        nothing:true
-      }
-    },
-    {
-      chance:10,
-      obj:{
-        ref:{
-          type:"rngEquipment",
-          rngEquipment:{
-            scaling:true,
-            value:0.5,
-            conValue:0.5,
-            lockStatTypes:true,
-            baseVal:null,
-            types:["weapon"]
-          }
-        }
-      }
-    },
-    {
-      chance:10,
-      obj:{
-        ref:{
-          type:"rngEquipment",
-          rngEquipment:{
-            scaling:true,
-            value:0.5,
-            conValue:0.5,
-            lockStatTypes:true,
-            baseVal:null,
-            types:["gear"]
-          }
-        }
-      }
+  for(d of creatureData){
+    if(creature.Name == d.Name){
+      creature.region = d.Region
     }
-  ]
+  }
 }
 
 

@@ -20,16 +20,22 @@ module.exports = {
 
                 let extra = []
                 let roll = Math.ceil(Math.random() * 10)
+                if(session.session_data.town.bossDefeats){
+                    roll = Math.ceil(roll * 1.25)
+                    if(roll > 10){
+                        roll = 10
+                    }
+                }
                 let statVal = Math.ceil(session.session_data.player.stats[interaction.values[0]] * (0.1 * roll))
-                let final = statVal * session.session_data.temp.currentTask.solutionMap[interaction.values[0]].multi
-
-                let taskRoll = session.session_data.town.level * (12.5 + Math.random() * 5)
-                let clear = final >= session.session_data.town.level * (12.5 + Math.random() * 5)
+                let final = Math.ceil(statVal * session.session_data.temp.currentTask.solutionMap[interaction.values[0]].multi)
+                let max = Math.ceil(session.session_data.player.stats[interaction.values[0]] * session.session_data.temp.currentTask.solutionMap[interaction.values[0]].multi)
+                let clearVal = Math.ceil(session.session_data.town.level * 8)
+                let clear = final >= clearVal
 
 
                 let repVal = Math.ceil(final * session.session_data.temp.currentTask.repReward) * (final? 1 : 2)
-                let goldVal = Math.ceil((roll * 20) * session.session_data.temp.currentTask.goldReward * (0.75 + (session.session_data.town.level * 0.25)))
-                let expVal = Math.ceil((session.session_data.player.expCap * 0.20) * session.session_data.temp.currentTask.expReward * (0.75 + (session.session_data.town.level * 0.25)))
+                let goldVal = Math.ceil((roll/10) * (session.session_data.town.level * 500) * session.session_data.temp.currentTask.goldReward)
+                let expVal = Math.ceil((roll/10) * (session.session_data.player.expCap * 0.25 * session.session_data.temp.currentTask.expReward))
     
                 applyTownReputation(session.session_data.town,session.session_data.player.id,repVal)
                 
@@ -61,6 +67,7 @@ module.exports = {
                     }
                 }
 
+                extra.push("Effort Goal: " + clearVal + "\nPlayer Effort: " + final + " (Max Effort Possible: " + max + ')')
                 if(clear){
                     let newData = {
                         ref:{
@@ -68,9 +75,10 @@ module.exports = {
                             rngEquipment: {
                                 scaling: false,
                                 value:1,
-                                conValue:0,
+                                conStats:2,
+                                conValue:0.33,
                                 lockStatTypes: false,
-                                baseVal: 15 * session.session_data.town.level,
+                                baseVal: 12 * session.session_data.town.level,
                                 types: ["weapon","gear"]
                             }
                         }
@@ -83,6 +91,8 @@ module.exports = {
                             extra.push(msg)
                         }
                     }
+                } else {
+                    extra.push("Reaching the effort goal will net you an extra reward! Better luck next time!")
                 }
 
                 let now = new Date()
@@ -94,12 +104,12 @@ module.exports = {
                         let stat = interaction.values[0]
                         session.session_data.player.stats[interaction.values[0]] += val
                         growthMessage += "\n(+" + val + " " + stat.toUpperCase() + ")"
-                        session.session_data.player.statGrowthTimer = now.getTime() + 3600000 
+                        session.session_data.player.statGrowthTimer = now.getTime() + 1800000 
                         extra.push(growthMessage)
                     }
                 }
 
-                session.session_data.player.taskTimer = now.getTime() + 3600000 
+                session.session_data.player.taskTimer = now.getTime() + 600000
                 if(!session.session_data.player.achievements){
                     session.session_data.player.achievements = {
                         kills:0,
