@@ -1,4 +1,42 @@
 {
+  "tutorialSteps":[
+    {
+      "title": "Complete combat lessons",
+      "instructions": "Visit a server's training hall, (type the `/town` command, then use the drop down to select the 'Training Hall') and complete the first 6 lessons"
+    },
+    {
+      "title": "View your character stats",
+      "instructions": "Use the `/profile` command to view your stats and abilities and see if you are ready for combat"
+    },
+    {
+      "title": "Increase your character's stats",
+      "instructions": "Use the `/stats` command to open the stat allocation menu and begin increasing your character's stats"
+    },
+    {
+      "title": "Create abilities for your character",
+      "instructions": "You are almost ready to venture into the wild! Last thing to do is create some abilities for you to use.\n\nLet's starts with an attack\nUse the `/abilities create` command to begin creating your first ability.\n\nNote: This ability will be called whatever you type in the `name` section when doing this command"
+    },
+    {
+      "title": "Finish creating abilities for your character",
+      "instructions": "You are almost ready to venture into the wild! Last thing to do is create some abilities for you to use.\n\nUse the `/abilities create` command to begin creating your second ability.\n\nNote: This ability will be called whatever you type in the `name` section when doing this command"
+    },
+    {
+      "title": "Time for a combat test!",
+      "instructions": "Venture into the wild by doing `/explore` and selecting 'Look for an enemy to fight in the wild'"
+    },
+    {
+      "title": "Spending Gold",
+      "instructions": "You've earned some gold from your first fight! Head to town using the `/town` command and visit the 'Tavern'"
+    },
+    {
+      "title": "Buying Equipment",
+      "instructions": "Head to town using the `/town` command and visit the 'Market'"
+    },
+    {
+      "title": "Leveling The Town",
+      "instructions": "Head to town using the `/town` command and visit the 'Meeting Hall'"
+    }
+  ],
   "statIncreaseRatios": [
     {
       "hp": 1,
@@ -2375,39 +2413,29 @@
   },
   "tavernOptions": [
     {
-      "label": "Tavern Special",
-      "description": "Random 2 Stage booster for 30 minutes - 75 gold",
-      "value": "random_2_75_0.5"
-    },
-    {
       "label": "Assassin's Asparagus",
-      "description": "1 Stage Speed booster for 1 hour - 75 gold",
-      "value": "speed_1_75_1"
+      "description": "1 Stage Speed booster for 1 hour - 250 gold",
+      "value": "speed_1_250_1"
     },
     {
       "label": "Berserker's Beef",
-      "description": "1 Stage Attack booster for 1 hour - 75 gold",
-      "value": "attack_1_75_1"
+      "description": "1 Stage Attack booster for 1 hour - 250 gold",
+      "value": "attack_1_250_1"
     },
     {
       "label": "Caster's Cornbread",
-      "description": "1 Stage Special Attack booster for 1 hour - 75 gold",
-      "value": "spattack_1_75_1"
+      "description": "1 Stage Special Attack booster for 1 hour - 250 gold",
+      "value": "spattack_1_250_1"
     },
     {
       "label": "Defender's Dumplings",
-      "description": "1 Stage Defense booster for 1 hour - 75 gold",
-      "value": "defense_1_75_1"
+      "description": "1 Stage Defense booster for 1 hour - 250 gold",
+      "value": "defense_1_250_1"
     },
     {
-      "label": "Enforcer's Empanada's",
-      "description": "1 Stage Special Defense booster for 1 hour - 75 gold",
-      "value": "spdefense_1_75_1"
-    },
-    {
-      "label": "Frontliner's Flapjacks",
-      "description": "5% Health Regeneration for 1 hour - 75 gold",
-      "value": "healing_5_75_1"
+      "label": "Enforcer's Empanadas",
+      "description": "1 Stage Special Defense booster for 1 hour - 250 gold",
+      "value": "spdefense_1_250_1"
     }
   ],
   "scoreModifiers": {
@@ -2812,8 +2840,8 @@
       "combatStyle": "",
       "exp": 0,
       "expCap": 100,
-      "statpoints": 0,
-      "abilitypoints": 0,
+      "statpoints": 55,
+      "abilitypoints": 5,
       "stances": {
         "hp": {
           "active": false,
@@ -2876,60 +2904,18 @@
           "surgeTimer": 0
         }
       },
-      "abilities": [
-        {
-          "critical": 0,
-          "damage_type": "atk",
-          "damage_val": 35,
-          "name": "Starter Attack",
-          "speed": 1,
-          "stance": "none",
-          "action_type": "attack",
-          "numHits": 1,
-          "recoil": 0,
-          "targetType": "1",
-          "accuracy": 100
-        },
-        {
-          "action_type": "guard",
-          "name": "Starter Guard",
-          "guard_val": 30,
-          "guard_type": "def",
-          "success_level": 100,
-          "counter_val": 0,
-          "counter_type": "def",
-          "speed": 3
-        },
-        {
-          "action_type": "stats",
-          "name": "Starter Buff",
-          "statChangeCount": 2,
-          "effects": [
-            {
-              "target": "0",
-              "stat": "atk",
-              "value": 1
-            },
-            {
-              "target": "0",
-              "stat": "spatk",
-              "value": 1
-            }
-          ],
-          "speed": 1
-        }
-      ],
+      "abilities": [],
       "level": 1,
       "totalExp": 0,
-      "lives": 3,
+      "lives": 1,
       "ascends": 0,
       "stats": {
-        "hp": 20,
-        "atk": 10,
-        "def": 10,
-        "spatk": 10,
-        "spdef": 10,
-        "spd": 10
+        "hp": 1,
+        "atk": 1,
+        "def": 1,
+        "spatk": 1,
+        "spdef": 1,
+        "spd": 1
       },
       "statGrowthTimer": 0,
       "presenceTimer": 0,
@@ -2970,7 +2956,8 @@
         "raidLeaderKills": 0,
         "playerBattlesWon": 0
       },
-      "tutorial": 0
+      "tutorial": 0,
+      "lessons":[0,0,0,0,0,0,0,0,0]
     },
     "emptyTownData": {
       "name": "",
@@ -3247,7 +3234,7 @@
     },
     "adventure": {
       "title": "Adventure Hall",
-      "info": "In this facility you may embark on expeditions or dungeon runs. During an expedition you won’t be able to perform any commands, but your character will automatically earn rewards that can be claimed when you decide to end the expedition.\n\nDuring a dungeon run you will face combat challenges alongside situations that will test your character’s stats. After completing a run, you will earn rewards based on your performance. To learn about ways to increase your stats, it’s recommended you visit the Task Hall."
+      "info": "In this facility you may embark on dungeon runs.\n\nDuring a dungeon run you will face combat challenges alongside situations that will test your character’s stats. After completing a run, you will earn rewards based on your performance. To learn a simple way to increase your stats, it’s recommended you visit the Task Hall."
     },
     "tasks": {
       "title": "Task Hall",
@@ -4395,29 +4382,28 @@
           "type": "choice",
           "data": {
             "question": "What will you use to defend yourself?",
-            "important": "This decision will have irreversible affects on your character for the foreseeable future",
             "options": [
               {
-                "name": "A Melee Weapon - Up Close and Personal",
-                "description": "Preffers abilities with +critical chance/-protection value",
+                "name": "A Melee Weapon",
+                "description": "Up Close and Personal",
                 "value": "0",
                 "lineValue": "1"
               },
               {
-                "name": "A Projectile Weapon - Flurry From Afar",
-                "description": "Preffers abilities with +speed priority/-counter value",
+                "name": "A Projectile Weapon",
+                "description": "Flurry From Afar",
                 "value": "1",
                 "lineValue": "1"
               },
               {
-                "name": "A Spell-Casting Accessory - Mastery of Mythical Forces",
-                "description": "Preffers abilities with +damage value/-accuracy",
+                "name": "A Spell-Casting Accessory",
+                "description": "Mastery of Mythical Forces",
                 "value": "2",
                 "lineValue": "1"
               },
               {
-                "name": "Elemental Manipulation - One With Nature",
-                "description": "Preffers abilities with +guard reliability/-buff effects",
+                "name": "Elemental Manipulation",
+                "description": "One With Nature",
                 "value": "3",
                 "lineValue": "1"
               }
@@ -4440,29 +4426,28 @@
           "type": "choice",
           "data": {
             "question": "What do you look like?",
-            "important": "This decision will have irreversible affects on your character for the foreseeable future",
             "options": [
               {
-                "name": "Something Creature-Like: - Mechanical, but Meager",
-                "description": "Preffers abilities with +accuracy/-guard reliability",
+                "name": "Something Creature-Like",
+                "description": "Mechanical, but Meager",
                 "value": "0",
                 "lineValue": "2"
               },
               {
-                "name": "Something Human-Like - Flexible, but Flawed",
-                "description": "Preffers abilities with +counter value/-critical chance",
+                "name": "Something Human-Like",
+                "description": "Flexible, but Flawed",
                 "value": "1",
                 "lineValue": "2"
               },
               {
-                "name": "Something Beast-Like - Sturdy, but Sluggish",
-                "description": "Preffers abilities with +protection value/-speed priority",
+                "name": "Something Beast-Like",
+                "description": "Sturdy, but Sluggish",
                 "value": "2",
                 "lineValue": "2"
               },
               {
-                "name": "Something Mystical - Fantastical, but Frail",
-                "description": "Preffers abilities with +buff effect/-damage value",
+                "name": "Something Mystical",
+                "description": "Fantastical, but Frail",
                 "value": "3",
                 "lineValue": "2"
               }
@@ -4484,7 +4469,7 @@
         {
           "type": "end",
           "data": {
-            "ending": "You have completed the prologue quest and your profile has now been created. To begin the gameplay tutorial you can do the the /profile command."
+            "ending": "You have completed the prologue quest and your profile has now been created. To begin the gameplay tutorial you can do the the /tutorial command."
           }
         }
       ]

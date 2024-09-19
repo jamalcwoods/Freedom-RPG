@@ -9,7 +9,7 @@ module.exports = {
         const embed = new MessageEmbed()
         embed.addField(
             "Info - " + helpMessages[componentConfig.args[0]].title,
-            "```" + helpMessages[componentConfig.args[0]].info + "```"
+            helpMessages[componentConfig.args[0]].info
         )
         
         interaction.reply({

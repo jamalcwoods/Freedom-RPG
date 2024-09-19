@@ -159,26 +159,26 @@ function calculateEffectCost(e){
 
 function calculateAbilityCost(ability,weapon,race){
     let weights = {}
-    if(weapon != undefined){
-        for(cat in weapon[ability.action_type]){
-            if(!weights[cat]){
-                weights[cat] = 1
-                weights[cat] += weapon[ability.action_type][cat]
-            }
-        }
-    }
-    if(race != undefined){
-        for(cat in race[ability.action_type]){
-            if(!weights[cat]){
-                weights[cat] = 1
-                weights[cat] += race[ability.action_type][cat]
-            }
-        }
-    }
+    // Disregarding weights for now
+    //
+    // if(weapon != undefined){
+    //     for(cat in weapon[ability.action_type]){
+    //         if(!weights[cat]){
+    //             weights[cat] = 1
+    //             weights[cat] += weapon[ability.action_type][cat]
+    //         }
+    //     }
+    // }
+    // if(race != undefined){
+    //     for(cat in race[ability.action_type]){
+    //         if(!weights[cat]){
+    //             weights[cat] = 1
+    //             weights[cat] += race[ability.action_type][cat]
+    //         }
+    //     }
+    // }
     for(cat in ability){
-        if(!weights[cat]){
-            weights[cat] = 1 
-        }
+        weights[cat] = 1 
     }
     if(weights.effectStrength == undefined){
         weights.effectStrength = 1

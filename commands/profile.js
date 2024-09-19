@@ -58,17 +58,14 @@ module.exports = {
                                                                         .setLabel('Dismiss')
                                                                         .setStyle('DANGER')
                                                                 );
-                                                                if(playerData.tutorial == 0){
-                                                                        playerData.tutorial++
-                                        
-                                                                        let tutorialText = "\n"
-                                                                        tutorialText += "The image below is a preview of your character's stats. You can do the `/profile` command to view this as long as you are not in another session"
-                                                                        tutorialText += "\n\nTo get more acquainted with this game's combat we recommend you use `/town` and visit the training hall to learn the basics of combat"
+                                                                if(playerData.tutorial < 1){
+                                                                        interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });             
+                                                                } else if(playerData.tutorial == 1){
+                                                                        let tutorialText = "Though you are now familiar with how to fight, you need to increase your stats using your skill points.\n\nThese are normally obtained as you level up, but you have been given some to get you started. Do the `/stats` command to start using them"
                                         
                                                                         interaction.reply({
                                                                                 files: [path],
                                                                                 content: tutorialText,
-                                                                                components: [row1],
                                                                                 embeds: []
                                                                         })
                                         
@@ -76,13 +73,13 @@ module.exports = {
                                                                                 {
                                                                                         id:playerData.id,
                                                                                         path:"tutorial",
-                                                                                        value:1
+                                                                                        value:2
                                                                                 }
                                                                         ]
                                         
                                                                         callback({
                                                                                 updatePlayer:updates,
-                                                                        })               
+                                                                        })
                                                                 } else {
 
                                                                         if(componentConfig.forceUpdateInteraction){
@@ -111,32 +108,8 @@ module.exports = {
                                                                         .setLabel('Dismiss')
                                                                         .setStyle('DANGER')
                                                                 );
-                                                                if(playerData.tutorial == 0){
-                                                                        playerData.tutorial++
-                                        
-                                                                        let tutorialText = ""
-                                                                        tutorialText += "The image below is a preview of your character's stats. You can do the /profile command to view this as long as you are not in another session"
-                                                                        tutorialText += "\n\nTo get more acquainted with this game's combat we recommend you use /town and visit the training hall to learn the basics of combat"
-
-                                        
-                                                                        interaction.reply({
-                                                                                files: [path],
-                                                                                content: tutorialText,
-                                                                                components: [row1],
-                                                                                embeds: []
-                                                                        })
-                                        
-                                                                        let updates = [
-                                                                                {
-                                                                                        id:playerData.id,
-                                                                                        path:"tutorial",
-                                                                                        value:1
-                                                                                }
-                                                                        ]
-                                        
-                                                                        callback({
-                                                                                updatePlayer:updates,
-                                                                        })               
+                                                                if(playerData.tutorial != 'complete'){
+                                                                        interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });             
                                                                 } else {
                                                                         interaction.reply({
                                                                                 files: [path],

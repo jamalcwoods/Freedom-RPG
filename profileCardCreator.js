@@ -348,6 +348,10 @@ function makeCard(player,avatar,page,callback){
         
                 ctx.fillStyle = "#000000"
                 
+                if(!player.abilities){
+                    player.abilities = []
+                }
+
                 if(player.signature){
                     drawAbilityBox(ctx,player.abilities[4],490,225);
                     drawAbilityBox(ctx,player.signature,755,225,true);

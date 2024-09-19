@@ -69,8 +69,12 @@ module.exports = {
             }
 
             if(!error){
+                let msg = " "
+                if(session.session_data.tutorialMsg){
+                    msg = session.session_data.tutorialMsg
+                }
                 interaction.update({
-                    content: " ",
+                    content: msg,
                     components: populateAbilityCreatorButtons(session),
                     embeds: populateAbilityCreatorWindow(session)
                 })

@@ -124,7 +124,7 @@ module.exports = {
                                     }
                                 ],
                                 dialogue:[
-                                    "To complete most combat scenarios, you will need to lower an enemy's health to 0 before they do the same to you. To aid you in this, you have access to abilities that can damage enemies, prevent you from taking damage, and increase your stats.\n\nClick the 'My Fighter' button to see all your abilities and stats, then choose the ability that will help you defeat the Practice Dummy"
+                                    "To complete most combat scenarios, you will need to lower an enemy's health to 0 before they do the same to you. To aid you in this, you have access to abilities that can damage enemies, prevent you from taking damage, and increase your stats.\n\nClick the 'Non-ability Actions' dropdown, select 'View Fighter' and then click the matching button that will help you defeat the Practice Dummy"
                                 ],
                                 openingDialogue:0
                             })
@@ -679,7 +679,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":10,
+                                "hp":9,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -703,7 +703,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":15,
+                                "hp":9,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -777,7 +777,7 @@ module.exports = {
                                     }
                                 ],
                                 dialogue:[
-                                    "Using the same ability repeatedly on the same targets causes it to become predictable by enemies. To ensure that you are always able to land your attacks, it is advised that you switch targets or avoid using the same ability back to back.\n\nNote: Unlike attacks, using a guard reduces the success rate of any guard ability you use until you use a non-guard ability\n\nAlternate your abilities to defeat the fighters in 6 turns"
+                                    "Using the same ability repeatedly on the same targets causes it to become predictable by enemies. To ensure that you are always able to land your attacks, it is advised that you switch targets or avoid using the same ability back to back.\n\nNote: Unlike attacks, using a guard reduces the success rate of any guard ability you use until you use a non-guard ability\n\nAlternate your targets to defeat the fighters in 6 turns"
                                 ],
                                 openingDialogue:0
                             })
@@ -1173,6 +1173,7 @@ module.exports = {
                         break;
                 }
 
+                newSession.session_data.combatLesson = interaction.values[0]
                 session.session_data.onHold = true
 
                 runEnemyCombatAI(newSession.session_data.fighters)
@@ -1188,20 +1189,24 @@ module.exports = {
                     addSession:newSession
                 })
             } else {
-                session.session_data.temp = {
-                    viewingAbilities:true
-                }
+                if(session.session_data.player.tutorial == 'complete'){
+                    session.session_data.temp = {
+                        viewingAbilities:true
+                    }
 
-                interaction.update({
-                    content: " ",
-                    embeds: populateTownVisitWindow(session),
-                    components: populateTownVisitControls(session)
-                })
-        
-                callback({
-                    updateSession: session
-                })
-            }
+                    interaction.update({
+                        content: " ",
+                        embeds: populateTownVisitWindow(session),
+                        components: populateTownVisitControls(session)
+                    })
+            
+                    callback({
+                        updateSession: session
+                    })
+                } else {
+                    interaction.reply({ content: "You must complete the tutorial before doing this. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true }); 
+                }
+            } 
         }
     }
 }

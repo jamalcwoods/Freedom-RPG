@@ -14,8 +14,12 @@ module.exports = {
         let session = componentConfig.session
         if(session.type == "makeAbility"){
             session.session_data.editingAttribute = interaction.values[0];
+            let msg = " "
+            if(session.session_data.tutorialMsg){
+                msg = session.session_data.tutorialMsg
+            }
             interaction.update({
-                content: " ",
+                content: msg,
                 components: populateAbilityCreatorButtons(session),
                 embeds: populateAbilityCreatorWindow(session)
             })

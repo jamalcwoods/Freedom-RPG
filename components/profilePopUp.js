@@ -37,12 +37,10 @@ module.exports = {
                                             .setStyle('PRIMARY')
                                     );
                                     if(playerData.tutorial == 0){
-                                            playerData.tutorial++
             
-                                            let tutorialText = "```diff\n"
-                                            tutorialText += "The image below is a preview of your character's stats. You can do the /profile command to view this as long as you are not in another session"
-                                            tutorialText += "\n\nTo get more acquainted with this game's combat we recommend you use /town and visit the training hall to learn the basics of combat"
-                                            tutorialText += "```"
+                                            let tutorialText = "\n"
+                                            tutorialText += "The image below is a preview of your character's stats. You can do the `/profile stats` command to view this as long as you are not in another session"
+                                            tutorialText += "\n\nTo continue with the tutorial, use the `/town` command and visit the training hall to begin learning the basics of combat"
             
                                             interaction.reply({
                                                     files: [path],
@@ -52,11 +50,11 @@ module.exports = {
                                             })
             
                                             let updates = [
-                                                    {
-                                                            id:playerData.id,
-                                                            path:"tutorial",
-                                                            value:1
-                                                    }
+                                                {
+                                                        id:playerData.id,
+                                                        path:"tutorial",
+                                                        value:1
+                                                }
                                             ]
             
                                             callback({

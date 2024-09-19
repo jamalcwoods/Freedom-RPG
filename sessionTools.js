@@ -241,7 +241,16 @@ function populateCombatWindow(session){
                         } else {
                             switch(fighter.staticData.abilities[fighter.choosenAbility].action_type){
                                 case "attack":
-                                    fighterDesc += "\n**Preparing to attack...**"
+                                    switch(fighter.staticData.abilities[fighter.choosenAbility].damage_type){
+                                        case "atk":
+                                            fighterDesc += "\n**Preparing physical attack...**"
+                                            break;
+
+                                        case "spatk":
+                                            fighterDesc += "\n**Preparing special attack...**"
+                                            break;
+                                    }
+                                    
                                     break;
                                 
                                 case "guard":
@@ -1126,7 +1135,7 @@ function processEndOfTurn(error,session,interaction,callback,message){
                             let challengesCompleted = 0;
                             let totalGoldReward = 0;
                             let totalSPReward = 0
-                            if(fighter.staticData.challenges){
+                            if(fighter.staticData.challenges && fighter.staticData.tutorial == "completed"){
                                 for(var i = 0; i < fighter.staticData.challenges.length;i++){
                                     let c = fighter.staticData.challenges[i]
                                     let progressVal = 0;
@@ -1244,6 +1253,11 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                 }
                             }
 
+                            if(session.session_data.options.combatTest){
+                                fighter.staticData.tutorial = 6
+                                session.session_data.battlelog.alerts.push("Well Done! You earned a lot of gold from that fight! Head to town to see the different facilities where you can spend it! (`/town`)")
+                            }
+
                             updates.push({
                                 id:fighter.staticData.id,
                                 path:"",
@@ -1312,9 +1326,23 @@ function processEndOfTurn(error,session,interaction,callback,message){
                     components:populateReturnFromCombat(session,session.session_data.options.getRankingStats)
                 }
 
+                let updates;
+
+                if(session.session_data.combatLesson && session.session_data.winners.includes(session.session_data.fighters[0].staticData.id)){
+                    updates = [
+                        {
+                            session:session.session_data.options.returnSession,
+                            prop:"lessonNum",
+                            val:parseInt(session.session_data.combatLesson.split("lesson")[1])
+                        }
+                    ]
+                }
+
+                
                 
                 callbackObj = {
                     unHoldSession:session.session_data.options.returnSession,
+                    updateSessionPlayer:updates,
                     removeSession:session
                 }
                 respondTOEndOfTurn(responseObj,callbackObj,interaction,callback,message)
@@ -2065,6 +2093,7 @@ function processMobRewards(mob,session){
         let fighters = session.session_data.fighters
         for(fighter of fighters){
             if(fighter.team != mob.team && !fighter.staticData.cpu){
+                console.log(fighter.records.enemyDamageTaken,fighter.records.recoilDamageTaken)
                 if(fighter.records.enemyDamageTaken == 0 && fighter.records.recoilDamageTaken == 0){
                     session.session_data.battlelog.alerts.push("PERFECT KILL")
                     if(fighter.meter != undefined){
@@ -2175,9 +2204,15 @@ module.exports = {
         if(nonDismiss == undefined){
 			embed.setDescription('You can now dismiss this message');
         }
+        let removeRow = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+            .setCustomId('deleteMessage')
+            .setLabel("Dismiss")
+            .setStyle('DANGER'))
         return {
             content: " ",
-            components: [],
+            components: [removeRow],
             embeds: [embed]
         }
     },
@@ -4283,28 +4318,37 @@ module.exports = {
             if(isNeg){
                 displayText += "Ability does not have enough value\n\n"
             } else {
-                displayText += "Current Ability point cost: " + cost + "\n\n"
+                displayText += "Current Ability point cost: " + cost
+                if(cost <= session.session_data.abilitypoints){
+                    displayText += " ✅\n\n"
+                } else {
+                    displayText += " ❌\n\n"
+                }
                 if(session.session_data.level < 100){
                     displayText += "Current Level: " + session.session_data.level + "\n"
-                    displayText += "Level Requirement: " + levelReq + "\n\n"
+                    displayText += "Level Requirement: " + levelReq
+                    if(levelReq <= session.session_data.level){
+                        displayText += " ✅\n\n"
+                    } else {
+                        displayText += " ❌\n\n"
+                    }
                 }
+                // Modfiers - SCRAPPED
+                // let weaponModifierText = ""
+                // for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
+                //     weaponModifierText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
+                // }
+                // if(weaponModifierText != ""){
+                //     displayText += "Character Weapon Type Modifiers:" + weaponModifierText + "\n\n"
+                // }
                 
-                
-                let weaponModifierText = ""
-                for(mod in abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type]){
-                    weaponModifierText += "\n     " + mod + ": " + (abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.weapon[session.session_data.weapon][session.session_data.ability.action_type][mod] * 100 + "% cost"
-                }
-                if(weaponModifierText != ""){
-                    displayText += "Character Weapon Type Modifiers:" + weaponModifierText + "\n\n"
-                }
-                
-                let raceModifierText = ""
-                for(mod in abilityWeights.race[session.session_data.race][session.session_data.ability.action_type]){
-                    raceModifierText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
-                }
-                if(raceModifierText != ""){
-                    displayText += "Character Race Modifiers:" + raceModifierText + "\n\n"
-                }
+                // let raceModifierText = ""
+                // for(mod in abilityWeights.race[session.session_data.race][session.session_data.ability.action_type]){
+                //     raceModifierText += "\n     " + mod + ": " + (abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] > 0 ? "+" : "") + abilityWeights.race[session.session_data.race][session.session_data.ability.action_type][mod] * 100 + "% cost"
+                // }
+                // if(raceModifierText != ""){
+                //     displayText += "Character Race Modifiers:" + raceModifierText + "\n\n"
+                // }
             }
 
             displayText += "__**" + ability.name + "**__\n\n"
@@ -5083,7 +5127,7 @@ module.exports = {
                 break;
 
             case "adventure":
-                let adventureText = "From this facility you can enter your character in idle based expeditions or engagement based dungeon raids.\n\nExpeditions can serve as a great way to earn resources for a server town.\n\nDungeon raids are required in order for a town to increase it's level"
+                let adventureText = "From this facility you can enter your character in dungeon raids.\n\nDungeon raids are required in order for a town to increase it's level and guarantee a random piece of equipment if completed"
                 embed.addField("Adventurer's Hall - Expeditions and Dungeons:",adventureText)
                 break;
 
@@ -5129,7 +5173,7 @@ module.exports = {
                     if(session.session_data.player.abilities.length == 6){
                         trainingListings += "\nYou can not learn a new ability because you have no free ablity slot!\nManage your abilites by using `/ablities manage`"
                     }
-                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingListings)
+                    embed.addField("Training Hall - Lessons and Abilities:",trainingListings)
                     if(session.session_data.temp){
                         if(session.session_data.temp.selectedItem > -1){
                             let item = session.session_data.town.availableAbilities[session.session_data.temp.selectedItem]
@@ -5138,8 +5182,18 @@ module.exports = {
                         }
                     }
                 } else {
-                    let trainingMessage = "```diff\nA cheerful person greets you as you walk into to the training hall\n\n'Welcome traveler! Here you can prepare for battle with combat lessons or learn new/upgraded abilities from a combat master! What would you like to do today?'```\nNote: For tutorial lessons, your abilities and stats will be temporarily modified"
-                    embed.addField("Training Hall - Tutorial and Upgrades:",trainingMessage)
+                    let trainingMessage;
+                    if(session.session_data.player.tutorial == 0){
+                        trainingMessage = "From this menu, you can learn the basics of combat via combat lessons.\n\nTo continue with the tutorial, complete the first 6 combat lessons which can be accessed from the first dropdown that says 'Choose something to do'"
+                        let lessons = session.session_data.player.lessons
+                        if(lessons[0] && lessons[1] && lessons[2] && lessons[3] && lessons[4] && lessons[5]){
+                            session.session_data.player.tutorial++
+                            trainingMessage = "To continue with the tutorial, click the 'Select a facility to visit' dropdown, and select 'End Session'. Then use `/profile`"
+                        }
+                    } else {
+                        trainingMessage = "```diff\nA cheerful person greets you as you walk into to the training hall\n\n'Welcome traveler! Here you can prepare for battle with combat lessons or learn new/upgraded abilities from a combat master! What would you like to do today?'```\nNote: For tutorial lessons, your abilities and stats will be temporarily modified"
+                    }
+                    embed.addField("Training Hall - Lessons and Abilities:",trainingMessage)
                 }
                 break;
 
@@ -5195,6 +5249,12 @@ module.exports = {
                 let content = "```" + entries[Math.floor(Math.random() * entries.length)] + "```"
                 let p = session.session_data.player
                 
+                if(p.tutorial == 6){
+                    content = "At this facility you can buy meals that will temporarily boost your stats, as well as slices of cake that will increase your life total.\n\nSince you only have one right now, buy 2 slices of cake so that your life total can be equal to 3"
+                } else if(p.tutorial == 7){
+                    content = "Come here again some time once you've earned more gold.\n\nYou can also spend gold at the market.\nCheck it out by using the second drop down and selecting 'Market'"
+                }
+
                 if(p.boosters){
                     for(var i = 0; i < p.boosters.length; i++){
                         let boost = p.boosters[i]
@@ -5243,8 +5303,11 @@ module.exports = {
 
                 let nextBuild = "\n\n**Progress To Town Level Up (Level " + (town.level + 1) + ")**"
                 nextBuild += "\nCurrent Level Dungeon Cleared (Level " + town.level + "): " + (town.dungeonClear ? "✅ Complete" : "❌ Incomplete")
-                nextBuild += "\nResources Maxed: " + (resourceCheck ? "✅ Complete" : "❌ Incomplete") 
-                nextBuild += "\nPoint Threshold Reached (" + town.points + "/" + town.level * 30 + "): " + (town.points >= town.level * 30 ? "✅ Complete" : "❌ Incomplete") 
+                nextBuild += "\n- Dungeons can be accessed from the Adventurer's Hall"
+                nextBuild += "\n\nResources Maxed: " + (resourceCheck ? "✅ Complete" : "❌ Incomplete") 
+                nextBuild += "\n- Resources are earned from activity in a discord server, moreso from members who have started playing Discord RPG. Certain resources can be prioritized by selecting a job using the dropdown below"
+                nextBuild += "\n\nPoint Threshold Reached (" + town.points + "/" + town.level * 30 + "): " + (town.points >= town.level * 30 ? "✅ Complete" : "❌ Incomplete") 
+                nextBuild += "\n- Town points can be earned by completing missions listed in the Militia Hall"
 
                 embed.addField("Meeting Hall - Town Status:",
                     "🪵(Wood): " + town.resources.wood[0] + "/" + town.resources.wood[1] +
@@ -5263,17 +5326,6 @@ module.exports = {
                 let rankIndexer = ["Simple","Normal","Challenging"]
                 let pointIndexer = [1,2,3]
                 let report = "Current Raid Leader: " + raidData.leader.name + "\n\n"
-                
-                if(raidData.leader.unit.passives){
-                    report += "__Raider Passives:__\n"
-                    for(var i = 0;i < raidData.leader.unit.passives.length; i++){
-                        let passive = raidData.leader.unit.passives[i]
-                        let description = passiveDescriptions[passive.id].description
-                        report += passiveDescriptions[passive.id].name +" - Rank " + (passive.rank+1) +":\n" + description.replace("X",passiveDescriptions[passive.id].scalar.stat1[passive.rank]) + "\n\n"
-
-                    }
-                }
-
                 if(raidData.bossDefeats){
                     report += "Raiders defeated - New raid in " + msToTime(session.session_data.town.lastRaid - now.getTime())
                 } else {
@@ -5821,10 +5873,6 @@ module.exports = {
                         new MessageButton()
                         .setCustomId('promptDungeon_' + session.session_id)
                         .setLabel("Dungeon Adventure")
-                        .setStyle('PRIMARY'),
-                        new MessageButton()
-                        .setCustomId('promptExpedition_' + session.session_id)
-                        .setLabel("Expedition Adventure")
                         .setStyle('PRIMARY')
                     )
                 return [help,adventureChoice,travel]

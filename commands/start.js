@@ -49,7 +49,7 @@ module.exports = {
                 updatePotentialData(potential)
             })
         } else {
-            interaction.reply({ content: 'You already have an account', ephemeral: true });
+            interaction.reply({ content: 'You already have an account. If you are not sure what to do next, try the `/tutorial` command', ephemeral: true });
         }
         
 	},

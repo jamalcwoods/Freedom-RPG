@@ -10,6 +10,7 @@ const { populateConformationControls } = require("./sessionTools.js")
 
 client.once('ready', () => {
 	console.log('Ready!');
+    client.user.setActivity("Freedom RPG: (/start)"); 
     client.channels.fetch("1232765826231308419").then(channel =>{
         const embed = new MessageEmbed()
 
@@ -116,6 +117,20 @@ function unHoldSession(id){
     }
 }
 
+function updateSessionPlayer(updates){
+    for(u of updates){
+        let session = getSessionByID(u.session)
+        switch(u.prop){
+            case "lessonNum":
+                if(!session.session_data.player.lessons){
+                    session.session_data.player.lessons = clone(data.templates.emptyPlayerData.lessons)
+                }
+                session.session_data.player.lessons[u.val] = true
+                break;
+        }
+    }
+}
+
 
 function processResult(result){
     if(result.removeSession){
@@ -145,6 +160,10 @@ function processResult(result){
     if(result.unHoldSession){
         unHoldSession(result.unHoldSession)
     }
+
+    if(result.updateSessionPlayer){
+        updateSessionPlayer(result.updateSessionPlayer)
+    }
 }
 
 client.on('interactionCreate', async interaction => {  
@@ -152,7 +171,7 @@ client.on('interactionCreate', async interaction => {
         switch(interaction.type){
             case "MESSAGE_COMPONENT":
                 let componenetVals = interaction.customId.split("_")
-                console.log(componenetVals)
+                console.log(interaction.user.username,componenetVals)
                 const component = client.components.get(componenetVals[0])
                 let sessionID = componenetVals[1]
                 if(sessionID == "NULL"){
@@ -170,6 +189,9 @@ client.on('interactionCreate', async interaction => {
                     if(component.config.getClient){
                         componentConfig.client = client
                     }
+                    if(component.config.getSessions){
+                        componentConfig.sessions = sessions
+                    } 
                     if(component.config.getSession){
                         if(component.config.onlySessionID){
                             componentConfig.session = sessionID
@@ -246,7 +268,7 @@ client.on('interactionCreate', async interaction => {
                 try {
     
                     let choices = interaction.options["_hoistedOptions"]
-                    console.log(interaction.commandName)
+                    console.log(interaction.user.username,interaction.commandName)
                     for(var i = 0; i < choices.length;i++){
                         console.log(choices[i].name + ": " + choices[i].value)
                     }
@@ -405,227 +427,236 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                 let needToUpdatePlayer = false
                 let needToUpdateTown = false
 
-                if(player.dailyTimer <= now.getTime() || (player.id == '163809334852190208' && message.content == "daily")){
-                    player.dailyTimer = now.getTime() + 86400000
+                if(player.tutorial == "completed"){
+                    if(player.dailyTimer <= now.getTime() || (player.id == '163809334852190208' && message.content == "daily")){
+                        player.dailyTimer = now.getTime() + 86400000
 
-                    player.dailyCount++ 
+                        player.dailyCount++ 
 
-
-                    let expAmount;
-                    if(player.level < 10){
-                        expAmount = player.expCap - player.exp
-                    } else {
-                        expAmount = Math.ceil(player.expCap * 0.33)
-                    }
-
-                    let rewardsText = ""
-                    let result;
-                    
-                    result = parseReward({
-                        type:"resource",
-                        resource:"exp",
-                        resourceName: "experience",
-                        amount: expAmount
-                    }, player)
-                    player = result[0]
-                    for(msg of result[1]){
-                        rewardsText += msg + "\n"
-                    }
-
-                    result = parseReward({
-                        type:"resource",
-                        resource:"gold",
-                        resourceName:"gold",
-                        amount: 50 * player.dailyCount
-                    }, player)
-                    player = result[0]
-                    for(msg of result[1]){
-                        rewardsText += msg + "\n"
-                    }
-
-                    result = parseReward({
-                        type:"resource",
-                        resource:"abilitypoints",
-                        resourceName:"ability points",
-                        amount: 10 * player.dailyCount
-                    }, player)
-                    player = result[0]
-                    for(msg of result[1]){
-                        rewardsText += msg + "\n"
-                    }
-
-                    needToUpdatePlayer = true 
-
-                    const embed = new MessageEmbed()
-                    embed.setColor("#7289da")
-                    embed.setTitle("Daily Login #" +  player.dailyCount)
-
-                    embed.addField("Thank You!","The Freedom RPG Team thanks you for your continued support!\n \-Spiné")
-
-                    player.dailyText = rewardsText
-
-                    let actionOptions = [
-                        {
-                            label: "View Challenges",
-                            description: "View your current challenges",
-                            value: "challenges",
-                        },
-                        {
-                            label: "Explore Wild",
-                            description: "Venture out into the wild",
-                            value: "explore",
-                        },
-                        {
-                            label: "Support Town",
-                            description: "Visit this town's militia hall",
-                            value: "militia",
-                        },
-                        {
-                            label: "View Rewards",
-                            description: "View your daily rewards",
-                            value: "rewards",
-                        },
-                        {
-                            label: "View Profile",
-                            description: "View your profile",
-                            value: "profile",
-                        }           
-                    ]
-
-                    let optionRow = new MessageActionRow()
-                    .addComponents(
-                        new MessageSelectMenu()
-                        .setCustomId('dailySelection_NULL')
-                        .setPlaceholder('Choose An Action')
-                        .addOptions(actionOptions)
-                    )
-
-                    let removeRow = new MessageActionRow()
-                    .addComponents(
-                        new MessageButton()
-                        .setCustomId('deleteMessage')
-                        .setLabel("Dismiss")
-                        .setStyle('DANGER'))
-                    client.channels.fetch(message.channelId).then(channel =>{
-                        channel.send({
-                            embeds:[embed],
-                            components:[optionRow,removeRow]
-                        })   
-                    })
-                }
-
-                if(player.challengeTimer <= now.getTime()){
-                    //600000
-                    player.challengeTimer = now.getTime() + 600000
-                    if(!player.challenges){
-                        player.challenges = []
-                    }
-                    if(player.challenges.length < 5){
-                        let rankmap = {
-                            1:1,
-                            2:2,
-                            3:4
+                        let expAmount;
+                        if(player.level < 10){
+                            expAmount = player.expCap - player.exp
+                        } else {
+                            expAmount = Math.ceil(player.expCap * 0.33)
                         }
-                        let type = Math.floor(Math.random() * data.challengeDict.length)
-                        let dupe = false;
-                        for(c of player.challenges){
-                            if(c.type == type){
-                                dupe = true
-                                break;
+
+                        let rewardsText = ""
+                        let result;
+                        
+                        result = parseReward({
+                            type:"resource",
+                            resource:"exp",
+                            resourceName: "experience",
+                            amount: expAmount
+                        }, player)
+                        player = result[0]
+                        for(msg of result[1]){
+                            rewardsText += msg + "\n"
+                        }
+
+                        result = parseReward({
+                            type:"resource",
+                            resource:"gold",
+                            resourceName:"gold",
+                            amount: 50 * player.dailyCount
+                        }, player)
+                        player = result[0]
+                        for(msg of result[1]){
+                            rewardsText += msg + "\n"
+                        }
+
+                        result = parseReward({
+                            type:"resource",
+                            resource:"abilitypoints",
+                            resourceName:"ability points",
+                            amount: 10 * player.dailyCount
+                        }, player)
+                        player = result[0]
+                        for(msg of result[1]){
+                            rewardsText += msg + "\n"
+                        }
+
+                        needToUpdatePlayer = true 
+
+                        const embed = new MessageEmbed()
+                        embed.setColor("#7289da")
+                        embed.setTitle("Daily Login #" +  player.dailyCount)
+
+                        embed.addField("Thank You!","The Freedom RPG Team thanks you for your continued support!\n \-Spiné")
+
+                        player.dailyText = rewardsText
+
+                        let actionOptions = [
+                            {
+                                label: "View Challenges",
+                                description: "View your current challenges",
+                                value: "challenges",
+                            },
+                            {
+                                label: "Explore Wild",
+                                description: "Venture out into the wild",
+                                value: "explore",
+                            },
+                            {
+                                label: "Support Town",
+                                description: "Visit this town's militia hall",
+                                value: "militia",
+                            },
+                            {
+                                label: "View Rewards",
+                                description: "View your daily rewards",
+                                value: "rewards",
+                            },
+                            {
+                                label: "View Profile",
+                                description: "View your profile",
+                                value: "profile",
+                            }           
+                        ]
+
+                        let optionRow = new MessageActionRow()
+                        .addComponents(
+                            new MessageSelectMenu()
+                            .setCustomId('dailySelection_NULL_' + player.id)
+                            .setPlaceholder('Choose An Action')
+                            .addOptions(actionOptions)
+                        )
+
+                        let removeRow = new MessageActionRow()
+                        .addComponents(
+                            new MessageButton()
+                            .setCustomId('deleteMessage_NULL_' + player.id)
+                            .setLabel("Dismiss")
+                            .setStyle('DANGER'))
+                        client.channels.fetch(message.channelId).then(channel =>{
+                            if(getUserSession(message.author.id) == null){
+                                channel.send({
+                                    embeds:[embed],
+                                    components:[optionRow,removeRow]
+                                }) 
+                            } else {
+                                embed.addField("Rewards",playerData.dailyText)
+                                channel.send({
+                                    embeds:[embed],
+                                    components:[removeRow]
+                                }) 
                             }
+                        })
+                    }
+
+                    if(player.challengeTimer <= now.getTime()){
+                        //600000
+                        player.challengeTimer = now.getTime() + 600000
+                        if(!player.challenges){
+                            player.challenges = []
                         }
-                        while(dupe){
-                            dupe = false
-                            type = Math.floor(Math.random() * data.challengeDict.length)
+                        if(player.challenges.length < 5){
+                            let rankmap = {
+                                1:1,
+                                2:2,
+                                3:4
+                            }
+                            let type = Math.floor(Math.random() * data.challengeDict.length)
+                            let dupe = false;
                             for(c of player.challenges){
                                 if(c.type == type){
                                     dupe = true
                                     break;
                                 }
                             }
-                        }
-                        let rank = Math.ceil(Math.random() * 3)
-                        player.challenges.push({
-                            type:type,
-                            rank:rank,
-                            progress:0,
-                            goal:data.challengeDict[type].baseGoal * rankmap[rank]
-                        })
-                        needToUpdatePlayer = true
-                    }
-                }
-
-                if(player.presenceTimer <= now.getTime()){
-                    //600000
-                    player.presenceTimer = now.getTime() + 600000
-                    let resourcesAdded = 0
-                    let resourceMap = ["minerals","wood","food"]
-                    if(player.job == "exp"){
-                        let levelUp = player.exp + 40 >= player.expCap
-                        let result = parseReward({
-                            type:"resource",
-                            resource:"exp",
-                            resourceName: "experience",
-                            amount: 40
-                        }, player)
-                        player = result[0]
-                        if(levelUp){
-                            let text = ""
-                            for(msg of result[1]){
-                                text += "\n" + msg
+                            while(dupe){
+                                dupe = false
+                                type = Math.floor(Math.random() * data.challengeDict.length)
+                                for(c of player.challenges){
+                                    if(c.type == type){
+                                        dupe = true
+                                        break;
+                                    }
+                                }
                             }
-                            const embed = new MessageEmbed()
-                            embed.setColor("#7289da")
-                            embed.addField("Level Up!",text)
-                            
-                            let removeRow = new MessageActionRow()
-                            .addComponents(
-                                new MessageButton()
-                                .setCustomId('deleteMessage')
-                                .setLabel("Dismiss")
-                                .setStyle('DANGER'))
-                            .addComponents(
-                                new MessageButton()
-                                .setCustomId('profilePopUp_NULL_' + player.id + '|' + message.author.avatar)
-                                .setLabel("View Stats")
-                                .setStyle('PRIMARY'))
-                            client.channels.fetch(message.channelId).then(channel=>{
-                                channel.send({
-                                    embeds:[embed],
-                                    components:[removeRow]
-                                })
+                            let rank = Math.ceil(Math.random() * 3)
+                            player.challenges.push({
+                                type:type,
+                                rank:rank,
+                                progress:0,
+                                goal:data.challengeDict[type].baseGoal * rankmap[rank]
                             })
+                            needToUpdatePlayer = true
                         }
-                        let index = Math.floor(Math.random() * resourceMap.length)
-                        if(town.resources[resourceMap[index]][0] + 1 < town.resources[resourceMap[index]][1]){
-                            town.resources[resourceMap[index]][0] += 1
-                            resourcesAdded = 1
+                    }
+
+                    if(player.presenceTimer <= now.getTime()){
+                        //600000
+                        player.presenceTimer = now.getTime() + 600000
+                        let resourcesAdded = 0
+                        let resourceMap = ["minerals","wood","food"]
+                        if(player.job == "exp"){
+                            let levelUp = player.exp + 40 >= player.expCap
+                            let result = parseReward({
+                                type:"resource",
+                                resource:"exp",
+                                resourceName: "experience",
+                                amount: 40
+                            }, player)
+                            player = result[0]
+                            if(levelUp){
+                                let text = ""
+                                for(msg of result[1]){
+                                    text += "\n" + msg
+                                }
+                                const embed = new MessageEmbed()
+                                embed.setColor("#7289da")
+                                embed.addField("Level Up!",text)
+                                
+                                let removeRow = new MessageActionRow()
+                                .addComponents(
+                                    new MessageButton()
+                                    .setCustomId('deleteMessage')
+                                    .setLabel("Dismiss")
+                                    .setStyle('DANGER'))
+                                .addComponents(
+                                    new MessageButton()
+                                    .setCustomId('profilePopUp_NULL_' + player.id + '|' + message.author.avatar)
+                                    .setLabel("View Stats")
+                                    .setStyle('PRIMARY'))
+                                client.channels.fetch(message.channelId).then(channel=>{
+                                    channel.send({
+                                        embeds:[embed],
+                                        components:[removeRow]
+                                    })
+                                })
+                            }
+                            let index = Math.floor(Math.random() * resourceMap.length)
+                            if(town.resources[resourceMap[index]][0] + 1 < town.resources[resourceMap[index]][1]){
+                                town.resources[resourceMap[index]][0] += 1
+                                resourcesAdded = 1
+                            } else {
+                                resourcesAdded = town.resources[resourceMap[index]][1] - town.resources[resourceMap[index]][0]
+                                town.resources[resourceMap[index]][0] = town.resources[resourceMap[index]][1] 
+                            }
+                            needToUpdatePlayer = true
+                            needToUpdateTown = true
                         } else {
-                            resourcesAdded = town.resources[resourceMap[index]][1] - town.resources[resourceMap[index]][0]
-                            town.resources[resourceMap[index]][0] = town.resources[resourceMap[index]][1] 
+                            if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
+                                town.resources[resourceMap[player.job]][0] += 3
+                                resourcesAdded = 3
+                            } else {
+                                resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
+                                town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
+                            }
+                            needToUpdatePlayer = true
+                            needToUpdateTown = true
                         }
-                        needToUpdatePlayer = true
-                        needToUpdateTown = true
-                    } else {
-                        if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
-                            town.resources[resourceMap[player.job]][0] += 3
-                            resourcesAdded = 3
+                        if(!town.contributors){
+                            town.contributors = {}
+                        }
+                        if(!town.contributors[player.id]){
+                            town.contributors[player.id] = resourcesAdded
                         } else {
-                            resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
-                            town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
+                            town.contributors[player.id] += resourcesAdded
                         }
-                        needToUpdatePlayer = true
-                        needToUpdateTown = true
+                        town = formatTown(town)
                     }
-                    if(!town.contributors){
-                        town.contributors = {}
-                    }
-                    if(!town.contributors[player.id]){
-                        town.contributors[player.id] = resourcesAdded
-                    } else {
-                        town.contributors[player.id] += resourcesAdded
-                    }
-                    town = formatTown(town)
                 }
 
                 if(needToUpdatePlayer && needToUpdateTown){

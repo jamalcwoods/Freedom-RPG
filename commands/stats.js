@@ -28,11 +28,21 @@ module.exports = {
             }
         }
         
-        interaction.reply({
+        if(playerData.tutorial == 2){
+            newSession.session_data.tutorial = true
+            interaction.reply({
+                content: "From this menu you can spend skill points to increase and decrease your character's stats.\nTo start off, you need to have at least 10 points in HP, DEF, SPDEF, and at least 10 points in either ATK or SPATK\nThe remaining points can be spent however you like\n\nOnce you are done adjusting your stats, press the 'Save' button and then do the `/tutorial` command",
+                components: populateStatEditButtons(newSession),
+                embeds: populateStatEditWindow(newSession)
+        })
+        } else {
+            interaction.reply({
                 content: " ",
                 components: populateStatEditButtons(newSession),
                 embeds: populateStatEditWindow(newSession)
         })
+        }
+        
         callback({
             addSession:newSession
         })
