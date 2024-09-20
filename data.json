@@ -1,5 +1,5 @@
 {
-  "tutorialSteps":[
+  "tutorialSteps": [
     {
       "title": "Complete combat lessons",
       "instructions": "Visit a server's training hall, (type the `/town` command, then use the drop down to select the 'Training Hall') and complete the first 6 lessons"
@@ -2456,7 +2456,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.2,
               "lockStatTypes": false,
               "types": [
@@ -2474,7 +2474,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.2,
               "lockStatTypes": false,
               "types": [
@@ -2527,7 +2527,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.15,
               "lockStatTypes": true,
               "types": [
@@ -2545,7 +2545,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.15,
               "lockStatTypes": true,
               "types": [
@@ -2598,7 +2598,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.15,
               "lockStatTypes": true,
               "types": [
@@ -2616,7 +2616,7 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
+              "conStats": 1,
               "conValue": 0.15,
               "lockStatTypes": true,
               "types": [
@@ -2957,7 +2957,17 @@
         "playerBattlesWon": 0
       },
       "tutorial": 0,
-      "lessons":[0,0,0,0,0,0,0,0,0]
+      "lessons": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "emptyTownData": {
       "name": "",
@@ -5960,7 +5970,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Prideful Posture",
+        "name": "Prideful Stance",
         "guard_val": 40,
         "guard_type": "def",
         "success_level": 100,
@@ -6110,7 +6120,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Unflinching Posture",
+        "name": "Unflinching Stance",
         "guard_val": 25,
         "guard_type": "def",
         "success_level": 200,
@@ -6374,7 +6384,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Resist Posture",
+        "name": "Resist Stance",
         "guard_val": 25,
         "guard_type": "def",
         "success_level": 200,
@@ -6389,7 +6399,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Counter Posture",
+        "name": "Counter Stance",
         "guard_val": 20,
         "guard_type": "def",
         "success_level": 90,
@@ -6539,7 +6549,7 @@
       "allowanceCost": 2,
       "ability": {
         "action_type": "guard",
-        "name": "Defensive Posture",
+        "name": "Defensive Stance",
         "guard_val": 30,
         "guard_type": "def",
         "success_level": 100,
@@ -6695,7 +6705,7 @@
           }
         ],
         "speed": 1,
-        "focus": 75
+        "focus": 70
       },
       "id": 65,
       "wildUse": 1
@@ -6714,7 +6724,7 @@
           }
         ],
         "speed": 1,
-        "focus": 75
+        "focus": 70
       },
       "id": 66,
       "wildUse": 1
@@ -6752,7 +6762,7 @@
           }
         ],
         "speed": 2,
-        "focus": 65
+        "focus": 55
       },
       "id": 68,
       "wildUse": 1
@@ -6771,7 +6781,7 @@
           }
         ],
         "speed": 2,
-        "focus": 65
+        "focus": 55
       },
       "id": 69,
       "wildUse": 1

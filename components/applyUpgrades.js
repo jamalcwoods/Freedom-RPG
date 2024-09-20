@@ -101,18 +101,20 @@ module.exports = {
                         } else {
                             upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * session.session_data.town.level * 50)
                         }
+                        let equipmentType = ""
+                        switch(session.session_data.temp.equipmentSelection){
+                            case "0":
+                                equipmentType = "gear"
+                                break;
+    
+                            case "1":
+                                equipmentType = "weapon"
+                                break;
+                        }
+                        if(session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades){
+                            upgradeCost *= session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades
+                        }
                         if(session.session_data.player.gold >= upgradeCost){
-                            let equipmentType = ""
-                            switch(session.session_data.temp.equipmentSelection){
-                                case "0":
-                                    equipmentType = "gear"
-                                    break;
-        
-                                case "1":
-                                    equipmentType = "weapon"
-                                    break;
-                            }
-        
                             let stat = ""
                             if(upgrade.stat.includes("base")){
                                 stat = upgrade.stat + "Boost"
@@ -128,7 +130,12 @@ module.exports = {
                             let upgradeValue = Math.ceil(session.session_data.town.level * upgrade.multi) * upgrade.roll
         
                             targetEquipment.stats[stat] += upgradeValue
-                            
+
+                            if(targetEquipment.upgrades == undefined){
+                                targetEquipment.upgrades = 1
+                            }
+                            targetEquipment.upgrades++
+
                             session.session_data.player.gold -= upgradeCost
         
                             let upgradeTypeDict = {
@@ -155,6 +162,8 @@ module.exports = {
                             callback({
                                 updateSession:session
                             })
+                        } else {
+                            interaction.reply({ content: 'You can not afford to purchase this upgrade', ephemeral: true });
                         }
                     } else {
                         interaction.reply({ content: 'An upgrade option and equipment option must be selected', ephemeral: true });

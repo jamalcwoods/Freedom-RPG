@@ -1339,7 +1339,7 @@ let Attacks = [
 ]
 let Status = [
   {
-    "name": "Battle Stance",
+    "name": "Battle Posture",
     "allowanceCost": 2,
     "id": 60,
     "focus": 70,
@@ -1353,8 +1353,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 49
+    "wildUse": 1
   },
   {
     "name": "Combat Focus",
@@ -1371,8 +1370,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 49
+    "wildUse": 1
   },
   {
     "name": "Up Tempo",
@@ -1389,8 +1387,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 49
+    "wildUse": 1
   },
   {
     "name": "Intimidate",
@@ -1407,8 +1404,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 75
+    "wildUse": 1
   },
   {
     "name": "Cower",
@@ -1425,14 +1421,13 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 75
+    "wildUse": 1
   },
   {
     "name": "Glare",
     "allowanceCost": 3,
     "id": 65,
-    "focus": 75,
+    "focus": 70,
     "speed": 1,
     "t1": 2,
     "s1": "def",
@@ -1443,14 +1438,13 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 75
+    "wildUse": 1
   },
   {
     "name": "Startle",
     "allowanceCost": 3,
     "id": 66,
-    "focus": 75,
+    "focus": 70,
     "speed": 1,
     "t1": 2,
     "s1": "spdef",
@@ -1461,8 +1455,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 75
+    "wildUse": 1
   },
   {
     "name": "Gaze",
@@ -1479,14 +1472,13 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 49
+    "wildUse": 1
   },
   {
     "name": "Brace",
     "allowanceCost": 2,
     "id": 68,
-    "focus": 65,
+    "focus": 55,
     "speed": 2,
     "t1": 0,
     "s1": "def",
@@ -1497,14 +1489,13 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 46
+    "wildUse": 1
   },
   {
     "name": "Sharp Mind",
     "allowanceCost": 2,
     "id": 69,
-    "focus": 65,
+    "focus": 55,
     "speed": 2,
     "t1": 0,
     "s1": "spdef",
@@ -1515,8 +1506,7 @@ let Status = [
     "t3": 0,
     "s3": 0,
     "v3": 0,
-    "wildUse": 1,
-    "value": 46
+    "wildUse": 1
   }
 ]
 

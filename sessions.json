@@ -1,1264 +1,949 @@
 [
     {
-        "type": "combat",
-        "session_id": 85756,
+        "type": "townVisit",
+        "session_id": 15341,
         "user_ids": [
-            "591366578763858102"
+            "163809334852190208"
         ],
-        "server_id": "1038950677260550274",
         "session_data": {
-            "options": {
-                "fightType": "pve",
-                "alliances": [
-                    0,
-                    1,
-                    1
+            "player": {
+                "abilityPermissions": {
+                    "stance": false,
+                    "stats": false
+                },
+                "abilitypoints": 115,
+                "achievements": {
+                    "abilitiesUsed": 0,
+                    "dungeonsCleared": 0,
+                    "kills": 0,
+                    "livesLost": 0,
+                    "playerBattlesWon": 0,
+                    "raidLeaderKills": 0,
+                    "strongestAttack": 0,
+                    "tasksCompleted": 0
+                },
+                "ascends": 0,
+                "boosters": [
+                    {
+                        "expire": 0,
+                        "type": "none",
+                        "value": 0
+                    }
                 ],
-                "canFlee": true,
-                "canPerfect": true,
-                "freeExplore": true
+                "challengeTimer": 1726794212251,
+                "challenges": [
+                    {
+                        "goal": 5,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 0
+                    },
+                    {
+                        "goal": 3,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 5
+                    },
+                    {
+                        "goal": 12,
+                        "progress": 0,
+                        "rank": 3,
+                        "type": 7
+                    },
+                    {
+                        "goal": 50,
+                        "progress": 0,
+                        "rank": 1,
+                        "type": 1
+                    },
+                    {
+                        "goal": 12,
+                        "progress": 0,
+                        "rank": 3,
+                        "type": 9
+                    }
+                ],
+                "combatStyle": "0",
+                "dailyCount": 4,
+                "dailyText": "jeminiw received 110 experience ✨\njeminiw is now level 5!\njeminiw earned 250 gold💰\n\n(ATK +2)\n(DEF +1)\n(SPATK +2)\n(SPDEF +1)\njeminiw received 200 gold 💰\njeminiw received 40 ability points 💪\n",
+                "dailyTimer": 1726840762970,
+                "exp": 100,
+                "expCap": 375,
+                "exploreStreak": 0,
+                "gold": 11796168,
+                "id": "163809334852190208",
+                "inventory": [
+                    {
+                        "name": "Radiant Vambrace",
+                        "stats": {
+                            "atk": 0,
+                            "baseAtkBoost": 225,
+                            "baseDefBoost": 0,
+                            "baseSpAtkBoost": 0,
+                            "baseSpDefBoost": 0,
+                            "def": 0,
+                            "hp": 0,
+                            "spatk": 296,
+                            "spd": 147,
+                            "spdef": 0
+                        },
+                        "type": "weapon",
+                        "typePerks": [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "upgrades": 6,
+                        "weaponStyle": 2
+                    }
+                ],
+                "job": "exp",
+                "lessons": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "level": 6,
+                "lives": 1,
+                "name": "jeminiw",
+                "presenceTimer": 1726794212251,
+                "race": "0",
+                "session": 77150,
+                "stance": "none",
+                "stances": {
+                    "atk": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "def": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "hp": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "spatk": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "spd": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    },
+                    "spdef": {
+                        "active": false,
+                        "points": 0,
+                        "surgeTimer": 0,
+                        "upgrades": [
+                            0,
+                            0,
+                            0
+                        ]
+                    }
+                },
+                "statGrowthTimer": 0,
+                "statpoints": 65,
+                "stats": {
+                    "atk": 10,
+                    "def": 3,
+                    "hp": 3,
+                    "spatk": 8,
+                    "spd": 4,
+                    "spdef": 8
+                },
+                "taskTimer": 0,
+                "totalExp": 1000,
+                "tutorial": "completed",
+                "weapon": "0"
             },
-            "fighters": [
-                {
-                    "weapon": null,
-                    "gear": null,
-                    "alive": true,
-                    "forfeit": false,
-                    "index": 0,
-                    "discriminator": "380308",
-                    "currentTarget": "374311",
-                    "staticData": {
-                        "abilities": [
-                            {
-                                "accuracy": 100,
-                                "action_type": "attack",
-                                "critical": 0,
-                                "damage_type": "atk",
-                                "damage_val": 35,
-                                "name": "Starter Attack",
-                                "numHits": 1,
-                                "recoil": 0,
-                                "speed": 1,
-                                "stance": "none",
-                                "targetType": "1"
+            "town": {
+                "armorylistings": {
+                    "ability": [
+                        {
+                            "roll": 5,
+                            "stat": "accuracy",
+                            "type": "attack"
+                        },
+                        {
+                            "roll": 5,
+                            "stat": "guard_val",
+                            "type": "guard"
+                        },
+                        {
+                            "roll": 2,
+                            "stat": "speed",
+                            "type": "stats"
+                        },
+                        {
+                            "roll": 2,
+                            "stat": "speed",
+                            "type": "attack"
+                        },
+                        {
+                            "roll": 2,
+                            "stat": "success_level",
+                            "type": "guard"
+                        }
+                    ],
+                    "equipment": [
+                        {
+                            "multi": 0.4,
+                            "roll": 5,
+                            "stat": "spdef"
+                        },
+                        {
+                            "multi": 1,
+                            "roll": 5,
+                            "stat": "hp"
+                        },
+                        {
+                            "multi": 0.4,
+                            "roll": 5,
+                            "stat": "spatk"
+                        },
+                        {
+                            "multi": 1.2,
+                            "pow": true,
+                            "roll": 1,
+                            "stat": "baseSpAtk"
+                        },
+                        {
+                            "multi": 1.2,
+                            "pow": true,
+                            "roll": 3,
+                            "stat": "baseAtk"
+                        }
+                    ]
+                },
+                "availableAbilities": [
+                    [
+                        {
+                            "accuracy": 80,
+                            "action_type": "attack",
+                            "critical": 15,
+                            "damage_type": "atk",
+                            "damage_val": 75,
+                            "name": "Lagging Risky Endeavor Combo",
+                            "numHits": 3,
+                            "recoil": 0,
+                            "speed": 0,
+                            "stance": "none",
+                            "targetType": "1"
+                        },
+                        22129
+                    ],
+                    [
+                        {
+                            "action_type": "guard",
+                            "counter_type": "spdef",
+                            "counter_val": 175,
+                            "guard_type": "spdef",
+                            "guard_val": 95,
+                            "name": "Intrusive Awareness",
+                            "speed": 3,
+                            "success_level": "100"
+                        },
+                        21688
+                    ],
+                    [
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "spatk",
+                                    "target": "0",
+                                    "value": 1
+                                },
+                                {
+                                    "stat": "spdef",
+                                    "target": "0",
+                                    "value": 1
+                                },
+                                {
+                                    "stat": "atk",
+                                    "target": "0",
+                                    "value": -1
+                                }
+                            ],
+                            "focus": 100,
+                            "name": "Stimulating Urgent Practiced Pose",
+                            "speed": 4,
+                            "statChangeCount": 2
+                        },
+                        22055
+                    ],
+                    [
+                        {
+                            "accuracy": 130,
+                            "action_type": "attack",
+                            "critical": 80,
+                            "damage_type": "atk",
+                            "damage_val": 10,
+                            "name": "Extensive Immaculate Lagging Slap Storm",
+                            "numHits": 5,
+                            "recoil": 0,
+                            "speed": 0,
+                            "stance": "none",
+                            "targetType": "2"
+                        },
+                        22217
+                    ],
+                    [
+                        {
+                            "action_type": "guard",
+                            "counter_type": "def",
+                            "counter_val": 100,
+                            "guard_type": "def",
+                            "guard_val": 200,
+                            "name": "Intrusive Garrison",
+                            "speed": 3,
+                            "success_level": "100"
+                        },
+                        22217
+                    ],
+                    [
+                        {
+                            "action_type": "stats",
+                            "effects": [
+                                {
+                                    "stat": "def",
+                                    "target": "0",
+                                    "value": 1
+                                },
+                                {
+                                    "stat": "atk",
+                                    "target": "0",
+                                    "value": 1
+                                },
+                                {
+                                    "stat": "spatk",
+                                    "target": "0",
+                                    "value": -1
+                                }
+                            ],
+                            "focus": 100,
+                            "name": "Solidifying Immediate Practiced Posture",
+                            "speed": 4,
+                            "statChangeCount": 2
+                        },
+                        22055
+                    ]
+                ],
+                "contributors": {
+                    "163809334852190208": 1416,
+                    "176112761477136384": 2,
+                    "192436871127760896": 4335,
+                    "207680443200307201": 703,
+                    "291237268075839489": 5065,
+                    "310599778654224384": 4,
+                    "316997865920790529": 1,
+                    "317743993704415243": 2,
+                    "320775354845364225": 66,
+                    "359934051525591041": 4,
+                    "388549749269069849": 69,
+                    "390584624390209542": 1,
+                    "393996070234882050": 7,
+                    "403036391673430016": 1656,
+                    "414547907379855363": 5,
+                    "418471135458623490": 419,
+                    "450861761705541632": 4,
+                    "501859839295619073": 42,
+                    "591366578763858102": 10,
+                    "662779502329462806": 2196,
+                    "725138553792888922": 2341,
+                    "754457178546634905": 142,
+                    "84066540835573760": 923
+                },
+                "dungeonClear": false,
+                "hallOwner": {
+                    "abilitypoints": 0,
+                    "combatStyle": "0",
+                    "cpu": true,
+                    "exp": 0,
+                    "faction": "-1",
+                    "id": "hallNPC",
+                    "level": 12,
+                    "lives": 1,
+                    "name": "Hall Warden",
+                    "race": "0",
+                    "statpoints": 0,
+                    "stats": {
+                        "atk": 11,
+                        "def": 11,
+                        "hp": 22,
+                        "spatk": 11,
+                        "spd": 11,
+                        "spdef": 11
+                    },
+                    "totalExp": 0
+                },
+                "hallReset": 1726854113379,
+                "hallStart": 1714187617655,
+                "id": "1038950677260550274",
+                "lastRaid": 1726854113379,
+                "level": 14,
+                "listings": [
+                    [
+                        {
+                            "name": "Radiant Vambrace",
+                            "stats": {
+                                "atk": 0,
+                                "baseAtkBoost": -30,
+                                "baseDefBoost": 0,
+                                "baseSpAtkBoost": 0,
+                                "baseSpDefBoost": 0,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 296,
+                                "spd": 147,
+                                "spdef": 0
                             },
-                            {
-                                "action_type": "guard",
-                                "counter_type": "def",
-                                "counter_val": 0,
-                                "guard_type": "def",
-                                "guard_val": 30,
-                                "name": "Starter Guard",
-                                "speed": 3,
-                                "stance": "none",
-                                "success_level": 100
+                            "type": "weapon",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 2
+                        },
+                        22692
+                    ],
+                    [
+                        {
+                            "name": "Worn Divine Uniform",
+                            "stats": {
+                                "atk": 0,
+                                "baseAtkBoost": 0,
+                                "baseDefBoost": 20,
+                                "baseSpAtkBoost": 0,
+                                "baseSpDefBoost": 10,
+                                "def": -101,
+                                "hp": 22,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 162
                             },
-                            {
-                                "action_type": "stats",
-                                "effects": [
-                                    {
-                                        "stat": "atk",
-                                        "target": "0",
-                                        "value": 1
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 0
+                        },
+                        27828
+                    ],
+                    [
+                        {
+                            "name": "Grim Rapid Bow",
+                            "stats": {
+                                "atk": 215,
+                                "baseAtkBoost": 20,
+                                "baseDefBoost": 0,
+                                "baseSpAtkBoost": -35,
+                                "baseSpDefBoost": 0,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": 68,
+                                "spd": 204,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 1
+                        },
+                        26539
+                    ],
+                    [
+                        {
+                            "name": "Malleable Sturdy Mediating Armor",
+                            "stats": {
+                                "atk": 0,
+                                "baseAtkBoost": 0,
+                                "baseDefBoost": 15,
+                                "baseSpAtkBoost": 0,
+                                "baseSpDefBoost": 5,
+                                "def": 82,
+                                "hp": 37,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": -93
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                5
+                            ],
+                            "weaponStyle": 0
+                        },
+                        25487
+                    ],
+                    [
+                        {
+                            "name": "Diluted Energized Crippling Battle Ambience",
+                            "stats": {
+                                "atk": 74,
+                                "baseAtkBoost": 40,
+                                "baseDefBoost": 0,
+                                "baseSpAtkBoost": 40,
+                                "baseSpDefBoost": 0,
+                                "def": 0,
+                                "hp": 0,
+                                "spatk": -111,
+                                "spd": 146,
+                                "spdef": 0
+                            },
+                            "type": "weapon",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                5,
+                                0
+                            ],
+                            "weaponStyle": 3
+                        },
+                        26773
+                    ],
+                    [
+                        {
+                            "name": "Sacred Cloak",
+                            "stats": {
+                                "atk": 0,
+                                "baseAtkBoost": 0,
+                                "baseDefBoost": 5,
+                                "baseSpAtkBoost": 0,
+                                "baseSpDefBoost": -15,
+                                "def": 0,
+                                "hp": 33,
+                                "spatk": 0,
+                                "spd": 0,
+                                "spdef": 185
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "weaponStyle": 0
+                        },
+                        19792
+                    ]
+                ],
+                "marketRestock": 1726849399513,
+                "name": "Untitled Discord RPG Official Server",
+                "points": 0,
+                "raid": {
+                    "completion": 0,
+                    "leader": {
+                        "equipment": {
+                            "name": "Glush's Hectic Supple Battle Garb",
+                            "stats": {
+                                "atk": 178,
+                                "baseAtkBoost": 0,
+                                "baseDefBoost": 0,
+                                "baseSpAtkBoost": 0,
+                                "baseSpDefBoost": 0,
+                                "def": 78,
+                                "hp": 0,
+                                "spatk": 89,
+                                "spd": 295,
+                                "spdef": 0
+                            },
+                            "type": "gear",
+                            "typePerks": [
+                                0,
+                                0,
+                                0,
+                                0,
+                                5,
+                                0,
+                                5,
+                                0,
+                                0,
+                                5
+                            ],
+                            "weaponStyle": 0
+                        },
+                        "name": "Glush",
+                        "unit": {
+                            "abilities": [
+                                {
+                                    "accuracy": 110,
+                                    "action_type": "attack",
+                                    "critical": 20,
+                                    "damage_type": "atk",
+                                    "damage_val": 90,
+                                    "name": "Focused Dicey Collision",
+                                    "numHits": 1,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "stance": "none",
+                                    "targetType": "1"
+                                },
+                                {
+                                    "accuracy": 110,
+                                    "action_type": "attack",
+                                    "critical": 80,
+                                    "damage_type": "spatk",
+                                    "damage_val": 10,
+                                    "name": "Focused Jolt Flurry",
+                                    "numHits": 5,
+                                    "recoil": 0,
+                                    "speed": 1,
+                                    "stance": "none",
+                                    "targetType": "1"
+                                }
+                            ],
+                            "abilitypoints": 0,
+                            "combatStyle": "0",
+                            "cpu": true,
+                            "exp": 0,
+                            "faction": "-1",
+                            "gear": 0,
+                            "highestStat": "spatk",
+                            "id": "raidBoss",
+                            "inventory": [
+                                {
+                                    "name": "Glush's Hectic Supple Battle Garb",
+                                    "stats": {
+                                        "atk": 178,
+                                        "baseAtkBoost": 0,
+                                        "baseDefBoost": 0,
+                                        "baseSpAtkBoost": 0,
+                                        "baseSpDefBoost": 0,
+                                        "def": 78,
+                                        "hp": 0,
+                                        "spatk": 89,
+                                        "spd": 295,
+                                        "spdef": 0
                                     },
-                                    {
-                                        "stat": "spatk",
-                                        "target": "0",
-                                        "value": 1
-                                    }
-                                ],
-                                "name": "Starter Buff",
-                                "speed": 1,
-                                "stance": "none",
-                                "statChangeCount": 2
+                                    "type": "gear",
+                                    "typePerks": [
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        5,
+                                        0,
+                                        5,
+                                        0,
+                                        0,
+                                        5
+                                    ],
+                                    "weaponStyle": 0
+                                }
+                            ],
+                            "level": 172,
+                            "lives": 3,
+                            "name": "Glush",
+                            "passives": [
+                                {
+                                    "id": 9,
+                                    "rank": 0
+                                },
+                                {
+                                    "id": 0,
+                                    "rank": 3
+                                },
+                                {
+                                    "id": 7,
+                                    "rank": 2
+                                }
+                            ],
+                            "race": "0",
+                            "statpoints": 0,
+                            "stats": {
+                                "atk": 203,
+                                "def": 185,
+                                "hp": 316,
+                                "spatk": 396,
+                                "spd": 208,
+                                "spdef": 260
+                            },
+                            "tele": 0.3,
+                            "totalExp": 0
+                        }
+                    },
+                    "missions": [
+                        [
+                            {
+                                "type": 3
                             },
                             {
-                                "accuracy": 100,
-                                "action_type": "attack",
-                                "critical": 10,
-                                "damage_type": "spatk",
-                                "damage_val": 35,
-                                "name": "spooky spell",
-                                "numHits": 1,
-                                "recoil": 5,
-                                "speed": 1,
-                                "stance": "none",
-                                "targetType": "1"
-                            },
-                            {
-                                "accuracy": 90,
-                                "action_type": "attack",
-                                "critical": 0,
-                                "damage_type": "spatk",
-                                "damage_val": 20,
-                                "name": "aoe1",
-                                "numHits": 1,
-                                "recoil": 0,
-                                "speed": 1,
-                                "stance": "none",
-                                "targetType": "2"
+                                "type": 4
                             }
                         ],
-                        "abilityPermissions": {
-                            "stance": false,
-                            "stats": false
-                        },
-                        "abilitypoints": 193,
-                        "achievements": {
-                            "abilitiesUsed": 220,
-                            "dungeonsCleared": 0,
-                            "kills": 18,
-                            "livesLost": 0,
-                            "playerBattlesWon": 0,
-                            "raidLeaderKills": 0,
-                            "strongestAttack": 43,
-                            "tasksCompleted": 0
-                        },
-                        "ascends": 0,
-                        "challengeTimer": 1726767691913,
-                        "challenges": [
+                        [
                             {
-                                "goal": 6,
-                                "progress": 3,
-                                "rank": 2,
-                                "type": 12
+                                "type": 1
                             },
                             {
-                                "goal": 50,
-                                "progress": 27,
-                                "rank": 2,
-                                "type": 13
-                            },
+                                "type": 2
+                            }
+                        ],
+                        [
                             {
-                                "goal": 100,
-                                "progress": 43,
-                                "rank": 2,
                                 "type": 1
                             }
-                        ],
-                        "combatStyle": "2",
-                        "dailyCount": 3,
-                        "dailyText": "the_untitled received 590 experience ✨\nthe_untitled is now level 10!\nthe_untitled earned 500 gold💰\n\n(HP +1)\n(ATK +1)\n(SPATK +1)\n(SPDEF +3)\nthe_untitled received 150 gold 💰\nthe_untitled received 30 ability points 💪\n",
-                        "dailyTimer": 1726853491913,
-                        "exp": 622,
-                        "expCap": 725,
-                        "exploreRecord": 5,
-                        "exploreRegion": "Forest",
-                        "exploreStreak": 0,
-                        "gold": 4680,
-                        "id": "591366578763858102",
-                        "inventory": [
-                            {
-                                "name": "Suppressed Hectic Spirit",
-                                "stats": {
-                                    "atk": 4,
-                                    "baseAtkBoost": 5,
-                                    "baseDefBoost": 0,
-                                    "baseSpAtkBoost": 5,
-                                    "baseSpDefBoost": 0,
-                                    "def": 0,
-                                    "hp": 0,
-                                    "spatk": -5,
-                                    "spd": 5,
-                                    "spdef": 0
-                                },
-                                "type": "weapon",
-                                "typePerks": [
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "weaponStyle": 3
-                            },
-                            {
-                                "name": "Malleable Stable Keen Armor",
-                                "stats": {
-                                    "atk": 0,
-                                    "baseAtkBoost": 0,
-                                    "baseDefBoost": 0,
-                                    "baseSpAtkBoost": 0,
-                                    "baseSpDefBoost": 0,
-                                    "def": 4,
-                                    "hp": 1,
-                                    "spatk": 0,
-                                    "spd": 0,
-                                    "spdef": -5
-                                },
-                                "type": "gear",
-                                "typePerks": [
-                                    0,
-                                    0,
-                                    0,
-                                    2,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "weaponStyle": 0
-                            },
-                            {
-                                "name": "Weighted Radiant Battle Scepter",
-                                "stats": {
-                                    "atk": 11,
-                                    "baseAtkBoost": 0,
-                                    "baseDefBoost": 0,
-                                    "baseSpAtkBoost": 0,
-                                    "baseSpDefBoost": 0,
-                                    "def": 0,
-                                    "hp": 0,
-                                    "spatk": 17,
-                                    "spd": -12,
-                                    "spdef": 0
-                                },
-                                "type": "weapon",
-                                "typePerks": [
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "weaponStyle": 2
-                            },
-                            {
-                                "name": "Fortified Lucky Ward Guise",
-                                "stats": {
-                                    "atk": 0,
-                                    "baseAtkBoost": 0,
-                                    "baseDefBoost": 0,
-                                    "baseSpAtkBoost": 0,
-                                    "baseSpDefBoost": -5,
-                                    "def": 4,
-                                    "hp": 1,
-                                    "spatk": 0,
-                                    "spd": 0,
-                                    "spdef": 4
-                                },
-                                "type": "gear",
-                                "typePerks": [
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    2,
-                                    0
-                                ],
-                                "weaponStyle": 0
-                            }
-                        ],
-                        "job": "exp",
-                        "lastEncounter": 1726767214466,
-                        "leaderEncounter": 0,
-                        "level": 10,
-                        "lives": 1,
-                        "meterRank": 0,
-                        "name": "the_untitled",
-                        "presenceTimer": 1726767691913,
-                        "race": "3",
-                        "stance": "hp",
-                        "stances": {
-                            "atk": {
-                                "active": true,
-                                "points": 70,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    0,
-                                    1,
-                                    1
-                                ]
-                            },
-                            "def": {
-                                "active": true,
-                                "points": 54,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    2,
-                                    1,
-                                    0
-                                ]
-                            },
-                            "hp": {
-                                "active": true,
-                                "points": 39,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    2,
-                                    0,
-                                    0
-                                ]
-                            },
-                            "spatk": {
-                                "active": false,
-                                "points": 84,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ]
-                            },
-                            "spd": {
-                                "active": true,
-                                "points": 70,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    0,
-                                    1,
-                                    3
-                                ]
-                            },
-                            "spdef": {
-                                "active": false,
-                                "points": 0,
-                                "surgeTimer": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ]
-                            }
-                        },
-                        "statGrowthTimer": 1726774914466,
-                        "statpoints": 20,
-                        "stats": {
-                            "atk": 20,
-                            "def": 19,
-                            "hp": 30,
-                            "spatk": 22,
-                            "spd": 19,
-                            "spdef": 20
-                        },
-                        "taskTimer": 0,
-                        "totalExp": 3522,
-                        "tutorial": "completed"
-                    },
-                    "liveData": {
-                        "stats": {
-                            "atk": 20,
-                            "def": 19,
-                            "hp": 19,
-                            "spatk": 22,
-                            "spd": 19,
-                            "spdef": 20
-                        },
-                        "statChanges": {
-                            "atk": 9,
-                            "spatk": 9,
-                            "def": 8,
-                            "spdef": 8,
-                            "spd": 8
-                        },
-                        "healing": 0,
-                        "maxhp": 30
-                    },
-                    "records": {
-                        "timesBlocked": 3,
-                        "timesHit": 11,
-                        "attacks": 1,
-                        "guards": 3,
-                        "spattacks": 7,
-                        "spguards": 0,
-                        "statChanges": 1,
-                        "weaponsLooted": 0,
-                        "gearLooted": 0,
-                        "raresDefeated": 0,
-                        "enemyDamageTaken": 11,
-                        "attackDamageDone": 80,
-                        "baseDamageBlocked": 75,
-                        "counterDamageDone": 0,
-                        "recoilDamageTaken": 0,
-                        "unitsDefeated": 2,
-                        "criticalsLanded": 0,
-                        "completeBlocks": 2,
-                        "timesStatsLowered": 0,
-                        "timesStatsRaised": 2,
-                        "timesFirstAttack": 2,
-                        "timesAbilityRepeat": 1,
-                        "livesLost": 0,
-                        "strongestStrike": 25,
-                        "empoweredAbilities": 2,
-                        "stanceSwitches": 0,
-                        "resistedAttacks": 0,
-                        "attacksResisted": 9,
-                        "effectiveAttacks": 0,
-                        "attacksEffected": 0
-                    },
-                    "choosenAbility": -1,
-                    "target": -1,
-                    "repeats": 0,
-                    "hasActed": true,
-                    "lastAction": "0_spooky spell_1_1",
-                    "guardData": "none",
-                    "meter": 9,
-                    "empowered": false,
-                    "gearPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "weaponPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "team": 0,
-                    "hitThisTurn": false,
-                    "lastDamageTakenType": "spatk"
-                },
-                {
-                    "weapon": null,
-                    "gear": null,
-                    "alive": false,
-                    "forfeit": false,
-                    "index": 1,
-                    "discriminator": "374311",
-                    "currentTarget": "380308",
-                    "staticData": {
-                        "rareVar": false,
-                        "name": "Giant Dragonfly",
-                        "id": 504,
-                        "cpu": true,
-                        "intelligence": {
-                            "reuse": 0.4
-                        },
-                        "stance": "none",
-                        "race": "0",
-                        "combatStyle": "0",
-                        "exp": 0,
-                        "abilitypoints": 0,
-                        "statpoints": 0,
-                        "lives": 1,
-                        "abilities": [
-                            {
-                                "critical": 100,
-                                "damage_type": "spatk",
-                                "damage_val": 25,
-                                "name": "Disturbing Buzz",
-                                "speed": 1,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "accuracy": 100,
-                                "numHits": 1,
-                                "recoil": 0,
-                                "targetType": 1
-                            },
-                            {
-                                "critical": 0,
-                                "damage_type": "atk",
-                                "damage_val": 25,
-                                "name": "Standard Strike",
-                                "speed": 1,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "accuracy": 90,
-                                "numHits": 1,
-                                "recoil": 0,
-                                "targetType": 1
-                            },
-                            {
-                                "action_type": "stats",
-                                "name": "Toughening Sudden Cheer",
-                                "statChangeCount": 2,
-                                "effects": [
-                                    {
-                                        "target": "1",
-                                        "stat": "def",
-                                        "value": 3
-                                    },
-                                    {
-                                        "target": "0",
-                                        "stat": "spdef",
-                                        "value": -1
-                                    }
-                                ],
-                                "speed": 1,
-                                "focus": 60,
-                                "stance": "none"
-                            },
-                            {
-                                "critical": 40,
-                                "damage_type": "atk",
-                                "damage_val": 40,
-                                "name": "Seeking Careless Assault",
-                                "speed": 1,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "numHits": 1,
-                                "recoil": 0,
-                                "targetType": "1",
-                                "accuracy": 80
-                            },
-                            {
-                                "critical": 80,
-                                "damage_type": "spatk",
-                                "damage_val": 10,
-                                "name": "Simple Jolt Storm",
-                                "speed": 1,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "numHits": 5,
-                                "recoil": 0,
-                                "targetType": "1",
-                                "accuracy": 100
-                            },
-                            {
-                                "critical": 20,
-                                "damage_type": "atk",
-                                "damage_val": 30,
-                                "name": "Precision Strike",
-                                "speed": 1,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "accuracy": 100,
-                                "numHits": 1,
-                                "recoil": 10,
-                                "targetType": 1
-                            }
-                        ],
-                        "level": 5,
-                        "totalExp": 0,
-                        "stats": {
-                            "hp": 28,
-                            "atk": 10,
-                            "def": 11,
-                            "spatk": 11,
-                            "spdef": 16,
-                            "spd": 12
-                        },
-                        "lootPoint": 5,
-                        "weakPoint": 4,
-                        "region": "Forest",
-                        "droptable": [
-                            {
-                                "chance": 40,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 15
-                                }
-                            },
-                            {
-                                "chance": 27.5,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 25
-                                }
-                            },
-                            {
-                                "chance": 17.5,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 50
-                                }
-                            },
-                            {
-                                "chance": 5,
-                                "obj": {
-                                    "nothing": true
-                                }
-                            },
-                            {
-                                "chance": 4,
-                                "obj": {
-                                    "ref": {
-                                        "type": "rngEquipment",
-                                        "rngEquipment": {
-                                            "scaling": true,
-                                            "value": 1,
-                                            "conStats": 1,
-                                            "conValue": 0.15,
-                                            "lockStatTypes": true,
-                                            "types": [
-                                                "weapon"
-                                            ]
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "chance": 6,
-                                "obj": {
-                                    "ref": {
-                                        "type": "rngEquipment",
-                                        "rngEquipment": {
-                                            "scaling": true,
-                                            "value": 1,
-                                            "conStats": 1,
-                                            "conValue": 0.15,
-                                            "lockStatTypes": true,
-                                            "types": [
-                                                "gear"
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        ],
-                        "stances": {
-                            "hp": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "atk": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "def": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "spatk": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "spdef": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "spd": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            }
-                        },
-                        "exploreStreak": 0
-                    },
-                    "liveData": {
-                        "stats": {
-                            "hp": 0,
-                            "atk": 10,
-                            "def": 11,
-                            "spatk": 11,
-                            "spdef": 16,
-                            "spd": 12
-                        },
-                        "statChanges": {
-                            "atk": 8,
-                            "spatk": 8,
-                            "def": 16,
-                            "spdef": 4,
-                            "spd": 8
-                        },
-                        "healing": 0,
-                        "maxhp": 28
-                    },
-                    "records": {
-                        "timesBlocked": 0,
-                        "timesHit": 5,
-                        "attacks": 2,
-                        "guards": 0,
-                        "spattacks": 7,
-                        "spguards": 0,
-                        "statChanges": 4,
-                        "weaponsLooted": 0,
-                        "gearLooted": 0,
-                        "raresDefeated": 0,
-                        "enemyDamageTaken": 45,
-                        "attackDamageDone": 7,
-                        "baseDamageBlocked": 0,
-                        "counterDamageDone": 0,
-                        "recoilDamageTaken": 0,
-                        "unitsDefeated": 0,
-                        "criticalsLanded": 4,
-                        "completeBlocks": 0,
-                        "timesStatsLowered": 0,
-                        "timesStatsRaised": 6,
-                        "timesFirstAttack": 5,
-                        "timesAbilityRepeat": 0,
-                        "livesLost": 1,
-                        "strongestStrike": 5,
-                        "empoweredAbilities": 0,
-                        "stanceSwitches": 0,
-                        "resistedAttacks": 5,
-                        "attacksResisted": 0,
-                        "effectiveAttacks": 0,
-                        "attacksEffected": 0
-                    },
-                    "choosenAbility": -2,
-                    "target": -1,
-                    "repeats": 0,
-                    "hasActed": true,
-                    "lastAction": "1_Toughening Sudden Cheer_undefined_1",
-                    "guardData": "none",
-                    "weaponPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "gearPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "weakPointHit": false,
-                    "lootPointHit": true,
-                    "team": 1,
-                    "hitThisTurn": false,
-                    "lastDamageTakenType": "spatk",
-                    "typeHistory": [
-                        "attack"
+                        ]
                     ]
                 },
-                {
-                    "weapon": null,
-                    "gear": null,
-                    "alive": false,
-                    "forfeit": false,
-                    "index": 2,
-                    "discriminator": "758947",
-                    "currentTarget": "380308",
-                    "staticData": {
-                        "rareVar": false,
-                        "name": "Playful Seal",
-                        "id": 304,
-                        "cpu": true,
-                        "intelligence": {
-                            "reuse": 0.4
-                        },
-                        "stance": "none",
-                        "race": "0",
-                        "combatStyle": "0",
-                        "exp": 0,
-                        "abilitypoints": 0,
-                        "statpoints": 0,
-                        "lives": 1,
-                        "abilities": [
-                            {
-                                "critical": 15,
-                                "damage_type": "atk",
-                                "damage_val": 10,
-                                "name": "Sucker Slap",
-                                "speed": 4,
-                                "stance": "none",
-                                "action_type": "attack",
-                                "accuracy": 100,
-                                "numHits": 1,
-                                "recoil": 0,
-                                "targetType": 1
-                            },
-                            {
-                                "action_type": "guard",
-                                "name": "Simple Perception",
-                                "guard_val": 110,
-                                "guard_type": "spdef",
-                                "success_level": "100",
-                                "counter_val": 0,
-                                "counter_type": "spdef",
-                                "speed": 3,
-                                "stance": "none"
-                            }
-                        ],
-                        "level": 5,
-                        "totalExp": 0,
-                        "stats": {
-                            "hp": 16,
-                            "atk": 17,
-                            "def": 12,
-                            "spatk": 13,
-                            "spdef": 13,
-                            "spd": 11
-                        },
-                        "lootPoint": 3,
-                        "weakPoint": 3,
-                        "region": "Tundra",
-                        "droptable": [
-                            {
-                                "chance": 40,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 15
-                                }
-                            },
-                            {
-                                "chance": 27.5,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 25
-                                }
-                            },
-                            {
-                                "chance": 17.5,
-                                "obj": {
-                                    "type": "resource",
-                                    "resource": "gold",
-                                    "resourceName": "gold",
-                                    "amount": 50
-                                }
-                            },
-                            {
-                                "chance": 5,
-                                "obj": {
-                                    "nothing": true
-                                }
-                            },
-                            {
-                                "chance": 4,
-                                "obj": {
-                                    "ref": {
-                                        "type": "rngEquipment",
-                                        "rngEquipment": {
-                                            "scaling": true,
-                                            "value": 1,
-                                            "conStats": 1,
-                                            "conValue": 0.15,
-                                            "lockStatTypes": true,
-                                            "types": [
-                                                "weapon"
-                                            ]
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "chance": 6,
-                                "obj": {
-                                    "ref": {
-                                        "type": "rngEquipment",
-                                        "rngEquipment": {
-                                            "scaling": true,
-                                            "value": 1,
-                                            "conStats": 1,
-                                            "conValue": 0.15,
-                                            "lockStatTypes": true,
-                                            "types": [
-                                                "gear"
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        ],
-                        "stances": {
-                            "hp": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
+                "regions": [
+                    "Tundra",
+                    "Forest"
+                ],
+                "reputations": {
+                    "163809334852190208": 13247,
+                    "192436871127760896": 2977,
+                    "207680443200307201": 128,
+                    "291237268075839489": 4042,
+                    "320775354845364225": 3,
+                    "388549749269069849": 14,
+                    "393996070234882050": 15,
+                    "403036391673430016": 1011,
+                    "418471135458623490": 76,
+                    "501859839295619073": 14,
+                    "662779502329462806": 1035,
+                    "725138553792888922": 9,
+                    "84066540835573760": 1134
+                },
+                "resources": {
+                    "food": [
+                        538,
+                        5120
+                    ],
+                    "minerals": [
+                        1060,
+                        5120
+                    ],
+                    "wood": [
+                        637,
+                        5120
+                    ]
+                },
+                "taskList": [
+                    {
+                        "description": "A member of the town would like some assistance in rebuilding their home after the last storm.",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Building Repair",
+                        "repReward": 3,
+                        "solutionMap": {
                             "atk": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
+                                "multi": 1,
+                                "solution": "Use brute strength",
+                                "solutionDesc": "Use your strength to rebuild the house efficiently. "
                             },
                             "def": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
+                                "multi": 0.75,
+                                "solution": "Provide foundation",
+                                "solutionDesc": "Rely on your constitution to hold things in place while others work on the house's structure."
+                            },
+                            "hp": {
+                                "multi": 1,
+                                "solution": "Work tirelessly",
+                                "solutionDesc": "Use your perseverance to work nonstop on rebuilding the house."
                             },
                             "spatk": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
-                            },
-                            "spdef": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
+                                "multi": 0.5,
+                                "solution": "Rebuild with magic",
+                                "solutionDesc": "Use supernatural forces to manipulate the pieces of the house back into place."
                             },
                             "spd": {
-                                "active": false,
-                                "points": 0,
-                                "upgrades": [
-                                    0,
-                                    0,
-                                    0
-                                ],
-                                "surgeTimer": 0
+                                "multi": 0.5,
+                                "solution": "Work hastily",
+                                "solutionDesc": "Use your dexterity to be everywhere at once, working on the house as quickly as possible."
+                            },
+                            "spdef": {
+                                "multi": 0.5,
+                                "solution": "Stabilize with magic",
+                                "solutionDesc": "Use supernatural forces to protect and stabilize the house while others work on the house's structure."
                             }
                         },
-                        "exploreStreak": 0
+                        "suggestedSolutionPrompt": "Physical strength would be helpful in taking care of the many tasks need for construction",
+                        "taskPrompt": "Determine the best way to help them reconstruct their home"
                     },
-                    "liveData": {
-                        "stats": {
-                            "hp": 0,
-                            "atk": 17,
-                            "def": 12,
-                            "spatk": 13,
-                            "spdef": 13,
-                            "spd": 11
+                    {
+                        "description": "The cattle of the town have gotten loose! They've spread themselves all around the town.",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Cattle Round Up",
+                        "repReward": 3,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 0.5,
+                                "solution": "Scare with attacks",
+                                "solutionDesc": "Scare the cattle back to their pens by using intimidating attacks."
+                            },
+                            "def": {
+                                "multi": 0.5,
+                                "solution": "Wear them out",
+                                "solutionDesc": "Resist their attempts to flee until they tire and can be easily led back to their pens."
+                            },
+                            "hp": {
+                                "multi": 0.5,
+                                "solution": "Carry them all back",
+                                "solutionDesc": "Collect the cattle by lifting them and return them to their pens."
+                            },
+                            "spatk": {
+                                "multi": 1,
+                                "solution": "Lure with magic",
+                                "solutionDesc": "Use powerful magic to scare the cattle back into their pens."
+                            },
+                            "spd": {
+                                "multi": 0.75,
+                                "solution": "Catch them one by one",
+                                "solutionDesc": "Use your agility to catch each one individually and return them to their pen."
+                            },
+                            "spdef": {
+                                "multi": 1,
+                                "solution": "Block their escape",
+                                "solutionDesc": "Use magic to set up blockades so that the cattle have no where to run."
+                            }
                         },
-                        "statChanges": {
-                            "atk": 3,
-                            "spatk": 8,
-                            "def": 3,
-                            "spdef": 3,
-                            "spd": 8
+                        "suggestedSolutionPrompt": "The cattle are numerous and very spread out. It might be easier to stop the cattle with something other than your physical body.",
+                        "taskPrompt": "Determine the best way to get the cattle back into their pens."
+                    },
+                    {
+                        "description": "A terrible storm has rolled into town unexpectedly",
+                        "expReward": 0.5,
+                        "goldReward": 0.5,
+                        "multiThresh": 0.75,
+                        "name": "Dangerous Storm",
+                        "repReward": 3,
+                        "solutionMap": {
+                            "atk": {
+                                "multi": 0.5,
+                                "solution": "Shove away",
+                                "solutionDesc": "Push people out of harms way of the storm"
+                            },
+                            "def": {
+                                "multi": 1,
+                                "solution": "Shield people",
+                                "solutionDesc": "Provide cover for people caught out in the open"
+                            },
+                            "hp": {
+                                "multi": 0.75,
+                                "solution": "Bring groups to safety",
+                                "solutionDesc": "Round up groups of people and carry them inside"
+                            },
+                            "spatk": {
+                                "multi": 0.5,
+                                "solution": "Combat the storm",
+                                "solutionDesc": "Use supernatural abilities to fight the storm"
+                            },
+                            "spd": {
+                                "multi": 1,
+                                "solution": "Bring individuals to safety ",
+                                "solutionDesc": "Use your speed to run through town, urging people to take cover and leading them to shelter"
+                            },
+                            "spdef": {
+                                "multi": 0.5,
+                                "solution": "Protective magic",
+                                "solutionDesc": "Use supernatural abilities to protect the towns people from the storm"
+                            }
                         },
-                        "healing": 0,
-                        "maxhp": 16
-                    },
-                    "records": {
-                        "timesBlocked": 0,
-                        "timesHit": 3,
-                        "attacks": 4,
-                        "guards": 0,
-                        "spattacks": 0,
-                        "spguards": 0,
-                        "statChanges": 0,
-                        "weaponsLooted": 0,
-                        "gearLooted": 0,
-                        "raresDefeated": 0,
-                        "enemyDamageTaken": 35,
-                        "attackDamageDone": 4,
-                        "baseDamageBlocked": 0,
-                        "counterDamageDone": 0,
-                        "recoilDamageTaken": 0,
-                        "unitsDefeated": 0,
-                        "criticalsLanded": 2,
-                        "completeBlocks": 0,
-                        "timesStatsLowered": 0,
-                        "timesStatsRaised": 0,
-                        "timesFirstAttack": 4,
-                        "timesAbilityRepeat": 0,
-                        "livesLost": 1,
-                        "strongestStrike": 1,
-                        "empoweredAbilities": 0,
-                        "stanceSwitches": 0,
-                        "resistedAttacks": 4,
-                        "attacksResisted": 0,
-                        "effectiveAttacks": 0,
-                        "attacksEffected": 0
-                    },
-                    "choosenAbility": -2,
-                    "target": -1,
-                    "repeats": 0,
-                    "hasActed": false,
-                    "lastAction": "2_Sucker Slap_1_0",
-                    "guardData": "none",
-                    "weaponPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "gearPassives": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "weakPointHit": true,
-                    "lootPointHit": true,
-                    "team": 1,
-                    "hitThisTurn": false,
-                    "lastDamageTakenType": "spatk",
-                    "typeHistory": [
-                        "attack"
-                    ],
-                    "hide": true
-                }
-            ],
-            "turn": 11,
-            "battlelog": {
-                "dialogue": [],
-                "combat": [
-                    "the_untitled is empowered! (x1)",
-                    "the_untitled used **spooky spell** on Giant Dragonfly",
-                    "Giant Dragonfly took 21 damage!",
-                    "Giant Dragonfly was defeated!",
-                    "---"
+                        "suggestedSolutionPrompt": "The storm seems to be supernatural in nature, think of ways you can protect and shelter others without using magic.",
+                        "taskPrompt": "The townsfolk need to be protected!"
+                    }
                 ],
-                "rewards": [
-                    "the_untitled received 63 experience ✨",
-                    "the_untitled received 15 gold 💰",
-                    "---"
-                ],
-                "alerts": []
+                "taskRestock": 1726854113379,
+                "trainingRestock": 1726854113379
             },
-            "completed": true,
-            "winners": [
-                "591366578763858102"
-            ],
-            "livingFighters": 1,
-            "logHistory": [
-                {
-                    "dialogue": [],
-                    "combat": [
-                        "Playful Seal used **Simple Perception** to defend themselves!",
-                        "---",
-                        "the_untitled used **Starter Buff**!",
-                        "the_untitled's atk increased! (x1.5)",
-                        "the_untitled's spatk increased! (x1.5)",
-                        "---",
-                        "---",
-                        "Giant Dragonfly used **Disturbing Buzz** on the_untitled",
-                        "A critical hit!",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!"
-                    ]
-                },
-                {
-                    "combat": [
-                        "Playful Seal used **Sucker Slap** on the_untitled",
-                        "A critical hit!",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!",
-                        "---",
-                        "the_untitled used **aoe1** on Giant Dragonfly and Playful Seal",
-                        "Giant Dragonfly took 4 damage!",
-                        "Playful Seal took 5 damage!",
-                        "---",
-                        "Giant Dragonfly used **Toughening Sudden Cheer**!",
-                        "Giant Dragonfly's def increased! (x2.5)",
-                        "Playful Seal's def increased! (x2.5)",
-                        "Giant Dragonfly's spdef decreased! (x0.9)",
-                        "---"
-                    ]
-                },
-                {
-                    "combat": [
-                        "the_untitled used **Starter Guard** to defend themselves!",
-                        "---",
-                        "Playful Seal used **Simple Perception** to defend themselves!",
-                        "---",
-                        "Giant Dragonfly used **Standard Strike** on the_untitled",
-                        "the_untitled blocked the attack!",
-                        "It had a weak impact on the_untitled's stance"
-                    ]
-                },
-                {
-                    "combat": [
-                        "Playful Seal used **Sucker Slap** on the_untitled",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!",
-                        "---",
-                        "the_untitled used **Starter Guard** to defend themselves!",
-                        "---",
-                        "Giant Dragonfly used **Toughening Sudden Cheer**!",
-                        "Giant Dragonfly's def increased! (x4)",
-                        "Playful Seal's def increased! (x4)",
-                        "Giant Dragonfly's spdef decreased! (x0.8)",
-                        "---"
-                    ]
-                },
-                {
-                    "combat": [
-                        "the_untitled failed to prepare another block!",
-                        "---",
-                        "Playful Seal used **Simple Perception** to defend themselves!",
-                        "---",
-                        "Giant Dragonfly used **Simple Jolt Storm** on the_untitled",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 5 total damage! (5 hits / 2 crits)"
-                    ]
-                },
-                {
-                    "combat": [
-                        "Playful Seal used **Sucker Slap** on the_untitled",
-                        "A critical hit!",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!",
-                        "---",
-                        "the_untitled used **aoe1** on Giant Dragonfly and Playful Seal",
-                        "Giant Dragonfly took 5 damage!",
-                        "Playful Seal took 5 damage!",
-                        "---",
-                        "Giant Dragonfly lost focus and was unable to use Toughening Sudden Cheer!"
-                    ],
-                    "alerts": [
-                        "Giant Dragonfly's loot point has been hit!",
-                        "---",
-                        "Playful Seal's loot point has been hit!",
-                        "---",
-                        "Playful Seal's weak point has been hit!",
-                        "---",
-                        "Playful Seal's def multiplier set to x0.5",
-                        "Playful Seal's atk multiplier set to x0.5",
-                        "Playful Seal's spdef multiplier set to x0.5"
-                    ],
-                    "rewards": [
-                        "the_untitled received 15 gold 💰",
-                        "the_untitled received 50 gold 💰",
-                        "the_untitled received 73 bonus experience ✨",
-                        "the_untitled received 25 gold 💰",
-                        "the_untitled received 73 bonus experience ✨"
-                    ]
-                },
-                {
-                    "combat": [
-                        "the_untitled used **Starter Guard** to defend themselves!",
-                        "---",
-                        "Playful Seal used **Simple Perception** to defend themselves!",
-                        "---",
-                        "Giant Dragonfly used **Standard Strike** on the_untitled",
-                        "the_untitled blocked the attack!",
-                        "It had a weak impact on the_untitled's stance"
-                    ]
-                },
-                {
-                    "combat": [
-                        "Playful Seal used **Sucker Slap** on the_untitled",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!",
-                        "---",
-                        "the_untitled is empowered! (x2)",
-                        "the_untitled used **aoe1** on Giant Dragonfly and Playful Seal",
-                        "Giant Dragonfly took 13 damage!",
-                        "Playful Seal took 25 damage!",
-                        "Playful Seal was defeated!",
-                        "---",
-                        "Giant Dragonfly used **Toughening Sudden Cheer**!",
-                        "Giant Dragonfly's def is maxed!",
-                        "Giant Dragonfly's spdef decreased! (x0.7)",
-                        "---"
-                    ],
-                    "rewards": [
-                        "the_untitled received 63 experience ✨",
-                        "the_untitled received 15 gold 💰"
-                    ]
-                },
-                {
-                    "combat": [
-                        "the_untitled used **Starter Guard** to defend themselves!",
-                        "---",
-                        "Giant Dragonfly used **Disturbing Buzz** on the_untitled",
-                        "A critical hit!",
-                        "the_untitled was able to block some of the damage!",
-                        "It had a weak impact on the_untitled's stance",
-                        "the_untitled took 1 damage!"
-                    ]
-                },
-                {
-                    "combat": [
-                        "the_untitled used **Starter Attack** on Giant Dragonfly",
-                        "Giant Dragonfly took 2 damage!",
-                        "---",
-                        "Giant Dragonfly used **Toughening Sudden Cheer**!",
-                        "Giant Dragonfly's def is maxed!",
-                        "Giant Dragonfly's spdef decreased! (x0.6)",
-                        "---"
-                    ]
-                }
-            ],
-            "m_id": "1286380629579137076",
-            "c_id": "1041476311551582218"
+            "location": "jobs"
         }
     }
 ]

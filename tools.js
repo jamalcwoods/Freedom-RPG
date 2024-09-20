@@ -139,9 +139,14 @@ function calculateEffectCost(e){
             Eval = 3;
             break;
     }
-    if(e.stat == "spd"){
-        Eval *= 0.9
+    let statDistrib = {
+        "spd": 0.9,
+        "def": 1.4,
+        "spdef": 1.1,
+        "atk": 1,
+        "spatk": 1
     }
+    Eval *= statDistrib[e.stat]
     let allyTargets = [0,1]
     Eval *= Math.pow(Math.abs(e.value),1.4)
     if(allyTargets.includes(parseInt(e.target))){
@@ -237,13 +242,17 @@ function calculateAbilityCost(ability,weapon,race){
                 value += calculateEffectCost(e) * weights.effectStrength
             }
             value *= {
-                0:0.8,
+                0:0.7,
                 1:1,
-                2:2,
-                4:4
+                2:3,
+                4:6
             }[ability.speed] * weights.speed
             value *= [1,1.2,1.5][ability.effects.length - 1]
-            value *= Math.pow((ability.focus/75),4.81884167931)
+            if(ability.speed >= 1){
+                value *= Math.pow((ability.focus/75),7.22826251896)
+            } else {
+                value *= Math.pow((ability.focus/75),4.81884167931)
+            }
             break;
     }
     return Math.ceil(value);

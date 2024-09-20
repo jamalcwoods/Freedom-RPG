@@ -1189,7 +1189,8 @@ module.exports = {
                     addSession:newSession
                 })
             } else {
-                if(session.session_data.player.tutorial == 'complete'){
+                console.log(session.session_data.player.tutorial)
+                if(session.session_data.player.tutorial == "completed"){
                     session.session_data.temp = {
                         viewingAbilities:true
                     }
