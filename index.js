@@ -637,9 +637,9 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             needToUpdatePlayer = true
                             needToUpdateTown = true
                         } else {
-                            if(town.resources[resourceMap[player.job]][0] + 3< town.resources[resourceMap[player.job]][1]){
-                                town.resources[resourceMap[player.job]][0] += 3
-                                resourcesAdded = 3
+                            if(town.resources[resourceMap[player.job]][0] + 5 < town.resources[resourceMap[player.job]][1]){
+                                town.resources[resourceMap[player.job]][0] += 5
+                                resourcesAdded = 5
                             } else {
                                 resourcesAdded = town.resources[resourceMap[player.job]][1] - town.resources[resourceMap[player.job]][0]
                                 town.resources[resourceMap[player.job]][0] = town.resources[resourceMap[player.job]][1] 
@@ -974,11 +974,11 @@ function botUpdate(){
                     }
 
                     let equipmentUpgrades = [
-                        ["hp",1],
+                        ["hp",1.5],
                         ["atk",0.4],
-                        ["def",0.4],
+                        ["def",0.9],
                         ["spatk",0.4],
-                        ["spdef",0.4],
+                        ["spdef",0.9],
                         ["spd",0.75],
                         ["baseAtk","p",1.2],
                         ["baseSpAtk","p",1.2],

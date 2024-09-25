@@ -53,20 +53,32 @@ module.exports = {
                         }
                     }
                     const row = new MessageActionRow()
-                    row.addComponents(
-                        new MessageSelectMenu()
-                            .setCustomId('selectStance_' + session.session_id)
-                            .setPlaceholder('Select a Stance')
-                            .addOptions(stanceOptions),
-                    )
+                    if(stanceOptions.length > 0){
+                        row.addComponents(
+                            new MessageSelectMenu()
+                                .setCustomId('selectStance_' + session.session_id)
+                                .setPlaceholder('Select a Stance')
+                                .addOptions(stanceOptions),
+                        )
 
-                    interaction.reply({
-                        content: " ",
-                        components: [row],
-                        embeds: [embed],
-                        ephemeral: true
-                    })
-                    break;
+                        interaction.reply({
+                            content: " ",
+                            components: [row],
+                            embeds: [embed],
+                            ephemeral: true
+                        })
+                        break;
+                    } else {
+                        interaction.reply({
+                            content: "You have no stances learned to swap to. You learn them over time by taking damage, dealing damage, and blocking attacks",
+                            ephemeral: true
+                        })
+                        break;
+                    }
+                    
+                    
+
+                    
 
                 case "logs":
                     executeLogs(interaction,componentConfig,callback)

@@ -69,7 +69,7 @@ module.exports = {
                                 break
                         }
                         let postCost = Math.ceil(Math.pow(calculateAbilityCost(postAbility),2)/450)
-                        let upgradeCost = (postCost - prevCost) * 100
+                        let upgradeCost = (postCost - prevCost) * 1000
                         if(session.session_data.player.gold >= upgradeCost){
                             session.session_data.player.gold -= upgradeCost
 
@@ -89,6 +89,8 @@ module.exports = {
                         } else {
                             interaction.reply({ content: 'You do not have enough gold to afford this upgrade', ephemeral: true });
                         }
+                    } else {
+                        interaction.reply({ content: 'An upgrade option and ability option must be selected', ephemeral: true });   
                     }
                     break;
 
@@ -97,9 +99,9 @@ module.exports = {
                         let upgrade = session.session_data.town.armorylistings.equipment[temp.upgradeOption]
                         let upgradeCost;
                         if(upgrade.pow){
-                            upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * session.session_data.town.level * 500)
+                            upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * session.session_data.town.level * 1000)
                         } else {
-                            upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * session.session_data.town.level * 50)
+                            upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * session.session_data.town.level * 250)
                         }
                         if(session.session_data.player.gold >= upgradeCost){
                             let equipmentType = ""
@@ -155,6 +157,8 @@ module.exports = {
                             callback({
                                 updateSession:session
                             })
+                        } else {
+                            interaction.reply({ content: 'You do not have enough gold for this upgrade', ephemeral: true });
                         }
                     } else {
                         interaction.reply({ content: 'An upgrade option and equipment option must be selected', ephemeral: true });

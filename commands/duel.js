@@ -45,11 +45,13 @@ module.exports = {
                                         content: "<@" + id + ">",
                                         embeds: populateConformationWindow(newSession),
                                         components: populateConformationControls(newSession)
-                                    })
+                                })
         
                                 callback({
                                         addSession:newSession
                                 })
+                        } else {
+                                interaction.reply({ content: 'You cannot challenge that user while either of you are in another session', ephemeral: true });
                         }
                 } else {
                         interaction.reply({ content: 'You cannot challenge bot users to duels', ephemeral: true });

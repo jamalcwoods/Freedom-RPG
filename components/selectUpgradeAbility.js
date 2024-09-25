@@ -15,7 +15,7 @@ module.exports = {
         if(session.type == "townVisit"){
             
             session.session_data.temp.abilitySelection = interaction.values[0]
-
+            delete session.session_data.temp.upgradeOption
             interaction.update({
                 content: " ",
                 embeds: populateTownVisitWindow(session),

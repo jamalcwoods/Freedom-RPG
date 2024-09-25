@@ -34,7 +34,7 @@ module.exports = {
                     }
                 ]
 
-                if(session.session_data.tutorial == 2){
+                if(session.session_data.tutorial == 1){
                     updates.push({
                         id:session.user_ids[0],
                         path:"tutorial",
@@ -58,7 +58,7 @@ module.exports = {
                 })
             } else {
                 if(session.session_data.tutorial == 1){
-                    if(session.session_data.tutorialDmgType == session.session_data.ability.damage_type && session.session_data.ability.damage_val == 20 && session.session_data.ability.recoil == 0 && session.session_data.ability.accuracy == 100){
+                    if(session.session_data.tutorialDmgType == session.session_data.ability.damage_type && session.session_data.ability.damage_val == 20 && session.session_data.ability.speed == 1 && session.session_data.ability.recoil == 0 && session.session_data.ability.accuracy == 100){
                         session.session_data.temp = {
                             confirm:true
                         }

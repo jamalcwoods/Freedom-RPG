@@ -1,7 +1,7 @@
-const { stanceBuffs, statChangeStages ,raidPresets, quests, statIncreaseRatios, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions, tavernOptions, stanceDict ,standardDroptables, regionsEmojis, challengeDict, stanceMatchups } = require("./data.json");
+const { templates, stanceBuffs, statChangeStages ,raidPresets, quests, statIncreaseRatios, innateFacilities, acquiredFacilities, abilityWeights, passiveDescriptions, tavernOptions, stanceDict ,standardDroptables, regionsEmojis, challengeDict, stanceMatchups } = require("./data.json");
 const { MessageActionRow, MessageSelectMenu, MessageButton, MessageEmbed } = require('discord.js');
 const { getTownDBData } = require("./firebaseTools.js")
-const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign, generateRNGEquipment, givePlayerItem} = require("./tools.js");
+const { capitalize ,clone, createAbilityDescription, runEnemyCombatAI, printEquipmentDisplay, parseReward, weightedRandom, msToTime, prepCombatFighter, calculateAbilityCost, simulateCPUAbilityAssign, simulateCPUSPAssign,  generateRNGEquipment, givePlayerItem} = require("./tools.js");
 const fs = require('fs');
 
 function getFighterStat(fighter,stat){
@@ -42,7 +42,7 @@ function processStanceGrowth(unit,stat,value){
         unit.stances[stat].points += value
 
         if(unit.stances[stat].points > 100){
-            if(unit.stances[stat].active){
+            if(unit.stances[stat].active == true){
                 unit.stances[stat].points -= 100
                 if(unit.stances[stat].upgrades[0] + unit.stances[stat].upgrades[1]+ unit.stances[stat].upgrades[2] < 15){
                     let index = Math.floor(Math.random() * 3)
@@ -66,6 +66,10 @@ function processStanceGrowth(unit,stat,value){
 }
 
 function damageFighter(session,damage,fighter,announce = false,returnDamage = false){
+    if(fighter.invul){
+        session.session_data.battlelog.combat.push(fighter.staticData.name + " is invulnerable!")
+        return;
+    }
     fighter.records.timesHit++
     let messages = []
     messages = messages.concat(processStanceGrowth(fighter.staticData,"hp",1))
@@ -230,7 +234,15 @@ function populateCombatWindow(session){
                 fighterDesc += "\n**Winner**"
             } else if(fighter.choosenAbility > -1 || fighter.stanceSwitch != undefined){
                 if(fighter.staticData.cpu){
-                    let tele = 0.90
+                    let tele;
+                    if(fighter.staticData.level <= 20){
+                        tele = 0.90
+                    } else {
+                        tele = 1 - Math.pow(fighter.staticData.level,0.97712125472)
+                    }
+                    if(tele < 0.33){
+                        tele = 0.33
+                    }
                     if(fighter.staticData.tele){
                         tele = fighter.staticData.tele
                     }
@@ -433,7 +445,7 @@ function populateCombatControls(session){
         return [row1]
     }
 
-    let showName = session.user_ids.length = 1 || session.session_data.options.showAbilityNames
+    let showName = session.user_ids.length == 1 || session.session_data.options.showAbilityNames
     const row1 = new MessageActionRow()
     for(var i = 0; i < 3; i++){
         if(session.session_data.fighters[0].staticData.abilities[i]){
@@ -1488,7 +1500,7 @@ function manageBossAction(boss,session){
                 name: boss.staticData.name + "'s Trusted",
                 id:Math.floor(Math.random() * 1000),
                 cpu:true,
-                faction:"-1",
+                stance:"none",
                 race:"0",
                 combatStyle:"0",
                 exp:0,
@@ -1501,7 +1513,7 @@ function manageBossAction(boss,session){
                     "damage_val": 70,
                     "name": boss.staticData.name + "'s Order",
                     "speed": 2,
-                    "faction": -1,
+                    "stance": "none",
                     "action_type": "attack",
                     "numHits": 1,
                     "recoil": 0,
@@ -1817,6 +1829,17 @@ function triggerCombatEvent(data,session){
                     }
                 }
                 break;
+
+            //Empowered Ability Trigger
+            case 4:
+                for(e of session.session_data.options.events){
+                    if(e.type == data.type){
+                        if(eventComparator(e,data)){
+                            activateCombatTriggers(e.result,session) 
+                        }
+                    }
+                }
+                break;
         }
     }
 }
@@ -1843,6 +1866,7 @@ function activateCombatTriggers(triggerName,session){
                 }
                 if(conditionsMet){
                     switch(triggerData.actionType){
+                        // Spawn Entity
                         case 0:
                             let unitData = weightedRandom(triggerData.data.units)
                             let newUnit = clone(unitData.unit)
@@ -1863,6 +1887,15 @@ function activateCombatTriggers(triggerName,session){
                             }
                             session.session_data.battlelog.alerts.push(fighterData.staticData.name + " has entered combat!")
                             session.session_data.fighters.push(fighterData)
+                            break;
+
+                        // Make Entity Vulnerable
+                        case 1:
+                            for(fighter of session.session_data.fighters){
+                                if(triggerData.data.ids.includes(fighter.staticData.id) && fighter.alive){
+                                    fighter.invul = false
+                                }
+                            }
                             break;
                     }
                 }
@@ -2050,11 +2083,14 @@ function processMobRewards(mob,session){
         for(fighter of fighters){
             if(fighter.team != mob.team && !fighter.staticData.cpu){
                 let expReward = Math.ceil(mob.staticData.level * 12.5)
+                if(mob.staticData.expMulti){
+                    expReward *= mob.staticData.expMulti
+                }
                 let result = parseReward({
                     type:"resource",
                     resource:"exp",
                     resourceName: "experience",
-                    amount: expReward
+                    amount: Math.ceil(expReward)
                 }, fighter.staticData)
                 fighter.staticData = result[0]
 
@@ -2136,7 +2172,7 @@ function processMobRewards(mob,session){
 }
 
 function calculateAttackDamage(level,atkStat,defStat,baseDamage){
-    console.log(level,atkStat,defStat,baseDamage)
+    console.log("Level: " + level,"dmgVal: " + atkStat,"defVal: " + defStat,"base: " + baseDamage)
     let levelMod = ((2 * level)/10) + 2
     let statMod = baseDamage * (atkStat/defStat)
     return Math.ceil((levelMod * statMod)/50)
@@ -2249,11 +2285,7 @@ module.exports = {
             //     statpointsNeeded = 1
             // }
             if(statname == session.session_data.editingStat){
-                if(session.session_data.faction != -1){
-                    displayText += " (-/+) " + session.session_data.editAmount + ": Refunds/Costs " + statpointsNeeded 
-                } else {
-                    displayText += " (-/+) " + session.session_data.editAmount + ": Refunds/Costs " + statpointsNeeded 
-                }
+                displayText += " (-/+) " + session.session_data.editAmount + ": Refunds/Costs " + statpointsNeeded
                 
                 if(statpointsNeeded > 1){
                     displayText += " statpoints"
@@ -2264,7 +2296,7 @@ module.exports = {
             }
             displayText += "\n\n"
         }
-        displayText += "Use the </> arrows to decrease/increase a stat\n"
+        displayText += "**Use the </> arrows below to decrease/increase a stat**\n"
         displayText += "Currently Modifying by value of: " + session.session_data.editAmount + " \n"
         embed.addField(
             "Modifying Stats",
@@ -2566,7 +2598,7 @@ module.exports = {
                                             }
                                         }
                                 }
-                                    
+                                session.session_data.battlelog.combat.push("---")
                             }
                             break;
                         case "attack":
@@ -2593,6 +2625,11 @@ module.exports = {
                                     if(action.ability.recoil > 0){
                                         action.ability.damage_val += Math.ceil((action.ability.recoil/5 * attacker.empowered)/3) * 5
                                     }
+
+                                    triggerCombatEvent({
+                                        type:4,
+                                        data:attacker
+                                    },session)
 
                                     attacker.empowered = false
                                 }
@@ -2645,7 +2682,7 @@ module.exports = {
                                 let bonusBaseDamage = rageBonus
 
                                 if(attacker.clearMindStacks){
-                                    bonusBaseDamage += clearMindStacks
+                                    bonusBaseDamage += attacker.clearMindStacks
                                 }
 
                                 if(attacker.weapon){
@@ -2702,8 +2739,10 @@ module.exports = {
                                         }
 
                                         while(attackNum > 0){
-                                            console.log("test5")
                                             let attackBase = action.ability.damage_val + bonusBaseDamage
+                                            if(attackBase <= 0){
+                                                attackBase = 0
+                                            }
                                             let critRoll = action.ability.critical
                                             if(attacker.weapon != null && parseInt(attacker.staticData.combatStyle) == 1 && attacker.weapon.weaponStyle == 1){
                                                 if(action.ability.speed > 1){
@@ -2737,6 +2776,7 @@ module.exports = {
                                             } else {
                                                 critMulti = 2
                                             }
+
 
                                             if(attacker.staticData.stance == "atk" && attacker.staticData.stances.atk.upgrades[2] > 0){
                                                 let buffData = getStanceBuffValues("atk",attacker.staticData.stances,2)
@@ -2839,11 +2879,15 @@ module.exports = {
                                                 if(target.weapon){
                                                     switch(action.ability.damage_type){
                                                         case "atk":
-                                                            bonusGuardValue += target.weapon.stats.baseDefBoost
+                                                            if(target.weapon.stats.baseDefBoost){
+                                                                bonusGuardValue += target.weapon.stats.baseDefBoost
+                                                            }
                                                             break;
                 
                                                         case "spatk":
-                                                            bonusGuardValue += target.weapon.stats.baseSpDefBoost
+                                                            if(target.weapon.stats.baseSpDefBoost){
+                                                                bonusGuardValue += target.weapon.stats.baseSpDefBoost
+                                                            }
                                                             break;
                                                     }
                                                 }
@@ -2851,11 +2895,15 @@ module.exports = {
                                                 if(target.gear){
                                                     switch(action.ability.damage_type){
                                                         case "atk":
-                                                            bonusGuardValue += target.gear.stats.baseDefBoost
+                                                            if(target.gear.stats.baseDefBoost){
+                                                                bonusGuardValue += target.gear.stats.baseDefBoost
+                                                            }
                                                             break;
                 
                                                         case "spatk":
-                                                            bonusGuardValue += target.gear.stats.baseSpDefBoost
+                                                            if(target.gear.stats.baseSpDefBoost){
+                                                                bonusGuardValue += target.gear.stats.baseSpDefBoost
+                                                            }
                                                             break;
                                                     }
                                                 }
@@ -2897,7 +2945,7 @@ module.exports = {
                                                             mismatchVal += target.gearPassives[4] * 0.07
                                                         }
                                                         guardValue *= mismatchVal
-                                                        guardValue + bonusGuardValue
+                                                        guardValue += bonusGuardValue
                                                         attackBase -= guardValue
                                                         target.records.baseDamageBlocked += guardValue
                                                         if(attackBase <= 0){
@@ -2936,6 +2984,7 @@ module.exports = {
                                                         let healAmount = 0 
                                                         guardValue += bonusGuardValue
                                                         attackBase -= guardValue
+                                                        console.log("values post: " + guardValue + " " + attackBase)
                                                         target.records.baseDamageBlocked += guardValue
                                                         let notice;
                                                         if(attackBase <= 0){
@@ -3128,8 +3177,9 @@ module.exports = {
                                                     }
 
                                                     let effectiveness = 1; 
-                                                    let sameType = attacker.staticData.stance == action.ability.stance && attacker.staticData.stance != "none" ? 1.25 : 1
+                                                    let sameType = attacker.staticData.stance == action.ability.stance && attacker.staticData.stance != "none" ? 1.5 : 1
 
+                                                    
                                                     effectiveness = stanceMatchups[action.ability.stance][target.staticData.stance]
                                                     
                                                     if((multiHit && attackNum <= 1) || !multiHit){
@@ -3369,8 +3419,10 @@ module.exports = {
                                                     }
                                                     
                                                     if(attacker.staticData.stance == "spatk" && attacker.staticData.stances.spatk.upgrades[2] > 0){
-                                                        let buffData = getStanceBuffValues("spatk",attacker.staticData.stances,2)
-                                                        recoilVal -= buffData.val
+                                                        if(Math.random() < 0.2){
+                                                            let buffData = getStanceBuffValues("spatk",attacker.staticData.stances,2)
+                                                            recoilVal -= Math.ceil(recoilVal * (buffData.val/100))
+                                                        }
                                                     }
 
                                                     if(recoilVal < 0){
@@ -3491,6 +3543,11 @@ module.exports = {
                                         action.ability.guard_val = Math.ceil(action.ability.guard_val * (1 + (defender.empowered)))
                                     
                                         action.ability.counter_val = action.ability.guard_val
+
+                                        triggerCombatEvent({
+                                            type:4,
+                                            data:defender
+                                        },session)
 
                                         defender.empowered = false
                                     }
@@ -3698,6 +3755,11 @@ module.exports = {
                                                 e.value = Math.ceil(e.value * (1 + (user.empowered)))
                                             }
                                             
+                                            triggerCombatEvent({
+                                                type:4,
+                                                data:user
+                                            },session)
+
                                             user.empowered = false
                                         }
                                         if(user.meter != undefined){
@@ -4271,14 +4333,14 @@ module.exports = {
             )
         } else{
             let valueTranslate = {
-                "faction":{
-                    "-1":"None",
-                    "0":"Assailment",
-                    "1":"Attainment",
-                    "2":"Spontaneity",
-                    "3":"Sovereignty",
-                    "4":"Persecution",
-                    "5":"Aberration",
+                "stance":{
+                    "none":"None",
+                    "hp":"Adapting",
+                    "atk":"Raiding",
+                    "def":"Daring",
+                    "spatk":"Cunning",
+                    "spdef":"Dominating",
+                    "spd":"Advancing",
                 },
                 "success_level":{
                     "25":"Very Low",
@@ -4390,7 +4452,7 @@ module.exports = {
                 switch(session.session_data.editingAttribute){
                     case "action_type":
                         if(!session.session_data.permissions.stats){
-                            description = "This changes an ability either a guard or an attack"
+                            description = "This changes an ability to either a guard or an attack"
                         } else {
                             description = "This changes an ability either a guard, stat changer, or an attack"
                         }
@@ -4412,8 +4474,8 @@ module.exports = {
                         description = "This changes the order in which this ability is executed during a turn"
                         break;
 
-                    case "faction":
-                        description = "This changes the allignement of the attack, modifying what it's effective/less effective against"
+                    case "stance":
+                        description = "This changes the allignement of the attack, modifying what stances it's effective/less effective against"
                         break;
 
                     case "accuracy":
@@ -4512,13 +4574,11 @@ module.exports = {
     populateStanceManagerControls(session){
         let stanceOptions = []
         for(stance in session.session_data.player.stances){
-            if(session.session_data.player.stance != stance){
-                stanceOptions.push({
-                    label: stanceDict[stance] + " Stance",
-                    description: "View " + stanceDict[stance] + " stance info",
-                    value: stance,
-                })
-            }
+            stanceOptions.push({
+                label: stanceDict[stance] + " Stance",
+                description: "View " + stanceDict[stance] + " stance info",
+                value: stance,
+            })
         }
         const row = new MessageActionRow()
         row.addComponents(
@@ -4560,12 +4620,12 @@ module.exports = {
             let selectionLabels = []
 
             for(abilityStat in session.session_data.ability){
-                let noShow = ["effects","name","faction"]
+                let noShow = ["effects","name"]
                 let description = "test"
                 switch(abilityStat){
                     case "action_type":
                         if(!session.session_data.permissions.stats){
-                            description = "This changes an ability either a guard or an attack"
+                            description = "This changes an ability to either a guard or an attack"
                         } else {
                             description = "This changes an ability either a guard, stat changer, or an attack"
                         }
@@ -4587,8 +4647,8 @@ module.exports = {
                         description = "This changes the order in which this ability is executed during a turn"
                         break;
         
-                    case "faction":
-                        description = "This changes the alignment of the attack, modifying what it's effective/less effective against"
+                    case "stance":
+                        description = "This changes alignment of the attack, modifying what stance it's effective/less effective against"
                         break;
         
                     case "accuracy":
@@ -4634,9 +4694,6 @@ module.exports = {
                     case "focus":
                         description = "This value changes the ability fails if damaged before using it"
                         break;
-                }
-                if(session.session_data.permissions.faction && abilityStat == "faction"){
-                    abilityStat = false
                 }
                 if((session.session_data.ability.action_type == "guard" && abilityStat == "speed")){
                     abilityStat = false
@@ -4714,14 +4771,14 @@ module.exports = {
 
 
             let valueTranslate = {
-                "faction":{
-                    "-1":"None",
-                    "0":"Assailment",
-                    "1":"Attainment",
-                    "2":"Spontaneity",
-                    "3":"Sovereignty",
-                    "4":"Persecution"   ,
-                    "5":"Aberration",
+                "stance":{
+                    "none":"None",
+                    "hp":"Adapting",
+                    "atk":"Raiding",
+                    "def":"Daring",
+                    "spatk":"Cunning",
+                    "spdef":"Dominating",
+                    "spd":"Advancing",
                 },
                 "success_level":{
                     "25":"Very Low",
@@ -4773,9 +4830,9 @@ module.exports = {
                     AttributeValues = [0,1,2,4]
                     break;
 
-                case "faction":
+                case "stance":
                     AttributeType = "values"
-                    AttributeValues = ["-1","0","1","2","3","4","5"]
+                    AttributeValues = ["none","hp","atk","def","spatk","spdef","spd"]
                     break;
 
                 case "accuracy":
@@ -5170,7 +5227,7 @@ module.exports = {
 
                     trainingListings += "\n"
 
-                    if(session.session_data.player.abilities.length == 6){
+                    if(session.session_data.player.abilities && session.session_data.player.abilities.length == 6){
                         trainingListings += "\nYou can not learn a new ability because you have no free ablity slot!\nManage your abilites by using `/ablities manage`"
                     }
                     embed.addField("Training Hall - Lessons and Abilities:",trainingListings)
@@ -5464,7 +5521,7 @@ module.exports = {
                                                 break
                                         }
                                         let postCost = Math.ceil(Math.pow(calculateAbilityCost(postAbility),2)/450)
-                                        let upgradeCost = (postCost - prevCost) * 100
+                                        let upgradeCost = (postCost - prevCost) * 1000
                                         shopListings += " (Costs " + upgradeCost + " gold):**"
                                         shopListings += "\nImprove " + upgrade.stat + "\n"
                                     }
@@ -5486,17 +5543,17 @@ module.exports = {
                                 "spd":"SPD",
                                 "baseAtk":"ATK Ability Base Damage",
                                 "baseSpAtk":"SPATK Ability Base Damage",
-                                "baseDef":"Passive DEF Guard Value",
-                                "baseSpDef":"Passive SPDEF Guard Value",
+                                "baseDef":"Bonus DEF Guard Value",
+                                "baseSpDef":"Bonus SPDEF Guard Value",
                             }
 
                             for(i in session.session_data.town.armorylistings.equipment){
                                 let upgrade = session.session_data.town.armorylistings.equipment[i]
                                 let upgradeCost;
                                 if(upgrade.pow){
-                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 500)
+                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 1000)
                                 } else {
-                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 50)
+                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 250)
                                 }
                                  
                                 let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
@@ -5610,13 +5667,9 @@ module.exports = {
                     .addOptions(typeList)
                 )
                 if(session.session_data.temp){
-
+                    let canUpgrade = false
                     const upgradeButtons = new MessageActionRow()
                     .addComponents(
-                        new MessageButton()
-                            .setCustomId('applyUpgrades_' + session.session_id)
-                            .setLabel('Apply Upgrades')
-                            .setStyle('SUCCESS'),
                         new MessageButton()
                             .setCustomId('previewSelected' + upgradeType + '_' + session.session_id)
                             .setLabel('Show Selected ' + upgradeType)
@@ -5701,7 +5754,7 @@ module.exports = {
                                                 break
                                         }
                                         let postCost = Math.ceil(Math.pow(calculateAbilityCost(postAbility),2)/450)
-                                        let upgradeCost = (postCost - prevCost) * 100
+                                        let upgradeCost = (postCost - prevCost) * 1000
                                         if(!maxed){
                                             optionLabels.push({
                                                 label:"Option #" + (parseInt(i) + 1),
@@ -5712,10 +5765,20 @@ module.exports = {
                                     }
                                 }
 
-                                if(session.session_data.temp.abilitySelection){
+                                if(session.session_data.temp.abilitySelection && optionLabels.length > 0){
+                                    canUpgrade = true
                                     let optionText = 'Select Option'
                                     if(session.session_data.temp.upgradeOption){
-                                        optionText = optionLabels[session.session_data.temp.upgradeOption].label;
+                                        let labelIndex;
+                                        for(i in optionLabels){
+                                            let o = optionLabels[i]
+                                            console.log(parseInt(o.value),session.session_data.temp.upgradeOption)
+                                            if(parseInt(o.value) == session.session_data.temp.upgradeOption){
+                                                labelIndex = i
+                                                break;
+                                            }
+                                        }
+                                        optionText = optionLabels[labelIndex].label;
                                     }
                                     
 
@@ -5743,6 +5806,14 @@ module.exports = {
                                 })
                             }
 
+                            upgradeButtons.addComponents(
+                                new MessageButton()
+                                    .setCustomId('applyUpgrades_' + session.session_id)
+                                    .setLabel('Apply Upgrades')
+                                    .setStyle('SUCCESS')
+                                    .setDisabled(!canUpgrade)
+                            )
+
                             targetSelection.addComponents(
                                 new MessageSelectMenu()
                                 .setCustomId('selectUpgradeAbility_' + session.session_id)
@@ -5752,6 +5823,7 @@ module.exports = {
                             break;
 
                         case "1":
+                            canUpgrade = true
                             let upgradeTypeDict = {
                                 "hp":"HP",
                                 "atk":"ATK",
@@ -5761,17 +5833,17 @@ module.exports = {
                                 "spd":"SPD",
                                 "baseAtk":"ATK Ability Base Damage",
                                 "baseSpAtk":"SPATK Ability Base Damage",
-                                "baseDef":"Passive DEF Guard Value",
-                                "baseSpDef":"Passive SPDEF Guard Value",
+                                "baseDef":"Bonus DEF Guard Value",
+                                "baseSpDef":"Bonus SPDEF Guard Value",
                             }
 
                             for(i in session.session_data.town.armorylistings.equipment){
                                 let upgrade = session.session_data.town.armorylistings.equipment[i]
                                 let upgradeCost;
                                 if(upgrade.pow){
-                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 500)
+                                    upgradeCost = Math.ceil(Math.pow(upgrade.multi,upgrade.roll) * townLevel * 1000)
                                 } else {
-                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 50)
+                                    upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 250)
                                 }
                                 let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
                                 optionLabels.push({
@@ -5786,6 +5858,13 @@ module.exports = {
                                 optionText = optionLabels[session.session_data.temp.upgradeOption].label;
                             }
                             
+                            upgradeButtons.addComponents(
+                                new MessageButton()
+                                .setCustomId('applyUpgrades_' + session.session_id)
+                                .setLabel('Apply Upgrades')
+                                .setStyle('SUCCESS')
+                                .setDisabled(!canUpgrade)
+                            )
         
                             upgradeOptions.addComponents(
                                 new MessageSelectMenu()
@@ -5989,8 +6068,28 @@ module.exports = {
                             label: "Lesson 9 - Managing Lives",
                             description:"Learn how to manage the lives of both your fighter and your opponents",
                             value: "lesson8",
+                        },
+                        {
+                            label: "Lesson 10 - Empowered Abilities",
+                            description:"Learn how to use your combo meter to empower your abilities",
+                            value: "lesson9",
+                        },
+                        {
+                            label: "Lesson 11 - Stances",
+                            description:"Learn how combat stances can give you advantages against foes",
+                            value: "lesson10",
                         }
                     ]
+
+                    if(!session.session_data.player.lessons){
+                        session.session_data.player.lessons = templates.emptyPlayerData.lessons
+                    }
+
+                    for(t in trainingOptions){
+                        if(session.session_data.player.lessons[t] == true){
+                            trainingOptions[t].label += " - ✅"
+                        }
+                    }
                 
                     const trainingChoice = new MessageActionRow()
                     .addComponents(
@@ -6604,9 +6703,8 @@ module.exports = {
             actions3.addComponents(
                 new MessageSelectMenu()
                     .setCustomId('removeAbility_' + session.session_id)
-                    .setPlaceholder('Select an ability to remove')
+                    .setPlaceholder('Select an ability to forget')
                     .addOptions(removeAbilityList),
-                    
             );
 
             if(session.session_data.player.abilityMemory && session.session_data.player.abilityMemory.length > 0){
@@ -6691,6 +6789,7 @@ module.exports = {
         
         if(session.session_data.temp){
             if(session.session_data.temp.selected != undefined){
+                console.log(player.abilities,session.session_data.temp.selected)
                 let selectedAbility = player.abilities[session.session_data.temp.selected]
                 embed.addField(
                     "Selected Ability: " + selectedAbility.name,

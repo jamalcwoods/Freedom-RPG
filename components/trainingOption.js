@@ -26,7 +26,7 @@ module.exports = {
                             name:"Practice Dummy",
                             id:"dummy",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -67,7 +67,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Basic Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -137,7 +137,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -162,7 +162,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy2",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -203,7 +203,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Basic Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -280,7 +280,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -305,7 +305,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy2",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -346,7 +346,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Basic Physical Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -359,7 +359,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Basic Special Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -414,7 +414,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -427,7 +427,7 @@ module.exports = {
                                 "damage_val": 30,
                                 "name": "Physical Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -452,6 +452,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -468,7 +469,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Basic Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -541,7 +542,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -554,7 +555,7 @@ module.exports = {
                                 "damage_val": 30,
                                 "name": "Physical Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -579,6 +580,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -595,7 +597,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Slow Attack",
                                 "speed": 0,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -668,7 +670,7 @@ module.exports = {
                             name:"Harmless Fighter #1",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -679,7 +681,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":9,
+                                "hp":6,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -692,7 +694,7 @@ module.exports = {
                             name:"Harmless Fighter #2",
                             id:"dummy2",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -703,7 +705,7 @@ module.exports = {
                             level:1,
                             totalExp:0,
                             stats:{
-                                "hp":9,
+                                "hp":6,
                                 "atk":1,
                                 "def":10,
                                 "spatk":1,
@@ -718,6 +720,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -734,7 +737,7 @@ module.exports = {
                                 "damage_val": 40,
                                 "name": "Physical Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -789,7 +792,7 @@ module.exports = {
                             name:"Defensive Fighter",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -824,6 +827,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -852,7 +856,7 @@ module.exports = {
                                 "damage_val": 20,
                                 "name": "Physical Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -906,7 +910,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -941,6 +945,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -957,7 +962,7 @@ module.exports = {
                                 "damage_val": 50,
                                 "name": "Strong Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -969,7 +974,7 @@ module.exports = {
                                 "damage_val": 30,
                                 "name": "Fast Attack",
                                 "speed": 4,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -1023,7 +1028,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -1047,7 +1052,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -1071,7 +1076,7 @@ module.exports = {
                             name:"Practice Dummy #3",
                             id:"dummy",
                             cpu:true,
-                            faction:"-1",
+                            stance:"none",
                             race:"0",
                             combatStyle:"0",
                             exp:0,
@@ -1097,6 +1102,7 @@ module.exports = {
                         delete playerClone.gear
                         delete playerClone.weapon
                         playerClone.lives = 1
+                        playerClone.level = 1
 
                         playerClone.stats = {
                             "hp":10,
@@ -1113,7 +1119,7 @@ module.exports = {
                                 "damage_val": 30,
                                 "name": "Basic Attack",
                                 "speed": 1,
-                                "faction": -1,
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -1171,6 +1177,317 @@ module.exports = {
                             })
                         }
                         break;
+                    case "lesson9":
+                        enemy1 = {
+                            name:"Practice Dummy #1",
+                            id:"dummy",
+                            cpu:true,
+                            stance:"none",
+                            race:"0",
+                            combatStyle:"0",
+                            exp:0,
+                            abilitypoints:0,
+                            statpoints:0,
+                            lives:1,
+                            abilities:[],
+                            level:1,
+                            totalExp:0,
+                            stats:{
+                                "hp":1,
+                                "atk":1,
+                                "def":1,
+                                "spatk":1,
+                                "spdef":1,
+                                "spd":1
+                            }
+                        }
+
+                        playerClone = clone(session.session_data.player)
+
+                        delete playerClone.boosters
+                        delete playerClone.gear
+                        delete playerClone.weapon
+                        playerClone.lives = 1
+                        playerClone.level = 1
+
+                        playerClone.stats = {
+                            "hp":10,
+                            "atk":10,
+                            "def":10,
+                            "spatk":10,
+                            "spdef":10,
+                            "spd":10
+                        }
+                        playerClone.abilities = [
+                            {
+                                "critical": 0,
+                                "damage_type": "atk",
+                                "damage_val": 10,
+                                "name": "Weak Attack",
+                                "speed": 1,
+                                "stance": "none",
+                                "action_type": "attack",
+                                "numHits": 1,
+                                "recoil": 0,
+                                "targetType": 1,
+                                "accuracy": 100
+                            },
+                            {
+                                "action_type": "stats",
+                                "name": "Power Up",
+                                "statChangeCount": 1,
+                                "effects": [
+                                  {
+                                    "target": "0",
+                                    "stat": "atk",
+                                    "value": 1
+                                  }
+                                ],
+                                "speed": 1,
+                                "focus": 75
+                              }
+                        ]
+
+                        fighters = [
+                            playerClone,
+                            enemy1
+                        ]
+
+                        newSession = {
+                            type:"combat",
+                            session_id: Math.floor(Math.random() * 100000),
+                            user_ids:session.user_ids,
+                            server_id:interaction.guildId,
+                            session_data:populateCombatData(fighters,{
+                                fightType:"pve",
+                                alliances:[0,1],
+                                canFlee:true,
+                                progressiveCombat:false,
+                                rewardPlayer:false,
+                                returnSession:session.session_id,
+                                events:[
+                                    {
+                                        type:0,
+                                        data:{
+                                            all:true
+                                        },
+                                        result:"dialogue_0"
+                                    },{
+                                        type:0,
+                                        data:{
+                                            count:8
+                                        },
+                                        result:"win_1"
+                                    },{
+                                        type:4,
+                                        data:{
+                                            records:{
+                                                empoweredAbilities:1
+                                            }
+                                        },
+                                        result:"removeInvul"
+                                    },
+                                    {
+                                        type:4,
+                                        data:{
+                                            records:{
+                                                empoweredAbilities:1
+                                            }
+                                        },
+                                        result:"dialogue_1"
+                                    }
+                                ],
+                                triggers:{
+                                    removeInvul:{
+                                        actionType:1,
+                                        data:{
+                                            ids:["dummy"]
+                                        }
+                                    }
+                                },
+                                dialogue:[
+                                    "When you use abilities you will generate points for your combo meter (Bar under health)\nOnce it fills, it will increase your combo rank by 1 (maximum of 3)\n\nBefore you choose an ability, you can open the 'Non-ability Actions' menu and select 'Empower'. Based on your combo, your ability will gain bonus attributes.\n\nFor this scenario, the enemy you are fighting will be immune to damage until you empower an ability. Use the abilities at your disposal to defeat them.",
+                                    "**The dummy's invulnerability has been removed!**"
+                                ],
+                                openingDialogue:0
+                            })
+                        }
+
+                        newSession.session_data.fighters[1].invul = true
+                        break;
+                    case "lesson10":
+                        enemy1 = {
+                            name:"Practice Dummy #1",
+                            id:"dummy",
+                            cpu:true,
+                            stance:"atk",
+                            race:"0",
+                            combatStyle:"0",
+                            exp:0,
+                            abilitypoints:0,
+                            statpoints:0,
+                            lives:1,
+                            abilities:[],
+                            level:1,
+                            totalExp:0,
+                            stats:{
+                                "hp":18,
+                                "atk":1,
+                                "def":1,
+                                "spatk":1,
+                                "spdef":1,
+                                "spd":1
+                            }
+                        }
+
+                        playerClone = clone(session.session_data.player)
+
+                        delete playerClone.boosters
+                        delete playerClone.gear
+                        delete playerClone.weapon
+                        playerClone.lives = 1
+                        playerClone.level = 1
+
+                        playerClone.stances = {
+                                "hp": {
+                                "active": false,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            },
+                                "atk": {
+                                "active": true,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            },
+                                "def": {
+                                "active": false,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            },
+                            "spatk": {
+                                "active": true,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            },
+                                "spdef": {
+                                "active": false,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            },
+                            "spd": {
+                                "active": false,
+                                "points": 0,
+                                "upgrades": [
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "surgeTimer": 0
+                            }
+                        }
+
+                        playerClone.stats = {
+                            "hp":10,
+                            "atk":2,
+                            "def":10,
+                            "spatk":10,
+                            "spdef":10,
+                            "spd":10
+                        }
+                        playerClone.abilities = [
+                            {
+                                "critical": 0,
+                                "damage_type": "atk",
+                                "damage_val": 80,
+                                "name": "Basic Attack",
+                                "speed": 1,
+                                "stance": "none",
+                                "action_type": "attack",
+                                "numHits": 1,
+                                "recoil": 0,
+                                "targetType": 1,
+                                "accuracy": 100
+                            },
+                            {
+                                "critical": 0,
+                                "damage_type": "atk",
+                                "damage_val": 60,
+                                "name": "Cunning Attack",
+                                "speed": 1,
+                                "stance": "spatk",
+                                "action_type": "attack",
+                                "numHits": 1,
+                                "recoil": 0,
+                                "targetType": 1,
+                                "accuracy": 100
+                            }
+                        ]
+
+                        fighters = [
+                            playerClone,
+                            enemy1
+                        ]
+
+                        newSession = {
+                            type:"combat",
+                            session_id: Math.floor(Math.random() * 100000),
+                            user_ids:session.user_ids,
+                            server_id:interaction.guildId,
+                            session_data:populateCombatData(fighters,{
+                                fightType:"pve",
+                                alliances:[0,1],
+                                canFlee:true,
+                                progressiveCombat:false,
+                                rewardPlayer:false,
+                                returnSession:session.session_id,
+                                events:[
+                                    {
+                                        type:0,
+                                        data:{
+                                            all:true
+                                        },
+                                        result:"dialogue_0"
+                                    },{
+                                        type:0,
+                                        data:{
+                                            count:1
+                                        },
+                                        result:"win_1"
+                                    }
+                                ],
+                                dialogue:[
+                                    "Some enemies will be in certain combat stances when you fight them. These stances make them resistant/weaker to certain attacks (Depends on the stance that the attack aligns with)\n\nPlayers are able to change their stance during combat, which forces their next attack ability used to align with their stance (You can see which stances you have access to by doing `/stances`). To change your stance, select 'Non-ability Actions' and choose 'Change Stance'\n\nFor this lesson, defeat the dummy in 2 turns using stances and abilities."
+                                ],
+                                openingDialogue:0
+                            })
+                        }
+                        break;
+                    
                 }
 
                 newSession.session_data.combatLesson = interaction.values[0]
@@ -1189,7 +1506,7 @@ module.exports = {
                     addSession:newSession
                 })
             } else {
-                if(session.session_data.player.tutorial == 'complete'){
+                if(session.session_data.player.tutorial == 'completed'){
                     session.session_data.temp = {
                         viewingAbilities:true
                     }

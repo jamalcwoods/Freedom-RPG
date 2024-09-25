@@ -42,6 +42,11 @@ module.exports = {
                     removeSession:session,
                     updatePlayer:updates
                 })  
+            } else {
+                interaction.reply({
+                    content: "To start off, you need to have at least 10 points in HP, DEF, SPDEF, and at least 10 points in either ATK or SPATK\nThe remaining points can be spent however you like (You can also save them for later)",
+                    ephemeral: true
+                })
             }
         } else {
             let session = componentConfig.session

@@ -18,7 +18,7 @@
     },
     {
       "title": "Finish creating abilities for your character",
-      "instructions": "You are almost ready to venture into the wild! Last thing to do is create some abilities for you to use.\n\nUse the `/abilities create` command to begin creating your second ability.\n\nNote: This ability will be called whatever you type in the `name` section when doing this command"
+      "instructions": "You are almost ready to venture into the wild! You just need a defensive ability for you to use.\n\nUse the `/abilities create` command to begin creating your second ability.\n\nNote: This ability will be called whatever you type in the `name` section when doing this command"
     },
     {
       "title": "Time for a combat test!",
@@ -2400,12 +2400,12 @@
         "Adapting Adversary"
       ],
       [
-        "%X chance to critically guard, doubling guard value of a block",
+        "X% chance to critically guard, doubling guard value of a block",
         7,
         "Dire Defender"
       ],
       [
-        "%X chance to gain 5% of max hp when ever stats are lowered by an ability",
+        "X% chance to gain 5% of max hp when ever stats are lowered by an ability",
         7,
         "Rapid Reconciler"
       ]
@@ -2457,7 +2457,7 @@
               "scaling": true,
               "value": 1,
               "conStats":1,
-              "conValue": 0.2,
+              "conValue": 0.15,
               "lockStatTypes": false,
               "types": [
                 "weapon"
@@ -2527,8 +2527,8 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
-              "conValue": 0.15,
+              "conStats":2,
+              "conValue": 0.3,
               "lockStatTypes": true,
               "types": [
                 "weapon"
@@ -2545,8 +2545,8 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
-              "conValue": 0.15,
+              "conStats":2,
+              "conValue": 0.3,
               "lockStatTypes": true,
               "types": [
                 "gear"
@@ -2598,8 +2598,8 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
-              "conValue": 0.15,
+              "conStats":2,
+              "conValue": 0.5,
               "lockStatTypes": true,
               "types": [
                 "weapon"
@@ -2616,8 +2616,8 @@
             "rngEquipment": {
               "scaling": true,
               "value": 1,
-              "conStats":1,
-              "conValue": 0.15,
+              "conStats":2,
+              "conValue": 0.5,
               "lockStatTypes": true,
               "types": [
                 "gear"
@@ -2675,7 +2675,7 @@
       {
         "name": "Quick Thinking",
         "description": "Switching to this stance applies a shield that absorbs damage equal to X% of your max health for the remainder of the turn",
-        "val": 3
+        "val": 10
       },
       {
         "name": "Tension",
@@ -2701,8 +2701,8 @@
       },
       {
         "name": "Recklessness",
-        "description": "While in this stance, abilities have their chance to critical hit increased by X% (chance max increased to 100%), but successful critical hits deal 10% recoil damage. If an ability's crit chance would go over 100%, recoil damage is only 5%",
-        "val": 5
+        "description": "While in this stance, abilities have their chance to critical hit increased by X% (chance max increased to 100%), but hits deal 10% recoil damage. If an ability's crit chance would go over 100%, recoil damage is only 5%",
+        "val": 6
       }
     ],
     "def": [
@@ -2736,8 +2736,8 @@
       },
       {
         "name": "Finesse",
-        "description": "While in this stance, reduce recoil damage taken from abilities by X%, but all abilities have their critical chance reduced by 10%",
-        "val": 10
+        "description": "While in this stance, 20% chance to reduce recoil damage taken from abilities by X%, but all abilities have their critical chance reduced by 10%",
+        "val": 15
       }
     ],
     "spdef": [
@@ -2957,7 +2957,7 @@
         "playerBattlesWon": 0
       },
       "tutorial": 0,
-      "lessons":[0,0,0,0,0,0,0,0,0]
+      "lessons":[0,0,0,0,0,0,0,0,0,0,0]
     },
     "emptyTownData": {
       "name": "",

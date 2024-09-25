@@ -11,11 +11,15 @@ module.exports = {
     async execute(interaction,componentConfig,callback){
         let session = componentConfig.session
         let file;
+
         if(session.session_id){
-            file = new MessageAttachment('./logs/' + session.session_id + '.json');
+            file = new MessageAttachment('./logs/' + session.session_id + '.json')
         } else {
-            file = new MessageAttachment('./logs/' + session + '.json');
+            file = new MessageAttachment('./logs/' + session + '.json')
         }
+
+
+        
 
         interaction.reply({
             content: " ",

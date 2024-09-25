@@ -1,5 +1,5 @@
 const { populateCombatData, populateCombatWindow, populateCombatControls } = require("../sessionTools.js")
-const { simulateCPUSPAssign, simulateCPUAbilityAssign, clone, runEnemyCombatAI} = require("../tools.js")
+const { clone, runEnemyCombatAI} = require("../tools.js")
 
 module.exports = {
     config:{

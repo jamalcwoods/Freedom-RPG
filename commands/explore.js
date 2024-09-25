@@ -52,6 +52,10 @@ module.exports = {
                 obj:Math.ceil(townData.level * 0.9 + Math.random() * (townData.level * 0.1))
             },
         ])
+        if(!playerData.abilities){
+            interaction.reply({ content: "You must create abilities first! Use `/abilities create` and enter in what you would like to name an ability", ephemeral: true });  
+            return;
+        }
         switch(choices[0].value){
             case "wild":     
                 playerData.exploreStreak = 0   
@@ -85,6 +89,8 @@ module.exports = {
                                 intelligence:{
                                     reuse:0.3
                                 }
+                                ,
+                                expMulti:1.1
                             }
                         ]
                         break;
@@ -106,14 +112,16 @@ module.exports = {
                                 statLevel:0.55,
                                 intelligence:{
                                     reuse:0.4
-                                }
+                                },
+                                expMulti:1.25
                             },
                             {
                                 allowance:5,
                                 statLevel:0.55,
                                 intelligence:{
                                     reuse:0.4
-                                }
+                                },
+                                expMulti:1.25
                             }
                         ]
                         break;
@@ -124,21 +132,24 @@ module.exports = {
                                 statLevel:0.4,
                                 intelligence:{
                                     reuse:0.5
-                                }
+                                },
+                                expMulti:1.5
                             },
                             {
                                 allowance:4,
                                 statLevel:0.4,
                                 intelligence:{
                                     reuse:0.5
-                                }
+                                },
+                                expMulti:1.5
                             },
                             {
                                 allowance:4,
                                 statLevel:0.4,
                                 intelligence:{
                                     reuse:0.5
-                                }
+                                },
+                                expMulti:1.5
                             }
                         ]
                         break;
@@ -177,6 +188,10 @@ module.exports = {
                     }
                     let allowance = enemy.allowance
                     let intelligence = enemy.intelligence
+                    let expMulti = [null,1,2.25,3.5][lifeCount]
+                    if(enemy.expMulti){
+                        expMulti *= enemy.expMulti
+                    }
                     enemy = {
                         rareVar: rare,
                         name:  nameTag + " " + mob.Name,
@@ -194,17 +209,19 @@ module.exports = {
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":10,
-                            "atk":5,
-                            "def":5,
-                            "spatk":5,
-                            "spdef":5,
-                            "spd":5
+                            "hp":5,
+                            "atk":3,
+                            "def":3,
+                            "spatk":3,
+                            "spdef":3,
+                            "spd":3
                         },
                         lootPoint:true,
                         weakPoint:true,
-                        region:mob.region
+                        region:mob.region,
+                        expMulti:expMulti
                     }
+                    
                     let statPoints = Math.ceil(((playerData.level) * 8) * statLevel)
                     enemy = simulateCPUSPAssign(enemy,statPoints,mob)
                     enemy = simulateCPUAbilityAssign(enemy,mob.innateAbilities,Math.ceil(allowance * (1 + playerData.level/10)))                    
@@ -318,6 +335,16 @@ module.exports = {
                     runEnemyCombatAI(newSession.session_data.fighters)
 
                     newSession.session_data.battlelog.alerts.push("A thieving goblin! Take him down, he may have stolen some gold from the town!")
+                
+                    interaction.reply({
+                        content:" ",
+                        components:populateCombatControls(newSession),
+                        embeds:populateCombatWindow(newSession)
+                    })
+
+                    callback({
+                        addSession:newSession
+                    })
                 } else if (playerData.tutorial != "completed"){
                     interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });    
                 } else {
@@ -517,13 +544,16 @@ module.exports = {
                                     break;
                             }
 
-                            bossEnemy = clone(simulateCPUAbilityAssign(bossEnemy,[],5 + Math.floor(townRank * 1.25)))
-                            basicEnemy = clone(simulateCPUAbilityAssign(basicEnemy,[],5 + Math.floor(townRank * 1.25)))
+                            bossEnemy = simulateCPUAbilityAssign(bossEnemy,[],5 + Math.floor(townRank * 1.25))
+                            bossEnemy = simulateCPUSPAssign(bossEnemy,townRank * 60,bossScalar)
+
+                            basicEnemy = simulateCPUAbilityAssign(basicEnemy,[],5 + Math.floor(townRank * 1.25))
+                            basicEnemy = simulateCPUSPAssign(basicEnemy,townRank * 60,enemyScalar)
                             fighters = [
                                 playerData,
-                                simulateCPUSPAssign(clone(basicEnemy),townRank * 60,enemyScalar),
-                                simulateCPUSPAssign(clone(basicEnemy),townRank * 60,enemyScalar),
-                                simulateCPUSPAssign(clone(bossEnemy),townRank * 60,bossScalar)
+                                clone(basicEnemy),
+                                clone(basicEnemy),
+                                bossEnemy
                             ]
 
                             newSession = {
@@ -724,13 +754,18 @@ module.exports = {
                                     break;
                             }
                 
-                            enemy = clone(simulateCPUAbilityAssign(enemy,[],5 + Math.floor(townRank * 1.25)))
-                
+                            let enemyBase = clone(enemy)
+                            enemy = simulateCPUSPAssign(enemy,townRank * 50,enemyScalar)
+                            enemy = simulateCPUAbilityAssign(enemy,[],5 + Math.floor(townRank * 1.25))
+                            woundedUnit = simulateCPUSPAssign(woundedUnit,townRank * 20,wallScalar)
+
+                            woundedUnit.stance = "none"
+
                             fighters = [
                                 playerData,
-                                simulateCPUSPAssign(woundedUnit,townRank * 20,wallScalar),
-                                simulateCPUSPAssign(clone(enemy),townRank * 50,enemyScalar),
-                                simulateCPUSPAssign(clone(enemy),townRank * 50,enemyScalar)
+                                woundedUnit,
+                                clone(enemy),
+                                clone(enemy)
                             ]
                 
                             newSession = {
@@ -775,7 +810,7 @@ module.exports = {
                                                     {
                                                         chance:100,
                                                         obj:{
-                                                            unit:clone(enemy),
+                                                            unit:clone(enemyBase),
                                                             alliance:1,
                                                             skillpoints:townRank * 50,
                                                             allowance:5 + Math.floor(townRank * 1.25)

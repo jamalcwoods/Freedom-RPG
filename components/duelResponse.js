@@ -37,7 +37,7 @@ module.exports = {
                             "damage_val": 40,
                             "name": "Physical Attack",
                             "speed": 1,
-                            "faction": -1,
+                            "stance": "none",
                             "action_type": "attack",
                             "numHits": 1,
                             "recoil": 0,
@@ -60,7 +60,7 @@ module.exports = {
                             "damage_val": 40,
                             "name": "Magic Attack",
                             "speed": 1,
-                            "faction": -1,
+                            "stance": "none",
                             "action_type": "attack",
                             "numHits": 1,
                             "recoil": 0,
@@ -75,7 +75,7 @@ module.exports = {
                                 {
                                     "target": "0",
                                     "stat": "def",
-                                    "value": 1
+                                    "value": 2
                                 },
                                 {
                                     "target": "0",
@@ -88,11 +88,12 @@ module.exports = {
                                     "value": -1
                                 }
                             ],
-                            "speed": 0
+                            "speed": 0,
+                            "focus":10
                         },
                         {
                             "action_type": "stats",
-                            "name": "Empower",
+                            "name": "Strengthen",
                             "statChangeCount": 2,
                             "effects": [
                                 {
@@ -106,14 +107,15 @@ module.exports = {
                                     "value": 1
                                 }
                             ],
-                            "speed": 1
+                            "speed": 1,
+                            "focus": 75
                         }, {
                             "critical": 5,
                             "damage_type": "atk",
                             "damage_val": 20,
                             "name": "Quick Attack",
                             "speed": 2,
-                            "faction": -1,
+                            "stance": "none",
                             "action_type": "attack",
                             "numHits": 1,
                             "recoil": 0,
@@ -147,7 +149,7 @@ module.exports = {
                 let newSession = {
                     type:"combat",
                     session_id: Math.floor(Math.random() * 100000),
-                    user_ids:session.user_ids,
+                    user_ids:[fighters[0].id,fighters[1].id],
                     session_data:populateCombatData(fighters,{
                         fightType:"pvp",
                         alliances:[0,1],
