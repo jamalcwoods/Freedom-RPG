@@ -274,13 +274,17 @@ function calculateAbilityCost(ability,weapon,race){
                 value += calculateEffectCost(e) * weights.effectStrength
             }
             value *= {
-                0:0.8,
+                0:0.7,
                 1:1,
-                2:2,
-                4:4
+                2:3,
+                4:6
             }[ability.speed] * weights.speed
             value *= [1,1.2,1.5][ability.effects.length - 1]
-            value *= Math.pow((ability.focus/75),4.81884167931)
+            if(ability.speed >= 1){
+                value *= Math.pow((ability.focus/75),7.22826251896)
+            } else {
+                value *= Math.pow((ability.focus/75),4.81884167931)
+            }
             break;
     }
     return Math.ceil(value);

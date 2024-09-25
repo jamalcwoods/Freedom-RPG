@@ -5362,7 +5362,7 @@ module.exports = {
                 nextBuild += "\nCurrent Level Dungeon Cleared (Level " + town.level + "): " + (town.dungeonClear ? "✅ Complete" : "❌ Incomplete")
                 nextBuild += "\n- Dungeons can be accessed from the Adventurer's Hall"
                 nextBuild += "\n\nResources Maxed: " + (resourceCheck ? "✅ Complete" : "❌ Incomplete") 
-                nextBuild += "\n- Resources are earned from activity in a discord server, moreso from members who have started playing Discord RPG. Certain resources can be prioritized by selecting a job using the dropdown below"
+                nextBuild += "\n- Resources are earned from activity in a discord server, moreso from members who have started playing Freedom RPG. Certain resources can be prioritized by selecting a job using the dropdown below"
                 nextBuild += "\n\nPoint Threshold Reached (" + town.points + "/" + town.level * 30 + "): " + (town.points >= town.level * 30 ? "✅ Complete" : "❌ Incomplete") 
                 nextBuild += "\n- Town points can be earned by completing missions listed in the Militia Hall"
 
@@ -5555,7 +5555,23 @@ module.exports = {
                                 } else {
                                     upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 250)
                                 }
-                                 
+
+                                let equipmentType = ""
+                                if(session.session_data.temp.equipmentSelection){
+                                    switch(session.session_data.temp.equipmentSelection){
+                                        case "0":
+                                            equipmentType = "gear"
+                                            break;
+                
+                                        case "1":
+                                            equipmentType = "weapon"
+                                            break;
+                                    }
+                                
+                                    if(session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades){
+                                        upgradeCost *= session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades
+                                    }
+                                }
                                 let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
                                     shopListings += "\n"
                                     if(session.session_data.temp){
