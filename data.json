@@ -2447,6 +2447,44 @@
     "playerBattlesWon": 100
   },
   "standardDroptables": {
+    "masteryRewards":[
+      {
+        "chance": 55,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 25
+        }
+      },
+      {
+        "chance": 30,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 50
+        }
+      },
+      {
+        "chance": 10,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 75
+        }
+      },
+      {
+        "chance": 5,
+        "obj": {
+          "type": "resource",
+          "resource": "abilitypoints",
+          "resourceName": "ability points",
+          "amount": 10
+        }
+      }
+    ],
     "settlementLeader": [
       {
         "chance": 50,
@@ -2475,7 +2513,7 @@
               "scaling": true,
               "value": 1,
               "conStats": 1,
-              "conValue": 0.2,
+              "conValue": 0.15,
               "lockStatTypes": false,
               "types": [
                 "gear"
@@ -2528,7 +2566,7 @@
               "scaling": true,
               "value": 1,
               "conStats":2,
-              "conValue": 0.3,
+              "conValue": 0.4,
               "lockStatTypes": true,
               "types": [
                 "weapon"
@@ -2546,7 +2584,7 @@
               "scaling": true,
               "value": 1,
               "conStats":2,
-              "conValue": 0.3,
+              "conValue": 0.4,
               "lockStatTypes": true,
               "types": [
                 "gear"
@@ -2599,7 +2637,7 @@
               "scaling": true,
               "value": 1,
               "conStats":2,
-              "conValue": 0.5,
+              "conValue": 0.8,
               "lockStatTypes": true,
               "types": [
                 "weapon"
@@ -2617,7 +2655,7 @@
               "scaling": true,
               "value": 1,
               "conStats":2,
-              "conValue": 0.5,
+              "conValue": 0.8,
               "lockStatTypes": true,
               "types": [
                 "gear"
@@ -2629,43 +2667,43 @@
     ],
     "perfectClear": [
       {
-        "chance": 30,
-        "obj": {
-          "type": "resource",
-          "resource": "abilitypoints",
-          "resourceName": "ability points",
-          "amount": 2
-        }
-      },
-      {
-        "chance": 30,
+        "chance": 5,
         "obj": {
           "type": "resource",
           "resource": "statpoints",
           "resourceName": "skill points",
-          "amount": 2
+          "amount": 20
         }
       },
       {
-        "chance": 30,
+        "chance": 10,
+        "obj": {
+          "type": "resource",
+          "resource": "statpoints",
+          "resourceName": "skill points",
+          "amount": 10
+        }
+      },
+      {
+        "chance": 35,
         "obj": "EXP"
       },
       {
-        "chance": 5,
-        "obj": {
-          "type": "resource",
-          "resource": "abilitypoints",
-          "resourceName": "ability points",
-          "amount": 5
-        }
-      },
-      {
-        "chance": 5,
+        "chance": 22,
         "obj": {
           "type": "resource",
           "resource": "statpoints",
           "resourceName": "skill points",
           "amount": 5
+        }
+      },
+      {
+        "chance": 28,
+        "obj": {
+          "type": "resource",
+          "resource": "statpoints",
+          "resourceName": "skill points",
+          "amount": 3
         }
       }
     ]
@@ -2957,7 +2995,7 @@
         "playerBattlesWon": 0
       },
       "tutorial": 0,
-      "lessons":[0,0,0,0,0,0,0,0,0,0,0]
+      "lessons":[0,0,0,0,0,0,0,0,0,0,0,0]
     },
     "emptyTownData": {
       "name": "",
@@ -3194,7 +3232,7 @@
       "value": "defense"
     },
     {
-      "description": "Facility to embark on dungeon raids and expeditions",
+      "description": "Facility to embark on dungeon adventures",
       "name": "Adventurer's Hall",
       "value": "adventure"
     },
@@ -3247,6 +3285,10 @@
     "market": {
       "title": "Market",
       "info": "In this facility you can spend gold to purchase weapons and gear that can increase your stats and provide passive benefits. Similarly to the training hall, the equipment purchased here is unique to this town and improves as the town level increases.\n\nOnce a piece of equipment has been purchased, you can equip it by viewing it in your inventory using the /inventory command."
+    },
+    "hall": {
+      "title": "Battle Hall",
+      "info": "In this facility you can try to claim the throne as owner of the battle hall by defeating whatever enemy is currently here.\nIf you win, a replica of your current character's stats will become the new guardian of the hall.\n\nSee how long you can claim the throne for yourself!"
     }
   },
   "acquiredFacilities": [

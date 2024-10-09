@@ -34,10 +34,14 @@ function drawAbilityBox(ctx,ability,x,y,signature){
     if(ability != undefined){
         ctx.font = '30px "Oswald Light"'
         ctx.textAlign = "left"
+        let displayName = ability.name
+        if(displayName.length > 12){
+            displayName = displayName.slice(0, 10) + "..."
+        }
         if(signature){
-            ctx.fillText(ability.name + "(S)",x + 5,y+30)    
+            ctx.fillText("(S)" + displayName,x + 5,y+30)    
         } else {
-            ctx.fillText(ability.name,x + 5,y+30)
+            ctx.fillText(displayName,x + 5,y+30)
         }
         let speedText;
         switch(ability.action_type){
@@ -45,7 +49,35 @@ function drawAbilityBox(ctx,ability,x,y,signature){
                 ctx.textAlign = "left"
 
                 ctx.drawImage(images[ability.damage_type], x + 40, y + 49,32,32);
+                if(ability.stance != "none"){
+                    switch(ability.stance){
+                        case "hp":
+                            ctx.fillStyle = "#5751FF"
+                            break;
+        
+                        case "atk":
+                            ctx.fillStyle = "#B83A3A"
+                            break;
+        
+                        case "spatk":
+                            ctx.fillStyle = "#D5C035"
+                            break;
+        
+                        case "def":
+                            ctx.fillStyle = "#4D934F"
+                            break;
+                        
+                        case "spdef":
+                            ctx.fillStyle = "#D6943C"
+                            break;
+                        
+                        case "spd":
+                            ctx.fillStyle = "#91E1DE"
+                            break;
+                    }
+                }
                 ctx.fillText("Damage: " + ability.damage_val,x + 75,y + 77)
+                ctx.fillStyle = '#000000';
                 
                 ctx.textAlign = "center"
                 speedText = ""
@@ -83,9 +115,6 @@ function drawAbilityBox(ctx,ability,x,y,signature){
                 
                 ctx.drawImage(images.attack_critical, x + 197, y + 132,18,18);
                 ctx.fillText(ability.critical + "%",x + 207,y + 167)
-                
-                // Faction Icon - Disabled for now 
-                //ctx.drawImage(images.icon, x + 170, y + 3,32,32);
 
                 let targetIcon;
                 switch(ability.targetType){
@@ -123,7 +152,7 @@ function drawAbilityBox(ctx,ability,x,y,signature){
                 ctx.textAlign = "center"
 
                 speedText = ""
-                switch(ability.speed ){
+                switch(parseInt(ability.speed)){
                     case 0:
                         speedText = "Slow"
                         break;
@@ -133,14 +162,12 @@ function drawAbilityBox(ctx,ability,x,y,signature){
                     case 2:
                         speedText = "Quick"
                         break;
-                    case 3:
+                    case 4:
                         speedText = "Fast"
                         break;
                 }
 
-                ctx.font = '18px "Oswald Light"'
-                ctx.drawImage(images.attack_speed, x + 192, y,32,32);
-                ctx.fillText(speedText,x + 207, y + 40)
+                
 
                 ctx.textAlign = "left"
 
@@ -179,7 +206,13 @@ function drawAbilityBox(ctx,ability,x,y,signature){
                     }
                     ctx.fillText(Math.abs(ability.effects[i].value) + " " + ability.effects[i].stat.toUpperCase(),coords[i][0] + targetImgSize/4, coords[i][1])
                 }
-                
+
+                ctx.textAlign = "center"
+                ctx.font = '24px "Oswald Light"'
+                ctx.drawImage(images.focus, x + 10, y + 116,32,32);
+                ctx.fillText(ability.focus + "%",x + 30,y + 165)
+                ctx.drawImage(images.attack_speed, x + 192, y + 116,32,32);
+                ctx.fillText(speedText,x + 207, y + 165)
                 break;
         }
     } else {
@@ -282,6 +315,9 @@ function makeCard(player,avatar,page,callback){
                 }),
                 loadImage("./icons/stats_decrease.png").then(img =>{
                     return img
+                }),
+                loadImage("./icons/focus.png").then(img =>{
+                    return img
                 })
             ]
             // for(var i = 0; i < 6;i++){
@@ -322,8 +358,8 @@ function makeCard(player,avatar,page,callback){
                 images.stats_target_4 = values[26]
                 images.stats_increase = values[27]
                 images.stats_decrease = values[28]
+                images.focus = values[29]
                 
-        
                 ctx.fillStyle = "#23272A"
         
                 ctx.fillStyle = "#000000"
@@ -479,24 +515,7 @@ function makeCard(player,avatar,page,callback){
                     ctx.fillText("Basic Weapon",200,440)
                 }
         
-                let raceText = ""
-                for(r of raceIndex){
-                    if(r.id == player.race){
-                        raceText = r.name
-                        break;
-                    }
-                }
-                let weaponText = ""
-                for(r of combatStyleIndex){
-                    if(r.id == player.combatStyle){
-                        weaponText = r.name
-                        break;
-                    }
-                }
-                ctx.font = '20px "Oswald Light"'
-                ctx.fillText(raceText,160, 490)
                 ctx.drawImage(images["race" + player.race], 128, 495,64,64);
-                ctx.fillText(weaponText,240, 490)
                 ctx.drawImage(images["weapon" + player.combatStyle], 208, 495,64,64);
                 
                 

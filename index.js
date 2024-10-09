@@ -44,7 +44,6 @@ for (const file of componentFiles) {
 
 let sessions = []
 
-
 function updateSession(newSession){
     for(var i = 0;i < sessions.length; i++){
         let session = sessions[i]
@@ -131,7 +130,6 @@ function updateSessionPlayer(updates){
     }
 }
 
-
 function processResult(result){
     if(result.removeSession){
         removeSession(result.removeSession)
@@ -205,6 +203,7 @@ client.on('interactionCreate', async interaction => {
                                     await interaction.reply({ content: "You are not a user of this component's session!", ephemeral: true });
                                 }
                             } else {
+                                interaction.message.delete()
                                 await interaction.reply({ content: 'The session for this component no longer exists!', ephemeral: true });
                             }
                         }
@@ -223,6 +222,7 @@ client.on('interactionCreate', async interaction => {
                                             interaction.reply({ content: "You are already added to this component's session!", ephemeral: true });
                                         }
                                     } else {
+                                        interaction.message.delete()
                                         interaction.reply({ content: 'The session for this component no longer exists!', ephemeral: true });
                                     }
                                 } 
@@ -458,7 +458,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             type:"resource",
                             resource:"gold",
                             resourceName:"gold",
-                            amount: 50 * player.dailyCount
+                            amount: 20 * player.dailyCount
                         }, player)
                         player = result[0]
                         for(msg of result[1]){
@@ -469,7 +469,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             type:"resource",
                             resource:"abilitypoints",
                             resourceName:"ability points",
-                            amount: 10 * player.dailyCount
+                            amount: 2 * player.dailyCount
                         }, player)
                         player = result[0]
                         for(msg of result[1]){
@@ -484,7 +484,29 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
 
                         embed.addField("Thank You!","The Freedom RPG Team thanks you for your continued support!\n \-Spiné")
 
+                        let challenge = Math.floor(Math.random() * 3)
+                        let challengeText = ""
+                        switch(challenge){
+                            case 0:
+                                challengeText = "Select a dungeon by visiting an adventure hall and clear a level " + Math.ceil(player.level/10) + " dungeon run"
+                                break;
+
+                            case 1:
+                                challengeText = "Support the town by visiting a militia hall and earning a total of 20 town points by completing missions"
+                                break;
+
+                            case 2:
+                                challengeText = "View your current challenges and complete one with an unmastered weapon to earn a gold reward"
+                                break;
+                        }
+
+                        challengeText += "\n\n**Hint**\nUse the drop down below to quickly access what is needed for your daily task"
+                        
+                        embed.addField("Daily Task",challengeText)
+
                         player.dailyText = rewardsText
+                        player.dailyChallenge = challenge
+                        player.dailyChallengeProgress = 0
 
                         let actionOptions = [
                             {
@@ -493,14 +515,19 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                                 value: "challenges",
                             },
                             {
-                                label: "Explore Wild",
-                                description: "Venture out into the wild",
-                                value: "explore",
-                            },
-                            {
                                 label: "Support Town",
                                 description: "Visit this town's militia hall",
                                 value: "militia",
+                            },
+                            {
+                                label: "Select a Dungeon",
+                                description: "Visit this town's adventure hall to begin a dungeon run",
+                                value: "adventure",
+                            },
+                            {
+                                label: "Explore Wild",
+                                description: "Venture out into the wild",
+                                value: "explore",
                             },
                             {
                                 label: "View Rewards",
@@ -518,7 +545,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                         .addComponents(
                             new MessageSelectMenu()
                             .setCustomId('dailySelection_NULL_' + player.id)
-                            .setPlaceholder('Choose An Action')
+                            .setPlaceholder('Action Quickselect')
                             .addOptions(actionOptions)
                         )
 
@@ -782,7 +809,7 @@ function botUpdate(){
                             townData.points = 0
                         }
                     }
-                    townData.lastRaid = now.getTime() + 86400000
+                    townData.lastRaid = now.getTime() + (86400000 * 3)
                     let missionAmount = [2,2,1]
                     let missionDepth = [5,3,3]
                     let missions = [
@@ -813,9 +840,10 @@ function botUpdate(){
                             "rngEquipment": {
                                 "scaling": false,
                                 "value":1,
-                                "conValue": 0,
+                                "conStats":1,
+                                "conValue": 0.2,
                                 "lockStatTypes": false,
-                                "baseVal": 20 * townData.level,
+                                "baseVal": 15 * townData.level,
                                 "types": [
                                     "gear",
                                     "weapon"
@@ -844,12 +872,12 @@ function botUpdate(){
                         level:0,
                         totalExp:0,
                         stats:{
-                            "hp":50,
-                            "atk":25,
-                            "def":25,
-                            "spatk":25,
-                            "spdef":25,
-                            "spd":25
+                            "hp":25,
+                            "atk":15,
+                            "def":15,
+                            "spatk":15,
+                            "spdef":15,
+                            "spd":15
                         }
                     }
                     let passives = []
@@ -866,16 +894,13 @@ function botUpdate(){
                             rank:Math.floor(Math.random() * 5)
                         })
                     }
-                    boss = simulateCPUAbilityAssign(boss,[],15 +(townData.level * 1.25))
-                    boss = simulateCPUSPAssign(clone(boss),townData.level * 90)
+                    boss = simulateCPUAbilityAssign(boss,[],10 + (townData.level * 1.25))
+                    boss = simulateCPUSPAssign(clone(boss),townData.level * 60)
 
                     let highestStat;
                     let highestVal = 0
                     for(s in boss.stats){
                         let value = boss.stats[s]
-                        if(s == "hp"){
-                            value *= 0.5
-                        }
 
                         if(value > highestVal){
                             highestStat = s
@@ -891,9 +916,13 @@ function botUpdate(){
                             unit:boss,
                             equipment:bossEquipment
                         },
-                        missions:missions,
-                        completion:0
+                        missions:missions
                     }
+                    
+                    let raidableFacilities = ["tavern","armory","market"]
+                    raidableFacilities.splice(Math.floor(Math.random() * raidableFacilities.length),1)
+
+                    townData.raid.raidedFacilities = raidableFacilities
                 }
 
                 //Restock Tasks
@@ -947,7 +976,7 @@ function botUpdate(){
                                     scaling: false,
                                     value:1,
                                     conStats:1,
-                                    conValue:0.2,
+                                    conValue:0.8,
                                     lockStatTypes: true,
                                     baseVal: Math.ceil(val * 10 * townData.level),
                                     types: i % 2 == 0 ? ["weapon"] : ["gear"],
@@ -958,13 +987,13 @@ function botUpdate(){
                         let item = generateRNGEquipment(newData)
                         for(r of townData.regions){
                             if(item.stats[regionStatKey[r]] < 0){
-                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 0.8)
+                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 0.75)
                             } else {
-                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 1.2)
+                                item.stats[regionStatKey[r]] = Math.ceil(item.stats[regionStatKey[r]] * 1.25)
                             }
                         }
                         item.name = generateEquipmentName(item)
-                        townData.listings.push([item,Math.ceil(val * Math.pow(townData.level,Math.log10(40)) * 350)])
+                        townData.listings.push([item,Math.ceil(2 * val * Math.pow(townData.level,Math.log10(40)) * 350)])
                     }
 
                     // Armory

@@ -55,7 +55,6 @@ module.exports = {
                         }
                 } else {
                         interaction.reply({ content: 'You cannot challenge bot users to duels', ephemeral: true });
-                    }
-                
+                }
         }
 };

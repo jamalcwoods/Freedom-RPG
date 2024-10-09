@@ -112,19 +112,26 @@ module.exports = {
     async execute(interaction,componentConfig,callback) {
         let playerData = componentConfig.playerData
         let sessions = componentConfig.sessions
+        
         if(sessions.length == 0){
             interaction.reply(populateRelocate(undefined))
             callback({})
         } else {
+            let oldID;
             let playerSession;
             for(session of sessions){
                 if(session.user_ids.includes(playerData.id) && !session.session_data.onHold && !session.session_data.noRelocate){
                     playerSession = session
+                    oldID = playerSession.session_id
                     break;
                 }
             }
+
+            playerSession.session_id = Math.floor(Math.random() * 100000)
+
             populateRelocate(playerSession,interaction,callback)
-            callback({})
+            callback({
+            })
         }
     }
 };

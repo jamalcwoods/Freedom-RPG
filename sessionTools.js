@@ -41,9 +41,9 @@ function processStanceGrowth(unit,stat,value){
     if(unit.stances && unit.cpu == undefined){
         unit.stances[stat].points += value
 
-        if(unit.stances[stat].points > 100){
+        if(unit.stances[stat].points > 400){
             if(unit.stances[stat].active == true){
-                unit.stances[stat].points -= 100
+                unit.stances[stat].points -= 400
                 if(unit.stances[stat].upgrades[0] + unit.stances[stat].upgrades[1]+ unit.stances[stat].upgrades[2] < 15){
                     let index = Math.floor(Math.random() * 3)
                     while(unit.stances[stat].upgrades[index] == 5){
@@ -243,10 +243,10 @@ function populateCombatWindow(session){
                     if(tele < 0.33){
                         tele = 0.33
                     }
-                    if(fighter.staticData.tele){
+                    if(fighter.staticData.tele != undefined){
                         tele = fighter.staticData.tele
                     }
-                    let telegraphed = Math.random() < tele
+                    let telegraphed = Math.random() <= tele
                     if(telegraphed){
                         if(fighter.stanceSwitch){
                             fighterDesc += "\n**Preparing to switch stance...**"
@@ -448,7 +448,7 @@ function populateCombatControls(session){
     let showName = session.user_ids.length == 1 || session.session_data.options.showAbilityNames
     const row1 = new MessageActionRow()
     for(var i = 0; i < 3; i++){
-        if(session.session_data.fighters[0].staticData.abilities[i]){
+        if(session.session_data.fighters[0].staticData.abilities[i] || !showName){
             row1.addComponents(
                 new MessageButton()
                 .setCustomId('ability_' + session.session_id + '_' + i)
@@ -461,7 +461,7 @@ function populateCombatControls(session){
     
     const row2 = new MessageActionRow()
     for(var i = 3; i < 6; i++){
-        if(session.session_data.fighters[0].staticData.abilities[i]){
+        if(session.session_data.fighters[0].staticData.abilities[i] || !showName){
             row2.addComponents(
                 new MessageButton()
                 .setCustomId('ability_' + session.session_id + '_' + i)
@@ -527,7 +527,15 @@ function populateCombatControls(session){
         let selectionLabels = []
         for(fighter of session.session_data.fighters){
             if(fighter.alive){
-                if(session.user_ids.length == 1 && fighter.staticData.id != session.user_ids[0]){
+                if(session.user_ids.length == 1){
+                    if(fighter.staticData.id != session.user_ids[0]){
+                        selectionLabels.push({
+                            label: "Target " + fighter.staticData.name,
+                            description: "Set " + fighter.staticData.name + " As Your Target",
+                            value: "" + fighter.index,
+                        })
+                    }
+                } else {
                     selectionLabels.push({
                         label: "Target " + fighter.staticData.name,
                         description: "Set " + fighter.staticData.name + " As Your Target",
@@ -622,6 +630,7 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                         components:populateReturnFromCombat(session)
                                     }
                                     callbackObj = {
+                                        unHoldSession:session.session_data.options.returnSession,
                                         removeSession:session,
                                         updatePlayer:updates
                                     }
@@ -999,6 +1008,40 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                         session.session_data.battlelog.alerts.push("✅ Town Militia Supported ✅")
                                         session.session_data.battlelog.alerts.push(town.name + " gained " + (town.points - preTownPoints) + " point(s)")
                                         session.session_data.battlelog.alerts.push("---")
+
+                                        if(fighter.staticData.dailyChallenge == 1){
+                                            fighter.staticData.dailyChallengeProgress += town.points - preTownPoints
+                                            if(fighter.staticData.dailyChallengeProgress >= 20){
+                                                let rewardsText = ""
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"gold",
+                                                    resourceName:"gold",
+                                                    amount: 30 * fighter.staticData.dailyCount
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+                                                for(msg of result[1]){
+                                                    rewardsText += msg + "\n"
+                                                }
+                            
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"abilitypoints",
+                                                    resourceName:"ability points",
+                                                    amount: 3 * fighter.staticData.dailyCount
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+                                                for(msg of result[1]){
+                                                    rewardsText += msg + "\n"
+                                                }
+                                                
+                                                fighter.staticData.dailyChallenge = true
+                            
+                                                session.session_data.battlelog.alerts.push("Daily Task Completed!")
+                                                session.session_data.battlelog.alerts.push(rewardsText)
+                                                session.session_data.battlelog.alerts.push("---")
+                                            }
+                                        }
                                     }
                                 }
 
@@ -1053,7 +1096,7 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                                 }
                                             }
 
-                                            switch(Math.ceil(Math.random() * 3)){
+                                            switch(Math.ceil(Math.random() * 2)){
                                                 case 1:
                                                     let newData = {
                                                         ref:{
@@ -1062,7 +1105,7 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                                                 scaling: false,
                                                                 value:1,
                                                                 conStats:1,
-                                                                conValue:0.1,
+                                                                conValue:0.8,
                                                                 lockStatTypes: true,
                                                                 baseVal: 8 * session.session_data.options.encounterRewards.val,
                                                                 types: ["weapon","gear"]
@@ -1082,24 +1125,8 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                                     }
                                                     session.session_data.battlelog.rewards.push(rewardsText)
                                                     break;
-
-                                                case 2:
-                                                    result = parseReward({
-                                                        type:"resource",
-                                                        resource:"abilitypoints",
-                                                        resourceName: "ability points",
-                                                        amount: Math.floor(session.session_data.options.encounterRewards.val * 6)
-                                                    }, fighter.staticData)
-                                                    fighter.staticData = result[0]
-
-                                                    if(result[1].length > 0){
-                                                        for(msg of result[1]){
-                                                            session.session_data.battlelog.rewards.push(msg)
-                                                        }
-                                                    }
-                                                    break;
                                                 
-                                                case 3:
+                                                case 2:
                                                     result = parseReward({
                                                         type:"resource",
                                                         resource:"statpoints",
@@ -1142,11 +1169,11 @@ function processEndOfTurn(error,session,interaction,callback,message){
                             if(fighter.staticData.achievements.strongestAttack < fighter.records.strongestStrike){
                                 fighter.staticData.achievements.strongestAttack = fighter.records.strongestStrike
                             }
+                            fighter.staticData.achievements.livesLost += fighter.records.livesLost
                             
 
                             let challengesCompleted = 0;
                             let totalGoldReward = 0;
-                            let totalSPReward = 0
                             if(fighter.staticData.challenges && fighter.staticData.tutorial == "completed"){
                                 for(var i = 0; i < fighter.staticData.challenges.length;i++){
                                     let c = fighter.staticData.challenges[i]
@@ -1224,8 +1251,7 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                         c.progress += progressVal
                                         if(c.goal <= c.progress){
                                             challengesCompleted++
-                                            totalGoldReward += c.rank * 50
-                                            totalSPReward += c.rank * 10
+                                            totalGoldReward += c.rank * 300
                                             session.session_data.battlelog.rewards.push("✅" + challengeDict[c.type].name + " - Rank " + c.rank + ": Complete! ✅")
                                             fighter.staticData.challenges.splice(i,1)
                                             i--
@@ -1249,17 +1275,59 @@ function processEndOfTurn(error,session,interaction,callback,message){
                                             session.session_data.battlelog.rewards.push(msg)
                                         }
                                     }
+                                }
 
-                                    result = parseReward({
-                                        type:"resource",
-                                        resource:"abilitypoints",
-                                        resourceName: "ability points",
-                                        amount: totalSPReward * challengesCompleted
-                                    }, fighter.staticData)
-                                    fighter.staticData = result[0]
-                                    if(result[1].length > 0){
-                                        for(msg of result[1]){
-                                            session.session_data.battlelog.rewards.push(msg)
+                                if(challengesCompleted > 0){
+                                    if(fighter.weapon != null){
+                                        if(!fighter.weapon.mastered){
+                                            if(!fighter.weapon.mastery){
+                                                fighter.weapon.mastery = 0
+                                            }
+                                            fighter.weapon.mastery++
+
+                                            result = parseReward(weightedRandom(standardDroptables.masteryRewards), fighter.staticData)
+                                            fighter.staticData = result[0]
+                                            if(result[1].length > 0){
+                                                for(msg of result[1]){
+                                                    session.session_data.battlelog.rewards.push(msg)
+                                                }
+                                            }
+
+                                            if(fighter.weapon.mastery >= 5){
+                                                fighter.weapon.mastered = true
+                                                session.session_data.battlelog.alerts.push("The " + fighter.weapon.name + " has been mastered!\nYou will no longer earn bonuses for completing challenges with this weapon")
+                                            }
+
+                                            if(fighter.staticData.dailyChallenge == 2){
+                                                let rewardsText = ""
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"gold",
+                                                    resourceName:"gold",
+                                                    amount: 30 * fighter.staticData.dailyCount
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+                                                for(msg of result[1]){
+                                                    rewardsText += msg + "\n"
+                                                }
+                            
+                                                result = parseReward({
+                                                    type:"resource",
+                                                    resource:"abilitypoints",
+                                                    resourceName:"ability points",
+                                                    amount: 3 * fighter.staticData.dailyCount
+                                                }, fighter.staticData)
+                                                fighter.staticData = result[0]
+                                                for(msg of result[1]){
+                                                    rewardsText += msg + "\n"
+                                                }
+                                                
+                                                fighter.staticData.dailyChallenge = true
+                            
+                                                session.session_data.battlelog.alerts.push("Daily Task Completed!")
+                                                session.session_data.battlelog.alerts.push(rewardsText)
+                                                session.session_data.battlelog.alerts.push("---")
+                                            }
                                         }
                                     }
                                 }
@@ -1432,6 +1500,7 @@ function handleStatChange(session,unit,amount,stat,log = "combat",set = false){
         unit.liveData.statChanges[stat] = amount
         msg = unit.staticData.name + "'s " + stat + " multiplier set to x" +  statChangeStages[amount]
     } else {
+        console.log(stat)
         unit.liveData.statChanges[stat] += amount
         if(unit.liveData.statChanges[stat] > 16){
             unit.liveData.statChanges[stat] = 16
@@ -1594,6 +1663,88 @@ function manageBossAction(boss,session){
     }
 }
 
+function manageFighterDeath(fighter,killer,session, attackNum = null,isAttack){
+    fighter.staticData.lives -= 1
+    if(fighter.meter != undefined){
+        fighter.staticData.meterRank = 0
+        fighter.meter = 0
+    }
+    if(fighter.staticData.lives <= 0){
+        if(isAttack){
+            if(killer.staticData.stance == "spdef" && killer.staticData.stances.spdef.upgrades[2] > 0){
+                let buffData = getStanceBuffValues("spdef",killer.staticData.stances,2)
+                let gainedHealth = Math.ceil((buffData.val/100) * killer.liveData.maxhp)
+                session.session_data.battlelog.combat.push(killer.staticData.name + " gained " + gainedHealth + " health!")
+                killer.liveData.stats.hp += gainedHealth
+                if(killer.liveData.stats.hp > killer.liveData.stats.maxhp){
+                    killer.liveData.stats.hp = killer.liveData.stats.maxhp  
+                }
+            }
+            killer.records.unitsDefeated++
+            if(fighter.staticData.rareVar){
+                killer.records.raresDefeated++
+            }
+
+            if(fighter.staticData.gear != undefined){
+                let gear = fighter.staticData.inventory[fighter.staticData.gear]
+                for(stat in gear.stats){
+                    if(gear.stats[stat] > 0){
+                        gear.stats[stat] = Math/floor(gear.stats[stat] * 0.75)
+                    }
+                }
+                session.session_data.battlelog.combat.push(fighter.staticData.name + "'s equipped gear was badly damaged!")
+            }
+        }
+        if(attackNum != null){
+            attackNum = 0
+        }
+        fighter.liveData.stats.hp = 0
+        fighter.alive = false
+        
+        fighter.fighter = -1
+        fighter.choosenAbility = -2
+        session.session_data.battlelog.combat.push(fighter.staticData.name + " was defeated!")
+        fighter.staticData.lives = 1
+        if(fighter.staticData.exploreRecord < fighter.staticData.exploreStreak){
+            fighter.staticData.exploreRecord = fighter.staticData.exploreStreak
+            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + fighter.staticData.exploreStreak)
+        }
+        fighter.staticData.exploreStreak = 0
+        fighter.records.livesLost++
+        if(fighter.staticData.cpu){
+            processMobRewards(fighter,session)
+        }
+        triggerCombatEvent({
+            type:1,
+            data:fighter
+        },session)
+    } else {
+        session.session_data.battlelog.combat.push(fighter.staticData.name + " lost a life! (" + fighter.staticData.lives + " remaining)")
+        fighter.records.livesLost++
+        fighter.liveData.stats.hp = fighter.liveData.maxhp
+
+        if(fighter.staticData.highestStat){
+            attackNum = 0
+            manageBossAction(fighter,session)
+        }
+    }
+
+    let passiveData = getPassive(fighter,3)
+    if(passiveData != null){
+        let damage = fighter.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
+        for(var i = 0; i < fighters.length;i++){
+            if(fighters[i].index != fighter.index){
+                damageFighter(session,damage,fighters[i])
+                if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
+                    fighters[i].liveData.stats.hp = 1
+                }
+            }
+        }
+        session.session_data.battlelog.combat.push(fighter.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+    }
+    return attackNum
+}
+
 function increaseComboMeter(unit,value){
     if(unit.meter != undefined){
         if(value > 0 && unit.staticData.stance == "spd" && unit.staticData.stances.spd.upgrades[2] > 0){
@@ -1623,15 +1774,15 @@ function manageCriticalPoint(session,pointHolder,attacker,point){
             if(pointHolder.staticData.droptable){
                 let times = weightedRandom([
                     {
-                        chance:30,
+                        chance:80,
                         obj:1
                     },
                     {
-                        chance:50,
+                        chance:15,
                         obj:2
                     },
                     {
-                        chance:20,
+                        chance:5,
                         obj:3
                     }
                 ])
@@ -2588,16 +2739,17 @@ module.exports = {
                                         case "spd":
                                             session.session_data.battlelog.combat.push(swapper.staticData.name + " activated " + stanceBuffs[swapper.staticData.stance][0].name + "!")
                                             if(swapper.staticData.meterRank > 0){
-                                                handleStatChange(swapper,9 + (swapper.staticData.meterRank * 2),"spd",undefined,true)
+                                                handleStatChange(session,swapper,9 + (swapper.staticData.meterRank * 2),"spd",undefined,true)
                                                 let totalMeterVal = swapper.staticData.meterRank * 30 + swapper.meter
                                                 totalMeterVal -= Math.floor(totalMeterVal * (val / 100))
                                                 swapper.meter = totalMeterVal % 30
                                                 swapper.staticData.meterRank = Math.floor(totalMeterVal / 30)
                                             } else {
-                                                handleStatChange(swapper,8,"spd",undefined,true)
+                                                handleStatChange(session,swapper,8,"spd",undefined,true)
                                             }
                                         }
                                 }
+                                swapper.stanceAttackReady = true
                                 session.session_data.battlelog.combat.push("---")
                             }
                             break;
@@ -3057,60 +3209,10 @@ module.exports = {
                                                                 target.records.counterDamageDone += counterDamage
                                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
                                                                 if(attacker.liveData.stats.hp <= 0){
-                                                                    attacker.staticData.lives -= 1
-                                                                    if(attacker.meter != undefined){
-                                                                        attacker.staticData.meterRank = 0
-                                                                        attacker.meter = 0
-                                                                    }
-                                                                    if(attacker.staticData.lives <= 0){
-                                                                        attackNum = 0
-                                                                        attacker.liveData.stats.hp = 0
-                                                                        attacker.alive = false
-                                                                        target.records.unitsDefeated++
-                                                                        attacker.attacker = -1
-                                                                        attacker.choosenAbility = -2
-                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
-                                                                        attacker.staticData.lives = 1
-                                                                        if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
-                                                                            attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
-                                                                            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
-                                                                        }
-                                                                        attacker.staticData.exploreStreak = 0
-                                                                        attacker.records.livesLost++
-                                                                        if(attacker.staticData.cpu){
-                                                                            processMobRewards(attacker,session)
-                                                                        }
-                                                                        triggerCombatEvent({
-                                                                            type:1,
-                                                                            data:attacker
-                                                                        },session)
-                                                                        if(attacker.staticData.rareVar){
-                                                                            target.records.raresDefeated++
-                                                                        }
-                                                                    } else {
-                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                                        attacker.records.livesLost++
-                                                                        attacker.liveData.stats.hp = attacker.liveData.maxhp
-
-                                                                        if(attacker.staticData.highestStat){
-                                                                            attackNum = 0
-                                                                            manageBossAction(attacker,session)
-                                                                        }
-                                                                    }
-
-                                                                    let passiveData = getPassive(attacker,3)
-                                                                    if(passiveData != null){
-                                                                        let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
-                                                                        for(var i = 0; i < fighters.length;i++){
-                                                                            if(fighters[i].index != attacker.index){
-                                                                                damageFighter(session,damage,fighters[i])
-                                                                                if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
-                                                                                    fighters[i].liveData.stats.hp = 1
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
-                                                                    }
+                                                                   let deathResult = manageFighterDeath(attacker,target,session,attackNum)
+                                                                   if(deathResult != null){
+                                                                    attackNum = deathResult
+                                                                   }
                                                                 }
                                                             } else {
                                                                 if(healAmount > 0){
@@ -3177,10 +3279,18 @@ module.exports = {
                                                     }
 
                                                     let effectiveness = 1; 
-                                                    let sameType = attacker.staticData.stance == action.ability.stance && attacker.staticData.stance != "none" ? 1.5 : 1
+                                                    let stance = action.ability.stance
+                                                    if(attacker.stanceAttackReady && stance == "none" && attacker.staticData.stance != "none"){
+                                                        stance = attacker.staticData.stance
+                                                        if((multiHit && attackNum <= 1) || !multiHit){
+                                                            session.session_data.battlelog.combat.push(attacker.staticData.name + "'s attack has aligned with their stance!")
+                                                            attacker.stanceAttackReady = false
+                                                        }
+                                                    }
+                                                    let sameType = attacker.staticData.stance == stance && stance != "none" ? 1.5 : 1
 
                                                     
-                                                    effectiveness = stanceMatchups[action.ability.stance][target.staticData.stance]
+                                                    effectiveness = stanceMatchups[stance][target.staticData.stance]
                                                     
                                                     if((multiHit && attackNum <= 1) || !multiHit){
                                                         switch(effectiveness){
@@ -3344,68 +3454,9 @@ module.exports = {
                                                         
                                                     }
                                                     if(target.liveData.stats.hp <= 0){
-                                                        target.staticData.lives -= 1
-                                                        if(target.meter != undefined){
-                                                            target.staticData.meterRank = 0
-                                                            target.meter = 0
-                                                        }
-                                                        if(target.staticData.lives <= 0){
-                                                            if(attacker.staticData.stance == "spdef" && attacker.staticData.stances.spdef.upgrades[2] > 0){
-                                                                let buffData = getStanceBuffValues("spdef",attacker.staticData.stances,2)
-                                                                let gainedHealth = Math.ceil((buffData.val/100) * attacker.liveData.maxhp)
-                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " gained " + gainedHealth + " health!")
-                                                                attacker.liveData.stats.hp += gainedHealth
-                                                                if(attacker.liveData.stats.hp > attacker.liveData.stats.maxhp){
-                                                                    attacker.liveData.stats.hp = attacker.liveData.stats.maxhp  
-                                                                }
-                                                            }
-                                                            attackNum = 0
-                                                            target.liveData.stats.hp = 0
-                                                            target.alive = false
-                                                            attacker.records.unitsDefeated++
-                                                            target.target = -1
-                                                            target.choosenAbility = -2
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " was defeated!")
-                                                            target.staticData.lives = 1
-                                                            if(target.staticData.exploreRecord < target.staticData.exploreStreak){
-                                                                target.staticData.exploreRecord = target.staticData.exploreStreak
-                                                                session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + target.staticData.exploreStreak)
-                                                            }
-                                                            target.staticData.exploreStreak = 0
-                                                            target.records.livesLost++
-                                                            if(target.staticData.cpu){
-                                                                processMobRewards(target,session)
-                                                            }
-                                                            triggerCombatEvent({
-                                                                type:1,
-                                                                data:target
-                                                            },session)
-                                                            if(target.staticData.rareVar){
-                                                                attacker.records.raresDefeated++
-                                                            }
-                                                        } else {
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " lost a life! (" + target.staticData.lives + " remaining)")
-                                                            target.records.livesLost++
-                                                            target.liveData.stats.hp = target.liveData.maxhp
-
-                                                            if(target.staticData.highestStat){
-                                                                attackNum = 0
-                                                                manageBossAction(target,session)
-                                                            }
-                                                        }
-
-                                                        let passiveData = getPassive(target,3)
-                                                        if(passiveData != null){
-                                                            let damage = target.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
-                                                            for(var i = 0; i < fighters.length;i++){
-                                                                if(fighters[i].index != target.index){
-                                                                    damageFighter(session,damage,fighters[i])
-                                                                    if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
-                                                                        fighters[i].liveData.stats.hp = 1
-                                                                    }
-                                                                }
-                                                            }
-                                                            session.session_data.battlelog.combat.push(target.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+                                                        let deathResult = manageFighterDeath(target,attacker,session,attackNum,true)
+                                                        if(deathResult != null){
+                                                            attackNum = deathResult
                                                         }
                                                     }
 
@@ -3436,57 +3487,9 @@ module.exports = {
                                                         attacker.recoilDamageTaken += recoilDamage
                                                         let recoilDeath = attacker.liveData.stats.hp <= 0
                                                         if(recoilDeath){
-                                                            attacker.staticData.lives -= 1
-                                                            if(attacker.meter != undefined){
-                                                                attacker.staticData.meterRank = 0
-                                                                attacker.meter = 0
-                                                            }
-                                                            if(attacker.staticData.lives <= 0){
-                                                                attacker.liveData.stats.hp = 0
-                                                                attacker.alive = false
-                                                                attacker.attacker = -1
-                                                                attacker.choosenAbility = -2
-                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
-                                                                attacker.staticData.lives = 1
-                                                                if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
-                                                                    attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
-                                                                    session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
-                                                                }
-                                                                attacker.staticData.exploreStreak = 0
-                                                                attacker.records.livesLost++
-                                                                if(attacker.staticData.cpu){
-                                                                    processMobRewards(target,session)
-                                                                }
-                                                                triggerCombatEvent({
-                                                                    type:1,
-                                                                    data:attacker
-                                                                },session)
-                                                                if(attacker.staticData.rareVar){
-                                                                    target.records.raresDefeated++
-                                                                }
-                                                            } else {
-                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                                attacker.records.livesLost++
-                                                                attacker.liveData.stats.hp = attacker.liveData.maxhp
-
-                                                                if(attacker.staticData.highestStat){
-                                                                    attackNum = 0
-                                                                    manageBossAction(attacker,session)
-                                                                }
-                                                            }
-
-                                                            let passiveData = getPassive(attacker,3)
-                                                            if(passiveData != null){
-                                                                let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
-                                                                for(var i = 0; i < fighters.length;i++){
-                                                                    if(fighters[i].index != attacker.index){
-                                                                        damageFighter(session,damage,fighters[i])
-                                                                        if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
-                                                                            fighters[i].liveData.stats.hp = 1
-                                                                        }
-                                                                    }
-                                                                }
-                                                                session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
+                                                            let deathResult = manageFighterDeath(attacker,target,session,attackNum.false)
+                                                            if(deathResult != null){
+                                                                attackNum = deathResult
                                                             }
                                                         }
                                                     }
@@ -3606,60 +3609,7 @@ module.exports = {
                                                 defender.records.counterDamageDone += counterDamage
                                                 session.session_data.battlelog.combat.push(attacker.staticData.name + " took " + counterDamage + " damage")
                                                 if(attacker.liveData.stats.hp <= 0){
-                                                    attacker.staticData.lives -= 1
-                                                    if(attacker.meter != undefined){
-                                                        attacker.staticData.meterRank = 0
-                                                        attacker.meter = 0
-                                                    }
-                                                    if(attacker.staticData.lives <= 0){
-                                                        attackNum = 0
-                                                        attacker.liveData.stats.hp = 0
-                                                        attacker.alive = false
-                                                        defender.records.unitsDefeated++
-                                                        attacker.attacker = -1
-                                                        attacker.choosenAbility = -2
-                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " was defeated!")
-                                                        attacker.staticData.lives = 1
-                                                        if(attacker.staticData.exploreRecord < attacker.staticData.exploreStreak){
-                                                            attacker.staticData.exploreRecord = attacker.staticData.exploreStreak
-                                                            session.session_data.battlelog.alerts.push("New Explore Streak Record!: " + attacker.staticData.exploreStreak)
-                                                        }
-                                                        attacker.staticData.exploreStreak = 0
-                                                        attacker.records.livesLost++
-                                                        if(attacker.staticData.cpu){
-                                                            processMobRewards(attacker,session)
-                                                        }
-                                                        triggerCombatEvent({
-                                                            type:1,
-                                                            data:attacker
-                                                        },session)
-                                                        if(attacker.staticData.rareVar){
-                                                            defender.records.raresDefeated++
-                                                        }
-                                                    } else {
-                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " lost a life! (" + attacker.staticData.lives + " remaining)")
-                                                        attacker.records.livesLost++
-                                                        attacker.liveData.stats.hp = attacker.liveData.maxhp
-
-                                                        if(attacker.staticData.highestStat){
-                                                            attackNum = 0
-                                                            manageBossAction(attacker,session)
-                                                        }
-                                                    }
-
-                                                    let passiveData = getPassive(attacker,3)
-                                                    if(passiveData != null){
-                                                        let damage = attacker.liveData.maxhp * (passiveDescriptions[passiveData.id].scalar.stat1[passiveData.rank]/100)
-                                                        for(var i = 0; i < fighters.length;i++){
-                                                            if(fighters[i].index != attacker.index){
-                                                                damageFighter(session,damage,fighters[i])
-                                                                if(fighters[i].liveData.stats.hp < 1 && fighters[i].alive){
-                                                                    fighters[i].liveData.stats.hp = 1
-                                                                }
-                                                            }
-                                                        }
-                                                        session.session_data.battlelog.combat.push(attacker.staticData.name + " released a burst of energy upon losing a life, dealing " + damage + " damage to all other fighters!")
-                                                    }
+                                                    manageFighterDeath(attacker,defender,session,null,true)
                                                 }
                                             }
                                         }
@@ -3998,7 +3948,6 @@ module.exports = {
 
         switch(session.session_data.event.type){
             case "choice":
-
                 embed.addField(
                     session.session_data.event.title,
                     session.session_data.event.prompt
@@ -4066,6 +4015,7 @@ module.exports = {
                     })
                 }
                 break;
+
             case "complete":
 
                 let rewardsText = ""
@@ -4139,25 +4089,30 @@ module.exports = {
                         session.session_data.player.dungeonClears[session.session_data.dungeonRank][1] = speedRank
                     }
 
-                    if(rankKey[survivalRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][1]]){
+                    if(rankKey[survivalRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][2]]){
                         session.session_data.player.dungeonClears[session.session_data.dungeonRank][2] = survivalRank
                     }
 
-                    if(rankKey[skillRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][1]]){
+                    if(rankKey[skillRank] > rankKey[session.session_data.player.dungeonClears[session.session_data.dungeonRank][3]]){
                         session.session_data.player.dungeonClears[session.session_data.dungeonRank][3] = skillRank
                     }
                 }
 
                 let rankingText = ""
+                rankingText += "Clear #" + session.session_data.player.dungeonClears[session.session_data.dungeonRank][0] +":\n\n"
                 rankingText += "Clear Time (" + speedRank + "):\n" + msToTime(totalTime * 1000)
+                rankingText += "\n(Best: " + session.session_data.player.dungeonClears[session.session_data.dungeonRank][1] + ")"
                 rankingText += "\n\nClear Survival (" + survivalRank + "):\nHealth: " + Math.floor((session.session_data.rankStats.currentHP/session.session_data.rankStats.startHP) * 100) + "%\nLives: " + session.session_data.rankStats.currentLives + "/" + session.session_data.rankStats.startLives 
+                rankingText += "\n(Best: " + session.session_data.player.dungeonClears[session.session_data.dungeonRank][2] + ")"
                 rankingText += "\n\nClear Skill (" + skillRank + "):\nFails: " + session.session_data.rankStats.failedChecks + "\nSkips: " + session.session_data.rankStats.skips
-                
+                rankingText += "\n(Best: " + session.session_data.player.dungeonClears[session.session_data.dungeonRank][3] + ")"
+
                 embed.addField(
                     "Dungeon Adventure Results!",
                     rankingText
                 )
 
+                let resultRank = ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32)
                     
                 let newData = {
                     ref:{
@@ -4166,9 +4121,9 @@ module.exports = {
                             scaling: false,
                             value:1,
                             conStats:1,
-                            conValue:0.25,
-                            lockStatTypes: true,
-                            baseVal: (10 + (session.session_data.bonus ? 5 : 0)) * session.session_data.dungeonRank,
+                            conValue:0.75,
+                            lockStatTypes: false,
+                            baseVal: Math.ceil(((12.5 * resultRank) + (session.session_data.bonus ? 5 : 0)) * session.session_data.dungeonRank),
                             types: ["weapon","gear"]
                         }
                     }
@@ -4191,16 +4146,14 @@ module.exports = {
                 let SPAmount = 0;
                 let scalarDiff = (session.session_data.dungeonRank + 1) - Math.ceil(player.level/10)  
                 if(scalarDiff >= 0){
-                    if(scalarDiff == 0){
-                       scalarDiff = 1     
-                    }       
-                    let expRatio = Math.pow(scalarDiff,1.17609125906)
-
-                    expAmount = Math.ceil((player.expCap * expRatio) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
-                    goldAmount = Math.ceil((400 * session.session_data.dungeonRank) * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
-                    SPAmount = Math.ceil(10 * session.session_data.dungeonRank * ((32 - (rankKey[speedRank] + rankKey[skillRank] + rankKey[survivalRank]))/32))
+                    expAmount = Math.ceil((player.expCap * 0.5) * resultRank)
+                    if(expAmount < 1000){
+                        expAmount = 1000
+                    }
+                    goldAmount = Math.ceil((400 * session.session_data.dungeonRank) * resultRank)
+                    SPAmount = Math.ceil(2 * session.session_data.dungeonRank * resultRank)
                 } else {
-                    expAmount = 750
+                    expAmount = 500
                     goldAmount = 150
                     SPAmount = 2 * session.session_data.dungeonRank
                 }
@@ -4277,6 +4230,38 @@ module.exports = {
                     "Dungeon Rewards!",
                     rewardsText
                 )
+
+                if(session.session_data.player.dailyChallenge == 0 && session.session_data.dailyDungeon){
+                    let rewardsText = ""
+                    result = parseReward({
+                        type:"resource",
+                        resource:"gold",
+                        resourceName:"gold",
+                        amount: 30 * player.dailyCount
+                    }, session.session_data.player)
+                    session.session_data.player = result[0]
+                    for(msg of result[1]){
+                        rewardsText += msg + "\n"
+                    }
+
+                    result = parseReward({
+                        type:"resource",
+                        resource:"abilitypoints",
+                        resourceName:"ability points",
+                        amount: 3 * session.session_data.player.dailyCount
+                    }, session.session_data.player)
+                    session.session_data.player = result[0]
+                    for(msg of result[1]){
+                        rewardsText += msg + "\n"
+                    }
+                    
+                    session.session_data.player.dailyChallenge = true
+
+                    embed.addField(
+                        "Daily Task Complete!",
+                        rewardsText
+                    )
+                }
 
                 let updates = [
                     {
@@ -4372,8 +4357,8 @@ module.exports = {
             let isNeg = abilityCost <= 0
             let cost = Math.ceil(Math.pow(abilityCost,2)/450)
             let levelReq = Math.ceil(cost/3)
-            if(levelReq > 100){
-                levelReq = 100
+            if(levelReq > 50){
+                levelReq = 50
             }
             let displayText = ""
             displayText += "Ability points to spend: " + session.session_data.abilitypoints + "\n"
@@ -4386,7 +4371,7 @@ module.exports = {
                 } else {
                     displayText += " ❌\n\n"
                 }
-                if(session.session_data.level < 100){
+                if(session.session_data.ascends == 0){
                     displayText += "Current Level: " + session.session_data.level + "\n"
                     displayText += "Level Requirement: " + levelReq
                     if(levelReq <= session.session_data.level){
@@ -4553,14 +4538,20 @@ module.exports = {
         let stanceText = ""
         let stanceData = session.session_data.player.stances[session.session_data.viewingStance]
         stanceText += "Viewing Stance: " + stanceDict[session.session_data.viewingStance]
-        stanceText += "\nTo Next Upgrade Unlock: " +  (100 - stanceData.points) + "%"
+        stanceText += "\nTo Next Upgrade Unlock: " +  Math.floor((400 - stanceData.points)/4) + "%"
         let upgradeText = ""
         for(upgrade in stanceData.upgrades){
             let buffData = stanceBuffs[session.session_data.viewingStance][upgrade]
             let upgradeRank = session.session_data.player.stances[session.session_data.viewingStance].upgrades[upgrade]
+            let buffVal;
+            if(buffData.baseval){
+                buffData.baseval + (buffData.val * upgradeRank)
+            } else {
+                buffData.val * upgradeRank
+            }
             if(upgradeRank > 0){
                 upgradeText += "\n\n**" + buffData.name + "** - Rank: " + rankNumerals[upgradeRank]
-                upgradeText += "\n" + buffData.description.replace("X",buffData.val * upgradeRank) 
+                upgradeText += "\n" + buffData.description.replace("X",buffVal) 
             }
         }
         if(upgradeText == ""){
@@ -4760,7 +4751,7 @@ module.exports = {
                     .setCustomId('addAbility_' + session.session_id)
                     .setLabel('Add Ability')
                     .setStyle('PRIMARY')
-                    .setDisabled(cost > session.session_data.abilitypoints || isNeg || session.session_data.level < levelReq),
+                    .setDisabled((cost > session.session_data.abilitypoints || isNeg) || (session.session_data.level < levelReq && session.session_data.ascends == 0)),
             
                     new MessageButton()
                     .setCustomId('cancel_' + session.session_id)
@@ -5049,8 +5040,12 @@ module.exports = {
     populateLobbyEdit(session){
         let lobbySelectionLabels = [{
             label: "FFA",
-            description: "Free For All Combat Between All Lobby Members",
+            description: "Free For All combat between all lobby members!",
             value: "0",
+        },{
+            label: "Wild",
+            description: "Fight together against wild enemies!",
+            value: "1",
         }]
 
         const row1 = new MessageActionRow()
@@ -5184,8 +5179,8 @@ module.exports = {
                 break;
 
             case "adventure":
-                let adventureText = "From this facility you can enter your character in dungeon raids.\n\nDungeon raids are required in order for a town to increase it's level and guarantee a random piece of equipment if completed"
-                embed.addField("Adventurer's Hall - Expeditions and Dungeons:",adventureText)
+                let adventureText = "From this facility you can enter your character in dungeon adventures.\n\nDungeon adventures are required in order for a town to increase it's level and guarantee a random piece of equipment if completed. The stats of the equipment are based on your performance in the dungeon"
+                embed.addField("Adventurer's Hall - Dungeons:",adventureText)
                 break;
 
             case "hall":
@@ -5382,7 +5377,16 @@ module.exports = {
                 let missions = raidPresets.missions
                 let rankIndexer = ["Simple","Normal","Challenging"]
                 let pointIndexer = [1,2,3]
-                let report = "Current Raid Leader: " + raidData.leader.name + "\n\n"
+                let report = "Current Raid Leader: " + raidData.leader.name + "\n"
+                if(raidData.raidedFacilities){
+                    report += "\nOccupied Facilities:\n(Completing the retaliation mission will unlock these facilities)\n"
+                    for(f of raidData.raidedFacilities){
+                        report += f + "\n"
+                    }
+                    report += "\n"
+                } else {
+                    report += "\n"
+                }
                 if(raidData.bossDefeats){
                     report += "Raiders defeated - New raid in " + msToTime(session.session_data.town.lastRaid - now.getTime())
                 } else {
@@ -5649,7 +5653,7 @@ module.exports = {
             case "armory":
                 let typeList = [
                     {
-                        label: "Abiltiy Upgrades",
+                        label: "Abilitiy Upgrades",
                         description: "View upgrades availiable for your abilities",
                         value: "0"
                     },
@@ -5666,7 +5670,7 @@ module.exports = {
                     switch(session.session_data.temp.upgradeType){
                         case "0":
                             upgradeType = "Ability"
-                            typePlaceholder = "Abiltiy Upgrades"
+                            typePlaceholder = "Abilitiy Upgrades"
                             break;
 
                         case "1":
@@ -5861,6 +5865,24 @@ module.exports = {
                                 } else {
                                     upgradeCost = Math.ceil(upgrade.multi * upgrade.roll * townLevel * 250)
                                 }
+
+                                let equipmentType = ""
+                                if(session.session_data.temp.equipmentSelection){
+                                    switch(session.session_data.temp.equipmentSelection){
+                                        case "0":
+                                            equipmentType = "gear"
+                                            break;
+                
+                                        case "1":
+                                            equipmentType = "weapon"
+                                            break;
+                                    }
+                                
+                                    if(session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades){
+                                        upgradeCost *= session.session_data.player.inventory[session.session_data.player[equipmentType]].upgrades
+                                    }
+                                }
+
                                 let upgradeValue = Math.ceil(townLevel * upgrade.multi) * upgrade.roll
                                 optionLabels.push({
                                     label:"Option #" + (parseInt(i) + 1),
@@ -6094,6 +6116,11 @@ module.exports = {
                             label: "Lesson 11 - Stances",
                             description:"Learn how combat stances can give you advantages against foes",
                             value: "lesson10",
+                        },
+                        {
+                            label: "Lesson 12 - Weak Points",
+                            description:"Learn how to prioritize weak points to weaken your foes",
+                            value: "lesson11",
                         }
                     ]
 
@@ -6102,7 +6129,7 @@ module.exports = {
                     }
 
                     for(t in trainingOptions){
-                        if(session.session_data.player.lessons[t] == true){
+                        if(session.session_data.player.lessons[t - parseInt(1)] == true){
                             trainingOptions[t].label += " - ✅"
                         }
                     }
@@ -6440,6 +6467,9 @@ module.exports = {
                 if(item.favorite){
                     items += "⭐"
                 }
+                if(item.mastered){
+                    items += "👑"
+                }
                 if(item.type == "gear" && parseInt(session.session_data.player.gear) == i){
                     items += " (E)"
                 }
@@ -6559,7 +6589,7 @@ module.exports = {
                 message = "You are preparing to embark on a dungeon adventure in the town of " + session.session_data.town.name
                 + "\n\n- Dungeons consist of multiple combat instances and stat check scenarios"
                 + "\n- You will not auto heal between combat instances"
-                + "\n- Fleeing from any combat instance will deplete your life count"
+                + "\n- Fleeing from any combat instance will end the dungeon run"
                 + "\n- Running out of lives will end your dungeon adventure"
                 + "\n- You may end your adventure during any stat check scenario"
                 + "\n- Passive benefits from messaging are disabled while on a dungeon adventure"

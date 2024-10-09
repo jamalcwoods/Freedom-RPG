@@ -40,6 +40,7 @@ module.exports = {
                         choices:[],
                         combats:[]
                     },
+                    dailyDungeon:Math.ceil(session.session_data.player.level/10) == parseInt(interaction.values[0]),
                     dungeonStart:now.getTime(),
                     dungeonRank:parseInt(interaction.values[0]),
                     eventResult:{},

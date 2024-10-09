@@ -30,6 +30,7 @@ module.exports = {
             infoText += "Players have a chance to perform their signature ability every time they use an ability.\nThis chance increases as their level goes up and is even further increased when their health is low"
             infoText += "\n\n**Town Progression Boost**\n"
             infoText += "Providing a boost to a town will instantly level up a town regardless of their progression towards the next level.\nThis results in better offers from it's vendors as well as access to more difficult raids and dungeon levels"
+            infoText += "\n\nAdditionally, ascended players will have their level cap removed and will no longer need to meet level requirements when making an ability"
             embed.addField("Ascension Info",infoText)
             
             let newSession = {

@@ -29,6 +29,7 @@ module.exports = {
         let sessions = componentConfig.sessions
         if(id == interaction.user.id){
             if(getUserSession(sessions,interaction.user) == null){
+                let updates,newSession;
                 switch(interaction.values[0]){
                     case "profile":
                         componentConfig.choices = [
@@ -70,7 +71,7 @@ module.exports = {
                     case "militia":
                         playerData.exploreStreak = 0
 
-                        let newSession = {
+                        newSession = {
                             type:"townVisit",
                             session_id: Math.floor(Math.random() * 100000),
                             user_ids:[playerData.id],
@@ -81,7 +82,7 @@ module.exports = {
                             }
                         }
                 
-                        let updates = []
+                        updates = []
                         updates.push({
                             id:playerData.id,
                             path:"exploreStreak",
@@ -98,6 +99,38 @@ module.exports = {
                             updatePlayer:updates
                         })
                         break;
+
+                    case "adventure":
+                            playerData.exploreStreak = 0
+    
+                            newSession = {
+                                type:"townVisit",
+                                session_id: Math.floor(Math.random() * 100000),
+                                user_ids:[playerData.id],
+                                session_data:{
+                                    player:playerData,
+                                    town:townData,
+                                    location:"adventure"
+                                }
+                            }
+                    
+                            updates = []
+                            updates.push({
+                                id:playerData.id,
+                                path:"exploreStreak",
+                                value:0
+                            })
+                            
+                            interaction.update({
+                                    content: " ",
+                                    embeds: populateTownVisitWindow(newSession),
+                                    components: populateTownVisitControls(newSession)
+                            })
+                            callback({
+                                addSession:newSession,
+                                updatePlayer:updates
+                            })
+                            break;
                 }
             } else {
                 interaction.reply({content: "The daily window was closed as you are already in another session",ephemeral:true})

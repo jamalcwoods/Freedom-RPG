@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const { populateCloseInteractionMessage} = require("../sessionTools.js")
 const { templates} = require("../data.json")
+const { clone } = require("../tools.js")
 
 module.exports = {
     config:{
@@ -24,14 +25,17 @@ module.exports = {
                 resultText += "\n" + session.session_data.town.name + " is now level " + session.session_data.town.level + "!"
             }
 
-            session.session_data.player.abilities = templates.emptyPlayerData.abilities
-            session.session_data.player.stats = templates.emptyPlayerData.stats
-            session.session_data.player.gold = templates.emptyPlayerData.gold
-            session.session_data.player.level = templates.emptyPlayerData.level
-            session.session_data.player.exp = templates.emptyPlayerData.exp
-            session.session_data.player.expCap = templates.emptyPlayerData.expCap
-            session.session_data.player.statpoints = templates.emptyPlayerData.statpoints
-            session.session_data.player.inventory = templates.emptyPlayerData.inventory
+            let emptyPlayer = clone(templates.emptyPlayerData)
+
+            session.session_data.player.abilities = emptyPlayer.abilities
+            session.session_data.player.stats = emptyPlayer.stats
+            session.session_data.player.gold = emptyPlayer.gold
+            session.session_data.player.level = emptyPlayer.level
+            session.session_data.player.exp = emptyPlayer.exp
+            session.session_data.player.expCap = emptyPlayer.expCap
+            session.session_data.player.statpoints = emptyPlayer.statpoints
+            session.session_data.player.inventory = emptyPlayer.inventory
+            session.session_data.player.stances = emptyPlayer.stances
             session.session_data.player.weapon = null
             session.session_data.player.gear = null
             

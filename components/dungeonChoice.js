@@ -65,7 +65,7 @@ module.exports = {
                         break;
 
                     case "skip":
-                        session.session_data.dangerValue += 3
+                        session.session_data.dangerValue += 4
                         session.session_data.rankStats.skips++
                         pass = true
                         session.session_data.eventResult = {
@@ -83,7 +83,7 @@ module.exports = {
                         let eventRoll = Math.ceil(Math.floor(Math.random() * (10 * eventRank)))
                         pass = playerRoll >= eventRoll
                         if(!pass){
-                            session.session_data.dangerValue++
+                            session.session_data.dangerValue += 2
                             session.session_data.rankStats.failedChecks++
                         }
                         session.session_data.eventResult = {
@@ -202,6 +202,7 @@ module.exports = {
                         })
                     }
                 } else {
+                    // ADD DUNGEON BOSSES HERE
                     session.session_data.event = {
                         type:"complete"
                     }

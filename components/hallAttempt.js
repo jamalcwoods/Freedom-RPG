@@ -12,6 +12,7 @@ module.exports = {
         let session = componentConfig.session
         let opponent = clone(session.session_data.town.hallOwner)
         opponent.cpu = true
+        opponent.tele = 0
 
         let newSession = {
             type:"combat",
@@ -41,7 +42,16 @@ module.exports = {
             embeds:populateCombatWindow(newSession)
         })
 
+        let updates = []
+
+        updates.push({
+            id:session.session_data.player.id,
+            path:"",
+            value:session.session_data.player
+        })
+
         callback({
+            updatePlayer: updates,
             addSession: newSession,
             removeSession: session
         })

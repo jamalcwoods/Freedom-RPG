@@ -108,7 +108,7 @@ module.exports = {
                                                                         .setLabel('Dismiss')
                                                                         .setStyle('DANGER')
                                                                 );
-                                                                if(playerData.tutorial != 'complete'){
+                                                                if(playerData.tutorial != 'completed'){
                                                                         interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });             
                                                                 } else {
                                                                         interaction.reply({

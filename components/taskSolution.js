@@ -75,10 +75,10 @@ module.exports = {
                             rngEquipment: {
                                 scaling: false,
                                 value:1,
-                                conStats:2,
-                                conValue:0.33,
+                                conStats:0,
+                                conValue:0,
                                 lockStatTypes: false,
-                                baseVal: 12 * session.session_data.town.level,
+                                baseVal: 6 * session.session_data.town.level,
                                 types: ["weapon","gear"]
                             }
                         }
@@ -98,7 +98,7 @@ module.exports = {
                 let now = new Date()
 
                 if(session.session_data.player.statGrowthTimer < now.getTime()){
-                    let val = Math.floor(roll/2.5)
+                    let val = roll
                     if(val > 0){
                         let growthMessage = session.session_data.player.name + "'s stats slightly grew!"
                         let stat = interaction.values[0]

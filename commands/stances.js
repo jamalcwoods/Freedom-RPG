@@ -15,6 +15,11 @@ module.exports = {
     },
 	async execute(interaction,config,callback) {
         let playerData = config.playerData
+        if(playerData.tutorial != "completed"){
+            interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });    
+            callback({})
+            return;
+        }
 
         let newSession = {
             type:"stances",

@@ -26,6 +26,7 @@ module.exports = {
                             name:"Practice Dummy",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -51,6 +52,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
 
                         playerClone.stats = {
                             "hp":10,
@@ -137,6 +139,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -162,6 +165,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy2",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -187,6 +191,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
 
                         playerClone.stats = {
                             "hp":10,
@@ -280,6 +285,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -305,6 +311,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy2",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -330,6 +337,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
 
                         playerClone.stats = {
                             "hp":10,
@@ -414,6 +422,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -451,6 +460,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -542,6 +552,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -579,6 +590,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -670,6 +682,7 @@ module.exports = {
                             name:"Harmless Fighter #1",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -694,6 +707,7 @@ module.exports = {
                             name:"Harmless Fighter #2",
                             id:"dummy2",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -719,6 +733,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -792,6 +807,7 @@ module.exports = {
                             name:"Defensive Fighter",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -804,7 +820,7 @@ module.exports = {
                                 "name": "Basic Guard",
                                 "guard_val": 20,
                                 "guard_type": "def",
-                                "success_level": 100,
+                                "success_level": 90,
                                 "counter_val": 0,
                                 "counter_type": "def",
                                 "speed": 3
@@ -826,6 +842,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -910,6 +927,7 @@ module.exports = {
                             name:"Practice Fighter",
                             id:"dummy1",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -944,6 +962,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -1028,6 +1047,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -1052,6 +1072,7 @@ module.exports = {
                             name:"Practice Dummy #2",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -1076,6 +1097,7 @@ module.exports = {
                             name:"Practice Dummy #3",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -1101,6 +1123,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -1182,6 +1205,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"none",
                             race:"0",
                             combatStyle:"0",
@@ -1207,6 +1231,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -1320,6 +1345,7 @@ module.exports = {
                             name:"Practice Dummy #1",
                             id:"dummy",
                             cpu:true,
+                            tele:1,
                             stance:"atk",
                             race:"0",
                             combatStyle:"0",
@@ -1345,6 +1371,7 @@ module.exports = {
                         delete playerClone.boosters
                         delete playerClone.gear
                         delete playerClone.weapon
+                        delete playerClone.stances
                         playerClone.lives = 1
                         playerClone.level = 1
 
@@ -1423,10 +1450,10 @@ module.exports = {
                             {
                                 "critical": 0,
                                 "damage_type": "atk",
-                                "damage_val": 80,
-                                "name": "Basic Attack",
+                                "damage_val": 120,
+                                "name": "Adapting Attack",
                                 "speed": 1,
-                                "stance": "none",
+                                "stance": "hp",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -1437,9 +1464,9 @@ module.exports = {
                                 "critical": 0,
                                 "damage_type": "atk",
                                 "damage_val": 60,
-                                "name": "Cunning Attack",
+                                "name": "Basic Attack",
                                 "speed": 1,
-                                "stance": "spatk",
+                                "stance": "none",
                                 "action_type": "attack",
                                 "numHits": 1,
                                 "recoil": 0,
@@ -1482,6 +1509,119 @@ module.exports = {
                                 ],
                                 dialogue:[
                                     "Some enemies will be in certain combat stances when you fight them. These stances make them resistant/weaker to certain attacks (Depends on the stance that the attack aligns with)\n\nPlayers are able to change their stance during combat, which forces their next attack ability used to align with their stance (You can see which stances you have access to by doing `/stances`). To change your stance, select 'Non-ability Actions' and choose 'Change Stance'\n\nFor this lesson, defeat the dummy in 2 turns using stances and abilities."
+                                ],
+                                openingDialogue:0
+                            })
+                        }
+                        break;
+                    case "lesson11":
+                        enemy1 = {
+                            name:"Practice Dummy #1",
+                            id:"dummy",
+                            cpu:true,
+                            tele:1,
+                            stance:"atk",
+                            race:"0",
+                            combatStyle:"0",
+                            exp:0,
+                            abilitypoints:0,
+                            statpoints:0,
+                            lives:1,
+                            abilities:[],
+                            level:1,
+                            totalExp:0,
+                            stats:{
+                                "hp":8,
+                                "atk":1,
+                                "def":100,
+                                "spatk":1,
+                                "spdef":60,
+                                "spd":1
+                            },
+                            weakPoint:true,
+                            weakPointVal:6
+                        }
+
+                        playerClone = clone(session.session_data.player)
+
+                        delete playerClone.boosters
+                        delete playerClone.gear
+                        delete playerClone.weapon
+                        delete playerClone.stances
+                        playerClone.lives = 1
+                        playerClone.level = 1
+
+                        playerClone.stats = {
+                            "hp":10,
+                            "atk":100,
+                            "def":10,
+                            "spatk":90,
+                            "spdef":10,
+                            "spd":10
+                        }
+                        playerClone.abilities = [
+                            {
+                                "critical": 0,
+                                "damage_type": "atk",
+                                "damage_val": 120,
+                                "name": "Powerful Physical Attack",
+                                "speed": 1,
+                                "stance": "hp",
+                                "action_type": "attack",
+                                "numHits": 1,
+                                "recoil": 0,
+                                "targetType": 1,
+                                "accuracy": 100
+                            },
+                            {
+                                "critical": 0,
+                                "damage_type": "spatk",
+                                "damage_val": 20,
+                                "name": "Light Special Attack",
+                                "speed": 1,
+                                "stance": "none",
+                                "action_type": "attack",
+                                "numHits": 1,
+                                "recoil": 0,
+                                "targetType": 1,
+                                "accuracy": 100
+                            }
+                        ]
+
+                        fighters = [
+                            playerClone,
+                            enemy1
+                        ]
+
+                        newSession = {
+                            type:"combat",
+                            session_id: Math.floor(Math.random() * 100000),
+                            user_ids:session.user_ids,
+                            server_id:interaction.guildId,
+                            session_data:populateCombatData(fighters,{
+                                fightType:"pve",
+                                alliances:[0,1],
+                                canFlee:true,
+                                progressiveCombat:false,
+                                rewardPlayer:false,
+                                returnSession:session.session_id,
+                                events:[
+                                    {
+                                        type:0,
+                                        data:{
+                                            all:true
+                                        },
+                                        result:"dialogue_0"
+                                    },{
+                                        type:0,
+                                        data:{
+                                            count:1
+                                        },
+                                        result:"win_1"
+                                    }
+                                ],
+                                dialogue:[
+                                    "Enemies will often have weak points marked by a red square on their health bar, or loot points marked by a yellow square (Orange if both points overlap). By lowering the enemy's health into the threshold represented by the square, you will trigger the loot/weak point to be hit.\n\nHitting a weak point will lower 1-3 of the enemies highest stats\nHitting a loot point will force the enemy to drop rewards 1-3 times from their droptable\n\nFor this lesson, hit the training dummy in it's weak point, and then use an attack to finish it off after it's defenses have been lowered"
                                 ],
                                 openingDialogue:0
                             })

@@ -72,27 +72,31 @@ function parseReward(drop,player,mob){
             let emoji = ""
             switch(drop.resource){
                 case "exp":
-                    emoji = "✨"
-                    player.exp += drop.amount;
-                    player.totalExp += drop.amount
-                    let prevLevel = player.level
-                    let statIncreases;
-                    while(player.exp >= player.expCap){
-                        result = levelPlayer(player,statIncreases)
-                        player = result[0]
-                        statIncreases = result[1]
-                    }
-                    messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
-                    if(player.level > prevLevel){
-                        messages.push(player.name + " is now level " + player.level + "!")
-                        messages.push(player.name + " earned " + player.level * 50 + " gold💰")
-                        let statMessage = ""
-                        for(s in statIncreases){
-                            if(statIncreases[s] != 0){
-                                statMessage += "\n(" + s.toUpperCase() + " +" + statIncreases[s] + ")"
-                            }
+                    if(player.level < 50 || player.ascends > 0){
+                        emoji = "✨"
+                        player.exp += drop.amount;
+                        player.totalExp += drop.amount
+                        let prevLevel = player.level
+                        let statIncreases;
+                        while(player.exp >= player.expCap){
+                            result = levelPlayer(player,statIncreases)
+                            player = result[0]
+                            statIncreases = result[1]
                         }
-                        messages.push(statMessage)
+                        messages.push(player.name + " received " + drop.amount + " " + drop.resourceName + " " + emoji)
+                        if(player.level > prevLevel){
+                            messages.push(player.name + " is now level " + player.level + "!")
+                            messages.push(player.name + " earned " + player.level * 50 + " gold💰")
+                            let statMessage = ""
+                            for(s in statIncreases){
+                                if(statIncreases[s] != 0){
+                                    statMessage += "\n(" + s.toUpperCase() + " +" + statIncreases[s] + ")"
+                                }
+                            }
+                            messages.push(statMessage)
+                        }
+                    } else {
+                        messages.push("**" + player.name + " can no longer receive experience as they have reached the level cap! To continue leveling, they must do** `/ascend`")
                     }
                     break;
 
@@ -624,8 +628,7 @@ function generateRNGEquipment(dropData,SP){
 
     conVal = Math.ceil(Math.pow(val * rngSet.conValue,0.9)) * 6
     val = Math.ceil(Math.pow(val * rngSet.value,0.9)) * 6
-
-    console.log("Value: " + val)
+    
     let conStats = rngSet.conStats
 
     let attributes = []
@@ -738,7 +741,7 @@ function generateRNGEquipment(dropData,SP){
 
     let maxStatVal = statVal
     while(statVal > 0){
-        let amount = Math.ceil(maxStatVal * Math.random() * 0.50)
+        let amount = Math.ceil(maxStatVal * Math.random() * 0.33)
         if(amount > statVal){
             amount = statVal
         }
@@ -1042,13 +1045,13 @@ function generateRNGAbility(abilityData,forcedFields,options){
                 ["speed",[0,1,2,4],"val",12]
             ]
             newAbility = clone(templates.attack)
-            if(forcedFields.damage_type){
+            if(forcedFields && forcedFields.damage_type){
                 newAbility.damage_type = forcedFields.damage_type
             } else {
                 newAbility.damage_type = ["atk","spatk"][Math.floor(Math.random() * 2)]
             }
 
-            if(forcedFields.stance){
+            if(forcedFields && forcedFields.stance){
                 newAbility.stance = forcedFields.stance
             }
             
@@ -1076,8 +1079,10 @@ function generateRNGAbility(abilityData,forcedFields,options){
             ]
             newAbility = clone(templates.stats)
             let benstats = ["def","spdef","spd"]
-            if(options.bestDmg){
+            if(options && options.bestDmg){
                 benstats.push(options.bestDmg)
+            } else {
+                benstats = ["atk","spatk","def","spdef","spd"]
             }
             newAbility.benstats = benstats
             newAbility.effects[0].stat = benstats[Math.floor(Math.random() * benstats.length)]
@@ -1323,6 +1328,9 @@ module.exports = {
     },
     prepCombatFighter(fighter,index){
 
+        if(!fighter.abilities){
+            fighter.abilities = []
+        }
         for(ability of fighter.abilities){
             delete ability.faction
             if(ability.stance == undefined){
@@ -1520,6 +1528,9 @@ module.exports = {
             if(fighterData.staticData.weakPoint == true){
                 fighterData.staticData.weakPoint = 1 + Math.floor(Math.random() * 6)   
             }
+            if(fighterData.staticData.weakPointVal){
+                fighterData.staticData.weakPoint = fighterData.staticData.weakPointVal 
+            }   
             fighterData.weakPointHit = false
         }
 
@@ -1527,6 +1538,9 @@ module.exports = {
             if(fighterData.staticData.lootPoint == true){
                 fighterData.staticData.lootPoint = 1 + Math.floor(Math.random() * 6)   
             }
+            if(fighterData.staticData.weakPointVal){
+                fighterData.staticData.weakPoint = fighterData.staticData.weakPointVal 
+            } 
             fighterData.lootPointHit = false
         }
 

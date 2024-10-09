@@ -9,10 +9,18 @@ module.exports = {
 		.setName('makelobby')
 		.setDescription('Create A Multiplayer Lobby'),
     config:{
-        getPlayerData:true
+        getPlayerData:true,
+        getGuildTown:true,
     },
 	async execute(interaction,componentConfig,callback) {
         let playerData = componentConfig.playerData
+        let townData = componentConfig.townData
+        if(playerData.tutorial != "completed"){
+            interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });    
+            callback({})
+            return;
+        }
+
         let newSession = {
             type:"lobby",
             session_id: Math.floor(Math.random() * 100000),
@@ -26,6 +34,7 @@ module.exports = {
                         name:playerData.name
                     }
                 ],
+                townData:townData,
                 bans:[]
             }
         }
