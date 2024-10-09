@@ -1,7 +1,0 @@
-[
-    "< TURN #1 >",
-    "There are 4 tiers of speed for abilities. An ability's speed tier determines when it happens in the order of combat. If two abilities of the same speed tier are used by different fighters, the fighter with the higher speed stat will have their ability go first.\n\nAdditionally, by default, guards are in the second highest speed tier, but some abilities can be used before them, which can allow damage to be dealt before a unit can prepare a guard.\n\nDefeat the practice fighter in 1 turn",
-    "jeminiw used **Fast Attack** on Practice Fighter",
-    "Practice Fighter took 2 damage!",
-    "Practice Fighter was defeated!"
-]
