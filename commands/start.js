@@ -34,14 +34,13 @@ module.exports = {
                     }
                 }
                 if(bonus >= 25){
-                    newSession.session_data.player.level = 5
-                    newSession.session_data.player.abilitypoints = bonus
-                    newSession.session_data.player.statpoints = bonus
+                    newSession.session_data.player.statpoints += bonus
                 }
                 newSession.session_data.player.id = interaction.user.id
                 newSession.session_data.player.name = interaction.user.username
                 
                 interaction.reply(populateQuestConsole(newSession))
+                
                 callback({
                     addSession:newSession
                 })

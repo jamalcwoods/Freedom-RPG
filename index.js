@@ -420,8 +420,12 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
             if(result.session && getSessionByID(result.session) == null){
                 delete result.session
             }
+            if(result.dungeon && getSessionByID(result.dungeon) == null){
+                delete result.dungeon
+            }
             let now = new Date();
             if(result && !result.session && !result.dungeon && !result.expedition){
+                console.log(result.name + " - pressence")
                 let player = result
 
                 let needToUpdatePlayer = false
@@ -556,18 +560,12 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             .setLabel("Dismiss")
                             .setStyle('DANGER'))
                         client.channels.fetch(message.channelId).then(channel =>{
-                            if(getUserSession(message.author.id) == null){
-                                channel.send({
-                                    embeds:[embed],
-                                    components:[optionRow,removeRow]
-                                }) 
-                            } else {
-                                embed.addField("Rewards",playerData.dailyText)
-                                channel.send({
-                                    embeds:[embed],
-                                    components:[removeRow]
-                                }) 
-                            }
+                            console.log("Sending daily to " + player.name)
+                            channel.send({
+                                content:"<@" + user.id + ">",
+                                embeds:[embed],
+                                components:[optionRow,removeRow]
+                            }) 
                         })
                     }
 
@@ -684,6 +682,34 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                         }
                         town = formatTown(town)
                     }
+                } else {
+                    if(player.dailyTimer <= now.getTime() || (player.id == '163809334852190208' && message.content == "daily")){
+                        player.dailyTimer = now.getTime() + 86400000
+
+                        const embed = new MessageEmbed()
+                        embed.setColor("#7289da")
+                        embed.setTitle("Tutorial Incomplete")
+
+                        embed.addField("Reminder","Complete the tutorial by doing `/tutorial` and following instructions shown to earn rewards over time")
+
+                        let removeRow = new MessageActionRow()
+                        .addComponents(
+                            new MessageButton()
+                            .setCustomId('deleteMessage')
+                            .setLabel("Dismiss")
+                            .setStyle('DANGER'))
+
+                        client.channels.fetch(message.channelId).then(channel =>{
+                            console.log("Sending tutorial reminder to " + player.name)
+                            channel.send({
+                                content:"<@" + user.id + ">",
+                                embeds:[embed],
+                                components:[removeRow]
+                            }) 
+                        })
+
+                        needToUpdatePlayer = true
+                    }
                 }
 
                 if(needToUpdatePlayer && needToUpdateTown){
@@ -694,7 +720,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             }
                         })
                     })
-                } else if(needToUpdateTown){
+                } else if(needToUpdatePlayer){
                     updatePlayerDBData(player.id,"",player,function(){
                         if(callback){
                             callback()
@@ -726,7 +752,7 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                     if(potential[user.id].count % 25 == 0){
                         const embed = new MessageEmbed()
                                 embed.setColor("#7289da")
-                                embed.addField("Bonus Achieved!","You can use the /start command to gain an improved start\n*(Start game at level 5 with " + potential[user.id].count + " bonus ability/skill points)*")
+                                embed.addField("Bonus Achieved!","You can use the /start command to gain an improved start\n*(Start game with " + potential[user.id].count + " bonus skill points for stat customization)*")
                                 
                         let removeRow = new MessageActionRow()
                         .addComponents(
@@ -735,13 +761,27 @@ function playerPresenceCheck(message,user,town,intervalMsg,callback){
                             .setLabel("Dismiss")
                             .setStyle('DANGER'))
 
-                        client.channels.fetch(message.channelId).then(channel=>{
-                            channel.send({
-                                content:"<@" + user.id + ">",
-                                embeds:[embed],
-                                components:[removeRow]
+                        console.log("Pressence User" + user)
+                        if(user.user){
+                            client.channels.fetch(message.channelId).then(channel=>{
+                                console.log("Sending invitation to " + user.user.username)
+                                channel.send({
+                                    content:"<@" + user.user.id + ">",
+                                    embeds:[embed],
+                                    components:[removeRow]
+                                })
                             })
-                        })
+                        } else {
+                            client.channels.fetch(message.channelId).then(channel=>{
+                                console.log("Sending invitation to " + user.username)
+                                channel.send({
+                                    content:"<@" + user.id + ">",
+                                    embeds:[embed],
+                                    components:[removeRow]
+                                })
+                            })
+                        }
+                        
                     }
                     updatePotentialData(potential)
                 }
@@ -803,7 +843,7 @@ function botUpdate(){
 
                 //Update Raid
                 if(townData.lastRaid < now.getTime()){
-                    if(!townData.raid.bossDefeats){
+                    if(townData.raid && !townData.raid.bossDefeats){
                         townData.points -= townData.level * 7
                         if(townData.points < 0){
                             townData.points = 0
@@ -919,7 +959,7 @@ function botUpdate(){
                         missions:missions
                     }
                     
-                    let raidableFacilities = ["tavern","armory","market"]
+                    let raidableFacilities = ["armory","market","tasks"]
                     raidableFacilities.splice(Math.floor(Math.random() * raidableFacilities.length),1)
 
                     townData.raid.raidedFacilities = raidableFacilities

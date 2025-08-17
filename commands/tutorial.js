@@ -33,7 +33,7 @@ module.exports = {
         
         let updates = []
 
-        if(!fail){
+        if(!fail && playerData != undefined){
             const embed = new MessageEmbed;
             embed.setColor("#7289da")
             

@@ -28,7 +28,7 @@ module.exports = {
     },
 	async execute(interaction,config,callback) {
         let playerData = config.playerData
-        if(playerData.tutorial != "completed"){
+        if(playerData.tutorial != "completed" && playerData.tutorial != 3 && playerData.tutorial != 4){
             interaction.reply({ content: "You must complete the tutorial before accessing this command. For help seeing what's next to do, perform the `/tutorial` command", ephemeral: true });    
         } else {
             switch(interaction.options["_subcommand"]){

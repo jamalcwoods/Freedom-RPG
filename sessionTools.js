@@ -1689,7 +1689,7 @@ function manageFighterDeath(fighter,killer,session, attackNum = null,isAttack){
                 let gear = fighter.staticData.inventory[fighter.staticData.gear]
                 for(stat in gear.stats){
                     if(gear.stats[stat] > 0){
-                        gear.stats[stat] = Math/floor(gear.stats[stat] * 0.75)
+                        gear.stats[stat] = Math.floor(gear.stats[stat] * 0.75)
                     }
                 }
                 session.session_data.battlelog.combat.push(fighter.staticData.name + "'s equipped gear was badly damaged!")
@@ -5236,8 +5236,11 @@ module.exports = {
                 } else {
                     let trainingMessage;
                     if(session.session_data.player.tutorial == 0){
-                        trainingMessage = "From this menu, you can learn the basics of combat via combat lessons.\n\nTo continue with the tutorial, complete the first 6 combat lessons which can be accessed from the first dropdown that says 'Choose something to do'"
+                        trainingMessage = "From this menu, you can learn the basics of combat via combat lessons.\n\nTo continue with the tutorial, complete the first 6 combat lessons which can be accessed from the first dropdown that says 'Choose something to do'\n\nYour progress in these lessons will only save by selecting 'End Session' from the bottom dropdown"
                         let lessons = session.session_data.player.lessons
+                        if(!lessons){
+                            lessons = clone(templates.emptyPlayerData.lessons)
+                        }
                         if(lessons[0] && lessons[1] && lessons[2] && lessons[3] && lessons[4] && lessons[5]){
                             session.session_data.player.tutorial++
                             trainingMessage = "To continue with the tutorial, click the 'Select a facility to visit' dropdown, and select 'End Session'. Then use `/profile`"
@@ -5397,6 +5400,9 @@ module.exports = {
                 let missionText = ""
                 for(var i = 0;i < 3; i++){
                     missionText += "**" + rankIndexer[i] + " Missions (" + pointIndexer[i] +" town points):**\n"
+                    if(i == 2){
+                        missionText += "(You cannot flee from these missions)\n"
+                    }
                     for(mission of raidData.missions[i]){
                         missionText += missions[i][mission.type]
                         if(mission.completers){
